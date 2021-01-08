@@ -3,5 +3,6 @@
     "config:base"
   ],
   "assignees": ["bduff9"],
-  "supportPolicy": ["LTS"]
+  "supportPolicy": ["LTS"],
+  "baseBranches": ["develop"]
 }
