@@ -1,0 +1,9 @@
+{
+  "rules": {
+    "alphabetic-order": true,
+    "correct-casing": true,
+    "natural-order": true,
+    "no-aliases": true,
+    "prepost-trigger-defined": true
+  }
+}
