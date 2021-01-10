@@ -6,4 +6,5 @@ const ViewPayments: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default ViewPayments;

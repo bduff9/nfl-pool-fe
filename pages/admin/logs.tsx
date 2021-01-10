@@ -6,4 +6,5 @@ const AdminLogs: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default AdminLogs;

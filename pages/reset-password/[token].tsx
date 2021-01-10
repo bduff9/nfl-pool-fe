@@ -15,4 +15,5 @@ const ResetPassword: FC = () => {
 	);
 };
 
+// ts-prune-ignore-next
 export default ResetPassword;

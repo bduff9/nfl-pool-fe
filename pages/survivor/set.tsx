@@ -6,4 +6,5 @@ const SetSurvivor: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default SetSurvivor;

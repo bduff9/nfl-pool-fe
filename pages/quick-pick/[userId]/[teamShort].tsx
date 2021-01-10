@@ -16,4 +16,5 @@ const QuickPick: FC = () => {
 	);
 };
 
+// ts-prune-ignore-next
 export default QuickPick;

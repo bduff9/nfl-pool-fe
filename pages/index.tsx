@@ -6,4 +6,5 @@ const Dashboard: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default Dashboard;

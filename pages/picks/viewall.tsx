@@ -6,4 +6,5 @@ const ViewAllPicks: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default ViewAllPicks;

@@ -6,4 +6,5 @@ const Login: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default Login;

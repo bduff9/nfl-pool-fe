@@ -6,4 +6,5 @@ const Logout: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default Logout;

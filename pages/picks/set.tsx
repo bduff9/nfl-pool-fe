@@ -6,4 +6,5 @@ const MakePicks: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default MakePicks;

@@ -6,4 +6,5 @@ const ViewSurvivor: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default ViewSurvivor;

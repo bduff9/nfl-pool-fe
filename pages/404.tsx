@@ -6,4 +6,5 @@ const NotFound: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default NotFound;

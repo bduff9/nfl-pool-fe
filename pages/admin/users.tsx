@@ -6,4 +6,5 @@ const AdminUsers: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default AdminUsers;

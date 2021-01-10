@@ -6,4 +6,5 @@ const ViewPicks: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default ViewPicks;

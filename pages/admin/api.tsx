@@ -6,4 +6,5 @@ const AdminAPICalls: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default AdminAPICalls;

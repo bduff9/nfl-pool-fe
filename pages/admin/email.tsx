@@ -6,4 +6,5 @@ const AdminEmail: FC = () => (
 	</div>
 );
 
+// ts-prune-ignore-next
 export default AdminEmail;

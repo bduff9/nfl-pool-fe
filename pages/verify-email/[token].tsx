@@ -15,4 +15,5 @@ const VerifyEmail: FC = () => {
 	);
 };
 
+// ts-prune-ignore-next
 export default VerifyEmail;
