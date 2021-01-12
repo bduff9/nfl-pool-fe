@@ -29,7 +29,7 @@ class MyDocument extends Document {
 					<meta name="msapplication-tap-highlight" content="no" />
 					<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#663300" />
 					<meta name="twitter:card" content="summary" />
-					<meta name="twitter:url" content="https://nfl.asitewithnoname.com" />
+					<meta name="twitter:url" content="https://nfl-dev.asitewithnoname.com" />
 					<meta name="twitter:title" content="NFL Confidence Pool" />
 					<meta
 						name="twitter:description"
@@ -37,18 +37,18 @@ class MyDocument extends Document {
 					/>
 					<meta
 						name="twitter:image"
-						content="https://nfl.asitewithnoname.com/icon-192x192.png"
+						content="https://nfl-dev.asitewithnoname.com/icon-192x192.png"
 					/>
 					<meta name="twitter:creator" content="@Duffmaster33" />
 					<meta property="og:title" content="NFL Confidence Pool" />
 					<meta property="og:site_name" content="A Site With No Name" />
-					<meta property="og:url" content="https://nfl.asitewithnoname.com/" />
+					<meta property="og:url" content="https://nfl-dev.asitewithnoname.com/" />
 					<meta
 						property="og:description"
 						content="A confidence pool for the NFL regular season"
 					/>
 					<meta property="og:type" content="website" />
-					<meta property="og:image" content="/bkgd-pitch.png" />
+					<meta property="og:image" content="https://nfl-dev.asitewithnoname.com/bkgd-pitch.png" />
 					<link rel="manifest" href="/manifest.json" />
 					<meta property="theme-color" content="#8c8c8c" />
 					<link rel="apple-touch-icon" href="/icon-192x192.png" />
