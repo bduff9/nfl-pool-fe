@@ -21,6 +21,7 @@
   "dependencies": {
     "@sentry/browser": "5.29.2",
     "next": "10.0.5",
+    "next-pwa": "5.0.3",
     "react": "17.0.1",
     "react-dom": "17.0.1"
   },
@@ -68,14 +69,12 @@
     ]
   },
   "jest": {
-    "moduleNameMapper": {
-      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
-    },
+    "moduleNameMapper": {},
     "transform": {
       "^.+\\.(ts|tsx)$": "ts-jest"
     },
     "testMatch": [
-      "**/__tests__/*.(ts|tsx)"
+      "**/__tests__/**/*.(ts|tsx)"
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/jest.setup.ts"
