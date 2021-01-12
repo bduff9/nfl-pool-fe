@@ -1,3 +1,8 @@
+# NFL Pool
+
+[![Tests CI](https://github.com/bduff9/nfl-pool-fe/workflows/Tests%20CI/badge.svg)](https://github.com/bduff9/nfl-pool-fe/actions?query=workflow%3A%22Tests+CI%22)
+[![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6ImJkdWZmOSIsInJlcG8xIjoibmZsLXBvb2wtZmUiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoyNjUxMiwiaWF0IjoxNjEwMzc0NTYyfQ.jKZJ1EjgnDxGvLEjVdZPMaYBgGfX74AUDqonATq5sd0)](https://www.deepcode.ai/app/gh/bduff9/nfl-pool-fe/_/dashboard?utm_content=gh%2Fbduff9%2Fnfl-pool-fe)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
