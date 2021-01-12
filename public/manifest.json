@@ -5,7 +5,7 @@
   "scope": "/",
   "start_url": "/",
   "app_name": "NFL Confidence Pool",
-  "short_name": "NFL Confidence Pool",
+  "short_name": "NFL CP",
   "description": "A confidence pool for the NFL regular season",
   "icons": [
     {
