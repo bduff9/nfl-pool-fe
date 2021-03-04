@@ -1,14 +1,14 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import React from 'react';
 
-import { APP_URL } from '../utils/constants';
+import { NEXT_PUBLIC_SITE_URL } from '../utils/constants';
 
 const appTitle = 'NFL Confidence Pool';
 const appDescription = 'A confidence pool for the NFL regular season';
 const appColor = '#8c8c8c';
 const footballColor = '#663300';
 const siteName = 'A Site With No Name';
-const ogImage = `${APP_URL}/bkgd-pitch.png`;
+const ogImage = `${NEXT_PUBLIC_SITE_URL}/bkgd-pitch.png`;
 const twitterAccount = '@Duffmaster33';
 
 class MyDocument extends Document {
@@ -37,14 +37,14 @@ class MyDocument extends Document {
 						color={footballColor}
 					/>
 					<meta name="twitter:card" content="summary" />
-					<meta name="twitter:url" content={APP_URL} />
+					<meta name="twitter:url" content={NEXT_PUBLIC_SITE_URL} />
 					<meta name="twitter:title" content={appTitle} />
 					<meta name="twitter:description" content={appDescription} />
 					<meta name="twitter:image" content={ogImage} />
 					<meta name="twitter:creator" content={twitterAccount} />
 					<meta property="og:title" content={appTitle} />
 					<meta property="og:site_name" content={siteName} />
-					<meta property="og:url" content={`${APP_URL}/`} />
+					<meta property="og:url" content={`${NEXT_PUBLIC_SITE_URL}/`} />
 					<meta property="og:description" content={appDescription} />
 					<meta property="og:type" content="website" />
 					<meta property="og:image" content={ogImage} />

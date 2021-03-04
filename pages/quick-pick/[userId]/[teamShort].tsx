@@ -8,6 +8,7 @@ const QuickPick: FC = () => {
 	const router = useRouter();
 	const { userId, teamShort } = router.query;
 
+	//TODO: do people not need to be signed in here?  Should we generate a token to prevent abuse?
 	return (
 		<div>
 			<Head>
@@ -21,6 +22,8 @@ const QuickPick: FC = () => {
 		</div>
 	);
 };
+
+QuickPick.whyDidYouRender = true;
 
 // ts-prune-ignore-next
 export default QuickPick;

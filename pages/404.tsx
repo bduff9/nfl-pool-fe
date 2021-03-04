@@ -12,5 +12,7 @@ const NotFound: FC = () => (
 	</div>
 );
 
+NotFound.whyDidYouRender = true;
+
 // ts-prune-ignore-next
 export default NotFound;

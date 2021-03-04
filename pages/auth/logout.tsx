@@ -1,16 +1,19 @@
 import Head from 'next/head';
 import React, { FC } from 'react';
 
-import { getPageTitle } from '../utils';
+import Unauthenticated from '../../components/Unauthenticated/Unauthenticated';
+import { getPageTitle } from '../../utils';
 
 const Logout: FC = () => (
-	<div>
+	<Unauthenticated>
 		<Head>
 			<title>{getPageTitle('Logout')}</title>
 		</Head>
 		<h1>Logout</h1>
-	</div>
+	</Unauthenticated>
 );
+
+Logout.whyDidYouRender = true;
 
 // ts-prune-ignore-next
 export default Logout;

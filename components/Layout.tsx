@@ -1,5 +1,10 @@
 import React, { FC } from 'react';
 
-const Layout: FC = ({ children }) => <div>{children}</div>;
+type LayoutProps = {
+	isLoading: boolean;
+};
+
+//TODO: use loading to show page loading
+const Layout: FC<LayoutProps> = ({ children }) => <div>{children}</div>;
 
 export default Layout;
