@@ -21,7 +21,7 @@
     "build": "next build",
     "clean": "rm -r .next",
     "dev": "next dev",
-    "env": "sync-dotenv --sample .env.local",
+    "env": "sync-dotenv",
     "lint": "eslint . --quiet",
     "lint:fix": "eslint src/ --ext .js,.ts --fix",
     "lint:script": "scriptlint && npmPkgJsonLint .",

@@ -1,6 +1,8 @@
 import { GraphQLClient } from 'graphql-request';
 
-const gqlURL = process.env.NEXT_PUBLIC_API_URL;
+import { NEXT_PUBLIC_API_URL } from './constants';
+
+const gqlURL = `${NEXT_PUBLIC_API_URL}/api/graphql`;
 
 if (!gqlURL) throw new Error('Missing GraphQL API URL!');
 
