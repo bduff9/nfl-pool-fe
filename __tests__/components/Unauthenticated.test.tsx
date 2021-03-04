@@ -1,7 +1,7 @@
 import { shallow, ShallowWrapper } from 'enzyme';
 import React from 'react';
 
-import Unauthenticated from './Unauthenticated';
+import Unauthenticated from '../../components/Unauthenticated/Unauthenticated';
 
 describe('Unauthenticated', (): void => {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any

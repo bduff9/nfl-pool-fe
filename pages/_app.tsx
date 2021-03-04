@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { FC, useEffect, useState } from 'react';
 
-import Layout from '../components/Layout';
+import Layout from '../components/Layout/Layout';
 import { NEXT_PUBLIC_ENV, NEXT_PUBLIC_SENTRY_DSN } from '../utils/constants';
 
 if (NEXT_PUBLIC_SENTRY_DSN) {

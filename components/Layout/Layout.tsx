@@ -1,7 +1,9 @@
 import React, { FC } from 'react';
 
+//import styles from './Layout.module.scss';
+
 type LayoutProps = {
-	isLoading: boolean;
+	isLoading?: boolean;
 };
 
 //TODO: use loading to show page loading

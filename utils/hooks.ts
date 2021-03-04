@@ -8,6 +8,7 @@ export const useObjectState = <T extends Record<any, any>>(
 	return [value as Readonly<T>, setValue];
 };
 
+// ts-prune-ignore-next
 export const useInterval = (callback: () => void, delay: number): void => {
 	const savedCallback = useRef<() => void>();
 

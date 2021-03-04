@@ -1,7 +1,7 @@
 import { shallow } from 'enzyme';
 import React from 'react';
 
-import Layout from '../../components/Layout';
+import Layout from '../../components/Layout/Layout';
 
 describe('Layout', () => {
 	it('renders children passed to it', () => {

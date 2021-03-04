@@ -6,7 +6,7 @@ jest.mock('next/router', () => ({
 	useRouter: jest.fn(),
 }));
 
-import Authenticated from './Authenticated';
+import Authenticated from '../../components/Authenticated/Authenticated';
 
 describe('Authenticated', (): void => {
 	const mockRouterPush = jest.fn();
