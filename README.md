@@ -1,6 +1,10 @@
 # NFL Pool
 
-[![Tests CI](https://github.com/bduff9/nfl-pool-fe/workflows/Tests%20CI/badge.svg)](https://github.com/bduff9/nfl-pool-fe/actions?query=workflow%3A%22Tests+CI%22)
+[![Github Actions](https://github.com/bduff9/nfl-pool-fe/workflows/Tests%20CI/badge.svg)](https://github.com/bduff9/nfl-pool-fe/actions/workflows/tests.yml)
+[![BCH compliance](https://bettercodehub.com/edge/badge/bduff9/nfl-pool-fe?branch=main)](https://bettercodehub.com/)
+[![CodeFactor](https://www.codefactor.io/repository/github/bduff9/nfl-pool-fe/badge)](https://www.codefactor.io/repository/github/bduff9/nfl-pool-fe)
+[![Coverage Status](https://coveralls.io/repos/github/bduff9/nfl-pool-fe/badge.svg?branch=main)](https://coveralls.io/github/bduff9/nfl-pool-fe?branch=main)
+[![Known Vulnerabilities](https://snyk.io/test/github/bduff9/nfl-pool-fe/badge.svg)](https://snyk.io/test/github/bduff9/nfl-pool-fe)
 [![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6ImJkdWZmOSIsInJlcG8xIjoibmZsLXBvb2wtZmUiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoyNjUxMiwiaWF0IjoxNjEwMzc0NTYyfQ.jKZJ1EjgnDxGvLEjVdZPMaYBgGfX74AUDqonATq5sd0)](https://www.deepcode.ai/app/gh/bduff9/nfl-pool-fe/_/dashboard?utm_content=gh%2Fbduff9%2Fnfl-pool-fe)
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).

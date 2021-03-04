@@ -15,13 +15,17 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '14.15.4'
+          node-version: "14.15.4"
       - name: Install dependencies
         run: npm ci
       - name: Validate code is well-formatted
         run: npm run validate
       - name: Validate tests are successful
         run: npm run test:ci
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Tests ✅
         if: ${{ success() }}
         run: |
@@ -47,4 +51,3 @@ jobs:
           job-status: ${{ job.status }}
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           channel: nfl-pool-fe
-
