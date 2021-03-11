@@ -14,12 +14,10 @@ import {
 	DAYS_IN_WEEK,
 	WEEKS_IN_SEASON,
 } from '../../../utils/constants';
+import { sendLoginEmailViaAPI } from '../../../utils/auth';
 
 const {
 	DATABASE_URL,
-	EMAIL_FROM,
-	EMAIL_PASSWORD,
-	EMAIL_USERNAME,
 	GOOGLE_ID,
 	GOOGLE_SECRET,
 	JWT_SECRET,
@@ -29,10 +27,6 @@ const {
 } = process.env;
 
 if (!DATABASE_URL) throw new Error('Missing database URL');
-
-if (!EMAIL_PASSWORD) throw new Error('Missing email server password');
-
-if (!EMAIL_USERNAME) throw new Error('Missing email server username');
 
 if (!GOOGLE_ID) throw new Error('Missing Google ID');
 
@@ -149,8 +143,7 @@ const options: InitOptions = {
 	},
 	providers: [
 		Providers.Email({
-			server: `smtps://${EMAIL_USERNAME}:${EMAIL_PASSWORD}@email-smtp.us-east-1.amazonaws.com:465`,
-			from: EMAIL_FROM,
+			sendVerificationRequest: sendLoginEmailViaAPI,
 		}),
 		Providers.Google({
 			clientId: GOOGLE_ID,

@@ -47,6 +47,7 @@ const Login: FC<LoginProps> = ({ year }) => {
 
 							setFormState('SUBMITTED');
 						} catch (error) {
+							console.error({ error });
 							setError(error);
 							setFormState('ERRORED');
 						}
@@ -55,7 +56,7 @@ const Login: FC<LoginProps> = ({ year }) => {
 					}}
 				>
 					{formState === 'ERRORED' && (
-						<h1>{error || 'Something went wrong, please try again'}</h1>
+						<h1>{'Something went wrong, please try again'}</h1>
 					)}
 					<input
 						autoComplete="email"
