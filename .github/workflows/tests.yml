@@ -26,6 +26,22 @@ jobs:
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set environment variables
+        run: |
+          case "${GITHUB_REF}" in
+            "refs/heads/main") DEPLOY_ENV=production ;;
+            "refs/heads/develop") DEPLOY_ENV=development ;;
+            *) DEPLOY_ENV= ;;
+          esac
+          echo "DEPLOY_ENV=${DEPLOY_ENV}" >> $GITHUB_ENV
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: aswnn
+          SENTRY_PROJECT: nfl-pool-fe
+        with:
+          environment: ${{ env.DEPLOY_ENV }}
       - name: Tests ✅
         if: ${{ success() }}
         run: |

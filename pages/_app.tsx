@@ -1,6 +1,8 @@
 import * as Sentry from '@sentry/browser';
+import LogRocket from 'logrocket';
+import setupLogRocketReact from 'logrocket-react';
 import whyDidYouRender from '@welldone-software/why-did-you-render';
-import { Provider } from 'next-auth/client';
+import { Provider, useSession } from 'next-auth/client';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -16,15 +18,29 @@ if (NEXT_PUBLIC_SENTRY_DSN) {
 	});
 }
 
-if (typeof window !== 'undefined' && NEXT_PUBLIC_ENV !== 'production') {
-	whyDidYouRender(React);
+if (typeof window !== 'undefined') {
+	LogRocket.init('xba8kt/nfl-pool-fe');
+	setupLogRocketReact(LogRocket);
+
+	if (NEXT_PUBLIC_ENV !== 'production') {
+		whyDidYouRender(React);
+	}
 }
 
 type SentryProps = { err: unknown };
 
 const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
+	const [session] = useSession();
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+
+	useEffect((): void => {
+		if (session) {
+			LogRocket.identify((session.user as any).sub, {
+				...(session.user as any),
+			});
+		}
+	}, [session]);
 
 	useEffect((): (() => void) => {
 		let mounted = true;
