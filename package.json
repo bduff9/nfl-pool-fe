@@ -36,7 +36,7 @@
   },
   "config": {},
   "dependencies": {
-    "@sentry/browser": "6.2.1",
+    "@sentry/browser": "6.2.2",
     "axios": "0.21.1",
     "bootstrap": "5.0.0-beta2",
     "graphql": "15.5.0",
@@ -51,26 +51,27 @@
     "react": "17.0.1",
     "react-bootstrap": "https://github.com/react-bootstrap/react-bootstrap/tarball/bs5-dev",
     "react-dom": "17.0.1",
-    "swr": "0.5.1"
+    "swr": "0.5.3"
   },
   "devDependencies": {
     "@types/bootstrap": "5.0.8",
     "@types/enzyme": "3.10.8",
     "@types/enzyme-adapter-react-16": "1.0.6",
     "@types/eslint": "7.2.7",
+    "@types/jest": "26.0.20",
     "@types/logrocket-react": "3.0.0",
     "@types/mysql": "2.15.18",
     "@types/next-auth": "3.7.1",
-    "@types/node": "14.14.33",
+    "@types/node": "14.14.34",
     "@types/react": "17.0.3",
     "@types/react-dom": "17.0.2",
     "@types/stylelint": "9.10.1",
     "@typescript-eslint/eslint-plugin": "4.17.0",
     "@typescript-eslint/parser": "4.17.0",
-    "@welldone-software/why-did-you-render": "6.1.0",
+    "@welldone-software/why-did-you-render": "6.1.1",
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.6",
-    "eslint": "7.21.0",
+    "eslint": "7.22.0",
     "eslint-plugin-css-modules": "2.11.0",
     "eslint-plugin-graphql": "4.0.0",
     "eslint-plugin-import": "2.22.1",
@@ -88,8 +89,7 @@
     "sync-dotenv": "2.6.2",
     "ts-jest": "26.5.3",
     "typescript": "4.2.3",
-    "vercel": "21.3.3",
-    "webpack": "5.24.4"
+    "vercel": "21.3.3"
   },
   "engines": {
     "node": "14.x"

@@ -16,7 +16,7 @@ const Login: FC<LoginProps> = ({ year }) => {
 	const router = useRouter();
 	const [session] = useSession();
 	const [email, setEmail] = useState<string>('');
-	const [error, setError] = useState<string>('');
+	const [, setError] = useState<string>('');
 	const [formState, setFormState] = useState<TFormState>('READY');
 
 	if (session) {
@@ -24,6 +24,8 @@ const Login: FC<LoginProps> = ({ year }) => {
 
 		return <></>;
 	}
+
+	//TODO: useEffect here to validate MX in browser prior to submit
 
 	return (
 		<Unauthenticated>
@@ -100,8 +102,8 @@ const Login: FC<LoginProps> = ({ year }) => {
 // ts-prune-ignore-next
 export const getStaticProps: GetStaticProps = async () => {
 	const query = gql`
-		{
-			getSystemValue(Name: "YearUpdated") {
+		query GetPoolYear($Name: String!) {
+			getSystemValue(Name: $Name) {
 				systemValueID
 				systemValueName
 				systemValueValue

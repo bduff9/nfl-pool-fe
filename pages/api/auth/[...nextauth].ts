@@ -14,7 +14,7 @@ import {
 	DAYS_IN_WEEK,
 	WEEKS_IN_SEASON,
 } from '../../../utils/constants';
-import { sendLoginEmailViaAPI } from '../../../utils/auth';
+import { mxExists, sendLoginEmailViaAPI } from '../../../utils/auth';
 
 const {
 	DATABASE_URL,
@@ -48,8 +48,10 @@ const options: InitOptions = {
 	),
 	callbacks: {
 		async signIn (user, account, profile): Promise<boolean> {
+			const isValidMX = !!user.email && (await mxExists(user.email));
+
 			console.log('~~~signIn start~~~');
-			console.log({ account, profile, user });
+			console.log({ account, isValidMX, profile, user });
 			console.log('~~~signIn end~~~');
 
 			return !!(user as { id: null | number }).id;

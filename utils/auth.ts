@@ -1,6 +1,21 @@
+import dns from 'dns';
+
 import axios from 'axios';
 
 import { NEXT_PUBLIC_API_URL } from './constants';
+
+export const mxExists = async (email: string): Promise<boolean> => {
+	try {
+		const hostName = email.split('@')[1];
+		const addresses = await dns.promises.resolveMx(hostName);
+
+		return addresses?.every(address => address.exchange);
+	} catch (error) {
+		console.error('mx check error:', error);
+
+		return false;
+	}
+};
 
 type TSendVerificationRequest = (args: {
 	baseUrl: string;
@@ -41,5 +56,6 @@ export const sendLoginEmailViaAPI: TSendVerificationRequest = async ({
 			error,
 			url,
 		});
+		throw error;
 	}
 };
