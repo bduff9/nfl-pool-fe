@@ -3,16 +3,16 @@ import { NextPage, NextPageContext } from 'next';
 import NextErrorComponent from 'next/error';
 import React from 'react';
 
-type ErrorProps = {
+type ErrorPageProps = {
 	err?: unknown;
 	hasGetInitialPropsRun?: boolean;
 	statusCode: number;
 };
 
-const Error: NextPage<ErrorProps> = ({
-	statusCode,
-	hasGetInitialPropsRun,
+const ErrorPage: NextPage<ErrorPageProps> = ({
 	err,
+	hasGetInitialPropsRun,
+	statusCode,
 }) => {
 	if (!hasGetInitialPropsRun && err) {
 		// getInitialProps is not called in case of
@@ -24,7 +24,7 @@ const Error: NextPage<ErrorProps> = ({
 	return <NextErrorComponent statusCode={statusCode} />;
 };
 
-Error.getInitialProps = async ({ res, err, asPath }) => {
+ErrorPage.getInitialProps = async ({ res, err, asPath }) => {
 	const errorInitialProps = await NextErrorComponent.getInitialProps({
 		res,
 		err,
@@ -32,7 +32,7 @@ Error.getInitialProps = async ({ res, err, asPath }) => {
 
 	// Workaround for https://github.com/vercel/next.js/issues/8592, mark when
 	// getInitialProps has run
-	(errorInitialProps as ErrorProps).hasGetInitialPropsRun = true;
+	(errorInitialProps as ErrorPageProps).hasGetInitialPropsRun = true;
 
 	// Running on the server, the response object (`res`) is available.
 	//
@@ -63,14 +63,19 @@ Error.getInitialProps = async ({ res, err, asPath }) => {
 	// information about what the error might be. This is unexpected and may
 	// indicate a bug introduced in Next.js, so record it in Sentry
 	Sentry.captureException(
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		//@ts-ignore
 		new Error(`_error.js getInitialProps missing data at path: ${asPath}`),
 	);
-	await Sentry.flush(2000);
+
+	// Without this try-catch block, builds all fail since
+	// Sentry.flush throws `false` here during static builds
+	try {
+		await Sentry.flush(2000);
+	} catch (error) {
+		console.log('Sentry.flush failed to be called:', error);
+	}
 
 	return errorInitialProps;
 };
 
 // ts-prune-ignore-next
-export default Error;
+export default ErrorPage;
