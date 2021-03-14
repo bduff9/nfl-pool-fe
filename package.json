@@ -26,7 +26,6 @@
     "lint:fix": "eslint src/ --ext .js,.ts --fix",
     "lint:script": "scriptlint && npmPkgJsonLint .",
     "lint:script:fix": "scriptlint --fix",
-    "postinstall": "cd ./node_modules/react-bootstrap && mkdir .git && npm i && npm run build && rm -rf node_modules/ && rm -rf .git",
     "setup": "npx typesync && npm i && npm prune",
     "start": "next start",
     "test": "jest",
@@ -49,7 +48,7 @@
     "next-auth": "3.11.2",
     "next-pwa": "5.0.6",
     "react": "17.0.1",
-    "react-bootstrap": "https://github.com/react-bootstrap/react-bootstrap/tarball/bs5-dev",
+    "react-bootstrap": "next",
     "react-dom": "17.0.1",
     "swr": "0.5.3"
   },
