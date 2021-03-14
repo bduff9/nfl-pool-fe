@@ -33,6 +33,7 @@ jobs:
             "refs/heads/develop") DEPLOY_ENV=development ;;
             *) DEPLOY_ENV= ;;
           esac
+          echo "DEPLOY_ENV=${DEPLOY_ENV}"
           echo "DEPLOY_ENV=${DEPLOY_ENV}" >> $GITHUB_ENV
       - name: Create Sentry release
         uses: getsentry/action-release@v1
