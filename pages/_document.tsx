@@ -1,7 +1,7 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document';
 import React from 'react';
 
-import { NEXT_PUBLIC_SITE_URL } from '../utils/constants';
+import { NEXT_PUBLIC_ENV, NEXT_PUBLIC_SITE_URL } from '../utils/constants';
 
 const appTitle = 'NFL Confidence Pool';
 const appDescription = 'A confidence pool for the NFL regular season';
@@ -53,11 +53,19 @@ class MyDocument extends Document {
 					<link rel="apple-touch-icon" href="/icon-192x192.png" />
 					<meta name="apple-mobile-web-app-status-bar" content={appColor} />
 					{/*<!-- Cloudflare Web Analytics -->*/}
-					<script
-						defer
-						src="https://static.cloudflareinsights.com/beacon.min.js"
-						data-cf-beacon='{"token": "7948b9354d734d69b6866cecb098731f"}'
-					></script>
+					{NEXT_PUBLIC_ENV === 'production' ? (
+						<script
+							defer
+							src="https://static.cloudflareinsights.com/beacon.min.js"
+							data-cf-beacon='{"token": "7948b9354d734d69b6866cecb098731f", "spa": true}'
+						></script>
+					) : NEXT_PUBLIC_ENV === 'preview' ? (
+						<script
+							defer
+							src="https://static.cloudflareinsights.com/beacon.min.js"
+							data-cf-beacon='{"token": "4b2c9a4eecaa4b7d85552ebc8b355c8b", "spa": true}'
+						></script>
+					) : null}
 					{/*<!-- End Cloudflare Web Analytics -->*/}
 				</Head>
 				<body>
