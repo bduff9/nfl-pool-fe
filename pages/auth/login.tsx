@@ -11,6 +11,7 @@ import { getPageTitle } from '../../utils';
 import { formatError } from '../../utils/auth.client';
 import { REDIRECT_COOKIE_NAME } from '../../utils/constants';
 import { fetcher } from '../../utils/graphql';
+import { QueryGetSystemValueArgs } from '../../generated/graphql';
 
 type TFormState = 'READY' | 'LOADING' | 'ERRORED' | 'SUBMITTED';
 type LoginProps = { year: string };
@@ -130,13 +131,16 @@ export const getStaticProps: GetStaticProps = async () => {
 			}
 		}
 	`;
-	const data = await fetcher<{
-		getSystemValue: {
-			systemValueID: number;
-			systemValueName: string;
-			systemValueValue: null | string;
-		};
-	}>(query, { Name: 'YearUpdated' });
+	const data = await fetcher<
+		{
+			getSystemValue: {
+				systemValueID: number;
+				systemValueName: string;
+				systemValueValue: null | string;
+			};
+		},
+		QueryGetSystemValueArgs
+	>(query, { Name: 'YearUpdated' });
 
 	return { props: { year: data.getSystemValue.systemValueValue } };
 };

@@ -33,6 +33,7 @@ const Dashboard: FC = () => (
 
 Dashboard.whyDidYouRender = true;
 
+// ts-prune-ignore-next
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 	const session = await getSession({ req });
 

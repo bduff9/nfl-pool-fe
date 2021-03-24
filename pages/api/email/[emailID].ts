@@ -1,6 +1,7 @@
 import { gql } from 'graphql-request';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+import { QueryGetEmailArgs } from '../../../generated/graphql';
 import { fetcher } from '../../../utils/graphql';
 
 const handler = async (
@@ -8,6 +9,7 @@ const handler = async (
 	res: NextApiResponse,
 ): Promise<void> => {
 	const { emailID } = req.query;
+
 	const query = gql`
 		query GetEmail($emailID: String!) {
 			getEmail(EmailID: $emailID) {
@@ -18,12 +20,15 @@ const handler = async (
 	`;
 
 	try {
-		const data = await fetcher<{
-			getEmail: {
-				emailID: string;
-				html: null | string;
-			};
-		}>(query, { emailID });
+		const data = await fetcher<
+			{
+				getEmail: {
+					emailID: string;
+					html: null | string;
+				};
+			},
+			QueryGetEmailArgs
+		>(query, { EmailID: typeof emailID === 'string' ? emailID : emailID[0] });
 
 		res.status(200).send(data.getEmail.html);
 	} catch (error) {
