@@ -1,0 +1,11 @@
+overwrite: true
+schema: "http://localhost:3001/api/graphql"
+#documents: "src/**/*.graphql"
+generates:
+  generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+hooks:
+  afterOneFileWrite:
+    - eslint --quiet --fix
