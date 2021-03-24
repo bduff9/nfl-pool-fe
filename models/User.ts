@@ -1,6 +1,22 @@
 import Adapters from 'next-auth/adapters';
 import { EntitySchemaColumnOptions } from 'typeorm';
 
+export type TUser = {
+	id: number;
+	name: string;
+	email: string;
+	emailVerified: boolean;
+	isTrusted: boolean;
+	doneRegistering: boolean;
+	isAdmin: boolean;
+	hasSurvivor: boolean;
+	image: null | string;
+	createdAt: Date;
+	createdBy: string;
+	updatedAt: Date;
+	updatedBy: string;
+};
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 export default class User extends Adapters.TypeORM.Models.User.model {

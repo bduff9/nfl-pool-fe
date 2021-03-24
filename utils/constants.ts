@@ -7,6 +7,11 @@ export const NEXT_PUBLIC_SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DS;
 export const NEXT_PUBLIC_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
 
 /**
+ * The name of the cookie used to redirect a user back where they were trying to go prior to the auth flow
+ */
+export const REDIRECT_COOKIE_NAME = 'REDIRECT_COOKIE_NAME';
+
+/**
  * Number of days in a week, used for conversions
  */
 export const DAYS_IN_WEEK = 7;

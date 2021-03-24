@@ -10,7 +10,7 @@ const client = new GraphQLClient(gqlURL, {
 	credentials: 'include',
 });
 
-export const fetcher = <T>(
+export const fetcher = <ReturnType, Vars extends Record<string, any> = never>(
 	query: string,
-	variables?: Record<string, any>,
-): Promise<T> => client.request(query, variables);
+	variables?: Vars,
+): Promise<ReturnType> => client.request(query, variables);

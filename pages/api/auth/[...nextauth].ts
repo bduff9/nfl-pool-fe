@@ -1,10 +1,9 @@
 import { decode, encode } from 'jwt-simple';
 import { NextApiRequest, NextApiResponse } from 'next';
-import NextAuth, { InitOptions } from 'next-auth';
-// eslint-disable-next-line import/no-unresolved
-import { SessionBase } from 'next-auth/_utils';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import Adapters from 'next-auth/adapters';
 import Providers from 'next-auth/providers';
+import { gql } from 'graphql-request';
 
 import Models from '../../../models';
 import {
@@ -14,13 +13,21 @@ import {
 	DAYS_IN_WEEK,
 	WEEKS_IN_SEASON,
 } from '../../../utils/constants';
-import { mxExists, sendLoginEmailViaAPI } from '../../../utils/auth';
+import { mxExists, sendLoginEmailViaAPI } from '../../../utils/auth.server';
+import { fetcher } from '../../../utils/graphql';
+import {
+	LogAction,
+	MutationWriteLogArgs,
+	QueryGetSystemValueArgs,
+} from '../../../generated/graphql';
+import { TUser } from '../../../models/User';
 
 const {
 	DATABASE_URL,
 	GOOGLE_ID,
 	GOOGLE_SECRET,
 	JWT_SECRET,
+	NEXT_PUBLIC_SITE_URL,
 	secret,
 	TWITTER_ID,
 	TWITTER_SECRET,
@@ -36,7 +43,30 @@ if (!TWITTER_ID) throw new Error('Missing Twitter ID');
 
 if (!TWITTER_SECRET) throw new Error('Missing Twitter secret');
 
-const options: InitOptions = {
+type TUserObj = {
+	doneRegistering?: boolean;
+	email?: string;
+	hasSurvivor?: boolean;
+	isAdmin?: boolean;
+	isNewUser?: boolean;
+	isTrusted?: boolean;
+	name?: null | string;
+	picture?: null | string;
+	sub?: string;
+};
+
+type TLinkAccountMessage = {
+	user: TUser;
+	providerAccount: { provider: string; type: string };
+};
+
+type TSignInMessage = {
+	account: { id: string; type: string; providerAccountId: string };
+	isNewUser: boolean;
+	user: TUser;
+};
+
+const options: NextAuthOptions = {
 	adapter: Adapters.TypeORM.Adapter(
 		{
 			type: 'mysql',
@@ -47,81 +77,235 @@ const options: InitOptions = {
 		},
 	),
 	callbacks: {
-		async signIn (user, account, profile): Promise<boolean> {
+		async signIn (user, _account, _profile): Promise<boolean | string> {
 			const isValidMX = !!user.email && (await mxExists(user.email));
+			const userExists = (user as TUserObj).doneRegistering;
 
-			console.log('~~~signIn start~~~');
-			console.log({ account, isValidMX, profile, user });
-			console.log('~~~signIn end~~~');
+			if (!isValidMX) {
+				return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=InvalidEmail`;
+			}
 
-			return !!(user as { id: null | number }).id;
+			if (userExists) return true;
+
+			const query = gql`
+				query GetCurrentWeek($Name: String!) {
+					getCurrentWeek
+					getSystemValue(Name: $Name) {
+						systemValueID
+						systemValueName
+						systemValueValue
+					}
+				}
+			`;
+			const { getCurrentWeek, getSystemValue } = await fetcher<
+				{
+					getCurrentWeek: number;
+					getSystemValue: {
+						systemValueID: number;
+						systemValueName: string;
+						systemValueValue: null | string;
+					};
+				},
+				QueryGetSystemValueArgs
+			>(query, { Name: 'PaymentDueWeek' });
+
+			if (!getSystemValue.systemValueValue) {
+				console.error('Missing PaymentDueWeek property:', { getSystemValue });
+
+				return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=MissingSystemProperty`;
+			}
+
+			const lastRegistrationWeek = parseInt(
+				getSystemValue.systemValueValue,
+				10,
+			);
+
+			if (getCurrentWeek > lastRegistrationWeek) {
+				return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=RegistrationOver`;
+			}
+
+			return true;
 		},
-		async redirect (url, baseUrl): Promise<string> {
-			console.log('~~~redirect start~~~');
-			console.log({ baseUrl, url });
-			console.log('~~~redirect end~~~');
+		// async redirect (url: string, baseUrl: string): Promise<string> {
+		// 	console.log('~~~redirect start~~~');
+		// 	console.log({ baseUrl, url });
+		// 	console.log('~~~redirect end~~~');
 
-			return baseUrl;
-		},
-		async session (session, user): Promise<SessionBase> {
-			console.log('~~~session start~~~');
-			console.log({ session, user });
-			console.log('~~~session end~~~');
+		// 	return baseUrl;
+		// },
+		// async session (session, user): Promise<WithAdditionalParams<Session>> {
+		// 	console.log('~~~session start~~~');
+		// 	console.log({ session, user });
+		// 	console.log('~~~session end~~~');
 
-			return session;
-		},
+		// 	return session as WithAdditionalParams<Session>;
+		// },
 		async jwt (
 			token,
 			user,
-			account,
-			profile,
+			_account,
+			_profile,
 			isNewUser,
 		): Promise<Record<string, unknown>> {
-			console.log('~~~jwt start~~~');
-			console.log({ account, isNewUser, profile, token, user });
-			console.log('~~~jwt end~~~');
+			const userObj = user as TUserObj;
+
+			token.isNewUser = isNewUser;
+
+			if (typeof userObj?.doneRegistering === 'boolean') {
+				token.doneRegistering = userObj.doneRegistering;
+			}
+
+			if (typeof userObj?.hasSurvivor === 'boolean') {
+				token.hasSurvivor = userObj.hasSurvivor;
+			}
+
+			if (typeof userObj?.isAdmin === 'boolean') {
+				token.isAdmin = userObj.isAdmin;
+			}
+
+			if (typeof userObj?.isTrusted === 'boolean') {
+				token.isTrusted = userObj.isTrusted;
+			}
 
 			return token;
 		},
 	},
 	events: {
-		async signIn (message): Promise<void> {
-			console.log('~~~signIn event start~~~');
-			console.log({ message });
-			console.log('~~~signIn event end~~~');
+		async signIn (message: TSignInMessage): Promise<void> {
+			const args: MutationWriteLogArgs = {
+				data: {
+					logAction: LogAction.Login,
+					logMessage: `${message.user.email} signed in`,
+					sub: `${message.user.id}`,
+				},
+			};
+			const query = gql`
+				mutation WriteToLog($data: WriteLogInput!) {
+					writeLog(data: $data) {
+						logID
+					}
+				}
+			`;
+
+			await fetcher<
+				{
+					writeLog: {
+						logID: number;
+					};
+				},
+				MutationWriteLogArgs
+			>(query, args);
 		},
-		async signOut (message): Promise<void> {
-			console.log('~~~signOut event start~~~');
-			console.log({ message });
-			console.log('~~~signOut event end~~~');
+		async signOut (message: TUserObj): Promise<void> {
+			const args: MutationWriteLogArgs = {
+				data: {
+					logAction: LogAction.Logout,
+					logMessage: `${message.email} signed out`,
+					sub: message.sub,
+				},
+			};
+			const query = gql`
+				mutation WriteToLog($data: WriteLogInput!) {
+					writeLog(data: $data) {
+						logID
+					}
+				}
+			`;
+
+			await fetcher<
+				{
+					writeLog: {
+						logID: number;
+					};
+				},
+				MutationWriteLogArgs
+			>(query, args);
 		},
-		async createUser (message): Promise<void> {
-			console.log('~~~createUser event start~~~');
-			console.log({ message });
-			console.log('~~~createUser event end~~~');
+		async createUser (message: TUser): Promise<void> {
+			const args: MutationWriteLogArgs = {
+				data: {
+					logAction: LogAction.CreatedAccount,
+					logMessage: `${message.email} created an account`,
+					sub: `${message.id}`,
+				},
+			};
+			const query = gql`
+				mutation WriteToLog($data: WriteLogInput!) {
+					writeLog(data: $data) {
+						logID
+					}
+				}
+			`;
+
+			await fetcher<
+				{
+					writeLog: {
+						logID: number;
+					};
+				},
+				MutationWriteLogArgs
+			>(query, args);
 		},
-		async linkAccount (message): Promise<void> {
-			console.log('~~~linkAccount event start~~~');
-			console.log({ message });
-			console.log('~~~linkAccount event end~~~');
+		async linkAccount (message: TLinkAccountMessage): Promise<void> {
+			const args: MutationWriteLogArgs = {
+				data: {
+					logAction: LogAction.LinkedAccount,
+					logMessage: `${message.user.email} linked ${message.providerAccount.provider} account`,
+					sub: `${message.user.id}`,
+				},
+			};
+			const query = gql`
+				mutation WriteToLog($data: WriteLogInput!) {
+					writeLog(data: $data) {
+						logID
+					}
+				}
+			`;
+
+			await fetcher<
+				{
+					writeLog: {
+						logID: number;
+					};
+				},
+				MutationWriteLogArgs
+			>(query, args);
 		},
-		async session (message): Promise<void> {
-			console.log('~~~session event start~~~');
-			console.log({ message });
-			console.log('~~~session event end~~~');
-		},
+		// async session (message): Promise<void> {
+		// 	console.log('Session event:', message);
+		// },
 		async error (message): Promise<void> {
+			const args: MutationWriteLogArgs = {
+				data: {
+					logAction: LogAction.AuthenticationError,
+					logMessage: `{message.email} had an authentication error`,
+					sub: `{message.sub}`,
+				},
+			};
+			const query = gql`
+				mutation WriteToLog($data: WriteLogInput!) {
+					writeLog(data: $data) {
+						logID
+					}
+				}
+			`;
+			const result = await fetcher<
+				{
+					writeLog: {
+						logID: number;
+					};
+				},
+				MutationWriteLogArgs
+			>(query, args);
+
+			//TODO: clean up once tested
 			console.log('~~~error event start~~~');
-			console.log({ message });
+			console.log({ message, result });
 			console.log('~~~error event end~~~');
 		},
 	},
 	jwt: {
 		decode: async (options): Promise<Record<string, string>> => {
-			console.log('~~~decode start~~~');
-			console.log({ options });
-			console.log('~~~decode end~~~');
-
 			if (!options.token) return {};
 
 			if (!JWT_SECRET) throw new Error('Missing JWT secret');
@@ -129,10 +313,6 @@ const options: InitOptions = {
 			return decode(options.token, JWT_SECRET, false, 'HS256');
 		},
 		encode: async (options): Promise<string> => {
-			console.log('~~~encode start~~~');
-			console.log({ options });
-			console.log('~~~encode end~~~');
-
 			if (!JWT_SECRET) throw new Error('Missing JWT secret');
 
 			return encode(options.token, JWT_SECRET, 'HS256');
@@ -169,5 +349,7 @@ const options: InitOptions = {
 };
 
 // ts-prune-ignore-next
-export default (req: NextApiRequest, res: NextApiResponse): Promise<void> =>
-	NextAuth(req, res, options);
+export default async (
+	req: NextApiRequest,
+	res: NextApiResponse,
+): Promise<void> => NextAuth(req, res, options);

@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import { gql } from 'graphql-request';
 import { GetStaticProps } from 'next';
 import { signIn, useSession } from 'next-auth/client';
@@ -7,16 +8,32 @@ import React, { FC, FormEvent, useState } from 'react';
 
 import Unauthenticated from '../../components/Unauthenticated/Unauthenticated';
 import { getPageTitle } from '../../utils';
+import { formatError } from '../../utils/auth.client';
+import { REDIRECT_COOKIE_NAME } from '../../utils/constants';
 import { fetcher } from '../../utils/graphql';
 
 type TFormState = 'READY' | 'LOADING' | 'ERRORED' | 'SUBMITTED';
 type LoginProps = { year: string };
 
+const readAndDeleteCookie = (name: string): string => {
+	const value = Cookies.get(name);
+
+	if (value) {
+		Cookies.set(name, '', { expires: new Date(0) });
+	}
+
+	return value || '';
+};
+
 const Login: FC<LoginProps> = ({ year }) => {
 	const router = useRouter();
 	const [session] = useSession();
 	const [email, setEmail] = useState<string>('');
-	const [, setError] = useState<string>('');
+	const error =
+		typeof window !== 'undefined'
+			? new URLSearchParams(window.location.search).get('error')
+			: router.query.error;
+	const [errorMessage, setErrorMessage] = useState<string>(formatError(error));
 	const [formState, setFormState] = useState<TFormState>('READY');
 
 	if (session) {
@@ -25,8 +42,6 @@ const Login: FC<LoginProps> = ({ year }) => {
 		return <></>;
 	}
 
-	//TODO: useEffect here to validate MX in browser prior to submit
-
 	return (
 		<Unauthenticated>
 			<Head>
@@ -34,67 +49,72 @@ const Login: FC<LoginProps> = ({ year }) => {
 			</Head>
 			<h1>Login ({year})</h1>
 			{formState !== 'SUBMITTED' ? (
-				<form
-					onSubmit={async (ev): Promise<false> => {
-						ev.preventDefault();
-						setFormState('LOADING');
+				<>
+					<form
+						onSubmit={async (ev): Promise<false> => {
+							ev.preventDefault();
+							setFormState('LOADING');
 
-						try {
-							const callbackUrl = undefined; //TODO: check localStorage for redirect url, and if found, clear it
+							const callbackUrl = readAndDeleteCookie(REDIRECT_COOKIE_NAME);
 
-							await signIn('email', {
+							console.log({ callbackUrl });
+							const { error: signInError } = await signIn('email', {
 								callbackUrl,
 								email,
+								redirect: false,
 							});
+							const formattedError = formatError(signInError);
 
-							setFormState('SUBMITTED');
-						} catch (error) {
-							console.error({ error });
-							setError(error);
-							setFormState('ERRORED');
-						}
+							setErrorMessage(formattedError);
 
-						return false;
-					}}
-				>
-					{formState === 'ERRORED' && (
-						<h1>{'Something went wrong, please try again'}</h1>
-					)}
-					<input
-						autoComplete="email"
-						autoFocus
-						id="email"
-						name="email"
-						onChange={(ev: FormEvent<HTMLInputElement>): void =>
-							setEmail(ev.currentTarget.value)
-						}
-						placeholder="Email"
-						required
-						title="email"
-						type="email"
-					/>
-					<button type="submit" disabled={formState === 'LOADING'}>
-						Login
+							if (formattedError) {
+								setFormState('ERRORED');
+							} else {
+								setFormState('SUBMITTED');
+							}
+
+							return false;
+						}}
+					>
+						{!!errorMessage && <h1>{errorMessage}</h1>}
+						<input
+							autoComplete="email"
+							autoFocus
+							id="email"
+							name="email"
+							onChange={(ev: FormEvent<HTMLInputElement>): void => {
+								setEmail(ev.currentTarget.value);
+
+								if (formState === 'ERRORED') setFormState('READY');
+							}}
+							placeholder="Email"
+							required
+							title="email"
+							type="email"
+						/>
+						<button type="submit" disabled={formState !== 'READY'}>
+							Login
+						</button>
+					</form>
+					<button
+						type="button"
+						onClick={async (): Promise<void> => await signIn('google')}
+					>
+						Sign in with Google
 					</button>
-				</form>
+					<button
+						type="button"
+						onClick={async (): Promise<void> => await signIn('twitter')}
+					>
+						Sign in with Twitter
+					</button>
+				</>
 			) : (
 				<>
 					<h3>Please check your email to sign in</h3>
 					<h5>You may close this window</h5>
 				</>
 			)}
-			<button
-				type="button"
-				onClick={async (): Promise<void> => await signIn('google')}
-			>
-				Sign in with Google
-			</button>
-			<button
-				type="button"
-				onClick={async (): Promise<void> => await signIn('twitter')}
-			>
-				Sign in with Twitter
-			</button>
 		</Unauthenticated>
 	);
 };
@@ -112,6 +132,8 @@ export const getStaticProps: GetStaticProps = async () => {
 	`;
 	const data = await fetcher<{
 		getSystemValue: {
+			systemValueID: number;
+			systemValueName: string;
 			systemValueValue: null | string;
 		};
 	}>(query, { Name: 'YearUpdated' });
