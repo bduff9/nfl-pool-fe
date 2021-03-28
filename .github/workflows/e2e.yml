@@ -14,13 +14,14 @@ jobs:
           echo "$GITHUB_CONTEXT"
       - name: Checkout 🛎
         uses: actions/checkout@v1
-      - name: Run Cypress 🌲
-        uses: cypress-io/github-action@v2
+      - name: Run Cypress 🌲 and Percy
+        uses: percy/exec-action@v0.3.1
         with:
-          record: true
+          command: "cypress run --record"
         env:
           CYPRESS_BASE_URL: ${{ github.event.deployment_status.target_url }}
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
       - name: Notify Slack
         if: always()
         uses: kpritam/slack-job-status-action@v1

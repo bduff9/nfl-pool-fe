@@ -61,6 +61,7 @@
     "@graphql-codegen/cli": "1.21.3",
     "@graphql-codegen/typescript": "1.21.1",
     "@graphql-codegen/typescript-operations": "1.17.15",
+    "@percy/cypress": "2.3.4",
     "@types/bootstrap": "5.0.12",
     "@types/enzyme": "3.10.8",
     "@types/enzyme-adapter-react-16": "1.0.6",

@@ -16,6 +16,7 @@ describe('Login', () => {
 			it('should redirect to login', () => {
 				cy.visit('/');
 				cy.url().should('include', '/auth/login');
+				cy.percySnapshot();
 			});
 		});
 	});
@@ -23,8 +24,7 @@ describe('Login', () => {
 	context('iphone-5 resolution', () => {
 		beforeEach(() => {
 			/**
-			 * Run these tests as if in a desktop browser,
-			 * with a 720p monitor
+			 * Run these tests as if in an iPhone 5
 			 */
 			cy.viewport('iphone-5');
 		});
@@ -32,6 +32,7 @@ describe('Login', () => {
 			it('should redirect to login', () => {
 				cy.visit('/');
 				cy.url().should('include', '/auth/login');
+				cy.percySnapshot();
 			});
 		});
 	});
