@@ -12,13 +12,13 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
-import percyHealthCheck from '@percy/cypress/task';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line prefer-const
+let percyHealthCheck = require('@percy/cypress/task');
 
 /**
  * @type {Cypress.PluginConfig}
  */
-export default (on: any, _config: unknown): void => {
+module.exports = (on: any, _config: unknown) => {
 	on('task', percyHealthCheck);
 };
