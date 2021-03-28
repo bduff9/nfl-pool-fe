@@ -7,21 +7,19 @@ jobs:
     if: github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
     steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install Node.js
         uses: actions/setup-node@v1
         with:
           node-version: "14.15.4"
-      - name: Install dependencies
-        run: npm ci
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: |
-          echo "$GITHUB_CONTEXT"
-      - name: Checkout 🛎
-        uses: actions/checkout@v1
+      - name: Install Cypress 🌲
+        run: npm install -g cypress@6.8.0
       - name: Run Cypress 🌲 and Percy
         uses: percy/exec-action@v0.3.1
         with:
