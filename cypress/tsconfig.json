@@ -4,6 +4,7 @@
     "noEmit": true,
     "types": ["cypress", "@percy/cypress"]
   },
+  "exclude": ["node_modules"],
   "include": [
     "../node_modules/cypress",
     "./**/*.ts"
