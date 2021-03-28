@@ -22,9 +22,10 @@
     "strictFunctionTypes": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
-    "target": "es5"
+    "target": "es5",
+    "types": ["jest"]
   },
-  "exclude": ["node_modules"],
+  "exclude": ["node_modules", "cypress"],
   "include": [
     ".eslintrc.js",
     "next-env.d.ts",
@@ -32,6 +33,5 @@
     "**/*.ts",
     "**/*.tsx",
     "github-actions-reporter.js"
-  ],
-  "types": ["cypress"]
+  ]
 }

@@ -14,7 +14,7 @@ module.exports = {
 			warnOnUnsupportedTypeScriptVersion: false,
 		},
 		ecmaVersion: 7,
-		project: './tsconfig.json',
+		project: './tsconfig.lint.json',
 		sourceType: 'module',
 	},
 	plugins: [
@@ -74,7 +74,9 @@ module.exports = {
 		semi: ['error', 'always'],
 		curly: ['error', 'multi-line'],
 		'import/named': 2,
-		'import/order': ['error', { 'newlines-between': 'always' }],
+		'import/order': ['error', {
+			'newlines-between': 'always'
+		}],
 		'import/no-unresolved': ['warn'],
 		'one-var': ['error', 'never'],
 		'no-var': 'error',

@@ -2,7 +2,7 @@
 // ts-prune-ignore-next
 export {};
 
-describe('Nav Menus', () => {
+describe('Login', () => {
 	// For desktop view
 	context('720p resolution', () => {
 		beforeEach(() => {

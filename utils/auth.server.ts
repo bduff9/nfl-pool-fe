@@ -87,6 +87,7 @@ export const isSignedInSSR = async (
 	return session;
 };
 
+// ts-prune-ignore-next
 export const isAdminSSR = (
 	context: GetServerSidePropsContext<ParsedUrlQuery>,
 	session: Session,

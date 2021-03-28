@@ -14,3 +14,7 @@ setupTests.js
 .eslintrc.js
 coverage
 postcss.config.js
+cypress/integration/examples
+cypress/plugins/index.js
+cypress/support/commands.js
+cypress/support/index.js
