@@ -10,6 +10,9 @@ import React, { FC, useEffect, useState } from 'react';
 
 import Layout from '../components/Layout/Layout';
 import { NEXT_PUBLIC_ENV, NEXT_PUBLIC_SENTRY_DSN } from '../utils/constants';
+import { TUserObj } from '../utils/types';
+
+import '../styles/globals.scss';
 
 if (NEXT_PUBLIC_SENTRY_DSN) {
 	Sentry.init({
@@ -36,8 +39,13 @@ const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
 
 	useEffect((): void => {
 		if (session) {
-			LogRocket.identify((session.user as any).sub, {
-				...(session.user as any),
+			const { name, picture, ...rest } = session.user as TUserObj;
+
+			console.log(session);
+			LogRocket.identify((session.user as TUserObj).sub || '', {
+				name: name || '',
+				picture: picture || '',
+				...rest,
 			});
 		}
 	}, [session]);

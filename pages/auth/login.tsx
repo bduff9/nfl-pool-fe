@@ -81,6 +81,7 @@ const Login: FC<LoginProps> = ({ year }) => {
 						<input
 							autoComplete="email"
 							autoFocus
+							className="form-control"
 							id="email"
 							name="email"
 							onChange={(ev: FormEvent<HTMLInputElement>): void => {
@@ -93,18 +94,22 @@ const Login: FC<LoginProps> = ({ year }) => {
 							title="email"
 							type="email"
 						/>
-						<button type="submit" disabled={formState !== 'READY'}>
+						<button
+							className="btn btn-primary"
+							type="submit"
+							disabled={formState !== 'READY'}
+						>
 							Login
 						</button>
 					</form>
 					<button
-						type="button"
+						className="btn btn-danger"
 						onClick={async (): Promise<void> => await signIn('google')}
 					>
 						Sign in with Google
 					</button>
 					<button
-						type="button"
+						className="btn btn-info"
 						onClick={async (): Promise<void> => await signIn('twitter')}
 					>
 						Sign in with Twitter

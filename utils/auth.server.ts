@@ -1,8 +1,18 @@
 import dns from 'dns';
+import { ParsedUrlQuery } from 'querystring';
 
 import axios from 'axios';
+import { GetServerSidePropsContext } from 'next';
+import { getSession } from 'next-auth/client';
+import { Session } from 'next-auth';
 
-import { NEXT_PUBLIC_API_URL } from './constants';
+import { TUser } from '../models/User';
+
+import {
+	NEXT_PUBLIC_API_URL,
+	NEXT_PUBLIC_SITE_URL,
+	REDIRECT_COOKIE_NAME,
+} from './constants';
 
 export const mxExists = async (email: string): Promise<boolean> => {
 	try {
@@ -58,4 +68,52 @@ export const sendLoginEmailViaAPI: TSendVerificationRequest = async ({
 		});
 		throw error;
 	}
+};
+
+export const isSignedInSSR = async (
+	context: GetServerSidePropsContext<ParsedUrlQuery>,
+): Promise<null | Session> => {
+	const { req, res } = context;
+	const session = await getSession({ req });
+
+	if (!session) {
+		res.setHeader(
+			'Set-Cookie',
+			`${REDIRECT_COOKIE_NAME}=${NEXT_PUBLIC_SITE_URL}${req.url || '/'}`,
+		);
+		res.writeHead(301, { Location: '/auth/login' }).end();
+	}
+
+	return session;
+};
+
+export const isAdminSSR = (
+	context: GetServerSidePropsContext<ParsedUrlQuery>,
+	session: Session,
+	redirectTo = '/',
+): boolean => {
+	const { res } = context;
+	const { user } = session;
+	const { isAdmin } = user as TUser;
+
+	if (!isAdmin) {
+		res.writeHead(301, { Location: redirectTo }).end();
+	}
+
+	return isAdmin;
+};
+
+export const isDoneRegisteringSSR = (
+	context: GetServerSidePropsContext<ParsedUrlQuery>,
+	session: Session,
+): boolean => {
+	const { res } = context;
+	const { user } = session;
+	const { doneRegistering } = user as TUser;
+
+	if (!doneRegistering) {
+		res.writeHead(301, { Location: '/users/create' }).end();
+	}
+
+	return doneRegistering;
 };

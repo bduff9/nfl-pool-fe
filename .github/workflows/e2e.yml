@@ -1,0 +1,30 @@
+name: e2e
+
+on: deployment_status
+
+jobs:
+  cypress:
+    if: github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+      - name: Checkout 🛎
+        uses: actions/checkout@v1
+      - name: Run Cypress 🌲
+        uses: cypress-io/github-action@v2
+        with:
+          record: true
+        env:
+          CYPRESS_BASE_URL: ${{ github.event.deployment_status.target_url }}
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+      - name: Notify Slack
+        if: always()
+        uses: kpritam/slack-job-status-action@v1
+        with:
+          job-status: ${{ job.status }}
+          slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+          channel: nfl-pool-fe

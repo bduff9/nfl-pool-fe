@@ -6,6 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/bduff9/nfl-pool-fe/badge.svg?branch=main)](https://coveralls.io/github/bduff9/nfl-pool-fe?branch=main)
 [![Known Vulnerabilities](https://snyk.io/test/github/bduff9/nfl-pool-fe/badge.svg)](https://snyk.io/test/github/bduff9/nfl-pool-fe)
 [![deepcode](https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6ImJkdWZmOSIsInJlcG8xIjoibmZsLXBvb2wtZmUiLCJpbmNsdWRlTGludCI6ZmFsc2UsImF1dGhvcklkIjoyNjUxMiwiaWF0IjoxNjEwMzc0NTYyfQ.jKZJ1EjgnDxGvLEjVdZPMaYBgGfX74AUDqonATq5sd0)](https://www.deepcode.ai/app/gh/bduff9/nfl-pool-fe/_/dashboard?utm_content=gh%2Fbduff9%2Fnfl-pool-fe)
+[![nfl-pool-fe](https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/detailed/ejva5t/main&style=flat&logo=cypress)](https://dashboard.cypress.io/projects/ejva5t/runs)
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 

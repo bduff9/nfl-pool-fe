@@ -1,9 +1,10 @@
 import { decode, encode } from 'jwt-simple';
 import { NextApiRequest, NextApiResponse } from 'next';
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth, { NextAuthOptions, Session } from 'next-auth';
 import Adapters from 'next-auth/adapters';
 import Providers from 'next-auth/providers';
 import { gql } from 'graphql-request';
+import { WithAdditionalParams } from 'next-auth/_utils';
 
 import Models from '../../../models';
 import {
@@ -21,6 +22,7 @@ import {
 	QueryGetSystemValueArgs,
 } from '../../../generated/graphql';
 import { TUser } from '../../../models/User';
+import { TUserObj } from '../../../utils/types';
 
 const {
 	DATABASE_URL,
@@ -42,18 +44,6 @@ if (!GOOGLE_SECRET) throw new Error('Missing Google secret');
 if (!TWITTER_ID) throw new Error('Missing Twitter ID');
 
 if (!TWITTER_SECRET) throw new Error('Missing Twitter secret');
-
-type TUserObj = {
-	doneRegistering?: boolean;
-	email?: string;
-	hasSurvivor?: boolean;
-	isAdmin?: boolean;
-	isNewUser?: boolean;
-	isTrusted?: boolean;
-	name?: null | string;
-	picture?: null | string;
-	sub?: string;
-};
 
 type TLinkAccountMessage = {
 	user: TUser;
@@ -133,13 +123,28 @@ const options: NextAuthOptions = {
 
 		// 	return baseUrl;
 		// },
-		// async session (session, user): Promise<WithAdditionalParams<Session>> {
-		// 	console.log('~~~session start~~~');
-		// 	console.log({ session, user });
-		// 	console.log('~~~session end~~~');
+		async session (session, user) {
+			const {
+				isAdmin,
+				isNewUser,
+				isTrusted,
+				doneRegistering,
+				hasSurvivor,
+				sub,
+			} = user as TUserObj;
 
-		// 	return session as WithAdditionalParams<Session>;
-		// },
+			session.user = {
+				...session.user,
+				isAdmin,
+				doneRegistering,
+				id: parseInt(sub || '-1', 10),
+				hasSurvivor,
+				isTrusted,
+				isNewUser,
+			};
+
+			return session as WithAdditionalParams<Session>;
+		},
 		async jwt (
 			token,
 			user,
