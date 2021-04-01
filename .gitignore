@@ -36,3 +36,7 @@ yarn-error.log*
 
 # cypress
 cypress/integration/examples
+cypress.env.json
+
+# Deepcode
+.dccache
