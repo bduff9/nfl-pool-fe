@@ -1,10 +1,10 @@
 import { GetServerSideProps } from 'next';
 import { signIn } from 'next-auth/client';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
-import React, { FC, useCallback } from 'react';
+import React, { FC } from 'react';
 
 import Authenticated from '../components/Authenticated/Authenticated';
+import SocialAuthButton from '../components/SocialAuthButton/SocialAuthButton';
 import { TUser } from '../models/User';
 import { getPageTitle } from '../utils';
 import { isDoneRegisteringSSR, isSignedInSSR } from '../utils/auth.server';
@@ -14,33 +14,17 @@ type DashboardProps = {
 };
 
 const Dashboard: FC<DashboardProps> = () => {
-	const router = useRouter();
-	const logout = useCallback(async (): Promise<void> => {
-		router.push('/auth/logout');
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
 	return (
 		<Authenticated isRegistered>
 			<Head>
 				<title>{getPageTitle('My Dashboard')}</title>
 			</Head>
-			<h1>Dashboard</h1>
-			<button
-				type="button"
-				onClick={async (): Promise<void> => await signIn('google')}
-			>
-				Link Google Account
-			</button>
-			<button
-				type="button"
-				onClick={async (): Promise<void> => await signIn('twitter')}
-			>
-				Link Twitter Account
-			</button>
-			<button type="button" onClick={async (): Promise<void> => await logout()}>
+			<h1 className="welcome-banner">Dashboard</h1>
+			<SocialAuthButton type="Google" />
+			<SocialAuthButton type="Twitter" />
+			<a className="btn btn-secondary btn-logout" href="/auth/logout">
 				Sign Out
-			</button>
+			</a>
 		</Authenticated>
 	);
 };

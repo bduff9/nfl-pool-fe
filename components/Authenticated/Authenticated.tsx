@@ -24,7 +24,7 @@ const Authenticated: FC<AuthenticatedProps> = ({ children }): JSX.Element => {
 
 	//TODO: check flags for whether to allow or redirect
 
-	return <>{children}</>;
+	return <div className="h-100 row">{children}</div>;
 };
 
 Authenticated.whyDidYouRender = true;
