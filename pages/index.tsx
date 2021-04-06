@@ -1,5 +1,4 @@
 import { GetServerSideProps } from 'next';
-import { signIn } from 'next-auth/client';
 import Head from 'next/head';
 import React, { FC } from 'react';
 
