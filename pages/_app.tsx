@@ -1,18 +1,20 @@
 import * as Sentry from '@sentry/browser';
+import whyDidYouRender from '@welldone-software/why-did-you-render';
 import LogRocket from 'logrocket';
 import setupLogRocketReact from 'logrocket-react';
-import whyDidYouRender from '@welldone-software/why-did-you-render';
-import { Provider, useSession } from 'next-auth/client';
+import { Provider } from 'next-auth/client';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import NProgress from 'nprogress';
 import React, { FC, useEffect, useState } from 'react';
 
 import Layout from '../components/Layout/Layout';
 import { NEXT_PUBLIC_ENV, NEXT_PUBLIC_SENTRY_DSN } from '../utils/constants';
-import { TUserObj } from '../utils/types';
 
 import '../styles/globals.scss';
+// Keep selectors for #nprogress, .bar, .peg, .spinner, & .spinner-icon
+import 'nprogress/nprogress.css';
 
 if (NEXT_PUBLIC_SENTRY_DSN) {
 	Sentry.init({
@@ -24,6 +26,11 @@ if (NEXT_PUBLIC_SENTRY_DSN) {
 if (typeof window !== 'undefined') {
 	LogRocket.init('xba8kt/nfl-pool-fe');
 	setupLogRocketReact(LogRocket);
+	LogRocket.getSessionURL(sessionURL => {
+		Sentry.configureScope(scope => {
+			scope.setExtra('sessionURL', sessionURL);
+		});
+	});
 
 	if (NEXT_PUBLIC_ENV !== 'production') {
 		whyDidYouRender(React);
@@ -33,35 +40,23 @@ if (typeof window !== 'undefined') {
 type SentryProps = { err: unknown };
 
 const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
-	const [session] = useSession();
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-
-	useEffect((): void => {
-		if (session) {
-			const { name, picture, ...rest } = session.user as TUserObj;
-
-			console.log(session);
-			LogRocket.identify((session.user as TUserObj).sub || '', {
-				name: name || '',
-				picture: picture || '',
-				...rest,
-			});
-		}
-	}, [session]);
 
 	useEffect((): (() => void) => {
 		let mounted = true;
 
-		const handleStart = (url: string): void => {
-			if (url !== router.pathname && mounted) {
+		const handleStart = (_url: string): void => {
+			if (mounted) {
 				setIsLoading(true);
+				NProgress.start();
 			}
 		};
 
-		const handleComplete = (url: string): void => {
-			if (url !== router.pathname && mounted) {
+		const handleComplete = (_url: string): void => {
+			if (mounted) {
 				setIsLoading(false);
+				NProgress.done();
 			}
 		};
 
