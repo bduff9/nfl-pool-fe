@@ -6,7 +6,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import { gql } from 'graphql-request';
 import { useSession } from 'next-auth/client';
 
@@ -20,9 +20,12 @@ type NotFoundProps = {
 };
 
 const NotFound: FC<NotFoundProps> = ({ images }) => {
-	const image = images[Math.floor(Math.random() * images.length)];
 	const router = useRouter();
 	const [session, loading] = useSession();
+	const image = useMemo<string>(
+		() => images[Math.floor(Math.random() * images.length)],
+		[router.asPath],
+	);
 
 	useEffect((): void => {
 		const writeLog = async (): Promise<void> => {
@@ -55,7 +58,7 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 		if (!loading) {
 			writeLog();
 		}
-	}, [router.pathname, session, loading]);
+	}, [router.asPath, session, loading]);
 
 	return (
 		<div className="h-100 row">
