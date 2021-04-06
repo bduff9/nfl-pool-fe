@@ -30,8 +30,10 @@ const handler = async (
 			QueryGetEmailArgs
 		>(query, { EmailID: typeof emailID === 'string' ? emailID : emailID[0] });
 
+		// deepcode ignore PrototypePollutionFunctionParams: Not an issue
 		res.status(200).send(data.getEmail.html);
 	} catch (error) {
+		console.error('Error retrieving email:', error);
 		res.status(404).send('<h1>Email not found, please try again later</h1>');
 	}
 };
