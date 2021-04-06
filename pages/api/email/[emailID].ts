@@ -11,8 +11,8 @@ const handler = async (
 	const { emailID } = req.query;
 
 	const query = gql`
-		query GetEmail($emailID: String!) {
-			getEmail(EmailID: $emailID) {
+		query GetEmail($EmailID: String!) {
+			getEmail(EmailID: $EmailID) {
 				emailID
 				html
 			}
@@ -30,7 +30,6 @@ const handler = async (
 			QueryGetEmailArgs
 		>(query, { EmailID: typeof emailID === 'string' ? emailID : emailID[0] });
 
-		// deepcode ignore PrototypePollutionFunctionParams: Not an issue
 		res.status(200).send(data.getEmail.html);
 	} catch (error) {
 		console.error('Error retrieving email:', error);
