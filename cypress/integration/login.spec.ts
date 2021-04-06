@@ -3,37 +3,73 @@
 export {};
 
 describe('Login', () => {
-	// For desktop view
-	context('720p resolution', () => {
+	context('Desktop', () => {
 		beforeEach(() => {
-			/**
-			 * Run these tests as if in a desktop browser,
-			 * with a 720p monitor
-			 */
 			cy.viewport(1280, 720);
 		});
+
 		describe('When you visit home', () => {
 			it('should redirect to login', () => {
 				cy.visit('/');
+				cy.get('.btn.btn-primary').should('be.visible');
 				cy.url().should('include', '/auth/login');
 				cy.percySnapshot();
 			});
+		});
+
+		describe('Login flow', () => {
+			it('should reject invalid emails', () => {
+				cy.get('#email').type('invalid{enter}');
+				//TODO: validate error message
+			});
+
+			it('should reject invalid domains', () => {
+				cy.get('#email').type('invalid@gmail.co{enter}');
+				//TODO: validate error message
+			});
+
+			//TODO: use mailslurp to test sign in
+
+			//TODO: validate preview link works
+
+			//TODO: validate link signs user in
+
+			//TODO: validate navigating to login redirects to home
+
+			//TODO: validate sign out signs user out
 		});
 	});
 
-	context('iphone-5 resolution', () => {
+	context('iPhone 5', () => {
 		beforeEach(() => {
-			/**
-			 * Run these tests as if in an iPhone 5
-			 */
 			cy.viewport('iphone-5');
 		});
+
 		describe('When you visit home', () => {
 			it('should redirect to login', () => {
 				cy.visit('/');
+				cy.get('.btn.btn-primary').should('be.visible');
 				cy.url().should('include', '/auth/login');
 				cy.percySnapshot();
 			});
+		});
+
+		describe('Login flow', () => {
+			it('should reject invalid emails', () => {
+				cy.get('#email').type('invalid{enter}');
+				//TODO: validate error message
+			});
+
+			it('should reject invalid domains', () => {
+				cy.get('#email').type('invalid@gmail.co{enter}');
+				//TODO: validate error message
+			});
+
+			//TODO: fake sign in user
+
+			//TODO: validate navigating to login redirects to home
+
+			//TODO: validate sign out signs user out
 		});
 	});
 });

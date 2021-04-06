@@ -1,4 +1,6 @@
 {
   "baseUrl": "http://localhost:3000",
+  "chromeWebSecurity": false,
+  "ignoreTestFiles": "**/examples/*.js",
   "projectId": "ejva5t"
 }

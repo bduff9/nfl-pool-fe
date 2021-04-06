@@ -1,6 +1,9 @@
 name: e2e
 
-on: deployment_status
+on:
+  deployment_status:
+    branches-ignore:
+      - main
 
 jobs:
   cypress:
