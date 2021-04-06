@@ -4,6 +4,7 @@ import NextAuth, { NextAuthOptions, Session } from 'next-auth';
 import Adapters from 'next-auth/adapters';
 import Providers from 'next-auth/providers';
 import { gql } from 'graphql-request';
+// eslint-disable-next-line import/no-unresolved
 import { WithAdditionalParams } from 'next-auth/_utils';
 
 import Models from '../../../models';

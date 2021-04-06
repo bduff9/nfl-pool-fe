@@ -3,6 +3,8 @@ import { gql } from 'graphql-request';
 import { GetStaticProps } from 'next';
 import { signIn, useSession } from 'next-auth/client';
 import Head from 'next/head';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC, FormEvent, useState } from 'react';
 
@@ -12,6 +14,8 @@ import { formatError } from '../../utils/auth.client';
 import { REDIRECT_COOKIE_NAME } from '../../utils/constants';
 import { fetcher } from '../../utils/graphql';
 import { QueryGetSystemValueArgs } from '../../generated/graphql';
+import SocialAuthButton from '../../components/SocialAuthButton/SocialAuthButton';
+import styles from '../../styles/Login.module.scss';
 
 type TFormState = 'READY' | 'LOADING' | 'ERRORED' | 'SUBMITTED';
 type LoginProps = { year: string };
@@ -29,6 +33,7 @@ const readAndDeleteCookie = (name: string): string => {
 const Login: FC<LoginProps> = ({ year }) => {
 	const router = useRouter();
 	const [session] = useSession();
+	const [isLogin, setIsLogin] = useState<boolean>(true);
 	const [email, setEmail] = useState<string>('');
 	const error =
 		typeof window !== 'undefined'
@@ -48,79 +53,111 @@ const Login: FC<LoginProps> = ({ year }) => {
 			<Head>
 				<title>{getPageTitle('Login')}</title>
 			</Head>
-			<h1>Login ({year})</h1>
-			{formState !== 'SUBMITTED' ? (
-				<>
-					<form
-						onSubmit={async (ev): Promise<false> => {
-							ev.preventDefault();
-							setFormState('LOADING');
+			<div className="content-bg position-relative mx-auto mt-7 mt-md-1 mb-13 mb-md-0 border border-dark rounded-3 p-4 pt-5 col col-sm-10 col-md-6 col-lg-4">
+				<div className={styles.football}>
+					<Image
+						alt="A football icon"
+						layout="fill"
+						objectFit="contain"
+						objectPosition="center center"
+						priority
+						src="/football.svg"
+					/>
+				</div>
+				<h1 className="text-center">
+					{year}
+					<br />
+					NFL Confidence Pool
+				</h1>
+				{formState !== 'SUBMITTED' ? (
+					<>
+						<form
+							onSubmit={async (ev): Promise<false> => {
+								ev.preventDefault();
+								setFormState('LOADING');
 
-							const callbackUrl = readAndDeleteCookie(REDIRECT_COOKIE_NAME);
+								const callbackUrl = readAndDeleteCookie(REDIRECT_COOKIE_NAME);
 
-							console.log({ callbackUrl });
-							const { error: signInError } = await signIn('email', {
-								callbackUrl,
-								email,
-								redirect: false,
-							});
-							const formattedError = formatError(signInError);
+								console.log({ callbackUrl });
+								const { error: signInError } = await signIn('email', {
+									callbackUrl,
+									email,
+									redirect: false,
+								});
+								const formattedError = formatError(signInError);
 
-							setErrorMessage(formattedError);
+								setErrorMessage(formattedError);
 
-							if (formattedError) {
-								setFormState('ERRORED');
-							} else {
-								setFormState('SUBMITTED');
-							}
+								if (formattedError) {
+									setFormState('ERRORED');
+								} else {
+									setFormState('SUBMITTED');
+								}
 
-							return false;
-						}}
-					>
-						{!!errorMessage && <h1>{errorMessage}</h1>}
-						<input
-							autoComplete="email"
-							autoFocus
-							className="form-control"
-							id="email"
-							name="email"
-							onChange={(ev: FormEvent<HTMLInputElement>): void => {
-								setEmail(ev.currentTarget.value);
-
-								if (formState === 'ERRORED') setFormState('READY');
+								return false;
 							}}
-							placeholder="Email"
-							required
-							title="email"
-							type="email"
-						/>
-						<button
-							className="btn btn-primary"
-							type="submit"
-							disabled={formState !== 'READY'}
 						>
-							Login
-						</button>
-					</form>
-					<button
-						className="btn btn-danger"
-						onClick={async (): Promise<void> => await signIn('google')}
-					>
-						Sign in with Google
-					</button>
-					<button
-						className="btn btn-info"
-						onClick={async (): Promise<void> => await signIn('twitter')}
-					>
-						Sign in with Twitter
-					</button>
-				</>
-			) : (
-				<>
-					<h3>Please check your email to sign in</h3>
-					<h5>You may close this window</h5>
-				</>
-			)}
+							{!!errorMessage && (
+								<h1 className="text-danger">{errorMessage}</h1>
+							)}
+							<div className="form-floating mb-2">
+								<input
+									autoComplete="email"
+									autoFocus
+									className="form-control"
+									id="email"
+									name="email"
+									onChange={(ev: FormEvent<HTMLInputElement>): void => {
+										setEmail(ev.currentTarget.value);
+
+										if (formState === 'ERRORED') setFormState('READY');
+									}}
+									placeholder="name@example.com"
+									required
+									title="Email Address"
+									type="email"
+								/>
+								<label htmlFor="email">Email address</label>
+							</div>
+							<div className="d-grid gap-2 mb-2">
+								<button
+									className="btn btn-primary"
+									type="submit"
+									disabled={formState !== 'READY'}
+								>
+									{isLogin ? 'Login' : 'Register'}
+								</button>
+								<Link href="/support">
+									<a className="btn btn-secondary" type="button">
+										{isLogin ? 'Trouble logging in?' : 'Trouble registering?'}
+									</a>
+								</Link>
+								<div className={styles.separator}>or</div>
+							</div>
+						</form>
+						<div className="d-grid gap-2 d-md-flex mb-2">
+							<SocialAuthButton isRegister={!isLogin} isSignIn type="Google" />
+							<SocialAuthButton isRegister={!isLogin} isSignIn type="Twitter" />
+						</div>
+						<div className="d-grid gap-2">
+							<div className={styles.separator}>
+								{isLogin ? 'Need to sign up?' : 'Already registered?'}
+							</div>
+							<button
+								className="btn btn-dark"
+								onClick={(): void => setIsLogin(isLogin => !isLogin)}
+							>
+								{isLogin ? 'Register here' : 'Login here'}
+							</button>
+						</div>
+					</>
+				) : (
+					<>
+						<h3>Please check your email to sign in</h3>
+						<h5>You may close this window</h5>
+					</>
+				)}
+			</div>
 		</Unauthenticated>
 	);
 };

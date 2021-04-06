@@ -16,7 +16,11 @@ const Unauthenticated: FC = ({ children }): JSX.Element => {
 		return <></>;
 	}
 
-	return <>{children}</>;
+	return (
+		<div className="h-100 row align-items-md-center justify-content-md-center">
+			{children}
+		</div>
+	);
 };
 
 Unauthenticated.whyDidYouRender = true;
