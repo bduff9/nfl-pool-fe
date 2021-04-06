@@ -1,0 +1,40 @@
+$google-background: #db4437;
+$google-text: #fff;
+$twitter-background: #1da1f2;
+$twitter-text: #f5f8fa;
+
+.btn-google {
+  background-color: $google-background;
+  border-color: $google-background;
+  color: $google-text;
+
+  &:active {
+    background-color: darken($google-background, 20%);
+    border-color: darken($google-background, 10%);
+    color: $google-text;
+  }
+
+  &:hover {
+    background-color: darken($google-background, 15%);
+    border-color: darken($google-background, 10%);
+    color: $google-text;
+  }
+}
+
+.btn-twitter {
+  background-color: $twitter-background;
+  border-color: $twitter-background;
+  color: $twitter-text;
+
+  &:active {
+    background-color: darken($twitter-background, 20%);
+    border-color: darken($twitter-background, 10%);
+    color: $twitter-text;
+  }
+
+  &:hover {
+    background-color: darken($twitter-background, 15%);
+    border-color: darken($twitter-background, 10%);
+    color: $twitter-text;
+  }
+}

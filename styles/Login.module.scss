@@ -1,0 +1,29 @@
+.football {
+  height: 140px;
+  left: 50%;
+  margin-left: -70px;
+  position: absolute;
+  top: -74px;
+  width: 140px;
+}
+
+.separator {
+  align-items: center;
+  display: flex;
+  text-align: center;
+
+  &::before,
+  &::after {
+    border-bottom: 1px solid #000;
+    content: "";
+    flex: 1;
+  }
+
+  &:not(:empty)::before {
+    margin-right: 2em;
+  }
+
+  &:not(:empty)::after {
+    margin-left: 2em;
+  }
+}

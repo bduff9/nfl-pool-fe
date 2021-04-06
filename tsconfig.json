@@ -26,12 +26,5 @@
     "types": ["jest"]
   },
   "exclude": ["node_modules", "cypress"],
-  "include": [
-    ".eslintrc.js",
-    "next-env.d.ts",
-    "next.config.js",
-    "**/*.ts",
-    "**/*.tsx",
-    "github-actions-reporter.js"
-  ]
+  "include": ["next-env.d.ts", "next.config.js", "**/*.ts", "**/*.tsx"]
 }

@@ -1,0 +1,13 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-sass-guidelines"],
+  "ignoreFiles": [
+    "coverage/**/*",
+    "node_modules/**/*",
+    "**/*.ico",
+    "**/*.jpg",
+    "**/*.json",
+    "**/*.png",
+    "**/*.svg",
+    "**/*.yml"
+  ]
+}

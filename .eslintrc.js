@@ -19,6 +19,7 @@ module.exports = {
 	},
 	plugins: [
 		'@typescript-eslint',
+		'clean-regex',
 		'css-modules',
 		'import',
 		'prettierx',
@@ -36,6 +37,7 @@ module.exports = {
 	extends: [
 		'eslint:recommended',
 		'plugin:@typescript-eslint/recommended',
+		'plugin:clean-regex/recommended',
 		'plugin:css-modules/recommended',
 		'plugin:import/errors',
 		'plugin:import/typescript',
