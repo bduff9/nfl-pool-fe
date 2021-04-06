@@ -1,42 +1,43 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFootballBall } from '@bduff9/pro-duotone-svg-icons/faFootballBall';
 import { GetStaticProps } from 'next';
-import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/client';
-import Head from 'next/head';
-import React, { FC, useEffect, useState } from 'react';
-
-// import Unauthenticated from '../../components/Unauthenticated/Unauthenticated';
-import { getPageTitle } from '../../utils';
+import { useRouter } from 'next/router';
+import React, { FC, useEffect } from 'react';
 
 const Logout: FC = () => {
-	const [session] = useSession();
-	const [isSignedIn, setIsSignedIn] = useState<boolean>(!!session);
+	const [session, loading] = useSession();
+	const router = useRouter();
 
 	useEffect(() => {
-		if (isSignedIn) {
-			signOut({
-				redirect: false,
-			}).then((): void => setIsSignedIn(false));
-		} else {
-			console.debug('Already logged out');
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+		const handleSignOut = async (): Promise<void> => {
+			if (loading) return;
 
-	if (isSignedIn) {
-		//TODO: render better loading animation here
-		return <h1>Logging out...</h1>;
-	}
+			if (session) {
+				await signOut({
+					redirect: false,
+				});
+			}
+
+			await router.replace('/auth/login');
+		};
+
+		handleSignOut();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [session, loading]);
 
 	return (
-		<>
-			<Head>
-				<title>{getPageTitle('Logout')}</title>
-			</Head>
-			<h1>Logout</h1>
-			<div>
-				<Link href="/auth/login">Return to Login</Link>
-			</div>
-		</>
+		<div className="text-center mt-11">
+			<h1>
+				<FontAwesomeIcon
+					className="football-brown"
+					icon={faFootballBall}
+					size="2x"
+					spin
+				/>
+				&nbsp; Logging out...
+			</h1>
+		</div>
 	);
 };
 
