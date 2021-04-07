@@ -52,6 +52,33 @@ class MyDocument extends Document {
 					<meta property="theme-color" content={appColor} />
 					<link rel="apple-touch-icon" href="/icon-192x192.png" />
 					<meta name="apple-mobile-web-app-status-bar" content={appColor} />
+					<link
+						rel="preconnect"
+						href="https://fonts.gstatic.com"
+						crossOrigin="true"
+					/>
+					<link
+						rel="preload"
+						as="style"
+						href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+					/>
+					<span
+						dangerouslySetInnerHTML={{
+							__html: `
+							<link
+								rel="stylesheet"
+								href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+								media="print"
+								onload="this.media='all'"
+							/>`,
+						}}
+					/>
+					<noscript>
+						<link
+							rel="stylesheet"
+							href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+						/>
+					</noscript>
 					{/*<!-- Cloudflare Web Analytics -->*/}
 					{NEXT_PUBLIC_ENV === 'production' ? (
 						<script

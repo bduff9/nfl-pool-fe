@@ -21,8 +21,9 @@ $spacers: (
   14: $spacer * 12,
   15: $spacer * 13,
   16: $spacer * 14,
-  17: $spacer * 15
+  17: $spacer * 15,
 );
+$font-family-base: 'Roboto', sans-serif;
 
 @import '../node_modules/bootstrap/scss/variables';
 @import '../node_modules/bootstrap/scss/mixins';
