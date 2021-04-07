@@ -1,6 +1,15 @@
 @import '../node_modules/bootstrap/scss/functions';
 
 // default variable overrides here
+$primary: #15803d;
+$secondary: #828282;
+// $success: $green;
+$info: #bdbdbd;
+// $warning: $yellow;
+$danger: #dc2626;
+$light: #f2f2f2;
+$dark: #333;
+$font-family-base: 'Roboto', sans-serif;
 $enable-negative-margins: true;
 $spacer: 1rem;
 $spacers: (
@@ -23,7 +32,6 @@ $spacers: (
   16: $spacer * 14,
   17: $spacer * 15,
 );
-$font-family-base: 'Roboto', sans-serif;
 
 @import '../node_modules/bootstrap/scss/variables';
 @import '../node_modules/bootstrap/scss/mixins';
