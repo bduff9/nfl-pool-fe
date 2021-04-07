@@ -61,11 +61,11 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 	}, [router.asPath, session, loading]);
 
 	return (
-		<div className="h-100 row">
+		<div className="row">
 			<Head>
 				<title>{getPageTitle('404')}</title>
 			</Head>
-			<div className="content-bg m-3 px-md-17 pb-4 h-100 col">
+			<div className="content-bg mx-auto mt-6 pb-4 col-md-6">
 				<h1 className="text-center">What have you done?!</h1>
 				<div className={`mx-auto ${styles['image-404']}`}>
 					<Image
