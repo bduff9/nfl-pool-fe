@@ -12,12 +12,9 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires, prefer-const
-let percyHealthCheck = require('@percy/cypress/task');
-
 /**
  * @type {Cypress.PluginConfig}
  */
-module.exports = (on, _config) => {
-	on('task', percyHealthCheck);
+module.exports = (_on, _config) => {
+
 };
