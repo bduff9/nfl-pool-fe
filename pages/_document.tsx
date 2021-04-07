@@ -62,17 +62,19 @@ class MyDocument extends Document {
 						as="style"
 						href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
 					/>
-					<span
+					<style
 						dangerouslySetInnerHTML={{
 							__html: `
+							</style>
 							<link
 								rel="stylesheet"
 								href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
 								media="print"
 								onload="this.media='all'"
-							/>`,
+							/>
+							<style>`,
 						}}
-					/>
+					></style>
 					<noscript>
 						<link
 							rel="stylesheet"
