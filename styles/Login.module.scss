@@ -1,3 +1,5 @@
+$gray-4: #828282;
+
 .football {
   height: 140px;
   left: 50%;
@@ -9,13 +11,14 @@
 
 .separator {
   align-items: center;
+  color: $gray-4;
   display: flex;
   text-align: center;
 
   &::before,
   &::after {
-    border-bottom: 1px solid #000;
-    content: "";
+    border-bottom: 1px solid $gray-4;
+    content: '';
     flex: 1;
   }
 

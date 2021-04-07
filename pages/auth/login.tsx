@@ -64,7 +64,7 @@ const Login: FC<LoginProps> = ({ year }) => {
 						src="/football.svg"
 					/>
 				</div>
-				<h1 className="text-center">
+				<h1 className="text-center lh-1 text-dark">
 					{year}
 					<br />
 					NFL Confidence Pool
