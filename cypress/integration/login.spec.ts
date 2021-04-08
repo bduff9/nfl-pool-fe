@@ -13,19 +13,31 @@ describe('Login', () => {
 				cy.visit('/');
 				cy.get('.btn.btn-primary').should('be.visible');
 				cy.url().should('include', '/auth/login');
-				cy.percySnapshot();
+
+				if (Cypress.env('SKIP_PERCY') !== 'true') {
+					cy.percySnapshot();
+				}
 			});
 		});
 
 		describe('Login flow', () => {
 			it('should reject invalid emails', () => {
 				cy.get('#email').type('invalid{enter}');
-				//TODO: validate error message
+				cy.wait(1000);
+
+				if (Cypress.env('SKIP_PERCY') !== 'true') {
+					cy.percySnapshot();
+				}
 			});
 
 			it('should reject invalid domains', () => {
+				cy.reload();
 				cy.get('#email').type('invalid@gmail.co{enter}');
-				//TODO: validate error message
+				cy.get('.text-danger').should('be.visible');
+
+				if (Cypress.env('SKIP_PERCY') !== 'true') {
+					cy.percySnapshot();
+				}
 			});
 
 			//TODO: use mailslurp to test sign in
@@ -40,6 +52,7 @@ describe('Login', () => {
 		});
 	});
 
+	//FIXME: Unsure that we need a mobile flow on login
 	context('iPhone 5', () => {
 		beforeEach(() => {
 			cy.viewport('iphone-5');
@@ -50,26 +63,7 @@ describe('Login', () => {
 				cy.visit('/');
 				cy.get('.btn.btn-primary').should('be.visible');
 				cy.url().should('include', '/auth/login');
-				cy.percySnapshot();
 			});
-		});
-
-		describe('Login flow', () => {
-			it('should reject invalid emails', () => {
-				cy.get('#email').type('invalid{enter}');
-				//TODO: validate error message
-			});
-
-			it('should reject invalid domains', () => {
-				cy.get('#email').type('invalid@gmail.co{enter}');
-				//TODO: validate error message
-			});
-
-			//TODO: fake sign in user
-
-			//TODO: validate navigating to login redirects to home
-
-			//TODO: validate sign out signs user out
 		});
 	});
 });
