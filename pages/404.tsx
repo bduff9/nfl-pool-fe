@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
+import clsx from 'clsx';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -67,14 +68,15 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 			</Head>
 			<div className="content-bg text-dark mx-auto mt-6 pb-4 col-md-6">
 				<h1 className="text-center">What have you done?!</h1>
-				<div className={`mx-auto ${styles['image-404']}`}>
+				<div
+					className={clsx('mx-auto', 'position-relative', styles['image-404'])}
+				>
 					<Image
 						alt="Okay, this part was us."
-						className="mb-4"
-						height={300}
-						layout="responsive"
+						layout="fill"
+						objectFit="contain"
+						objectPosition="center center"
 						src={image}
-						width={600}
 					/>
 				</div>
 				<h4 className="text-center">
