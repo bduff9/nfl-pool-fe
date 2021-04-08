@@ -53,7 +53,7 @@ const Login: FC<LoginProps> = ({ year }) => {
 			<Head>
 				<title>{getPageTitle('Login')}</title>
 			</Head>
-			<div className="content-bg position-relative mx-auto mt-7 mt-md-1 mb-13 mb-md-0 border border-dark rounded-3 p-4 pt-5 col col-sm-10 col-md-6 col-lg-4">
+			<div className="content-bg position-absolute top-50 start-50 translate-middle border border-dark rounded-3 p-4 pt-5 col col-sm-10 col-md-6 col-lg-4">
 				<div className={styles.football}>
 					<Image
 						alt="A football icon"

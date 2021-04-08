@@ -4,9 +4,6 @@ import { GetStaticProps } from 'next';
 import { signOut, useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import React, { FC, useEffect } from 'react';
-import clsx from 'clsx';
-
-import styles from '../../styles/Logout.module.scss';
 
 const Logout: FC = () => {
 	const [session, loading] = useSession();
@@ -30,7 +27,7 @@ const Logout: FC = () => {
 	}, [session, loading]);
 
 	return (
-		<div className={clsx('text-center', styles['logout-message'])}>
+		<div className="text-center w-100 position-absolute top-50 start-50 translate-middle">
 			<h1 className="text-white">
 				<FontAwesomeIcon
 					className="football-brown"
