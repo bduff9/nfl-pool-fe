@@ -1,9 +1,8 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFootballBall } from '@bduff9/pro-duotone-svg-icons/faFootballBall';
 import { GetStaticProps } from 'next';
 import { signOut, useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
 import React, { FC, useEffect } from 'react';
+import Image from 'next/image';
 
 const Logout: FC = () => {
 	const [session, loading] = useSession();
@@ -28,14 +27,9 @@ const Logout: FC = () => {
 
 	return (
 		<div className="text-center w-100 position-absolute top-50 start-50 translate-middle">
-			<h1 className="text-white">
-				<FontAwesomeIcon
-					className="football-brown"
-					icon={faFootballBall}
-					size="2x"
-					spin
-				/>
-				&nbsp; Logging out...
+			<h1 className="text-white d-flex align-items-center justify-content-center">
+				<Image height={200} src="/spinningfootball.gif" width={200} />
+				<span>&nbsp; Logging out...</span>
 			</h1>
 		</div>
 	);
