@@ -4,37 +4,37 @@ $twitter-background: #1da1f2;
 $twitter-text: #f5f8fa;
 
 .btn-google {
+  color: $google-text;
   background-color: $google-background;
   border-color: $google-background;
-  color: $google-text;
 
   &:active {
+    color: $google-text;
     background-color: darken($google-background, 20%);
     border-color: darken($google-background, 10%);
-    color: $google-text;
   }
 
   &:hover {
+    color: $google-text;
     background-color: darken($google-background, 15%);
     border-color: darken($google-background, 10%);
-    color: $google-text;
   }
 }
 
 .btn-twitter {
+  color: $twitter-text;
   background-color: $twitter-background;
   border-color: $twitter-background;
-  color: $twitter-text;
 
   &:active {
+    color: $twitter-text;
     background-color: darken($twitter-background, 20%);
     border-color: darken($twitter-background, 10%);
-    color: $twitter-text;
   }
 
   &:hover {
+    color: $twitter-text;
     background-color: darken($twitter-background, 15%);
     border-color: darken($twitter-background, 10%);
-    color: $twitter-text;
   }
 }

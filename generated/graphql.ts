@@ -21,6 +21,7 @@ export type Query = {
 	__typename?: 'Query';
 	getAPICallsForWeek: Array<ApiCall>;
 	getEmail: Email;
+	getFAQs: Array<Faq>;
 	getGame: Game;
 	getCurrentWeek: Scalars['Int'];
 	getHistoryForYear: Array<History>;
@@ -30,6 +31,7 @@ export type Query = {
 	getNotificationsForUser: Array<Notification>;
 	getAllPicksForWeek: Array<Pick>;
 	getMyPicksForWeek: Array<Pick>;
+	getRules: Array<Rule>;
 	getAllSurvivorPicksForWeek: Array<SurvivorPick>;
 	getMySurvivorPicks: Array<SurvivorPick>;
 	getSystemValue: SystemValue;
@@ -218,6 +220,39 @@ export type League = {
 	userLeagues: Array<UserLeague>;
 };
 
+export type Faq = ISupportContent & {
+	__typename?: 'FAQ';
+	supportContentID: Scalars['Int'];
+	supportContentType: SupportContentType;
+	supportContentOrder: Scalars['Int'];
+	supportContentDescription: Scalars['String'];
+	supportContentKeywords?: Maybe<Scalars['String']>;
+	supportContentAdded: Scalars['DateTime'];
+	supportContentAddedBy: Scalars['String'];
+	supportContentUpdated: Scalars['DateTime'];
+	supportContentUpdatedBy: Scalars['String'];
+	supportContentDescription2?: Maybe<Scalars['String']>;
+	supportContentCategory?: Maybe<Scalars['String']>;
+};
+
+export type ISupportContent = {
+	supportContentID: Scalars['Int'];
+	supportContentType: SupportContentType;
+	supportContentOrder: Scalars['Int'];
+	supportContentDescription: Scalars['String'];
+	supportContentKeywords?: Maybe<Scalars['String']>;
+	supportContentAdded: Scalars['DateTime'];
+	supportContentAddedBy: Scalars['String'];
+	supportContentUpdated: Scalars['DateTime'];
+	supportContentUpdatedBy: Scalars['String'];
+};
+
+/** The type of support content */
+export enum SupportContentType {
+	Faq = 'FAQ',
+	Rule = 'Rule',
+}
+
 export type Game = {
 	__typename?: 'Game';
 	gameID: Scalars['Int'];
@@ -355,6 +390,19 @@ export type Pick = {
 	pickAddedBy: Scalars['String'];
 	pickUpdated: Scalars['DateTime'];
 	pickUpdatedBy: Scalars['String'];
+};
+
+export type Rule = ISupportContent & {
+	__typename?: 'Rule';
+	supportContentID: Scalars['Int'];
+	supportContentType: SupportContentType;
+	supportContentOrder: Scalars['Int'];
+	supportContentDescription: Scalars['String'];
+	supportContentKeywords?: Maybe<Scalars['String']>;
+	supportContentAdded: Scalars['DateTime'];
+	supportContentAddedBy: Scalars['String'];
+	supportContentUpdated: Scalars['DateTime'];
+	supportContentUpdatedBy: Scalars['String'];
 };
 
 export type SurvivorPick = {

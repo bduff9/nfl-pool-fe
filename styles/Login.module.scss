@@ -1,25 +1,25 @@
 $gray-4: #828282;
 
 .football {
-  height: 140px;
-  left: 50%;
-  margin-left: -70px;
   position: absolute;
   top: -74px;
+  left: 50%;
   width: 140px;
+  height: 140px;
+  margin-left: -70px;
 }
 
 .separator {
+  display: flex;
   align-items: center;
   color: $gray-4;
-  display: flex;
   text-align: center;
 
   &::before,
   &::after {
-    border-bottom: 1px solid $gray-4;
-    content: '';
     flex: 1;
+    content: "";
+    border-bottom: 1px solid $gray-4;
   }
 
   &:not(:empty)::before {
