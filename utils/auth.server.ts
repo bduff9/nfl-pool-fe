@@ -81,6 +81,11 @@ export const isSignedInSSR = async (
 			'Set-Cookie',
 			`${REDIRECT_COOKIE_NAME}=${NEXT_PUBLIC_SITE_URL}${req.url || '/'}`,
 		);
+		//FIXME: Workaround for bug in NextAuth: https://github.com/nextauthjs/next-auth/issues/1542
+		res.setHeader(
+			'Set-Cookie',
+			`next-auth.callback-url=${NEXT_PUBLIC_SITE_URL}${req.url || '/'}`,
+		);
 		res.writeHead(301, { Location: '/auth/login' }).end();
 	}
 
