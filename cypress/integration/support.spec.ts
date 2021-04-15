@@ -12,39 +12,44 @@ describe('FAQ/Support', () => {
 			it('should display support', () => {
 				cy.visit('/support');
 				cy.get('h1').should('be.visible').and('have.text', 'Support/FAQs');
-				cy.get('a').should('be.visible').and('have.text', 'Back to login');
+			});
+
+			it('should have a Rules section', () => {
+				cy.get('#rules').scrollIntoView().should('have.text', 'Rules');
 
 				if (Cypress.env('SKIP_PERCY') !== 'true') {
 					cy.percySnapshot();
 				}
 			});
 
-			it('should have a Rules section', () => {
-				//TODO:
-				// if (Cypress.env('SKIP_PERCY') !== 'true') {
-				// 	cy.percySnapshot();
-				// }
-			});
-
 			it('should have an FAQ section', () => {
-				//TODO:
-				// if (Cypress.env('SKIP_PERCY') !== 'true') {
-				// 	cy.percySnapshot();
-				// }
+				cy.get('#faq').scrollIntoView().should('have.text', 'FAQ');
+
+				if (Cypress.env('SKIP_PERCY') !== 'true') {
+					cy.percySnapshot();
+				}
 			});
 
 			it('should have a Contact Us section', () => {
-				//TODO:
-				// if (Cypress.env('SKIP_PERCY') !== 'true') {
-				// 	cy.percySnapshot();
-				// }
+				cy.get('#contact').scrollIntoView().should('have.text', 'Contact Us');
+				cy.get('.btn-primary')
+					.should('be.visible')
+					.and('have.text', 'Back to login');
+
+				if (Cypress.env('SKIP_PERCY') !== 'true') {
+					cy.percySnapshot();
+				}
 			});
 
 			it('should allow searching on page', () => {
-				//TODO:
-				// if (Cypress.env('SKIP_PERCY') !== 'true') {
-				// 	cy.percySnapshot();
-				// }
+				cy.get('#top').scrollIntoView();
+				cy.get('#search').type('pick');
+				cy.wait(1000);
+				cy.get('mark').should('exist');
+
+				if (Cypress.env('SKIP_PERCY') !== 'true') {
+					cy.percySnapshot();
+				}
 			});
 		});
 	});

@@ -83,7 +83,9 @@ const Support: FC<SupportProps> = ({
 				<title>{getPageTitle('Support/FAQs')}</title>
 			</Head>
 			<div className="content-bg text-dark m-3 min-vh-100 pb-3 col">
-				<h1 className="text-center">Support/FAQs</h1>
+				<h1 className="text-center" id="top">
+					Support/FAQs
+				</h1>
 				<div className="form-floating mb-2">
 					<input
 						autoComplete="off"
@@ -99,7 +101,9 @@ const Support: FC<SupportProps> = ({
 					/>
 					<label htmlFor="search">Search the help page</label>
 				</div>
-				<h2 className="text-center mb-0">Rules</h2>
+				<h2 className="text-center mb-0" id="rules">
+					Rules
+				</h2>
 				<hr />
 				{ruleHits.length > 0 ? (
 					<ol>
@@ -115,14 +119,18 @@ const Support: FC<SupportProps> = ({
 				) : (
 					<div className="text-muted fst-italic">No results found</div>
 				)}
-				<h2 className="text-center mb-0">FAQ</h2>
+				<h2 className="text-center mb-0" id="faq">
+					FAQ
+				</h2>
 				<hr />
 				{faqHits.length > 0 ? (
 					createFAQList(faqHits)
 				) : (
 					<div className="text-muted fst-italic">No results found</div>
 				)}
-				<h2 className="text-center mb-0">Contact Us</h2>
+				<h2 className="text-center mb-0" id="contact">
+					Contact Us
+				</h2>
 				<hr />
 				<div className="text-center">
 					<a href={slackLink} target="slack">
