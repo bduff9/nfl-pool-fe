@@ -25,6 +25,7 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 	const [session, loading] = useSession();
 	const image = useMemo<string>(
 		() => images[Math.floor(Math.random() * images.length)],
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[router.asPath],
 	);
 
