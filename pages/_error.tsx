@@ -3,6 +3,8 @@ import { NextPage, NextPageContext } from 'next';
 import NextErrorComponent from 'next/error';
 import React from 'react';
 
+import { log } from '../utils/logging';
+
 type ErrorPageProps = {
 	err?: unknown;
 	hasGetInitialPropsRun?: boolean;
@@ -71,7 +73,7 @@ ErrorPage.getInitialProps = async ({ res, err, asPath }) => {
 	try {
 		await Sentry.flush(2000);
 	} catch (error) {
-		console.log('Sentry.flush failed to be called:', error);
+		log.error('Sentry.flush failed to be called:', error);
 	}
 
 	return errorInitialProps;
