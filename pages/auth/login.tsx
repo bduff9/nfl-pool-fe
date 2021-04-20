@@ -77,8 +77,6 @@ const Login: FC<LoginProps> = ({ year }) => {
 								setFormState('LOADING');
 
 								const callbackUrl = readAndDeleteCookie(REDIRECT_COOKIE_NAME);
-
-								console.log({ callbackUrl });
 								const { error: signInError } = await signIn('email', {
 									callbackUrl,
 									email,

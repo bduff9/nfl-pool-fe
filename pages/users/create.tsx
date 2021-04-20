@@ -5,7 +5,12 @@ import React, { FC } from 'react';
 import Authenticated from '../../components/Authenticated/Authenticated';
 import { TUser } from '../../models/User';
 import { getPageTitle } from '../../utils';
-import { isSignedInSSR, isDoneRegisteringSSR } from '../../utils/auth.server';
+import {
+	isSignedInSSR,
+	isDoneRegisteringSSR,
+	UNAUTHENTICATED_REDIRECT,
+	IS_DONE_REGISTERING_REDIRECT,
+} from '../../utils/auth.server';
 
 type CreateProfileProps = {
 	user: TUser;
@@ -31,15 +36,13 @@ export const getServerSideProps: GetServerSideProps = async context => {
 	const session = await isSignedInSSR(context);
 
 	if (!session) {
-		return { props: {} };
+		return UNAUTHENTICATED_REDIRECT;
 	}
 
-	const isDoneRegistering = isDoneRegisteringSSR(context, session);
+	const isDoneRegistering = isDoneRegisteringSSR(session);
 
 	if (isDoneRegistering) {
-		context.res.writeHead(301, { Location: '/users/edit' }).end();
-
-		return { props: {} };
+		return IS_DONE_REGISTERING_REDIRECT;
 	}
 
 	const { user } = session;

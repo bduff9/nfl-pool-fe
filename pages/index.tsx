@@ -6,7 +6,12 @@ import Authenticated from '../components/Authenticated/Authenticated';
 import SocialAuthButton from '../components/SocialAuthButton/SocialAuthButton';
 import { TUser } from '../models/User';
 import { getPageTitle } from '../utils';
-import { isDoneRegisteringSSR, isSignedInSSR } from '../utils/auth.server';
+import {
+	isDoneRegisteringSSR,
+	isSignedInSSR,
+	IS_NOT_DONE_REGISTERING_REDIRECT,
+	UNAUTHENTICATED_REDIRECT,
+} from '../utils/auth.server';
 
 type DashboardProps = {
 	user: TUser;
@@ -40,13 +45,13 @@ export const getServerSideProps: GetServerSideProps = async context => {
 	const session = await isSignedInSSR(context);
 
 	if (!session) {
-		return { props: {} };
+		return UNAUTHENTICATED_REDIRECT;
 	}
 
-	const isDoneRegistering = isDoneRegisteringSSR(context, session);
+	const isDoneRegistering = isDoneRegisteringSSR(session);
 
 	if (!isDoneRegistering) {
-		return { props: {} };
+		return IS_NOT_DONE_REGISTERING_REDIRECT;
 	}
 
 	const { user } = session;

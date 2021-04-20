@@ -13,6 +13,7 @@ import {
 	NEXT_PUBLIC_SITE_URL,
 	REDIRECT_COOKIE_NAME,
 } from './constants';
+import { log } from './logging';
 
 export const mxExists = async (email: string): Promise<boolean> => {
 	try {
@@ -59,7 +60,7 @@ export const sendLoginEmailViaAPI: TSendVerificationRequest = async ({
 				email,
 			)}&url=${encodeURIComponent(url)}`,
 		);
-		console.log('Successfully sent login email', { email });
+		log.info('Successfully sent login email', { email });
 	} catch (error) {
 		console.error('Failed to send login email', {
 			email,
@@ -69,6 +70,36 @@ export const sendLoginEmailViaAPI: TSendVerificationRequest = async ({
 		throw error;
 	}
 };
+
+export const UNAUTHENTICATED_REDIRECT = {
+	redirect: {
+		destination: '/auth/login',
+		permanent: false,
+	},
+} as const;
+
+export const IS_DONE_REGISTERING_REDIRECT = {
+	redirect: {
+		destination: '/users/edit',
+		permanent: false,
+	},
+} as const;
+
+export const IS_NOT_DONE_REGISTERING_REDIRECT = {
+	redirect: {
+		destination: '/users/create',
+		permanent: false,
+	},
+} as const;
+
+//FIXME: delete this ignore export line once creating admin pages
+// ts-prune-ignore-next
+export const ADMIN_REDIRECT = {
+	redirect: {
+		destination: '/',
+		permanent: false,
+	},
+} as const;
 
 export const isSignedInSSR = async (
 	context: GetServerSidePropsContext<ParsedUrlQuery>,
@@ -86,40 +117,23 @@ export const isSignedInSSR = async (
 			'Set-Cookie',
 			`next-auth.callback-url=${NEXT_PUBLIC_SITE_URL}${req.url || '/'}`,
 		);
-		res.writeHead(301, { Location: '/auth/login' }).end();
 	}
 
 	return session;
 };
 
+//FIXME: delete this ignore export line once creating admin pages
 // ts-prune-ignore-next
-export const isAdminSSR = (
-	context: GetServerSidePropsContext<ParsedUrlQuery>,
-	session: Session,
-	redirectTo = '/',
-): boolean => {
-	const { res } = context;
+export const isAdminSSR = (session: Session): boolean => {
 	const { user } = session;
 	const { isAdmin } = user as TUser;
-
-	if (!isAdmin) {
-		res.writeHead(301, { Location: redirectTo }).end();
-	}
 
 	return isAdmin;
 };
 
-export const isDoneRegisteringSSR = (
-	context: GetServerSidePropsContext<ParsedUrlQuery>,
-	session: Session,
-): boolean => {
-	const { res } = context;
+export const isDoneRegisteringSSR = (session: Session): boolean => {
 	const { user } = session;
 	const { doneRegistering } = user as TUser;
-
-	if (!doneRegistering) {
-		res.writeHead(301, { Location: '/users/create' }).end();
-	}
 
 	return doneRegistering;
 };
