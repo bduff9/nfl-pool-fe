@@ -67,7 +67,7 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 			<Head>
 				<title>{getPageTitle('404')}</title>
 			</Head>
-			<div className="content-bg text-dark mx-auto mt-6 pb-4 col-md-6">
+			<div className="content-bg border border-dark rounded-3 text-dark mx-auto mt-6 pb-4 col-md-6">
 				<h1 className="text-center">What have you done?!</h1>
 				<div
 					className={clsx('mx-auto', 'position-relative', styles['image-404'])}
