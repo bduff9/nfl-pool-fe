@@ -1,28 +1,28 @@
 # Milestones
 
-1. April
+1. April - cycles 6-8
    - Unauthenticated screens done (login, logout, 404, support)
    - Registration flow screens done (login, finish registering, emails, verification)
    - User screens done (edit profile and view payments)
    - Survivor register button?
-2. May
+2. May - cycles 8-10
    - Dashboard screen done
    - Make picks screen done
    - View picks screen done
-   - Cron jobs done (reminders, update games)
-3. June
+   - Cron jobs done (reminders, update games, weekly email, DB backups, etc.)
+3. June - cycles 10-12
    - View all picks screen done
    - Make survivor picks screen done
    - View survivor picks screen done
    - All emails done (invite, weekly, etc.)
-4. July
+4. July - cycles 13-15
    - Admin screens done
    - Survey screen done
-   - Misc jobs done (DB backups, PWA customized, etc.)
-5. August
+   - Misc jobs done (things that pop up as we're working and don't fit into other milestones, such as SW customization)
+5. August - cycles 15-17
    - QA done
-   - App polishes done (animations, text verifications, etc.)
-6. September
+   - App polishes done (animations, media, etc.)
+6. September - cycles 17+
    - Invites sent
    - Season started
 
