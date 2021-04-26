@@ -1,6 +1,6 @@
-import { decode, encode } from 'jwt-simple';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { NextAuthOptions, Session } from 'next-auth';
+// eslint-disable-next-line import/no-named-as-default
 import Adapters from 'next-auth/adapters';
 import Providers from 'next-auth/providers';
 import { gql } from 'graphql-request';
@@ -23,13 +23,14 @@ import {
 	QueryGetSystemValueArgs,
 } from '../../../generated/graphql';
 import { TUser } from '../../../models/User';
-import { TUserObj } from '../../../utils/types';
+import { TAuthUser } from '../../../utils/types';
+import { log } from '../../../utils/logging';
 
 const {
 	DATABASE_URL,
 	GOOGLE_ID,
 	GOOGLE_SECRET,
-	JWT_SECRET,
+	// JWT_SECRET,
 	NEXT_PUBLIC_SITE_URL,
 	secret,
 	TWITTER_ID,
@@ -70,7 +71,9 @@ const options: NextAuthOptions = {
 	callbacks: {
 		async signIn (user, _account, _profile): Promise<boolean | string> {
 			const isValidMX = !!user.email && (await mxExists(user.email));
-			const userExists = (user as TUserObj).doneRegistering;
+			const userExists = (user as TAuthUser).doneRegistering;
+
+			log.debug('~~~Signin:', { _account, _profile, user });
 
 			if (!isValidMX) {
 				return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=InvalidEmail`;
@@ -117,63 +120,35 @@ const options: NextAuthOptions = {
 
 			return true;
 		},
-		// async redirect (url: string, baseUrl: string): Promise<string> {
-		// 	console.log('~~~redirect start~~~');
-		// 	console.log({ baseUrl, url });
-		// 	console.log('~~~redirect end~~~');
-
-		// 	return baseUrl;
-		// },
 		async session (session, user) {
 			const {
+				doneRegistering,
+				email,
+				firstName,
+				hasSurvivor,
+				id,
 				isAdmin,
 				isNewUser,
 				isTrusted,
-				doneRegistering,
-				hasSurvivor,
-				sub,
-			} = user as TUserObj;
+				lastName,
+			} = user as TAuthUser;
+
+			log.debug('~~~session:', { session, user });
 
 			session.user = {
 				...session.user,
-				isAdmin,
 				doneRegistering,
-				id: parseInt(sub || '-1', 10),
+				email,
+				firstName,
 				hasSurvivor,
-				isTrusted,
+				id,
+				isAdmin,
 				isNewUser,
-			};
+				isTrusted,
+				lastName,
+			} as any;
 
 			return session as WithAdditionalParams<Session>;
-		},
-		async jwt (
-			token,
-			user,
-			_account,
-			_profile,
-			isNewUser,
-		): Promise<Record<string, unknown>> {
-			const userObj = user as TUserObj;
-
-			token.isNewUser = isNewUser;
-
-			if (typeof userObj?.doneRegistering === 'boolean') {
-				token.doneRegistering = userObj.doneRegistering;
-			}
-
-			if (typeof userObj?.hasSurvivor === 'boolean') {
-				token.hasSurvivor = userObj.hasSurvivor;
-			}
-
-			if (typeof userObj?.isAdmin === 'boolean') {
-				token.isAdmin = userObj.isAdmin;
-			}
-
-			if (typeof userObj?.isTrusted === 'boolean') {
-				token.isTrusted = userObj.isTrusted;
-			}
-
-			return token;
 		},
 	},
 	events: {
@@ -202,12 +177,12 @@ const options: NextAuthOptions = {
 				MutationWriteLogArgs
 			>(query, args);
 		},
-		async signOut (message: TUserObj): Promise<void> {
+		async signOut (message: TAuthUser): Promise<void> {
 			const args: MutationWriteLogArgs = {
 				data: {
 					logAction: LogAction.Logout,
 					logMessage: `${message.email} signed out`,
-					sub: message.sub,
+					sub: `${message.id}`,
 				},
 			};
 			const query = gql`
@@ -227,7 +202,8 @@ const options: NextAuthOptions = {
 				MutationWriteLogArgs
 			>(query, args);
 		},
-		async createUser (message: TUser): Promise<void> {
+		async createUser (message: TUser, ...rest): Promise<void> {
+			log.debug('~~~~createUser: ', { message, rest });
 			const args: MutationWriteLogArgs = {
 				data: {
 					logAction: LogAction.CreatedAccount,
@@ -252,7 +228,8 @@ const options: NextAuthOptions = {
 				MutationWriteLogArgs
 			>(query, args);
 		},
-		async linkAccount (message: TLinkAccountMessage): Promise<void> {
+		async linkAccount (message: TLinkAccountMessage, ...rest): Promise<void> {
+			log.debug('~~~linkAccount: ', { message, rest });
 			const args: MutationWriteLogArgs = {
 				data: {
 					logAction: LogAction.LinkedAccount,
@@ -305,23 +282,7 @@ const options: NextAuthOptions = {
 			>(query, args);
 
 			//TODO: clean up once tested
-			console.log('~~~error event start~~~');
-			console.log({ message, result });
-			console.log('~~~error event end~~~');
-		},
-	},
-	jwt: {
-		decode: async (options): Promise<Record<string, string>> => {
-			if (!options.token) return {};
-
-			if (!JWT_SECRET) throw new Error('Missing JWT secret');
-
-			return decode(options.token, JWT_SECRET, false, 'HS256');
-		},
-		encode: async (options): Promise<string> => {
-			if (!JWT_SECRET) throw new Error('Missing JWT secret');
-
-			return encode(options.token, JWT_SECRET, 'HS256');
+			log.debug('~~~error event start~~~', { message, result });
 		},
 	},
 	pages: {
@@ -344,7 +305,6 @@ const options: NextAuthOptions = {
 	],
 	secret,
 	session: {
-		jwt: true,
 		maxAge:
 			(WEEKS_IN_SEASON + 3) *
 			DAYS_IN_WEEK *
