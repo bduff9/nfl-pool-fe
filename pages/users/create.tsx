@@ -11,13 +11,14 @@ import {
 	UNAUTHENTICATED_REDIRECT,
 	IS_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
+import { usePageTitle } from '../../utils/hooks';
 
 type CreateProfileProps = {
 	user: TUser;
 };
 
 const CreateProfile: FC<CreateProfileProps> = () => {
-	const title = 'Finish Registration';
+	const [title] = usePageTitle('Finish Registration');
 
 	return (
 		<Authenticated>

@@ -10,7 +10,7 @@ import { FuseHighlight } from '../components/FuseHighlight/FuseHighlight';
 import { Faq, Rule, Scalars } from '../generated/graphql';
 import { getPageTitle } from '../utils';
 import { fetcher } from '../utils/graphql';
-import { useFuse } from '../utils/hooks';
+import { useFuse, usePageTitle } from '../utils/hooks';
 
 const createFAQList = (faqs: Fuse.FuseResult<Faq>[]): JSX.Element[] => {
 	const faqList: JSX.Element[] = [];
@@ -51,6 +51,7 @@ const Support: FC<SupportProps> = ({
 	slackLink,
 	supportEmail,
 }) => {
+	const [title] = usePageTitle('Support/FAQs');
 	const [session, loading] = useSession();
 	const { hits: faqHits, onSearch: onFAQSearch } = useFuse(faqs, {
 		includeMatches: true,
@@ -80,12 +81,9 @@ const Support: FC<SupportProps> = ({
 	return (
 		<div className="h-100 row">
 			<Head>
-				<title>{getPageTitle('Support/FAQs')}</title>
+				<title>{getPageTitle(title)}</title>
 			</Head>
-			<div className="content-bg text-dark m-3 min-vh-100 pb-3 col">
-				<h1 className="text-center" id="top">
-					Support/FAQs
-				</h1>
+			<div className="content-bg text-dark m-3 pt-5 pt-md-3 min-vh-100 pb-3 col">
 				<div className="form-floating mb-2">
 					<input
 						autoComplete="off"

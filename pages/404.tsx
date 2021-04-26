@@ -15,6 +15,7 @@ import { getPageTitle } from '../utils';
 import styles from '../styles/404.module.scss';
 import { LogAction, MutationWriteLogArgs } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
+import { usePageTitle } from '../utils/hooks';
 
 type NotFoundProps = {
 	images: string[];
@@ -23,6 +24,7 @@ type NotFoundProps = {
 const NotFound: FC<NotFoundProps> = ({ images }) => {
 	const router = useRouter();
 	const [session, loading] = useSession();
+	const [title] = usePageTitle('404');
 	const image = useMemo<string>(
 		() => images[Math.floor(Math.random() * images.length)],
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -31,7 +33,7 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 
 	useEffect((): void => {
 		const writeLog = async (): Promise<void> => {
-			const sub = (session?.user.id || null) as null | string;
+			const sub = ((session?.user as any)?.id || null) as null | string;
 			const args: MutationWriteLogArgs = {
 				data: {
 					logAction: LogAction.Error404,
@@ -65,7 +67,7 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 	return (
 		<div className="row">
 			<Head>
-				<title>{getPageTitle('404')}</title>
+				<title>{getPageTitle(title)}</title>
 			</Head>
 			<div className="content-bg border border-dark rounded-3 text-dark mx-auto mt-6 pb-4 col-md-6">
 				<h1 className="text-center">What have you done?!</h1>

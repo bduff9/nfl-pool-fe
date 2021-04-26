@@ -3,8 +3,10 @@ import { useRouter } from 'next/router';
 import React, { FC } from 'react';
 
 import { getPageTitle } from '../../../utils';
+import { usePageTitle } from '../../../utils/hooks';
 
 const QuickPick: FC = () => {
+	const [title] = usePageTitle('Quick Pick');
 	const router = useRouter();
 	const { userId, teamShort } = router.query;
 
@@ -12,7 +14,7 @@ const QuickPick: FC = () => {
 	return (
 		<div>
 			<Head>
-				<title>{getPageTitle('Quick Pick')}</title>
+				<title>{getPageTitle(title)}</title>
 			</Head>
 			<h1>Quick Pick</h1>
 			<ul>

@@ -12,6 +12,7 @@ import { useSession } from 'next-auth/client';
 
 import styles from '../styles/500.module.scss';
 import { getPageTitle } from '../utils';
+import { usePageTitle } from '../utils/hooks';
 
 type ErrorProps = {
 	images: string[];
@@ -20,6 +21,7 @@ type ErrorProps = {
 const Error: FC<ErrorProps> = ({ images }) => {
 	const router = useRouter();
 	const [session, loading] = useSession();
+	const [title] = usePageTitle('Error Occurred');
 	const image = useMemo<string>(
 		() => images[Math.floor(Math.random() * images.length)],
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -29,7 +31,7 @@ const Error: FC<ErrorProps> = ({ images }) => {
 	return (
 		<div className="row">
 			<Head>
-				<title>{getPageTitle('500')}</title>
+				<title>{getPageTitle(title)}</title>
 			</Head>
 			<div className="content-bg border border-dark rounded-3 text-dark mx-auto mt-6 pb-4 col-md-6">
 				<h1 className="text-center">Flag on the play!</h1>

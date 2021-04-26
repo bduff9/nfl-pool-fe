@@ -12,16 +12,19 @@ import {
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 	UNAUTHENTICATED_REDIRECT,
 } from '../utils/auth.server';
+import { usePageTitle } from '../utils/hooks';
 
 type DashboardProps = {
 	user: TUser;
 };
 
 const Dashboard: FC<DashboardProps> = () => {
+	const [title] = usePageTitle('My Dashboard');
+
 	return (
 		<Authenticated isRegistered>
 			<Head>
-				<title>{getPageTitle('My Dashboard')}</title>
+				<title>{getPageTitle(title)}</title>
 			</Head>
 			<div className="col">
 				<h1 className="welcome-banner">Dashboard</h1>
