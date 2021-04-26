@@ -1,0 +1,33 @@
+.nav-link {
+  font-size: 25px;
+  /* stylelint-disable-next-line font-weight-notation */
+  font-weight: bold;
+  line-height: 29px;
+  color: inherit;
+}
+
+.nav-button {
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.active {
+  /* stylelint-disable-next-line declaration-no-important */
+  color: #106630 !important;
+  background-color: #c4c4c4;
+}
+
+.nested {
+  font-size: 18px;
+  /* stylelint-disable-next-line font-weight-notation */
+  font-weight: normal;
+  line-height: 21px;
+  color: inherit;
+}

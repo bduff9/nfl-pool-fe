@@ -92,9 +92,7 @@ export const IS_NOT_DONE_REGISTERING_REDIRECT = {
 	},
 } as const;
 
-//FIXME: delete this ignore export line once creating admin pages
-// ts-prune-ignore-next
-export const ADMIN_REDIRECT = {
+export const IS_NOT_ADMIN_REDIRECT = {
 	redirect: {
 		destination: '/',
 		permanent: false,
@@ -122,8 +120,6 @@ export const isSignedInSSR = async (
 	return session;
 };
 
-//FIXME: delete this ignore export line once creating admin pages
-// ts-prune-ignore-next
 export const isAdminSSR = (session: Session): boolean => {
 	const { user } = session;
 	const { isAdmin } = user as TUser;

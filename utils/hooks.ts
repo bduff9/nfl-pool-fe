@@ -7,9 +7,12 @@ import {
 	useRef,
 	useState,
 	FormEvent,
+	useContext,
 } from 'react';
 import Fuse from 'fuse.js';
 import { debounce } from 'throttle-debounce';
+
+import { TitleContext } from './context';
 
 type UseFuseResult<ListType> = {
 	hits: Fuse.FuseResult<ListType>[];
@@ -80,4 +83,17 @@ export const useInterval = (callback: () => void, delay: number): void => {
 
 		return undefined;
 	}, [delay]);
+};
+
+export const usePageTitle = (
+	title: string,
+): [string, Dispatch<SetStateAction<string>>] => {
+	const [currentTitle, setTitle] = useContext(TitleContext);
+
+	useEffect(() => {
+		setTitle(title);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	return [currentTitle, setTitle];
 };

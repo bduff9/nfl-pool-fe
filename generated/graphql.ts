@@ -34,12 +34,15 @@ export type Query = {
 	getRules: Array<Rule>;
 	getAllSurvivorPicksForWeek: Array<SurvivorPick>;
 	getMySurvivorPicks: Array<SurvivorPick>;
+	isAliveInSurvivor: Scalars['Boolean'];
 	getSystemValue: SystemValue;
 	getTeam: Team;
 	getTeams: Array<Team>;
+	getMyTiebreakerForWeek: Tiebreaker;
 	getTiebreakersForWeek: Array<Tiebreaker>;
 	getUser: User;
 	getUsers: Array<User>;
+	getWeek: Week;
 };
 
 export type QueryGetApiCallsForWeekArgs = {
@@ -79,10 +82,6 @@ export type QueryGetAllSurvivorPicksForWeekArgs = {
 	Week: Scalars['Int'];
 };
 
-export type QueryGetMySurvivorPicksArgs = {
-	UserID: Scalars['Int'];
-};
-
 export type QueryGetSystemValueArgs = {
 	Name: Scalars['String'];
 };
@@ -91,12 +90,20 @@ export type QueryGetTeamArgs = {
 	TeamShort: Scalars['String'];
 };
 
+export type QueryGetMyTiebreakerForWeekArgs = {
+	Week: Scalars['Int'];
+};
+
 export type QueryGetTiebreakersForWeekArgs = {
 	Week: Scalars['Int'];
 };
 
 export type QueryGetUserArgs = {
 	UserID: Scalars['Int'];
+};
+
+export type QueryGetWeekArgs = {
+	Week?: Maybe<Scalars['Int']>;
 };
 
 export type ApiCall = {
@@ -443,6 +450,23 @@ export type Tiebreaker = {
 	tiebreakerUpdated: Scalars['DateTime'];
 	tiebreakerUpdatedBy: Scalars['String'];
 };
+
+export type Week = {
+	__typename?: 'Week';
+	weekNumber: Scalars['Int'];
+	weekStarts: Scalars['DateTime'];
+	weekStatus: WeekStatus;
+	weekFirstGame: Game;
+	weekLastGame: Game;
+	weekNumberOfGames: Scalars['Int'];
+};
+
+/** The status of the week */
+export enum WeekStatus {
+	Complete = 'Complete',
+	InProgress = 'InProgress',
+	NotStarted = 'NotStarted',
+}
 
 export type Mutation = {
 	__typename?: 'Mutation';

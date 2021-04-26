@@ -1,0 +1,11 @@
+.btn-menu {
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+
+  &:focus {
+    outline: none;
+  }
+}

@@ -4,6 +4,8 @@ import { EntitySchemaColumnOptions } from 'typeorm';
 export type TUser = {
 	id: number;
 	name: string;
+	firstName: string;
+	lastName: string;
 	email: string;
 	emailVerified: boolean;
 	isTrusted: boolean;
@@ -50,6 +52,18 @@ export const UserSchema = {
 		name: {
 			...Adapters.TypeORM.Models.User.schema.columns.name,
 			name: 'UserName',
+		} as EntitySchemaColumnOptions,
+		firstName: {
+			length: 50,
+			type: 'varchar',
+			name: 'UserFirstName',
+			nullable: true,
+		} as EntitySchemaColumnOptions,
+		lastName: {
+			length: 50,
+			type: 'varchar',
+			name: 'UserLastName',
+			nullable: true,
 		} as EntitySchemaColumnOptions,
 		email: {
 			...Adapters.TypeORM.Models.User.schema.columns.email,

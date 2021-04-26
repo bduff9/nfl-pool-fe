@@ -1,0 +1,48 @@
+.sidebar {
+  z-index: 1000;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-size: 25px;
+  /* stylelint-disable-next-line font-weight-notation */
+  font-weight: bold;
+  line-height: 29px;
+  color: #f2f2f2;
+  background-color: #000;
+  box-shadow: 7px -10px 15px -5px #100c08;
+}
+
+.close-menu {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.week-picker {
+  color: inherit;
+  cursor: pointer;
+  background: none;
+}
+
+.mobile-menu {
+  top: 12px;
+  left: 10px;
+  z-index: 1;
+  color: #f2f2f2;
+  cursor: pointer;
+}
+
+.mobile-top-bar {
+  color: #f2f2f2;
+  background-color: #000;
+}
+
+.btn-week-picker {
+  color: inherit;
+  background: none;
+  border: none;
+
+  &:focus {
+    outline: none;
+  }
+}
