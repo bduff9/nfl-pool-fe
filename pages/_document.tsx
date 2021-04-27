@@ -62,7 +62,7 @@ class MyDocument extends Document {
 						as="style"
 						href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
 					/>
-					<style
+					<style // nosemgrep
 						dangerouslySetInnerHTML={{
 							__html: `
 							</style>
