@@ -83,7 +83,10 @@ const Support: FC<SupportProps> = ({
 			<Head>
 				<title>{getPageTitle(title)}</title>
 			</Head>
-			<div className="content-bg text-dark m-3 pt-5 pt-md-3 min-vh-100 pb-3 col">
+			<div
+				className="content-bg text-dark m-3 pt-5 pt-md-3 min-vh-100 pb-3 col"
+				id="top"
+			>
 				<div className="form-floating mb-2">
 					<input
 						autoComplete="off"

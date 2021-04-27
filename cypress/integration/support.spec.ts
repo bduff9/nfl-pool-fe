@@ -11,7 +11,9 @@ describe('FAQ/Support', () => {
 		describe('When you visit support', () => {
 			it('should display support', () => {
 				cy.visit('/support');
-				cy.get('h1').should('be.visible').and('have.text', 'Support/FAQs');
+				cy.get('label')
+					.should('be.visible')
+					.and('have.text', 'Search the help page');
 			});
 
 			it('should have a Rules section', () => {
