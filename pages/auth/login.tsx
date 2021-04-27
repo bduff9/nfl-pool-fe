@@ -77,11 +77,12 @@ const Login: FC<LoginProps> = ({ year }) => {
 								setFormState('LOADING');
 
 								const callbackUrl = readAndDeleteCookie(REDIRECT_COOKIE_NAME);
-								const { error: signInError } = await signIn('email', {
+								const signInResult = await signIn('email', {
 									callbackUrl,
 									email,
 									redirect: false,
 								});
+								const signInError = signInResult?.error;
 								const formattedError = formatError(signInError);
 
 								setErrorMessage(formattedError);

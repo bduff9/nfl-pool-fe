@@ -1,11 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import NextAuth, { NextAuthOptions, Session } from 'next-auth';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 // eslint-disable-next-line import/no-named-as-default
 import Adapters from 'next-auth/adapters';
 import Providers from 'next-auth/providers';
 import { gql } from 'graphql-request';
-// eslint-disable-next-line import/no-unresolved
-import { WithAdditionalParams } from 'next-auth/_utils';
 
 import Models from '../../../models';
 import {
@@ -148,7 +146,7 @@ const options: NextAuthOptions = {
 				lastName,
 			} as any;
 
-			return session as WithAdditionalParams<Session>;
+			return session;
 		},
 	},
 	events: {

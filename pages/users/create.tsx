@@ -71,7 +71,7 @@ const CreateProfile: FC<CreateProfileProps> = () => {
 	const {
 		register,
 		handleSubmit,
-		formState: { errors },
+		//formState: { errors },
 	} = useForm<FormData>({
 		defaultValues: {
 			userPlaysSurvivor: false,
