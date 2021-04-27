@@ -94,3 +94,8 @@ body {
 .football-brown {
   color: $orange-800;
 }
+
+.required::after {
+  color: #dc2626;
+  content: " *";
+}
