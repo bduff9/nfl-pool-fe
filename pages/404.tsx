@@ -38,7 +38,7 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 				data: {
 					logAction: LogAction.Error404,
 					logMessage: router.asPath,
-					sub,
+					sub: sub ? `${sub}` : sub,
 				},
 			};
 			const query = gql`
@@ -69,7 +69,7 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 			<Head>
 				<title>{getPageTitle(title)}</title>
 			</Head>
-			<div className="content-bg border border-dark rounded-3 text-dark mx-auto mt-6 pb-4 col-md-6">
+			<div className="content-bg position-absolute top-50 start-50 translate-middle border border-dark rounded-3 text-dark pb-4 col-md-6">
 				<h1 className="text-center">What have you done?!</h1>
 				<div
 					className={clsx('mx-auto', 'position-relative', styles['image-404'])}
@@ -88,7 +88,9 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 				</h4>
 				<div className="text-center">
 					<Link href="/">
-						<a>Please click here to get us both out of this situation</a>
+						<a className="bare-link">
+							Please click here to get us both out of this situation
+						</a>
 					</Link>
 				</div>
 			</div>
