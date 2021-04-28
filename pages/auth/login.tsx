@@ -98,7 +98,10 @@ const Login: FC<LoginProps> = ({ year }) => {
 							}}
 						>
 							{!!errorMessage && (
-								<div className={clsx('text-center', 'mb-3', styles.error)}>
+								<div
+									className={clsx('text-center', 'mb-3', styles.error)}
+									id="errorMessage"
+								>
 									{errorMessage}
 								</div>
 							)}
@@ -135,7 +138,7 @@ const Login: FC<LoginProps> = ({ year }) => {
 											? 'Registering...'
 											: 'Register'}
 								</button>
-								<Link href="/support">
+								<Link href="/support#loginregistration">
 									<a className="btn btn-secondary text-white" type="button">
 										{isLogin ? 'Trouble logging in?' : 'Trouble registering?'}
 									</a>

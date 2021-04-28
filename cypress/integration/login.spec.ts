@@ -33,7 +33,7 @@ describe('Login', () => {
 			it('should reject invalid domains', () => {
 				cy.reload();
 				cy.get('#email').type('invalid@gmail.co{enter}');
-				cy.get('.text-danger').should('be.visible');
+				cy.get('#errorMessage').should('be.visible');
 
 				if (Cypress.env('SKIP_PERCY') !== 'true') {
 					cy.percySnapshot();
