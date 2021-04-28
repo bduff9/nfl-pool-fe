@@ -295,6 +295,13 @@ const options: NextAuthOptions = {
 		Providers.Google({
 			clientId: GOOGLE_ID,
 			clientSecret: GOOGLE_SECRET,
+			// profile: async function (...args) {
+			// 	log.info({ args });
+
+			// 	return {
+			// 		id: '',
+			// 	};
+			// },
 		}),
 		Providers.Twitter({
 			clientId: TWITTER_ID,
@@ -310,6 +317,7 @@ const options: NextAuthOptions = {
 			MINUTES_IN_HOUR *
 			SECONDS_IN_MINUTE,
 	},
+	useSecureCookies: false,
 };
 
 // ts-prune-ignore-next
