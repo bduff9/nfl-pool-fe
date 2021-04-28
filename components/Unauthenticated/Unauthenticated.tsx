@@ -8,7 +8,7 @@ const Unauthenticated: FC = ({ children }): JSX.Element => {
 	const [session, loading] = useSession();
 	const router = useRouter();
 
-	if (loading) return <div>Loading...</div>;
+	if (loading) return <></>;
 
 	if (session) {
 		router.push('/');
