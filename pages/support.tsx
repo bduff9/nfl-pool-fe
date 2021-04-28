@@ -12,6 +12,9 @@ import { getPageTitle } from '../utils';
 import { fetcher } from '../utils/graphql';
 import { useFuse, usePageTitle } from '../utils/hooks';
 
+const convertTextToAnchor = (text: string): string =>
+	text.toLowerCase().replace(/\W/g, '');
+
 const createFAQList = (faqs: Fuse.FuseResult<Faq>[]): JSX.Element[] => {
 	const faqList: JSX.Element[] = [];
 	let category: null | string | undefined = '';
@@ -19,12 +22,19 @@ const createFAQList = (faqs: Fuse.FuseResult<Faq>[]): JSX.Element[] => {
 	for (const faq of faqs) {
 		if (faq.item.supportContentCategory !== category) {
 			category = faq.item.supportContentCategory;
-			faqList.push(<h3 key={`category-${category}`}>{category}</h3>);
+			faqList.push(
+				<h3
+					id={convertTextToAnchor(category || '')}
+					key={`category-${category}`}
+				>
+					{category}
+				</h3>,
+			);
 		}
 
 		faqList.push(
 			<details
-				className="text-success ms-7"
+				className="text-success ms-7 mb-3"
 				key={`faq-${faq.item.supportContentID}`}
 			>
 				<summary className="text-dark ms-n5">
@@ -109,7 +119,10 @@ const Support: FC<SupportProps> = ({
 				{ruleHits.length > 0 ? (
 					<ol>
 						{ruleHits.map(ruleHit => (
-							<li key={`rule-${ruleHit.item.supportContentID}`}>
+							<li
+								key={`rule-${ruleHit.item.supportContentID}`}
+								className="mb-3"
+							>
 								<FuseHighlight
 									attribute="supportContentDescription"
 									hit={ruleHit}
