@@ -173,60 +173,62 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 								icon={faTimes}
 							/>
 						</span>
-						<div
-							className={clsx(
-								'text-center',
-								'mb-4',
-								'sidebar-greeting',
-								!user.doneRegistering && 'invisible',
-							)}
-						>
-							Welcome, {user.firstName}
-						</div>
-						<div
-							className={clsx(
-								'text-center',
-								'mb-4',
-								'd-flex',
-								'justify-content-around',
-								'sidebar-week',
-								!user.doneRegistering && 'invisible',
-							)}
-						>
-							<button
-								className={clsx(
-									'p-0',
-									'm-0',
-									selectedWeek === 1 && 'invisible',
-									styles['btn-week-picker'],
-								)}
-								onClick={goToPreviousWeek}
-							>
-								<FontAwesomeIcon icon={faChevronLeft} />
-							</button>
-							<select
-								className={clsx('text-center', 'px-2', styles['week-picker'])}
-								onChange={updateWeek}
-								value={selectedWeek}
-							>
-								{Array.from({ length: 18 }).map((_, i) => (
-									<option key={`week-${i + 1}`} value={i + 1}>
-										Week {i + 1}
-									</option>
-								))}
-							</select>
-							<button
-								className={clsx(
-									'p-0',
-									'm-0',
-									selectedWeek === 18 && 'invisible',
-									styles['btn-week-picker'],
-								)}
-								onClick={goToNextWeek}
-							>
-								<FontAwesomeIcon icon={faChevronRight} />
-							</button>
-						</div>
+						{user.doneRegistering && (
+							<>
+								<div
+									className={clsx('text-center', 'mb-4', 'sidebar-greeting')}
+								>
+									Welcome, {user.firstName}
+								</div>
+								<div
+									className={clsx(
+										'text-center',
+										'mb-4',
+										'd-flex',
+										'justify-content-around',
+										'sidebar-week',
+									)}
+								>
+									<button
+										className={clsx(
+											'p-0',
+											'm-0',
+											selectedWeek === 1 && 'invisible',
+											styles['btn-week-picker'],
+										)}
+										onClick={goToPreviousWeek}
+									>
+										<FontAwesomeIcon icon={faChevronLeft} />
+									</button>
+									<select
+										className={clsx(
+											'text-center',
+											'px-2',
+											styles['week-picker'],
+										)}
+										onChange={updateWeek}
+										value={selectedWeek}
+									>
+										{Array.from({ length: 18 }).map((_, i) => (
+											<option key={`week-${i + 1}`} value={i + 1}>
+												Week {i + 1}
+											</option>
+										))}
+									</select>
+									<button
+										className={clsx(
+											'p-0',
+											'm-0',
+											selectedWeek === 18 && 'invisible',
+											styles['btn-week-picker'],
+										)}
+										onClick={goToNextWeek}
+									>
+										<FontAwesomeIcon icon={faChevronRight} />
+									</button>
+								</div>
+							</>
+						)}
 						{/* collapse, collapsing, show, accordion */}
 						<Accordion defaultActiveKey={currentPage}>
 							<MenuAccordion show={user.doneRegistering} title="Dashboard">
@@ -285,7 +287,14 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 								>
 									Make Picks
 								</NavLink>
-								<NavLink href="/survivor/view" isNested>
+								<NavLink
+									href="/survivor/view"
+									isNested
+									show={
+										data?.selectedWeek.weekStatus &&
+										data?.selectedWeek.weekStatus !== 'NotStarted'
+									}
+								>
 									View Picks
 								</NavLink>
 							</MenuAccordion>
