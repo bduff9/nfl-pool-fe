@@ -24,7 +24,6 @@ export const fetcher = async <
 
 	if (session) {
 		headers.authorization = `Bearer ${session.accessToken}`;
-		console.log({ session, headers });
 	}
 
 	return client.request(query, variables, headers);

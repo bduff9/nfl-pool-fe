@@ -11,6 +11,7 @@ import React, {
 	useCallback,
 	useContext,
 	useEffect,
+	useMemo,
 	useState,
 } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
@@ -57,7 +58,9 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 			isAliveInSurvivor
 		}
 	`;
-	const getSidebarVars = { week: selectedWeek };
+	const getSidebarVars = useMemo(() => ({ week: selectedWeek }), [
+		selectedWeek,
+	]);
 	const { data, error } = useSWR<{
 		currentWeek: {
 			weekNumber: number;
@@ -80,7 +83,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 		data?.currentWeek.weekStatus !== 'NotStarted';
 	let currentPage = '';
 
-	if (error) {
+	if (user.doneRegistering && error) {
 		console.error('Failed to load sidebar data', error);
 		throw error;
 	}
