@@ -1,4 +1,5 @@
 import { faBars } from '@bduff9/pro-solid-svg-icons/faBars';
+import { faReply } from '@bduff9/pro-solid-svg-icons/faReply';
 import { faTimes } from '@bduff9/pro-solid-svg-icons/faTimes';
 import { faChevronLeft } from '@bduff9/pro-solid-svg-icons/faChevronLeft';
 import { faChevronRight } from '@bduff9/pro-solid-svg-icons/faChevronRight';
@@ -32,6 +33,25 @@ type SidebarProps = {
 	user: TSessionUser;
 };
 
+const getSidebarGQL = gql`
+	query GetSidebar($week: Int!) {
+		currentWeek: getWeek {
+			weekNumber
+			weekStarts
+			weekStatus
+		}
+		selectedWeek: getWeek(Week: $week) {
+			weekNumber
+			weekStarts
+			weekStatus
+		}
+		getMyTiebreakerForWeek(Week: $week) {
+			tiebreakerHasSubmitted
+		}
+		isAliveInSurvivor
+	}
+`;
+
 const Sidebar: FC<SidebarProps> = ({ user }) => {
 	const router = useRouter();
 	const [openMenu, setOpenMenu] = useState<boolean>(false);
@@ -40,24 +60,6 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 	}, [openMenu]);
 	const [title] = useContext(TitleContext);
 	const [selectedWeek, setSelectedWeek] = useContext(WeekContext);
-	const getSidebarGQL = gql`
-		query GetSidebar($week: Int!) {
-			currentWeek: getWeek {
-				weekNumber
-				weekStarts
-				weekStatus
-			}
-			selectedWeek: getWeek(Week: $week) {
-				weekNumber
-				weekStarts
-				weekStatus
-			}
-			getMyTiebreakerForWeek(Week: $week) {
-				tiebreakerHasSubmitted
-			}
-			isAliveInSurvivor
-		}
-	`;
 	const getSidebarVars = useMemo(() => ({ week: selectedWeek }), [
 		selectedWeek,
 	]);
@@ -111,6 +113,15 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 			return week;
 		});
 	};
+
+	const goToCurrentWeek = useCallback((): void => {
+		const currentWeek = data?.currentWeek.weekNumber;
+
+		if (currentWeek) {
+			setSelectedWeek(currentWeek);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data?.currentWeek.weekNumber]);
 
 	if (router.pathname.startsWith('/picks')) {
 		currentPage = 'Picks';
@@ -186,7 +197,6 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 								<div
 									className={clsx(
 										'text-center',
-										'mb-4',
 										'd-flex',
 										'justify-content-around',
 										'sidebar-week',
@@ -229,6 +239,19 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 									>
 										<FontAwesomeIcon icon={faChevronRight} />
 									</button>
+								</div>
+								<div
+									className={clsx('text-center', styles['current-week-link'])}
+								>
+									{data?.currentWeek.weekNumber !== selectedWeek && (
+										<button
+											className={styles['btn-current-week']}
+											onClick={goToCurrentWeek}
+										>
+											<FontAwesomeIcon icon={faReply} />
+											&nbsp;Go to current week
+										</button>
+									)}
 								</div>
 							</>
 						)}

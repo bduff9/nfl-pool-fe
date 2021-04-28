@@ -37,7 +37,8 @@
   background-color: #000;
 }
 
-.btn-week-picker {
+.btn-week-picker,
+.btn-current-week {
   color: inherit;
   background: none;
   border: none;
@@ -45,4 +46,9 @@
   &:focus {
     outline: none;
   }
+}
+
+.current-week-link {
+  height: 1.5rem;
+  font-size: 1rem;
 }
