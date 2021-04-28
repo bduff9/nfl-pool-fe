@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC, FormEvent, useState } from 'react';
+import clsx from 'clsx';
 
 import Unauthenticated from '../../components/Unauthenticated/Unauthenticated';
 import { getPageTitle } from '../../utils';
@@ -97,7 +98,9 @@ const Login: FC<LoginProps> = ({ year }) => {
 							}}
 						>
 							{!!errorMessage && (
-								<h1 className="text-danger">{errorMessage}</h1>
+								<div className={clsx('text-center', 'mb-3', styles.error)}>
+									{errorMessage}
+								</div>
 							)}
 							<div className="form-floating mb-2">
 								<input
@@ -124,7 +127,13 @@ const Login: FC<LoginProps> = ({ year }) => {
 									type="submit"
 									disabled={formState !== 'READY'}
 								>
-									{isLogin ? 'Login' : 'Register'}
+									{isLogin
+										? formState === 'LOADING'
+											? 'Logging in...'
+											: 'Login'
+										: formState === 'LOADING'
+											? 'Registering...'
+											: 'Register'}
 								</button>
 								<Link href="/support">
 									<a className="btn btn-secondary text-white" type="button">
@@ -152,8 +161,12 @@ const Login: FC<LoginProps> = ({ year }) => {
 					</>
 				) : (
 					<>
-						<h3>Please check your email to sign in</h3>
-						<h5>You may close this window</h5>
+						<h2 className="text-center text-success my-5">
+							Please check your email to sign in
+						</h2>
+						<h4 className="text-center text-dark mb-4">
+							You may close this window
+						</h4>
 					</>
 				)}
 			</div>
