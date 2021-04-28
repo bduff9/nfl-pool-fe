@@ -1,4 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
+import { getSession } from 'next-auth/client';
 
 import { NEXT_PUBLIC_API_URL } from './constants';
 
@@ -11,7 +12,20 @@ const client = new GraphQLClient(gqlURL, {
 	mode: 'cors',
 });
 
-export const fetcher = <ReturnType, Vars extends Record<string, any> = never>(
+export const fetcher = async <
+	ReturnType,
+	Vars extends Record<string, any> = never
+>(
 	query: string,
 	variables?: Vars,
-): Promise<ReturnType> => client.request(query, variables);
+): Promise<ReturnType> => {
+	const session = await getSession({});
+	const headers: HeadersInit = {};
+
+	if (session) {
+		headers.authorization = `Bearer ${session.accessToken}`;
+		console.log({ session, headers });
+	}
+
+	return client.request(query, variables, headers);
+};

@@ -317,7 +317,6 @@ const options: NextAuthOptions = {
 			MINUTES_IN_HOUR *
 			SECONDS_IN_MINUTE,
 	},
-	useSecureCookies: false,
 };
 
 // ts-prune-ignore-next
