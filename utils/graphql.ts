@@ -8,6 +8,7 @@ if (!gqlURL) throw new Error('Missing GraphQL API URL!');
 
 const client = new GraphQLClient(gqlURL, {
 	credentials: 'include',
+	mode: 'cors',
 });
 
 export const fetcher = <ReturnType, Vars extends Record<string, any> = never>(
