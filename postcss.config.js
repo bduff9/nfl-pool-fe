@@ -19,12 +19,8 @@ module.exports = {
 			'@fullhuman/postcss-purgecss',
 			{
 				blocklist: [],
-				content: [
-					'./pages/**/*.{js,jsx,ts,tsx}',
-					'./components/**/*.{js,jsx,ts,tsx}',
-				],
-				defaultExtractor: content =>
-					content.match(/\b[a-z][a-z0-9-]+[a-z0-9]\b/g) || [],
+				content: ['./pages/**/*.{js,jsx,ts,tsx}', './components/**/*.{js,jsx,ts,tsx}'],
+				defaultExtractor: content => content.match(/\b[a-z][a-z0-9-]+[a-z0-9]\b/g) || [],
 				fontFace: true,
 				keyframes: true,
 				rejected: true,
