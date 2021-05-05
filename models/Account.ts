@@ -35,7 +35,7 @@ export const AccountSchema = {
 	tableName: 'Accounts',
 	target: Account,
 	columns: {
-		...Adapters.TypeORM.Models.Account.schema.columns,
+		...(Adapters.TypeORM as any).Models.Account.schema.columns,
 		id: {
 			primary: true,
 			type: 'int',
@@ -43,35 +43,35 @@ export const AccountSchema = {
 			name: 'AccountID',
 		} as EntitySchemaColumnOptions,
 		compoundId: {
-			...Adapters.TypeORM.Models.Account.schema.columns.compoundId,
+			...(Adapters.TypeORM as any).Models.Account.schema.columns.compoundId,
 			name: 'AccountCompoundID',
 		} as EntitySchemaColumnOptions,
 		userId: {
-			...Adapters.TypeORM.Models.Account.schema.columns.userId,
+			...(Adapters.TypeORM as any).Models.Account.schema.columns.userId,
 			name: 'UserID',
 		} as EntitySchemaColumnOptions,
 		providerType: {
-			...Adapters.TypeORM.Models.Account.schema.columns.providerType,
+			...(Adapters.TypeORM as any).Models.Account.schema.columns.providerType,
 			name: 'AccountProviderType',
 		} as EntitySchemaColumnOptions,
 		providerId: {
-			...Adapters.TypeORM.Models.Account.schema.columns.providerId,
+			...(Adapters.TypeORM as any).Models.Account.schema.columns.providerId,
 			name: 'AccountProviderID',
 		} as EntitySchemaColumnOptions,
 		providerAccountId: {
-			...Adapters.TypeORM.Models.Account.schema.columns.providerAccountId,
+			...(Adapters.TypeORM as any).Models.Account.schema.columns.providerAccountId,
 			name: 'AccountProviderAccountID',
 		} as EntitySchemaColumnOptions,
 		refreshToken: {
-			...Adapters.TypeORM.Models.Account.schema.columns.refreshToken,
+			...(Adapters.TypeORM as any).Models.Account.schema.columns.refreshToken,
 			name: 'AccountRefreshToken',
 		} as EntitySchemaColumnOptions,
 		accessToken: {
-			...Adapters.TypeORM.Models.Account.schema.columns.accessToken,
+			...(Adapters.TypeORM as any).Models.Account.schema.columns.accessToken,
 			name: 'AccountAccessToken',
 		} as EntitySchemaColumnOptions,
 		accessTokenExpires: {
-			...Adapters.TypeORM.Models.Account.schema.columns.accessTokenExpires,
+			...(Adapters.TypeORM as any).Models.Account.schema.columns.accessTokenExpires,
 			name: 'AccountAccessTokenExpires',
 		} as EntitySchemaColumnOptions,
 		createdAt: {

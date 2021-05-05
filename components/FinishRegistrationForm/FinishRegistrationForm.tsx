@@ -79,7 +79,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 			userFirstName: getFirstName(currentUser),
 			userLastName: getLastName(currentUser),
 			userPaymentAccount: currentUser.userPaymentAccount || '',
-			userPaymentType: currentUser.userPaymentType || '',
+			userPaymentType: currentUser.userPaymentType || undefined,
 			userPlaysSurvivor: `${currentUser.userPlaysSurvivor}` as TTrueFalse,
 			userReferredByRaw: currentUser.userReferredByRaw || '',
 			userTeamName: currentUser.userTeamName || '',

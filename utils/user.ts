@@ -1,7 +1,9 @@
+import { Maybe } from '../generated/graphql';
+
 type NameProps = {
-	userName: null | string;
-	userFirstName: null | string;
-	userLastName: null | string;
+	userName?: Maybe<string> | undefined;
+	userFirstName?: Maybe<string> | undefined;
+	userLastName?: Maybe<string> | undefined;
 };
 
 export const getFullName = (user: NameProps): string => {

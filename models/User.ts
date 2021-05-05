@@ -37,7 +37,7 @@ export const UserSchema = {
 	tableName: 'Users',
 	target: User,
 	columns: {
-		...Adapters.TypeORM.Models.User.schema.columns,
+		...(Adapters.TypeORM as any).Models.User.schema.columns,
 		id: {
 			primary: true,
 			type: 'int',
@@ -45,7 +45,7 @@ export const UserSchema = {
 			name: 'UserID',
 		} as EntitySchemaColumnOptions,
 		name: {
-			...Adapters.TypeORM.Models.User.schema.columns.name,
+			...(Adapters.TypeORM as any).Models.User.schema.columns.name,
 			name: 'UserName',
 		} as EntitySchemaColumnOptions,
 		firstName: {
@@ -61,11 +61,11 @@ export const UserSchema = {
 			nullable: true,
 		} as EntitySchemaColumnOptions,
 		email: {
-			...Adapters.TypeORM.Models.User.schema.columns.email,
+			...(Adapters.TypeORM as any).Models.User.schema.columns.email,
 			name: 'UserEmail',
 		} as EntitySchemaColumnOptions,
 		emailVerified: {
-			...Adapters.TypeORM.Models.User.schema.columns.emailVerified,
+			...(Adapters.TypeORM as any).Models.User.schema.columns.emailVerified,
 			name: 'UserEmailVerified',
 		} as EntitySchemaColumnOptions,
 		isTrusted: {
@@ -89,7 +89,7 @@ export const UserSchema = {
 			nullable: false,
 		} as EntitySchemaColumnOptions,
 		image: {
-			...Adapters.TypeORM.Models.User.schema.columns.image,
+			...(Adapters.TypeORM as any).Models.User.schema.columns.image,
 			name: 'UserImage',
 		} as EntitySchemaColumnOptions,
 		createdAt: {

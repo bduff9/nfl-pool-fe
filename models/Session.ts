@@ -19,7 +19,7 @@ export const SessionSchema = {
 	tableName: 'Sessions',
 	target: Session,
 	columns: {
-		...Adapters.TypeORM.Models.Session.schema.columns,
+		...(Adapters.TypeORM as any).Models.Session.schema.columns,
 		id: {
 			primary: true,
 			type: 'int',
@@ -27,19 +27,19 @@ export const SessionSchema = {
 			name: 'SessionID',
 		} as EntitySchemaColumnOptions,
 		userId: {
-			...Adapters.TypeORM.Models.Session.schema.columns.userId,
+			...(Adapters.TypeORM as any).Models.Session.schema.columns.userId,
 			name: 'UserID',
 		} as EntitySchemaColumnOptions,
 		expires: {
-			...Adapters.TypeORM.Models.Session.schema.columns.expires,
+			...(Adapters.TypeORM as any).Models.Session.schema.columns.expires,
 			name: 'SessionExpires',
 		} as EntitySchemaColumnOptions,
 		sessionToken: {
-			...Adapters.TypeORM.Models.Session.schema.columns.sessionToken,
+			...(Adapters.TypeORM as any).Models.Session.schema.columns.sessionToken,
 			name: 'SessionToken',
 		} as EntitySchemaColumnOptions,
 		accessToken: {
-			...Adapters.TypeORM.Models.Session.schema.columns.accessToken,
+			...(Adapters.TypeORM as any).Models.Session.schema.columns.accessToken,
 			name: 'SessionAccessToken',
 		} as EntitySchemaColumnOptions,
 		createdAt: {
