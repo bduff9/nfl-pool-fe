@@ -35,9 +35,7 @@ const Error: FC<ErrorProps> = ({ images }) => {
 			</Head>
 			<div className="content-bg position-absolute top-50 start-50 translate-middle border border-dark rounded-3 text-dark pb-4 col-md-6">
 				<h1 className="text-center">Flag on the play!</h1>
-				<div
-					className={clsx('mx-auto', 'position-relative', styles['image-500'])}
-				>
+				<div className={clsx('mx-auto', 'position-relative', styles['image-500'])}>
 					<Image
 						alt="Flag on the play"
 						layout="fill"
@@ -67,15 +65,11 @@ const Error: FC<ErrorProps> = ({ images }) => {
 					<h2 className="text-center">
 						{session ? (
 							<Link href="/">
-								<a className="bare-link">
-									Click here to return to your dashboard
-								</a>
+								<a className="bare-link">Click here to return to your dashboard</a>
 							</Link>
 						) : (
 							<Link href="/auth/login">
-								<a className="bare-link">
-									Click here to return to the login page
-								</a>
+								<a className="bare-link">Click here to return to the login page</a>
 							</Link>
 						)}
 					</h2>

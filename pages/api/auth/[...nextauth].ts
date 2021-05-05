@@ -3,7 +3,6 @@ import NextAuth, { NextAuthOptions } from 'next-auth';
 // eslint-disable-next-line import/no-named-as-default
 import Adapters from 'next-auth/adapters';
 import Providers from 'next-auth/providers';
-import { gql } from 'graphql-request';
 
 import Models from '../../../models';
 import {
@@ -14,15 +13,11 @@ import {
 	WEEKS_IN_SEASON,
 } from '../../../utils/constants';
 import { mxExists, sendLoginEmailViaAPI } from '../../../utils/auth.server';
-import { fetcher } from '../../../utils/graphql';
-import {
-	LogAction,
-	MutationWriteLogArgs,
-	QueryGetSystemValueArgs,
-} from '../../../generated/graphql';
+import { LogAction } from '../../../generated/graphql';
 import { TUser } from '../../../models/User';
-import { TAuthUser } from '../../../utils/types';
+import { TAuthUser, TSessionUser } from '../../../utils/types';
 import { log } from '../../../utils/logging';
+import { getPaymemtDueWeek, writeLog } from '../../../graphql/[...nextauth]';
 
 const {
 	DATABASE_URL,
@@ -79,27 +74,7 @@ const options: NextAuthOptions = {
 
 			if (userExists) return true;
 
-			const query = gql`
-				query GetCurrentWeek($Name: String!) {
-					getCurrentWeek
-					getSystemValue(Name: $Name) {
-						systemValueID
-						systemValueName
-						systemValueValue
-					}
-				}
-			`;
-			const { getCurrentWeek, getSystemValue } = await fetcher<
-				{
-					getCurrentWeek: number;
-					getSystemValue: {
-						systemValueID: number;
-						systemValueName: string;
-						systemValueValue: null | string;
-					};
-				},
-				QueryGetSystemValueArgs
-			>(query, { Name: 'PaymentDueWeek' });
+			const { getCurrentWeek, getSystemValue } = await getPaymemtDueWeek();
 
 			if (!getSystemValue.systemValueValue) {
 				console.error('Missing PaymentDueWeek property:', { getSystemValue });
@@ -107,10 +82,7 @@ const options: NextAuthOptions = {
 				return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=MissingSystemProperty`;
 			}
 
-			const lastRegistrationWeek = parseInt(
-				getSystemValue.systemValueValue,
-				10,
-			);
+			const lastRegistrationWeek = parseInt(getSystemValue.systemValueValue, 10);
 
 			if (getCurrentWeek > lastRegistrationWeek) {
 				return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=RegistrationOver`;
@@ -144,140 +116,47 @@ const options: NextAuthOptions = {
 				isNewUser,
 				isTrusted,
 				lastName,
-			} as any;
+			} as TSessionUser;
 
 			return session;
 		},
 	},
 	events: {
 		async signIn (message: TSignInMessage): Promise<void> {
-			const args: MutationWriteLogArgs = {
-				data: {
-					logAction: LogAction.Login,
-					logMessage: `${message.user.email} signed in`,
-					sub: `${message.user.id}`,
-				},
-			};
-			const query = gql`
-				mutation WriteToLog($data: WriteLogInput!) {
-					writeLog(data: $data) {
-						logID
-					}
-				}
-			`;
-
-			await fetcher<
-				{
-					writeLog: {
-						logID: number;
-					};
-				},
-				MutationWriteLogArgs
-			>(query, args);
+			await writeLog(
+				LogAction.Login,
+				`${message.user.email} signed in`,
+				`${message.user.id}`,
+			);
 		},
 		async signOut (message: TAuthUser): Promise<void> {
-			const args: MutationWriteLogArgs = {
-				data: {
-					logAction: LogAction.Logout,
-					logMessage: `${message.email} signed out`,
-					sub: `${message.id}`,
-				},
-			};
-			const query = gql`
-				mutation WriteToLog($data: WriteLogInput!) {
-					writeLog(data: $data) {
-						logID
-					}
-				}
-			`;
-
-			await fetcher<
-				{
-					writeLog: {
-						logID: number;
-					};
-				},
-				MutationWriteLogArgs
-			>(query, args);
+			await writeLog(LogAction.Logout, `${message.email} signed out`, `${message.id}`);
 		},
 		async createUser (message: TUser, ...rest): Promise<void> {
 			log.debug('~~~~createUser: ', { message, rest });
-			const args: MutationWriteLogArgs = {
-				data: {
-					logAction: LogAction.CreatedAccount,
-					logMessage: `${message.email} created an account`,
-					sub: `${message.id}`,
-				},
-			};
-			const query = gql`
-				mutation WriteToLog($data: WriteLogInput!) {
-					writeLog(data: $data) {
-						logID
-					}
-				}
-			`;
-
-			await fetcher<
-				{
-					writeLog: {
-						logID: number;
-					};
-				},
-				MutationWriteLogArgs
-			>(query, args);
+			await writeLog(
+				LogAction.CreatedAccount,
+				`${message.email} created an account`,
+				`${message.id}`,
+			);
 		},
 		async linkAccount (message: TLinkAccountMessage, ...rest): Promise<void> {
 			log.debug('~~~linkAccount: ', { message, rest });
-			const args: MutationWriteLogArgs = {
-				data: {
-					logAction: LogAction.LinkedAccount,
-					logMessage: `${message.user.email} linked ${message.providerAccount.provider} account`,
-					sub: `${message.user.id}`,
-				},
-			};
-			const query = gql`
-				mutation WriteToLog($data: WriteLogInput!) {
-					writeLog(data: $data) {
-						logID
-					}
-				}
-			`;
-
-			await fetcher<
-				{
-					writeLog: {
-						logID: number;
-					};
-				},
-				MutationWriteLogArgs
-			>(query, args);
+			await writeLog(
+				LogAction.LinkedAccount,
+				`${message.user.email} linked ${message.providerAccount.provider} account`,
+				`${message.user.id}`,
+			);
 		},
 		// async session (message): Promise<void> {
 		// 	console.log('Session event:', message);
 		// },
 		async error (message): Promise<void> {
-			const args: MutationWriteLogArgs = {
-				data: {
-					logAction: LogAction.AuthenticationError,
-					logMessage: `{message.email} had an authentication error`,
-					sub: `{message.sub}`,
-				},
-			};
-			const query = gql`
-				mutation WriteToLog($data: WriteLogInput!) {
-					writeLog(data: $data) {
-						logID
-					}
-				}
-			`;
-			const result = await fetcher<
-				{
-					writeLog: {
-						logID: number;
-					};
-				},
-				MutationWriteLogArgs
-			>(query, args);
+			const result = await writeLog(
+				LogAction.AuthenticationError,
+				`{message.email} had an authentication error`,
+				`{message.sub}`,
+			);
 
 			//TODO: clean up once tested
 			log.debug('~~~error event start~~~', { message, result });
@@ -320,7 +199,5 @@ const options: NextAuthOptions = {
 };
 
 // ts-prune-ignore-next
-export default async (
-	req: NextApiRequest,
-	res: NextApiResponse,
-): Promise<void> => NextAuth(req, res, options);
+export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> =>
+	NextAuth(req, res, options);

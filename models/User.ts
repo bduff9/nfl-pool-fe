@@ -25,12 +25,7 @@ export default class User extends Adapters.TypeORM.Models.User.model {
 	createdBy: string;
 	updatedBy: string;
 
-	constructor (
-		name: string,
-		email: string,
-		image: string,
-		emailVerified: boolean,
-	) {
+	constructor (name: string, email: string, image: string, emailVerified: boolean) {
 		super(name, email, image, emailVerified);
 		this.createdBy = 'NEXT_AUTH';
 		this.updatedBy = 'NEXT_AUTH';

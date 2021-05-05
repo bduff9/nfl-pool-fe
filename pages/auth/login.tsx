@@ -1,5 +1,4 @@
 import Cookies from 'js-cookie';
-import { gql } from 'graphql-request';
 import { GetStaticProps } from 'next';
 import { signIn, useSession } from 'next-auth/client';
 import Head from 'next/head';
@@ -13,10 +12,9 @@ import Unauthenticated from '../../components/Unauthenticated/Unauthenticated';
 import { getPageTitle } from '../../utils';
 import { formatError } from '../../utils/auth.client';
 import { REDIRECT_COOKIE_NAME } from '../../utils/constants';
-import { fetcher } from '../../utils/graphql';
-import { QueryGetSystemValueArgs } from '../../generated/graphql';
 import SocialAuthButton from '../../components/SocialAuthButton/SocialAuthButton';
 import styles from '../../styles/Login.module.scss';
+import { getLoginValues } from '../../graphql/login';
 
 type TFormState = 'READY' | 'LOADING' | 'ERRORED' | 'SUBMITTED';
 type LoginProps = { year: string };
@@ -167,9 +165,7 @@ const Login: FC<LoginProps> = ({ year }) => {
 						<h2 className="text-center text-success my-5">
 							Please check your email to sign in
 						</h2>
-						<h4 className="text-center text-dark mb-4">
-							You may close this window
-						</h4>
+						<h4 className="text-center text-dark mb-4">You may close this window</h4>
 					</>
 				)}
 			</div>
@@ -179,27 +175,9 @@ const Login: FC<LoginProps> = ({ year }) => {
 
 // ts-prune-ignore-next
 export const getStaticProps: GetStaticProps = async () => {
-	const query = gql`
-		query GetPoolYear($Name: String!) {
-			getSystemValue(Name: $Name) {
-				systemValueID
-				systemValueName
-				systemValueValue
-			}
-		}
-	`;
-	const data = await fetcher<
-		{
-			getSystemValue: {
-				systemValueID: number;
-				systemValueName: string;
-				systemValueValue: null | string;
-			};
-		},
-		QueryGetSystemValueArgs
-	>(query, { Name: 'YearUpdated' });
+	const { getSystemValue } = await getLoginValues();
 
-	return { props: { year: data.getSystemValue.systemValueValue } };
+	return { props: { year: getSystemValue.systemValueValue } };
 };
 
 Login.whyDidYouRender = true;

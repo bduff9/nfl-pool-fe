@@ -1,9 +1,7 @@
 import Account, { AccountSchema } from './Account';
 import Session, { SessionSchema } from './Session';
 import User, { UserSchema } from './User';
-import VerificationRequest, {
-	VerificationRequestSchema,
-} from './VerificationRequest';
+import VerificationRequest, { VerificationRequestSchema } from './VerificationRequest';
 
 export default {
 	Account: {

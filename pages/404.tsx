@@ -8,14 +8,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC, useEffect, useMemo } from 'react';
-import { gql } from 'graphql-request';
 import { useSession } from 'next-auth/client';
 
 import { getPageTitle } from '../utils';
 import styles from '../styles/404.module.scss';
-import { LogAction, MutationWriteLogArgs } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
 import { usePageTitle } from '../utils/hooks';
+import { write404Log } from '../graphql/404';
+import { TSessionUser } from '../utils/types';
 
 type NotFoundProps = {
 	images: string[];
@@ -33,30 +32,9 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 
 	useEffect((): void => {
 		const writeLog = async (): Promise<void> => {
-			const sub = ((session?.user as any)?.id || null) as null | string;
-			const args: MutationWriteLogArgs = {
-				data: {
-					logAction: LogAction.Error404,
-					logMessage: router.asPath,
-					sub: sub ? `${sub}` : sub,
-				},
-			};
-			const query = gql`
-				mutation WriteToLog($data: WriteLogInput!) {
-					writeLog(data: $data) {
-						logID
-					}
-				}
-			`;
+			const userID = (session?.user as TSessionUser)?.id;
 
-			await fetcher<
-				{
-					writeLog: {
-						logID: number;
-					};
-				},
-				MutationWriteLogArgs
-			>(query, args);
+			await write404Log(userID, router.asPath);
 		};
 
 		if (!loading) {
@@ -71,9 +49,7 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 			</Head>
 			<div className="content-bg position-absolute top-50 start-50 translate-middle border border-dark rounded-3 text-dark pb-4 col-md-6">
 				<h1 className="text-center">What have you done?!</h1>
-				<div
-					className={clsx('mx-auto', 'position-relative', styles['image-404'])}
-				>
+				<div className={clsx('mx-auto', 'position-relative', styles['image-404'])}>
 					<Image
 						alt="Okay, this part was us."
 						layout="fill"
@@ -83,8 +59,8 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 					/>
 				</div>
 				<h4 className="text-center">
-					Something has gone wrong. It might be because of you. It might be
-					because of us. Either way, this is awkward.
+					Something has gone wrong. It might be because of you. It might be because of us.
+					Either way, this is awkward.
 				</h4>
 				<div className="text-center">
 					<Link href="/">

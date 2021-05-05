@@ -11,9 +11,7 @@ describe('FAQ/Support', () => {
 		describe('When you visit support', () => {
 			it('should display support', () => {
 				cy.visit('/support');
-				cy.get('label')
-					.should('be.visible')
-					.and('have.text', 'Search the help page');
+				cy.get('label').should('be.visible').and('have.text', 'Search the help page');
 			});
 
 			it('should have a Rules section', () => {
@@ -34,9 +32,7 @@ describe('FAQ/Support', () => {
 
 			it('should have a Contact Us section', () => {
 				cy.get('#contact').scrollIntoView().should('have.text', 'Contact Us');
-				cy.get('.btn-primary')
-					.should('be.visible')
-					.and('have.text', 'Back to login');
+				cy.get('.btn-primary').should('be.visible').and('have.text', 'Back to login');
 
 				if (Cypress.env('SKIP_PERCY') !== 'true') {
 					cy.percySnapshot();

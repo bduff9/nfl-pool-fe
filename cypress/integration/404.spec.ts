@@ -11,9 +11,7 @@ describe('404 page', () => {
 		describe('When you visit an invalid route', () => {
 			it('should show 404', () => {
 				cy.visit('/invalid/route', { failOnStatusCode: false });
-				cy.get('h1')
-					.should('be.visible')
-					.and('have.text', 'What have you done?!');
+				cy.get('h1').should('be.visible').and('have.text', 'What have you done?!');
 				cy.get('img')
 					.should('be.visible')
 					.and('have.attr', 'alt')

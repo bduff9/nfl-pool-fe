@@ -3,8 +3,8 @@ import { EntitySchemaColumnOptions } from 'typeorm';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-export default class VerificationRequest extends Adapters.TypeORM.Models
-	.VerificationRequest.model {
+export default class VerificationRequest extends Adapters.TypeORM.Models.VerificationRequest
+	.model {
 	createdBy: string;
 	updatedBy: string;
 

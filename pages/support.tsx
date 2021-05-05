@@ -1,5 +1,4 @@
 import Fuse from 'fuse.js';
-import { gql } from 'graphql-request';
 import { GetStaticProps } from 'next';
 import { useSession } from 'next-auth/client';
 import Head from 'next/head';
@@ -7,13 +6,12 @@ import Link from 'next/link';
 import React, { FC, FormEvent } from 'react';
 
 import { FuseHighlight } from '../components/FuseHighlight/FuseHighlight';
-import { Faq, Rule, Scalars } from '../generated/graphql';
+import { Faq, Rule } from '../generated/graphql';
+import { getSupportContent } from '../graphql/support';
 import { getPageTitle } from '../utils';
-import { fetcher } from '../utils/graphql';
 import { useFuse, usePageTitle } from '../utils/hooks';
 
-const convertTextToAnchor = (text: string): string =>
-	text.toLowerCase().replace(/\W/g, '');
+const convertTextToAnchor = (text: string): string => text.toLowerCase().replace(/\W/g, '');
 
 const createFAQList = (faqs: Fuse.FuseResult<Faq>[]): JSX.Element[] => {
 	const faqList: JSX.Element[] = [];
@@ -23,20 +21,14 @@ const createFAQList = (faqs: Fuse.FuseResult<Faq>[]): JSX.Element[] => {
 		if (faq.item.supportContentCategory !== category) {
 			category = faq.item.supportContentCategory;
 			faqList.push(
-				<h3
-					id={convertTextToAnchor(category || '')}
-					key={`category-${category}`}
-				>
+				<h3 id={convertTextToAnchor(category || '')} key={`category-${category}`}>
 					{category}
 				</h3>,
 			);
 		}
 
 		faqList.push(
-			<details
-				className="text-success ms-7 mb-3"
-				key={`faq-${faq.item.supportContentID}`}
-			>
+			<details className="text-success ms-7 mb-3" key={`faq-${faq.item.supportContentID}`}>
 				<summary className="text-dark ms-n5">
 					<FuseHighlight attribute="supportContentDescription" hit={faq} />
 				</summary>
@@ -55,12 +47,7 @@ type SupportProps = {
 	supportEmail: string;
 };
 
-const Support: FC<SupportProps> = ({
-	faqs,
-	rules,
-	slackLink,
-	supportEmail,
-}) => {
+const Support: FC<SupportProps> = ({ faqs, rules, slackLink, supportEmail }) => {
 	const [title] = usePageTitle('Support/FAQs');
 	const [session, loading] = useSession();
 	const { hits: faqHits, onSearch: onFAQSearch } = useFuse(faqs, {
@@ -93,10 +80,7 @@ const Support: FC<SupportProps> = ({
 			<Head>
 				<title>{getPageTitle(title)}</title>
 			</Head>
-			<div
-				className="content-bg text-dark m-3 pt-5 pt-md-3 min-vh-100 pb-3 col"
-				id="top"
-			>
+			<div className="content-bg text-dark m-3 pt-5 pt-md-3 min-vh-100 pb-3 col" id="top">
 				<div className="form-floating mb-2">
 					<input
 						autoComplete="off"
@@ -119,14 +103,8 @@ const Support: FC<SupportProps> = ({
 				{ruleHits.length > 0 ? (
 					<ol>
 						{ruleHits.map(ruleHit => (
-							<li
-								key={`rule-${ruleHit.item.supportContentID}`}
-								className="mb-3"
-							>
-								<FuseHighlight
-									attribute="supportContentDescription"
-									hit={ruleHit}
-								/>
+							<li key={`rule-${ruleHit.item.supportContentID}`} className="mb-3">
+								<FuseHighlight attribute="supportContentDescription" hit={ruleHit} />
 							</li>
 						))}
 					</ol>
@@ -170,61 +148,14 @@ const Support: FC<SupportProps> = ({
 
 // ts-prune-ignore-next
 export const getStaticProps: GetStaticProps = async () => {
-	const query = gql`
-		query GetSupportContent($Name1: String!, $Name2: String!) {
-			supportEmail: getSystemValue(Name: $Name1) {
-				systemValueID
-				systemValueName
-				systemValueValue
-			}
-			slackLink: getSystemValue(Name: $Name2) {
-				systemValueID
-				systemValueName
-				systemValueValue
-			}
-			faqs: getFAQs {
-				supportContentID
-				supportContentType
-				supportContentCategory
-				supportContentDescription
-				supportContentDescription2
-				supportContentKeywords
-			}
-			rules: getRules {
-				supportContentID
-				supportContentType
-				supportContentDescription
-				supportContentKeywords
-			}
-		}
-	`;
-	const data = await fetcher<
-		{
-			supportEmail: {
-				systemValueID: number;
-				systemValueName: string;
-				systemValueValue: null | string;
-			};
-			slackLink: {
-				systemValueID: number;
-				systemValueName: string;
-				systemValueValue: null | string;
-			};
-			faqs: Faq[];
-			rules: Rule[];
-		},
-		{ Name1: Scalars['String']; Name2: Scalars['String'] }
-	>(query, {
-		Name1: 'SupportEmail',
-		Name2: 'SlackLink',
-	});
+	const { faqs, rules, slackLink, supportEmail } = await getSupportContent();
 
 	return {
 		props: {
-			faqs: data.faqs,
-			rules: data.rules,
-			slackLink: data.slackLink.systemValueValue,
-			supportEmail: data.supportEmail.systemValueValue,
+			faqs,
+			rules,
+			slackLink: slackLink.systemValueValue,
+			supportEmail: supportEmail.systemValueValue,
 		},
 		revalidate: 3600,
 	};

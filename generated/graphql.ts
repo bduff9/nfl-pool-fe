@@ -1,7 +1,5 @@
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = {
-	[K in keyof T]: T[K];
-};
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
 	{ [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
@@ -19,6 +17,7 @@ export type Scalars = {
 
 export type Query = {
 	__typename?: 'Query';
+	hasSocialLinked: Scalars['Boolean'];
 	getAPICallsForWeek: Array<ApiCall>;
 	getEmail: Email;
 	getFAQs: Array<Faq>;
@@ -40,9 +39,13 @@ export type Query = {
 	getTeams: Array<Team>;
 	getMyTiebreakerForWeek: Tiebreaker;
 	getTiebreakersForWeek: Array<Tiebreaker>;
-	getUser: User;
+	getCurrentUser: User;
 	getUsers: Array<User>;
 	getWeek: Week;
+};
+
+export type QueryHasSocialLinkedArgs = {
+	Type: Scalars['String'];
 };
 
 export type QueryGetApiCallsForWeekArgs = {
@@ -98,10 +101,6 @@ export type QueryGetTiebreakersForWeekArgs = {
 	Week: Scalars['Int'];
 };
 
-export type QueryGetUserArgs = {
-	UserID: Scalars['Int'];
-};
-
 export type QueryGetWeekArgs = {
 	Week?: Maybe<Scalars['Int']>;
 };
@@ -136,6 +135,7 @@ export type Email = {
 
 /** The sent message type */
 export enum EmailType {
+	Untrusted = 'untrusted',
 	Verification = 'verification',
 }
 
@@ -146,20 +146,19 @@ export type User = {
 	userPhone?: Maybe<Scalars['String']>;
 	userName?: Maybe<Scalars['String']>;
 	userFirstName?: Maybe<Scalars['String']>;
-	UserLastName?: Maybe<Scalars['String']>;
+	userLastName?: Maybe<Scalars['String']>;
 	userTeamName?: Maybe<Scalars['String']>;
 	userImage?: Maybe<Scalars['String']>;
 	userReferredByRaw?: Maybe<Scalars['String']>;
-	userReferredBy?: Maybe<User>;
+	userReferredByUser?: Maybe<User>;
 	userEmailVerified?: Maybe<Scalars['DateTime']>;
 	userTrusted?: Maybe<Scalars['Boolean']>;
 	userDoneRegistering: Scalars['Boolean'];
 	userIsAdmin: Scalars['Boolean'];
 	userPlaysSurvivor: Scalars['Boolean'];
-	userPaymentType: PaymentType;
+	userPaymentType?: Maybe<PaymentType>;
 	userPaymentAccount?: Maybe<Scalars['String']>;
 	userPaid: Scalars['Float'];
-	userSelectedWeek: Scalars['Int'];
 	userAutoPicksLeft: Scalars['Int'];
 	userAutoPickStrategy?: Maybe<AutoPickStrategy>;
 	notifications: Notification;
@@ -471,10 +470,15 @@ export enum WeekStatus {
 export type Mutation = {
 	__typename?: 'Mutation';
 	writeLog: Log;
+	finishRegistration: User;
 };
 
 export type MutationWriteLogArgs = {
 	data: WriteLogInput;
+};
+
+export type MutationFinishRegistrationArgs = {
+	data: FinishRegistrationInput;
 };
 
 /** New log data */
@@ -483,4 +487,16 @@ export type WriteLogInput = {
 	logMessage: Scalars['String'];
 	leagueID?: Maybe<Scalars['Int']>;
 	sub?: Maybe<Scalars['String']>;
+};
+
+/** User registration data */
+export type FinishRegistrationInput = {
+	userFirstName: Scalars['String'];
+	userLastName: Scalars['String'];
+	userName: Scalars['String'];
+	userPaymentAccount: Scalars['String'];
+	userPaymentType: PaymentType;
+	userPlaysSurvivor: Scalars['Boolean'];
+	userReferredByRaw: Scalars['String'];
+	userTeamName?: Maybe<Scalars['String']>;
 };

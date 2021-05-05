@@ -28,14 +28,6 @@ const Dashboard: FC<DashboardProps> = () => {
 			</Head>
 			<div className="col">
 				<h1 className="welcome-banner">Dashboard</h1>
-
-				<div className="d-grid gap-2 d-md-flex mb-2">
-					<SocialAuthButton type="Google" />
-					<SocialAuthButton type="Twitter" />
-					<a className="btn btn-secondary btn-logout" href="/auth/logout">
-						Sign Out
-					</a>
-				</div>
 			</div>
 		</Authenticated>
 	);

@@ -7,12 +7,7 @@ export default class Session extends Adapters.TypeORM.Models.Session.model {
 	createdBy: string;
 	updatedBy: string;
 
-	constructor (
-		userId: number,
-		expires: Date,
-		sessionToken: string,
-		accessToken: string,
-	) {
+	constructor (userId: number, expires: Date, sessionToken: string, accessToken: string) {
 		super(userId, expires, sessionToken, accessToken);
 		this.createdBy = 'NEXT_AUTH';
 		this.updatedBy = 'NEXT_AUTH';
