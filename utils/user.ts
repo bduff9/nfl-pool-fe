@@ -16,7 +16,7 @@ export const getFullName = (user: NameProps): string => {
 	return fullName.trim();
 };
 
-export const getNameParts = (fullName: string): [string, string] => {
+const getNameParts = (fullName: string): [string, string] => {
 	const words = fullName.trim().split(' ');
 
 	if (words.length === 0) return ['', ''];
