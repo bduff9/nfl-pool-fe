@@ -20,7 +20,7 @@ export const VerificationRequestSchema = {
 	tableName: 'VerificationRequests',
 	target: VerificationRequest,
 	columns: {
-		...Adapters.TypeORM.Models.VerificationRequest.schema.columns,
+		...(Adapters.TypeORM as any).Models.VerificationRequest.schema.columns,
 		id: {
 			primary: true,
 			type: 'int',
@@ -28,15 +28,15 @@ export const VerificationRequestSchema = {
 			name: 'VerificationRequestID',
 		} as EntitySchemaColumnOptions,
 		identifier: {
-			...Adapters.TypeORM.Models.VerificationRequest.schema.columns.identifier,
+			...(Adapters.TypeORM as any).Models.VerificationRequest.schema.columns.identifier,
 			name: 'VerificationRequestIdentifier',
 		} as EntitySchemaColumnOptions,
 		token: {
-			...Adapters.TypeORM.Models.VerificationRequest.schema.columns.token,
+			...(Adapters.TypeORM as any).Models.VerificationRequest.schema.columns.token,
 			name: 'VerificationRequestToken',
 		} as EntitySchemaColumnOptions,
 		expires: {
-			...Adapters.TypeORM.Models.VerificationRequest.schema.columns.expires,
+			...(Adapters.TypeORM as any).Models.VerificationRequest.schema.columns.expires,
 			name: 'VerificationRequestExpires',
 		} as EntitySchemaColumnOptions,
 		createdAt: {

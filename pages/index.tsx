@@ -3,7 +3,6 @@ import Head from 'next/head';
 import React, { FC } from 'react';
 
 import Authenticated from '../components/Authenticated/Authenticated';
-import SocialAuthButton from '../components/SocialAuthButton/SocialAuthButton';
 import { TUser } from '../models/User';
 import { getPageTitle } from '../utils';
 import {

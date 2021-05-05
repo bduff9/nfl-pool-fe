@@ -24,7 +24,7 @@ const getCurrentUserQuery = gql`
 	}
 `;
 
-type GetCurrentUserResponse = Pick<
+export type GetCurrentUserResponse = Pick<
 	User,
 	| 'userID'
 	| 'userName'
@@ -38,20 +38,6 @@ type GetCurrentUserResponse = Pick<
 	| 'userReferredByRaw'
 	| 'userTrusted'
 >;
-
-// class GetCurrentUserResponse implements Partial<User> {
-// 	userID!: number;
-// 	userName!: null | string;
-// 	userEmail!: string;
-// 	userFirstName!: null | string;
-// 	userLastName!: null | string;
-// 	userTeamName!: null | string;
-// 	userPaymentType!: PaymentType;
-// 	userPaymentAccount!: null | string;
-// 	userPlaysSurvivor!: boolean;
-// 	userReferredByRaw!: null | string;
-// 	userTrusted!: boolean | null;
-// }
 
 export const useFinishRegistrationQuery = (): SWRResponse<
 	{

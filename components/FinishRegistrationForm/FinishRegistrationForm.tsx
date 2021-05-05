@@ -15,6 +15,7 @@ import SocialAuthButton from '../SocialAuthButton/SocialAuthButton';
 import { ACCOUNT_TYPES } from '../../utils/constants';
 import { TTrueFalse } from '../../utils/types';
 import { getFullName, getFirstName, getLastName } from '../../utils/user';
+import { GetCurrentUserResponse } from '../../graphql/create';
 
 import styles from './FinishRegistrationForm.module.scss';
 
@@ -56,19 +57,7 @@ const schema = Yup.object().shape({
 });
 
 type FinishRegistrationFormProps = {
-	currentUser: {
-		userID: number;
-		userName: null | string;
-		userEmail: string;
-		userFirstName: null | string;
-		userLastName: null | string;
-		userTeamName: null | string;
-		userPaymentType: PaymentType;
-		userPaymentAccount: null | string;
-		userPlaysSurvivor: boolean;
-		userReferredByRaw: null | string;
-		userTrusted: boolean | null;
-	};
+	currentUser: GetCurrentUserResponse;
 	hasGoogle: boolean;
 	hasTwitter: boolean;
 };
