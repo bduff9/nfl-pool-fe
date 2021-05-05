@@ -29,3 +29,5 @@ export type TSessionUser = {
 	lastName?: string;
 	name?: null | string;
 };
+
+export type TTrueFalse = 'false' | 'true';

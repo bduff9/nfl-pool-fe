@@ -12,19 +12,15 @@ import React, {
 	useCallback,
 	useContext,
 	useEffect,
-	useMemo,
 	useState,
 } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
-import useSWR from 'swr';
-import { gql } from 'graphql-request';
 
 import NavLink from '../NavLink/NavLink';
 import MenuAccordion from '../MenuAccordion/MenuAccordion';
 import { TitleContext, WeekContext } from '../../utils/context';
-import { fetcher } from '../../utils/graphql';
-import { WeekStatus } from '../../generated/graphql';
 import { TSessionUser } from '../../utils/types';
+import { useSidebarData } from '../../graphql/sidebar';
 
 import styles from './Sidebar.module.scss';
 import SidebarLoader from './SidebarLoader';
@@ -32,25 +28,6 @@ import SidebarLoader from './SidebarLoader';
 type SidebarProps = {
 	user: TSessionUser;
 };
-
-const getSidebarGQL = gql`
-	query GetSidebar($week: Int!) {
-		currentWeek: getWeek {
-			weekNumber
-			weekStarts
-			weekStatus
-		}
-		selectedWeek: getWeek(Week: $week) {
-			weekNumber
-			weekStarts
-			weekStatus
-		}
-		getMyTiebreakerForWeek(Week: $week) {
-			tiebreakerHasSubmitted
-		}
-		isAliveInSurvivor
-	}
-`;
 
 const Sidebar: FC<SidebarProps> = ({ user }) => {
 	const router = useRouter();
@@ -60,25 +37,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 	}, [openMenu]);
 	const [title] = useContext(TitleContext);
 	const [selectedWeek, setSelectedWeek] = useContext(WeekContext);
-	const getSidebarVars = useMemo(() => ({ week: selectedWeek }), [
-		selectedWeek,
-	]);
-	const { data, error } = useSWR<{
-		currentWeek: {
-			weekNumber: number;
-			weekStarts: Date;
-			weekStatus: WeekStatus;
-		};
-		selectedWeek: {
-			weekNumber: number;
-			weekStarts: Date;
-			weekStatus: WeekStatus;
-		};
-		getMyTiebreakerForWeek: {
-			tiebreakerHasSubmitted: boolean;
-		};
-		isAliveInSurvivor: boolean;
-	}>([getSidebarGQL, getSidebarVars], fetcher);
+	const { data, error } = useSidebarData(user.doneRegistering, selectedWeek);
 	const isLoading = user.doneRegistering && !data;
 	const hasSeasonStarted =
 		(data?.currentWeek.weekNumber || 0) > 1 ||
@@ -89,6 +48,15 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 		console.error('Failed to load sidebar data', error);
 		throw error;
 	}
+
+	useEffect(() => {
+		if (!data) return;
+
+		if (selectedWeek < 1 || selectedWeek > 18) {
+			setSelectedWeek(data?.currentWeek.weekNumber);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data?.currentWeek.weekNumber]);
 
 	const updateWeek = (event: ChangeEvent<HTMLSelectElement>) => {
 		setSelectedWeek(parseInt(event.target.value, 10));
@@ -182,16 +150,11 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 				) : (
 					<>
 						<span className="d-md-none" onClick={toggleMenu}>
-							<FontAwesomeIcon
-								className={styles['close-menu']}
-								icon={faTimes}
-							/>
+							<FontAwesomeIcon className={styles['close-menu']} icon={faTimes} />
 						</span>
 						{user.doneRegistering && (
 							<>
-								<div
-									className={clsx('text-center', 'mb-4', 'sidebar-greeting')}
-								>
+								<div className={clsx('text-center', 'mb-4', 'sidebar-greeting')}>
 									Welcome, {user.firstName}
 								</div>
 								<div
@@ -214,11 +177,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 										<FontAwesomeIcon icon={faChevronLeft} />
 									</button>
 									<select
-										className={clsx(
-											'text-center',
-											'px-2',
-											styles['week-picker'],
-										)}
+										className={clsx('text-center', 'px-2', styles['week-picker'])}
 										onChange={updateWeek}
 										value={selectedWeek}
 									>
@@ -240,9 +199,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 										<FontAwesomeIcon icon={faChevronRight} />
 									</button>
 								</div>
-								<div
-									className={clsx('text-center', styles['current-week-link'])}
-								>
+								<div className={clsx('text-center', styles['current-week-link'])}>
 									{data?.currentWeek.weekNumber !== selectedWeek && (
 										<button
 											className={styles['btn-current-week']}
@@ -324,39 +281,20 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 									View Picks
 								</NavLink>
 							</MenuAccordion>
-							<NavLink
-								onClick={() => alert('TODO:')}
-								show={user.doneRegistering}
-							>
+							<NavLink onClick={() => alert('TODO:')} show={user.doneRegistering}>
 								NFL Scoreboard
 							</NavLink>
 							<MenuAccordion title="My Account">
-								<NavLink
-									href="/users/create"
-									isNested
-									show={!user.doneRegistering}
-								>
+								<NavLink href="/users/create" isNested show={!user.doneRegistering}>
 									Finish Registration
 								</NavLink>
-								<NavLink
-									href="/users/edit"
-									isNested
-									show={user.doneRegistering}
-								>
+								<NavLink href="/users/edit" isNested show={user.doneRegistering}>
 									Edit My Profile
 								</NavLink>
-								<NavLink
-									href="/users/payments"
-									isNested
-									show={user.doneRegistering}
-								>
+								<NavLink href="/users/payments" isNested show={user.doneRegistering}>
 									View Payments
 								</NavLink>
-								<NavLink
-									href="/users/stats"
-									isNested
-									show={user.doneRegistering}
-								>
+								<NavLink href="/users/stats" isNested show={user.doneRegistering}>
 									Statistics
 								</NavLink>
 							</MenuAccordion>

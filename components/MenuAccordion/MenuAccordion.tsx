@@ -5,21 +5,12 @@ import { useAccordionButton } from 'react-bootstrap/AccordionButton';
 
 import styles from './MenuAccordion.module.scss';
 
-const MenuAccordionButton: FC<{ eventKey: string }> = ({
-	children,
-	eventKey,
-}) => {
+const MenuAccordionButton: FC<{ eventKey: string }> = ({ children, eventKey }) => {
 	const decoratedOnClick = useAccordionButton(eventKey);
 
 	return (
 		<button
-			className={clsx(
-				'w-100',
-				'text-start',
-				'py-2',
-				'rounded',
-				styles['btn-menu'],
-			)}
+			className={clsx('w-100', 'text-start', 'py-2', 'rounded', styles['btn-menu'])}
 			onClick={decoratedOnClick}
 			type="button"
 		>

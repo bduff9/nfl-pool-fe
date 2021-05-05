@@ -41,8 +41,7 @@ export const useFuse = <ListType>(
 	);
 	const setQuery = useCallback(debounce(500, updateQuery), []);
 	const onSearch = useCallback(
-		(event: FormEvent<HTMLInputElement>) =>
-			setQuery(event.currentTarget.value.trim()),
+		(event: FormEvent<HTMLInputElement>) => setQuery(event.currentTarget.value.trim()),
 		[setQuery],
 	);
 
@@ -85,9 +84,7 @@ export const useInterval = (callback: () => void, delay: number): void => {
 	}, [delay]);
 };
 
-export const usePageTitle = (
-	title: string,
-): [string, Dispatch<SetStateAction<string>>] => {
+export const usePageTitle = (title: string): [string, Dispatch<SetStateAction<string>>] => {
 	const [currentTitle, setTitle] = useContext(TitleContext);
 
 	useEffect(() => {
