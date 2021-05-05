@@ -15,7 +15,7 @@ const Layout: FC<LayoutProps> = props => {
 	const { children } = props;
 	const [session, loading] = useSession();
 	const titleContext = useState<string>('Welcome');
-	const weekContext = useState<number>(1);
+	const weekContext = useState<number>(0);
 
 	useEffect((): void => {
 		if (session && !loading) {
@@ -38,7 +38,7 @@ const Layout: FC<LayoutProps> = props => {
 					<div className="row h-100">
 						{session && session.user ? (
 							<>
-								<Sidebar user={session.user as any} />
+								<Sidebar user={session.user as TSessionUser} />
 								<div className="h-100 col col-sm-9 offset-sm-3 ml-sm-auto ml-print-0 col-lg-10 offset-lg-2 main">
 									{children}
 								</div>

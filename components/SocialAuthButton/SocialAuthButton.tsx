@@ -8,12 +8,14 @@ import React, { FC, useState } from 'react';
 import styles from './SocialAuthButton.module.scss';
 
 type SocialAuthButtonProps = {
+	isLinked?: boolean;
 	isRegister?: boolean;
 	isSignIn?: boolean;
 	type: 'Google' | 'Twitter';
 };
 
 const SocialAuthButton: FC<SocialAuthButtonProps> = ({
+	isLinked = false,
 	isRegister = false,
 	isSignIn = false,
 	type,
@@ -24,6 +26,8 @@ const SocialAuthButton: FC<SocialAuthButtonProps> = ({
 
 	if (isSignIn) {
 		title = `${isRegister ? 'Register with' : 'Sign in with'} ${type}`;
+	} else if (isLinked) {
+		title = `${type} linked`;
 	}
 
 	return (
@@ -34,7 +38,7 @@ const SocialAuthButton: FC<SocialAuthButtonProps> = ({
 				type === 'Twitter' && styles['btn-twitter'],
 				'col-md-6',
 			)}
-			disabled={isLoading}
+			disabled={isLoading || isLinked}
 			onClick={async (): Promise<void> => {
 				setIsLoading(true);
 				await signIn(lowered);
@@ -45,9 +49,7 @@ const SocialAuthButton: FC<SocialAuthButtonProps> = ({
 			{type === 'Google' && <FontAwesomeIcon icon={faGoogle} />}
 			{type === 'Twitter' && <FontAwesomeIcon icon={faTwitter} />}
 			&nbsp;
-			<span className="d-none d-md-inline">
-				{isLoading ? 'Redirecting...' : title}
-			</span>
+			<span className="d-none d-md-inline">{isLoading ? 'Redirecting...' : title}</span>
 		</button>
 	);
 };

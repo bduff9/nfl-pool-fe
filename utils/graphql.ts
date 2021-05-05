@@ -12,10 +12,7 @@ const client = new GraphQLClient(gqlURL, {
 	mode: 'cors',
 });
 
-export const fetcher = async <
-	ReturnType,
-	Vars extends Record<string, any> = never
->(
+export const fetcher = async <ReturnType, Vars extends Record<string, any> = never>(
 	query: string,
 	variables?: Vars,
 ): Promise<ReturnType> => {
