@@ -10,7 +10,7 @@ const MenuAccordionButton: FC<{ eventKey: string }> = ({ children, eventKey }) =
 
 	return (
 		<button
-			className={clsx('w-100', 'text-start', 'py-2', 'rounded', styles['btn-menu'])}
+			className={clsx('w-100', 'text-start', 'py-2', 'ps-2', 'rounded', styles['btn-menu'])}
 			onClick={decoratedOnClick}
 			type="button"
 		>
