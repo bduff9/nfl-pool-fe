@@ -63,6 +63,12 @@ const options: NextAuthOptions = {
 	),
 	callbacks: {
 		async signIn (user, _account, _profile): Promise<boolean | string> {
+			const isBanned = (user as TAuthUser).isTrusted === false;
+
+			if (isBanned) {
+				return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=NotAllowed`;
+			}
+
 			const isValidMX = !!user.email && (await mxExists(user.email));
 			const userExists = (user as TAuthUser).doneRegistering;
 

@@ -1,6 +1,7 @@
 type TLoginError =
 	| 'InvalidEmail'
 	| 'MissingSystemProperty'
+	| 'NotAllowed'
 	| 'OAuthAccountNotLinked'
 	| 'RegistrationOver';
 
@@ -16,6 +17,8 @@ export const formatError = (error: unknown): string => {
 				console.error('Missing property `PaymentDueWeek`');
 
 				return 'System error, please contact an administrator';
+			case 'NotAllowed':
+				return 'Your account has been blocked.  Please reach out to an administrator to resolve.';
 			case 'OAuthAccountNotLinked':
 				return "It looks like you haven't linked your account yet, please sign in using the previous method and then link this account to be able to use it to sign in";
 			case 'RegistrationOver':
