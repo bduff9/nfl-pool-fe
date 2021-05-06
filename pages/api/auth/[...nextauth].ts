@@ -1,6 +1,20 @@
+/*******************************************************************************
+ * NFL Confidence Pool FE - the frontend implementation of an NFL confidence pool.
+ * Copyright (C) 2015-present Brian Duffey and Billy Alexander
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see {http://www.gnu.org/licenses/}.
+ * Home: https://asitewithnoname.com/
+ */
 import { NextApiRequest, NextApiResponse } from 'next';
-import NextAuth, { NextAuthOptions } from 'next-auth';
-// eslint-disable-next-line import/no-named-as-default
+import NextAuth, { NextAuthOptions, Session } from 'next-auth';
 import Adapters from 'next-auth/adapters';
 import Providers from 'next-auth/providers';
 
@@ -14,7 +28,6 @@ import {
 } from '../../../utils/constants';
 import { mxExists, sendLoginEmailViaAPI } from '../../../utils/auth.server';
 import { LogAction } from '../../../generated/graphql';
-import { TUser } from '../../../models/User';
 import { TAuthUser, TSessionUser } from '../../../utils/types';
 import { log } from '../../../utils/logging';
 import { getPaymemtDueWeek, writeLog } from '../../../graphql/[...nextauth]';
@@ -39,17 +52,6 @@ if (!GOOGLE_SECRET) throw new Error('Missing Google secret');
 if (!TWITTER_ID) throw new Error('Missing Twitter ID');
 
 if (!TWITTER_SECRET) throw new Error('Missing Twitter secret');
-
-type TLinkAccountMessage = {
-	user: TUser;
-	providerAccount: { provider: string; type: string };
-};
-
-type TSignInMessage = {
-	account: { id: string; type: string; providerAccountId: string };
-	isNewUser: boolean;
-	user: TUser;
-};
 
 const options: NextAuthOptions = {
 	adapter: Adapters.TypeORM.Adapter(
@@ -128,35 +130,35 @@ const options: NextAuthOptions = {
 		},
 	},
 	events: {
-		async signIn (message: TSignInMessage): Promise<void> {
+		async signIn (message): Promise<void> {
 			await writeLog(
 				LogAction.Login,
 				`${message.user.email} signed in`,
 				`${message.user.id}`,
 			);
 		},
-		async signOut (message: TAuthUser): Promise<void> {
-			await writeLog(LogAction.Logout, `${message.email} signed out`, `${message.id}`);
+		async signOut (message: null | Session): Promise<void> {
+			await writeLog(LogAction.Logout, `${message?.email} signed out`, `${message?.id}`);
 		},
-		async createUser (message: TUser, ...rest): Promise<void> {
-			log.debug('~~~~createUser: ', { message, rest });
+		async createUser (message): Promise<void> {
+			log.debug('~~~~createUser: ', { message });
 			await writeLog(
 				LogAction.CreatedAccount,
 				`${message.email} created an account`,
 				`${message.id}`,
 			);
 		},
-		async linkAccount (message: TLinkAccountMessage, ...rest): Promise<void> {
-			log.debug('~~~linkAccount: ', { message, rest });
+		async linkAccount (message): Promise<void> {
+			log.debug('~~~linkAccount: ', { message });
 			await writeLog(
 				LogAction.LinkedAccount,
 				`${message.user.email} linked ${message.providerAccount.provider} account`,
 				`${message.user.id}`,
 			);
 		},
-		// async session (message): Promise<void> {
-		// 	console.log('Session event:', message);
-		// },
+		async session (message: { session: Session }, ...rest: unknown[]): Promise<void> {
+			log.debug('~~~session: ', { message, rest });
+		},
 		async error (message): Promise<void> {
 			const result = await writeLog(
 				LogAction.AuthenticationError,
