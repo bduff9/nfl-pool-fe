@@ -137,7 +137,7 @@ const Login: FC<LoginProps> = ({ year }) => {
 											: 'Register'}
 								</button>
 								<Link href="/support#loginregistration">
-									<a className="btn btn-secondary text-white" type="button">
+									<a className="btn btn-secondary text-white">
 										{isLogin ? 'Trouble logging in?' : 'Trouble registering?'}
 									</a>
 								</Link>
