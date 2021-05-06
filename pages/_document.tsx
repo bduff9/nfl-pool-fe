@@ -50,25 +50,10 @@ class MyDocument extends Document {
 					<link rel="apple-touch-icon" href="/icon-192x192.png" />
 					<meta name="apple-mobile-web-app-status-bar" content={appColor} />
 					<link rel="preconnect" href={NEXT_PUBLIC_API_URL} crossOrigin="true" />
-					<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
 					<link
-						rel="preload"
-						as="style"
+						rel="stylesheet"
 						href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
 					/>
-					<style // nosemgrep
-						dangerouslySetInnerHTML={{
-							__html: `
-							</style>
-							<link
-								rel="stylesheet"
-								href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
-								media="print"
-								onload="this.media='all'"
-							/>
-							<style>`,
-						}}
-					></style>
 					<noscript>
 						<link
 							rel="stylesheet"
