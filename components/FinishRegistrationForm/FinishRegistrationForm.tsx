@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons/faQuestionCircle';
 import { yupResolver } from '@hookform/resolvers/yup';
 import clsx from 'clsx';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 // eslint-disable-next-line import/named
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -83,9 +83,11 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 	hasTwitter,
 }) => {
 	const {
-		register,
-		handleSubmit,
 		formState: { errors },
+		handleSubmit,
+		register,
+		setValue,
+		watch,
 	} = useForm<FormData>({
 		defaultValues: {
 			userID: currentUser.userID,
@@ -105,6 +107,15 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 		!currentUser.userTrusted && !!currentUser.userReferredByRaw,
 	);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const watchName = watch(['userFirstName', 'userLastName']);
+
+	useEffect(() => {
+		const [firstName, lastName] = watchName;
+		const fullName = `${firstName.trim()} ${lastName.trim()}`;
+
+		setValue('userName', fullName, { shouldValidate: true });
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [watchName]);
 
 	const onSubmit: SubmitHandler<FormData> = async data => {
 		const { userEmail: UUUserEmail, userID: UUUserID, userPlaysSurvivor, ...rest } = data;
