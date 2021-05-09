@@ -107,15 +107,22 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 		!currentUser.userTrusted && !!currentUser.userReferredByRaw,
 	);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const watchName = watch(['userFirstName', 'userLastName']);
+	const [watchName, watchFirstName, watchLastName] = watch([
+		'userName',
+		'userFirstName',
+		'userLastName',
+	]);
 
 	useEffect(() => {
-		const [firstName, lastName] = watchName;
-		const fullName = `${firstName.trim()} ${lastName.trim()}`;
+		if (watchName.match(/\w{2,}\s\w{2,}/)) return;
+
+		if (!watchFirstName || !watchLastName) return;
+
+		const fullName = `${watchFirstName.trim()} ${watchLastName.trim()}`;
 
 		setValue('userName', fullName, { shouldValidate: true });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [watchName]);
+	}, [watchFirstName, watchLastName]);
 
 	const onSubmit: SubmitHandler<FormData> = async data => {
 		const { userEmail: UUUserEmail, userID: UUUserID, userPlaysSurvivor, ...rest } = data;
