@@ -16,42 +16,7 @@
 import { gql } from 'graphql-request';
 
 import { fetcher } from '../utils/graphql';
-import {
-	Log,
-	LogAction,
-	MutationWriteLogArgs,
-	QueryGetSystemValueArgs,
-	Scalars,
-	SystemValue,
-} from '../generated/graphql';
-
-type GetPaymentDueWeekResponse = {
-	getCurrentWeek: Scalars['Int'];
-	getSystemValue: Pick<
-		SystemValue,
-		'systemValueID' | 'systemValueName' | 'systemValueValue'
-	>;
-};
-
-const getPaymentDueWeekQuery = gql`
-	query GetCurrentWeek($Name: String!) {
-		getCurrentWeek
-		getSystemValue(Name: $Name) {
-			systemValueID
-			systemValueName
-			systemValueValue
-		}
-	}
-`;
-
-export const getPaymemtDueWeek = async (): Promise<GetPaymentDueWeekResponse> => {
-	const vars = { Name: 'PaymentDueWeek' };
-
-	return fetcher<GetPaymentDueWeekResponse, QueryGetSystemValueArgs>(
-		getPaymentDueWeekQuery,
-		vars,
-	);
-};
+import { Log, LogAction, MutationWriteLogArgs } from '../generated/graphql';
 
 type WriteLogResponse = {
 	writeLog: Pick<Log, 'logID'>;

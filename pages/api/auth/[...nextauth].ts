@@ -13,6 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+import mysql from 'mysql';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { NextAuthOptions, Session } from 'next-auth';
 import Adapters from 'next-auth/adapters';
@@ -30,13 +31,13 @@ import { mxExists, sendLoginEmailViaAPI } from '../../../utils/auth.server';
 import { LogAction } from '../../../generated/graphql';
 import { TAuthUser, TSessionUser } from '../../../utils/types';
 import { log } from '../../../utils/logging';
-import { getPaymemtDueWeek, writeLog } from '../../../graphql/[...nextauth]';
+import { writeLog } from '../../../graphql/[...nextauth]';
+import { getAll, getConnection, getOne } from '../../../utils/db';
 
 const {
 	DATABASE_URL,
 	GOOGLE_ID,
 	GOOGLE_SECRET,
-	// JWT_SECRET,
 	NEXT_PUBLIC_SITE_URL,
 	secret,
 	TWITTER_ID,
@@ -64,7 +65,9 @@ const options: NextAuthOptions = {
 		},
 	),
 	callbacks: {
-		async signIn (user, _account, _profile): Promise<boolean | string> {
+		async signIn (user, _account, profile): Promise<boolean | string> {
+			log.debug('~~~Signin:', { _account, profile, user });
+
 			const isBanned = (user as TAuthUser).isTrusted === false;
 
 			if (isBanned) {
@@ -74,29 +77,131 @@ const options: NextAuthOptions = {
 			const isValidMX = !!user.email && (await mxExists(user.email));
 			const userExists = (user as TAuthUser).doneRegistering;
 
-			log.debug('~~~Signin:', { _account, _profile, user });
-
 			if (!isValidMX) {
 				return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=InvalidEmail`;
 			}
 
 			if (userExists) return true;
 
-			const { getCurrentWeek, getSystemValue } = await getPaymemtDueWeek();
+			let connection: mysql.Connection | null = null;
 
-			if (!getSystemValue.systemValueValue) {
-				console.error('Missing PaymentDueWeek property:', { getSystemValue });
+			try {
+				connection = getConnection();
 
-				return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=MissingSystemProperty`;
+				const userPromise = getOne<
+					| {
+							UserID: number;
+							UserName: null | string;
+							UserFirstName: null | string;
+							UserLastName: null | string;
+							UserImage: null | string;
+							UserDoneRegistering: boolean;
+					  }
+					| undefined,
+					[string]
+				>(connection, 'SELECT * FROM Users WHERE UserEmail = ? AND UserDeleted IS NULL', [
+					user.email || '',
+				]);
+				const paymentDueWeekPromise = getOne<{ SystemValueValue: string }, [string]>(
+					connection,
+					'SELECT SystemValueValue FROM SystemValues WHERE SystemValueName = ? AND SystemValueDeleted IS NULL',
+					['PaymentDueWeek'],
+				);
+				const currentWeekPromise = getOne<{ GameWeek: number }, [string]>(
+					connection,
+					'SELECT COALESCE(MIN(GameWeek), 17) AS GameWeek FROM Games WHERE GameStatus <> ? AND GameDeleted IS NULL',
+					['C'],
+				);
+
+				const [userResult, paymentDueWeek, currentWeek] = await Promise.all([
+					userPromise,
+					paymentDueWeekPromise,
+					currentWeekPromise,
+				]);
+
+				//TODO: clean up once tested
+				log.info('~~~~~~~SQL Results:', { userResult, paymentDueWeek, currentWeek });
+
+				if (userResult) {
+					if (!userResult.UserName) {
+						if (profile.name) {
+							await getAll<Record<string, unknown>, [string, number]>(
+								connection,
+								'UPDATE Users SET UserName = ? WHERE UserID = ?',
+								[profile.name, userResult.UserID],
+							);
+						} else if (
+							(userResult.UserFirstName || profile.given_name) &&
+							(userResult.UserLastName || profile.family_name)
+						) {
+							await getAll<Record<string, unknown>, [string, number]>(
+								connection,
+								'UPDATE Users SET UserName = ? WHERE UserID = ?',
+								[
+									`${userResult.UserFirstName || profile.given_name} ${
+										userResult.UserLastName || profile.family_name
+									}`,
+									userResult.UserID,
+								],
+							);
+						}
+					}
+
+					if (!userResult.UserFirstName && profile.given_name) {
+						await getAll<Record<string, unknown>, [string, number]>(
+							connection,
+							'UPDATE Users SET UserFirstName = ? WHERE UserID = ?',
+							[profile.given_name as string, userResult.UserID],
+						);
+					}
+
+					if (!userResult.UserLastName && profile.family_name) {
+						await getAll<Record<string, unknown>, [string, number]>(
+							connection,
+							'UPDATE Users SET UserLastName = ? WHERE UserID = ?',
+							[profile.family_name as string, userResult.UserID],
+						);
+					}
+
+					if (
+						!userResult.UserImage &&
+						(profile.picture || profile.profile_image_url_https)
+					) {
+						await getAll<Record<string, unknown>, [string, number]>(
+							connection,
+							'UPDATE Users SET UserImage = ? WHERE UserID = ?',
+							[
+								(profile.picture || profile.profile_image_url_https) as string,
+								userResult.UserID,
+							],
+						);
+					}
+
+					if (userResult.UserDoneRegistering) {
+						return true;
+					}
+				}
+
+				if (!paymentDueWeek.SystemValueValue) {
+					console.error('Missing PaymentDueWeek property:', { paymentDueWeek });
+
+					return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=MissingSystemProperty`;
+				}
+
+				const lastRegistrationWeek = parseInt(paymentDueWeek.SystemValueValue, 10);
+
+				if (currentWeek.GameWeek > lastRegistrationWeek) {
+					return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=RegistrationOver`;
+				}
+
+				return true;
+			} catch (error) {
+				log.error('Failed to sign in user:', error);
+
+				return false;
+			} finally {
+				if (connection) connection.end();
 			}
-
-			const lastRegistrationWeek = parseInt(getSystemValue.systemValueValue, 10);
-
-			if (getCurrentWeek > lastRegistrationWeek) {
-				return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=RegistrationOver`;
-			}
-
-			return true;
 		},
 		async session (session, user) {
 			const {
@@ -182,12 +287,15 @@ const options: NextAuthOptions = {
 		Providers.Google({
 			clientId: GOOGLE_ID,
 			clientSecret: GOOGLE_SECRET,
-			// profile: async function (...args) {
-			// 	log.info({ args });
+			// profile: async function (profile, tokens) {
+			// 	log.info({ profile, tokens });
 
 			// 	return {
-			// 		id: '',
-			// 	};
+			// 		id: profile.id as string,
+			// 		name: profile.name,
+			// 		email: profile.email,
+			// 		image: profile.picture,
+			// 	} as User & { id: string };
 			// },
 		}),
 		Providers.Twitter({
