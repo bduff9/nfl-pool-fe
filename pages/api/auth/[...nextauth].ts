@@ -119,9 +119,6 @@ const options: NextAuthOptions = {
 					currentWeekPromise,
 				]);
 
-				//TODO: clean up once tested
-				log.info('~~~~~~~SQL Results:', { userResult, paymentDueWeek, currentWeek });
-
 				if (userResult) {
 					if (!userResult.UserName) {
 						if (profile.name) {
