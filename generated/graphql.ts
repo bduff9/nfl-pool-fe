@@ -1,18 +1,3 @@
-/*******************************************************************************
- * NFL Confidence Pool FE - the frontend implementation of an NFL confidence pool.
- * Copyright (C) 2015-present Brian Duffey and Billy Alexander
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see {http://www.gnu.org/licenses/}.
- * Home: https://asitewithnoname.com/
- */
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
@@ -43,6 +28,7 @@ export type Query = {
 	getLeaguesForUser: Array<UserLeague>;
 	getLogs: Array<Log>;
 	getNotificationsForUser: Array<Notification>;
+	getMyPayments: Array<Payment>;
 	getAllPicksForWeek: Array<Pick>;
 	getMyPicksForWeek: Array<Pick>;
 	getRules: Array<Rule>;
@@ -150,6 +136,7 @@ export type Email = {
 
 /** The sent message type */
 export enum EmailType {
+	NewUser = 'newUser',
 	Untrusted = 'untrusted',
 	Verification = 'verification',
 }
@@ -186,7 +173,6 @@ export type User = {
 
 /** The chosen payment type for the user */
 export enum PaymentType {
-	Cash = 'Cash',
 	Paypal = 'Paypal',
 	Venmo = 'Venmo',
 	Zelle = 'Zelle',
@@ -398,6 +384,14 @@ export enum LogAction {
 	SubmitPicks = 'SubmitPicks',
 	SurvivorPick = 'SurvivorPick',
 }
+
+export type Payment = {
+	__typename?: 'Payment';
+	paymentDescription: Scalars['String'];
+	paymentWeek?: Maybe<Scalars['Int']>;
+	paymentAmount: Scalars['Float'];
+	paymentUser: User;
+};
 
 export type Pick = {
 	__typename?: 'Pick';

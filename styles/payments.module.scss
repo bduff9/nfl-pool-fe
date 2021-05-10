@@ -1,0 +1,20 @@
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  &::before,
+  &::after {
+    flex: 1;
+    content: "";
+    border-bottom: 1px solid #000;
+  }
+
+  &:not(:empty)::before {
+    margin-right: 2em;
+  }
+
+  &:not(:empty)::after {
+    margin-left: 2em;
+  }
+}
