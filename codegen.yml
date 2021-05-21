@@ -9,3 +9,5 @@ generates:
 hooks:
   afterOneFileWrite:
     - eslint --quiet --fix
+  afterAllFileWrite:
+    - npm run license
