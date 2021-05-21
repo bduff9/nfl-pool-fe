@@ -27,7 +27,6 @@ import {
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
 import { usePageTitle } from '../../utils/hooks';
-import styles from '../../styles/payments.module.scss';
 import { useGetPayments } from '../../graphql/payments';
 import { PaymentType } from '../../generated/graphql';
 import PaymentSelector from '../../components/PaymentSelector/PaymentSelector';
@@ -164,7 +163,7 @@ const ViewPayments: FC = () => {
 							'*** All prizes are paid at the end of the year ***'
 						)}
 					</h3>
-					<div className={styles.separator}>
+					<div className="separator">
 						{!data ? <Skeleton height={17} width={150} /> : 'Payment Info'}
 					</div>
 					<div className="mx-3">

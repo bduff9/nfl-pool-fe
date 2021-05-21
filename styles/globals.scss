@@ -108,7 +108,7 @@ body {
 }
 
 .content-bg {
-  background-color: rgba(247, 247, 247, 0.8);
+  background-color: rgba(247, 247, 247, .8);
 }
 
 .football-brown {
@@ -118,4 +118,25 @@ body {
 .required::after {
   color: #dc2626;
   content: " *";
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+
+  &::before,
+  &::after {
+    flex: 1;
+    content: "";
+    border-bottom: 1px solid #000;
+  }
+
+  &:not(:empty)::before {
+    margin-right: 2em;
+  }
+
+  &:not(:empty)::after {
+    margin-left: 2em;
+  }
 }
