@@ -24,6 +24,39 @@ import Popover from 'react-bootstrap/Popover';
  * popover-body
  */
 
+export const dynamicPopover = (body: string, id: string, title: string): JSX.Element => (
+	<Popover id={`popover-${id}`}>
+		<Popover.Header as="h3" className="mt-0">
+			{title}
+		</Popover.Header>
+		<Popover.Body>{body}</Popover.Body>
+	</Popover>
+);
+
+export const autoPickPopover = (
+	<Popover id="popover-auto-pick">
+		<Popover.Header as="h3" className="mt-0">
+			Auto Picks
+		</Popover.Header>
+		<Popover.Body>
+			These allow you to have the system automatically make a pick for you if you forget.
+			Once a game starts, if you have not made a pick for that game, a winner will be chose
+			with your lowest point value based on the strategy you select below:
+			<ul>
+				<li>
+					<strong>Home:</strong> the home team will be picked
+				</li>
+				<li>
+					<strong>Away:</strong> the visiting team will be picked
+				</li>
+				<li>
+					<strong>Random:</strong> a randomly selected team will be picked
+				</li>
+			</ul>
+		</Popover.Body>
+	</Popover>
+);
+
 export const paymentPopover = (
 	<Popover id="popover-payment">
 		<Popover.Header as="h3" className="mt-0">
@@ -35,6 +68,19 @@ export const paymentPopover = (
 			<strong>
 				This is your responsibility as we will not be chasing people down to pay them.
 			</strong>
+		</Popover.Body>
+	</Popover>
+);
+
+export const phonePopover = (
+	<Popover id="popover-phone">
+		<Popover.Header as="h3" className="mt-0">
+			Phone Number
+		</Popover.Header>
+		<Popover.Body>
+			If you would like to receive SMS notifications from the confidence pool, please enter
+			a valid phone number. This is not required, however, you will need to enable the
+			notifications you would like to receive after you enter a valid phone number.
 		</Popover.Body>
 	</Popover>
 );

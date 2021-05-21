@@ -18,6 +18,10 @@ import Head from 'next/head';
 import React, { FC } from 'react';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
+import EditProfileForm from '../../components/EditProfileForm/EditProfileForm';
+import EditProfileLoader from '../../components/EditProfileForm/EditProfileLoader';
+import { useEditProfileQuery } from '../../graphql/edit';
+import { TUser } from '../../models/User';
 import { getPageTitle } from '../../utils';
 import {
 	isSignedInSSR,
@@ -27,15 +31,36 @@ import {
 } from '../../utils/auth.server';
 import { usePageTitle } from '../../utils/hooks';
 
-const EditProfile: FC = () => {
+type EditProfileProps = {
+	user: TUser;
+};
+
+const EditProfile: FC<EditProfileProps> = () => {
 	const [title] = usePageTitle('Edit My Profile');
+	const { data, error } = useEditProfileQuery();
+
+	if (error) {
+		console.error('Error when loading edit profile form', error);
+		throw error;
+	}
 
 	return (
 		<Authenticated isRegistered>
 			<Head>
 				<title>{getPageTitle(title)}</title>
 			</Head>
-			<h1>{title}</h1>
+			<div className="content-bg text-dark my-3 mx-2 pt-5 pt-md-3 min-vh-100 pb-4 col">
+				{data ? (
+					<EditProfileForm
+						currentUser={data.getCurrentUser}
+						hasGoogle={data.hasGoogle}
+						hasTwitter={data.hasTwitter}
+						myNotifications={data.getMyNotifications}
+					/>
+				) : (
+					<EditProfileLoader />
+				)}
+			</div>
 		</Authenticated>
 	);
 };
