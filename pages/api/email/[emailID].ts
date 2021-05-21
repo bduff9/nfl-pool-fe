@@ -15,6 +15,7 @@
  */
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+// eslint-disable-next-line import/order
 import { getEmail } from '../../../graphql/[emailID]';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
