@@ -40,7 +40,7 @@ export const autoPickPopover = (
 		</Popover.Header>
 		<Popover.Body>
 			These allow you to have the system automatically make a pick for you if you forget.
-			Once a game starts, if you have not made a pick for that game, a winner will be chose
+			Once a game starts, if you have not made a pick for that game, a winner will be chosen
 			with your lowest point value based on the strategy you select below:
 			<ul>
 				<li>

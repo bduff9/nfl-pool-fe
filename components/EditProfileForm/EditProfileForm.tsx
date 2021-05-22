@@ -33,7 +33,6 @@ import {
 	phonePopover,
 } from '../Popover/Popover';
 import SocialAuthButton from '../SocialAuthButton/SocialAuthButton';
-import { ACCOUNT_TYPES } from '../../utils/constants';
 import { GetCurrentUserResponse, GetMyNotificationsResponse } from '../../graphql/edit';
 
 import styles from './EditProfileForm.module.scss';
@@ -71,7 +70,7 @@ const schema = Yup.object().shape({
 		.required('Please enter your surname'),
 	userTeamName: Yup.string(),
 	userPaymentType: Yup.string()
-		.oneOf(ACCOUNT_TYPES, 'Please select a valid account type')
+		.oneOf(Object.values(PaymentType), 'Please select a valid account type')
 		.required('Please select an account type'),
 	userPaymentAccount: Yup.string().when('userPaymentType', {
 		is: 'Venmo',
@@ -227,7 +226,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 	const watchNotifications = watch('notifications');
 	const watchPhone = watch('userPhone');
 
-	console.log({ errors });
+	console.debug('Errors on the form:', errors);
 
 	useEffect(() => {
 		watchNotifications.forEach((_, i) => {
@@ -258,7 +257,6 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 		setIsLoading(true);
 
 		try {
-			console.log(profile);
 			await editProfile(
 				profile,
 				notifications.map(({ hasValidPhone, ...notification }) => notification),
@@ -289,7 +287,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userEmail', { required: true })}
 					/>
 					{errors.userEmail?.message && (
-						<span className="text-danger fs-6">{errors.userEmail.message}</span>
+						<div className="text-danger fs-6">{errors.userEmail.message}</div>
 					)}
 				</div>
 			</div>
@@ -306,7 +304,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userFirstName', { required: true, minLength: 2 })}
 					/>
 					{errors.userFirstName?.message && (
-						<span className="text-danger fs-6">{errors.userFirstName.message}</span>
+						<div className="text-danger fs-6">{errors.userFirstName.message}</div>
 					)}
 				</div>
 				<div className="col-md">
@@ -321,7 +319,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userLastName', { required: true, minLength: 2 })}
 					/>
 					{errors.userLastName?.message && (
-						<span className="text-danger fs-6">{errors.userLastName.message}</span>
+						<div className="text-danger fs-6">{errors.userLastName.message}</div>
 					)}
 				</div>
 			</div>
@@ -338,7 +336,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userTeamName')}
 					/>
 					{errors.userTeamName?.message && (
-						<span className="text-danger fs-6">{errors.userTeamName.message}</span>
+						<div className="text-danger fs-6">{errors.userTeamName.message}</div>
 					)}
 				</div>
 				<div className="col-md">
@@ -360,7 +358,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userPhone')}
 					/>
 					{errors.userPhone?.message && (
-						<span className="text-danger fs-6">{errors.userPhone.message}</span>
+						<div className="text-danger fs-6">{errors.userPhone.message}</div>
 					)}
 				</div>
 			</div>
@@ -377,12 +375,14 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userPaymentType', { required: true })}
 					>
 						<option value="">-- Select a payment type --</option>
-						<option value="Paypal">Paypal</option>
-						<option value="Venmo">Venmo</option>
-						<option value="Zelle">Zelle</option>
+						{Object.values(PaymentType).map(paymentType => (
+							<option value={paymentType} key={paymentType}>
+								{paymentType}
+							</option>
+						))}
 					</select>
 					{errors.userPaymentType?.message && (
-						<span className="text-danger fs-6">{errors.userPaymentType.message}</span>
+						<div className="text-danger fs-6">{errors.userPaymentType.message}</div>
 					)}
 					<label htmlFor="userPaymentAccount" className="form-label required">
 						Payment Account&nbsp;
@@ -403,7 +403,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userPaymentAccount', { required: true })}
 					/>
 					{errors.userPaymentAccount?.message && (
-						<span className="text-danger fs-6">{errors.userPaymentAccount.message}</span>
+						<div className="text-danger fs-6">{errors.userPaymentAccount.message}</div>
 					)}
 				</div>
 				<div className="col-md">
@@ -476,7 +476,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						</label>
 					</div>
 					{errors.userAutoPickStrategy?.message && (
-						<span className="text-danger fs-6">{errors.userAutoPickStrategy.message}</span>
+						<div className="text-danger fs-6">{errors.userAutoPickStrategy.message}</div>
 					)}
 				</div>
 			</div>
@@ -574,9 +574,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 								</fieldset>
 							)}
 							{errors.notifications?.[i]?.notificationEmail?.message && (
-								<span className="text-danger fs-6">
+								<div className="text-danger fs-6">
 									{errors.notifications?.[i]?.notificationEmail?.message}
-								</span>
+								</div>
 							)}
 						</div>
 						<div
@@ -610,9 +610,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 								</fieldset>
 							)}
 							{errors.notifications?.[i]?.notificationSMS?.message && (
-								<span className="text-danger fs-6">
+								<div className="text-danger fs-6">
 									{errors.notifications?.[i]?.notificationSMS?.message}
-								</span>
+								</div>
 							)}
 						</div>
 						{notification.notificationDefinition.notificationTypeHasHours &&
@@ -646,9 +646,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 											/>
 										)}
 										{errors.notifications?.[i]?.notificationEmailHoursBefore?.message && (
-											<span className="text-danger fs-6">
+											<div className="text-danger fs-6">
 												{errors.notifications?.[i]?.notificationEmailHoursBefore?.message}
-											</span>
+											</div>
 										)}
 									</div>
 									<div className={styles['switch-col']}>
@@ -674,9 +674,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 											/>
 										)}
 										{errors.notifications?.[i]?.notificationSMSHoursBefore?.message && (
-											<span className="text-danger fs-6">
+											<div className="text-danger fs-6">
 												{errors.notifications?.[i]?.notificationSMSHoursBefore?.message}
-											</span>
+											</div>
 										)}
 									</div>
 								</>

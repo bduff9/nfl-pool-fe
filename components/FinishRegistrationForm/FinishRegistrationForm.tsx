@@ -27,7 +27,6 @@ import { PaymentType } from '../../generated/graphql';
 import { finishRegistration } from '../../graphql/finishRegistrationForm';
 import { survivorPopover, paymentPopover } from '../Popover/Popover';
 import SocialAuthButton from '../SocialAuthButton/SocialAuthButton';
-import { ACCOUNT_TYPES } from '../../utils/constants';
 import { TTrueFalse } from '../../utils/types';
 import { getFullName, getFirstName, getLastName } from '../../utils/user';
 import { GetCurrentUserResponse } from '../../graphql/create';
@@ -60,7 +59,7 @@ const schema = Yup.object().shape({
 		.matches(/\w{2,}\s\w{2,}/, 'Please input the full name of the person that invited you')
 		.required('Please input the name of the person that invited you'),
 	userPaymentType: Yup.string()
-		.oneOf(ACCOUNT_TYPES, 'Please select a valid account type')
+		.oneOf(Object.values(PaymentType), 'Please select a valid account type')
 		.required('Please select an account type'),
 	userPaymentAccount: Yup.string().when('userPaymentType', {
 		is: 'Venmo',
