@@ -34,6 +34,7 @@ import {
 } from '../Popover/Popover';
 import SocialAuthButton from '../SocialAuthButton/SocialAuthButton';
 import { GetCurrentUserResponse, GetMyNotificationsResponse } from '../../graphql/edit';
+import { useWarningOnExit } from '../../utils/hooks';
 
 import styles from './EditProfileForm.module.scss';
 
@@ -191,7 +192,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 	hasTwitter,
 }) => {
 	const {
-		formState: { errors },
+		formState: { errors, isDirty },
 		handleSubmit,
 		register,
 		setValue,
@@ -225,6 +226,11 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const watchNotifications = watch('notifications');
 	const watchPhone = watch('userPhone');
+
+	useWarningOnExit(
+		isDirty,
+		'Are you sure you want to leave?  You have unsaved changes that will be lost',
+	);
 
 	console.debug('Errors on the form:', errors);
 
@@ -619,7 +625,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 							(!!watchNotifications[i].notificationEmail ||
 								!!watchNotifications[i].notificationSMS) && (
 								<>
-									<div className={clsx('w-100', styles['line-break'])}></div>
+									<div className="w-100"></div>
 									<div className="flex-grow-1 text-end pe-3">
 										Send how many hours before?
 									</div>

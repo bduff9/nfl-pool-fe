@@ -25,6 +25,7 @@ import {
 	useContext,
 } from 'react';
 import Fuse from 'fuse.js';
+import { useRouter } from 'next/router';
 import { debounce } from 'throttle-debounce';
 
 import { TitleContext } from './context';
@@ -54,6 +55,7 @@ export const useFuse = <ListType>(
 				: fuse.search(query),
 		[fuse, list, query],
 	);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const setQuery = useCallback(debounce(500, updateQuery), []);
 	const onSearch = useCallback(
 		(event: FormEvent<HTMLInputElement>) => setQuery(event.currentTarget.value.trim()),
@@ -68,7 +70,7 @@ export const useFuse = <ListType>(
 	};
 };
 
-export const useObjectState = <T extends Record<string, any>>(
+export const useObjectState = <T extends Record<string, unknown>>(
 	state: T,
 ): [Readonly<T>, Dispatch<SetStateAction<T>>] => {
 	const [value, setValue] = useState<T>(state);
@@ -108,4 +110,70 @@ export const usePageTitle = (title: string): [string, Dispatch<SetStateAction<st
 	}, []);
 
 	return [currentTitle, setTitle];
+};
+
+export const useWarningOnExit = (shouldWarn: boolean, warningText?: string): void => {
+	const Router = useRouter();
+	const message = warningText || 'Are you sure that you want to leave?';
+
+	useEffect(() => {
+		let isWarned = false;
+
+		const routeChangeStart = (url: string) => {
+			if (Router.asPath !== url && shouldWarn && !isWarned) {
+				isWarned = true;
+
+				if (window.confirm(message)) {
+					Router.push(url);
+				} else {
+					isWarned = false;
+					Router.events.emit('routeChangeError');
+					Router.replace(Router, Router.asPath, { shallow: true });
+					// eslint-disable-next-line no-throw-literal
+					throw 'Abort route change. Please ignore this error.';
+				}
+			}
+		};
+
+		const beforeUnload = (e: BeforeUnloadEvent) => {
+			if (shouldWarn && !isWarned) {
+				const event = e || window.event;
+
+				event.returnValue = message;
+
+				return message;
+			}
+
+			return null;
+		};
+
+		Router.events.on('routeChangeStart', routeChangeStart);
+		window.addEventListener('beforeunload', beforeUnload);
+		Router.beforePopState(({ url }) => {
+			if (Router.asPath !== url && shouldWarn && !isWarned) {
+				isWarned = true;
+
+				if (window.confirm(message)) {
+					return true;
+				} else {
+					isWarned = false;
+					window.history.pushState(null, '', url);
+					Router.replace(Router, Router.asPath, { shallow: true });
+
+					return false;
+				}
+			}
+
+			return true;
+		});
+
+		return () => {
+			Router.events.off('routeChangeStart', routeChangeStart);
+			window.removeEventListener('beforeunload', beforeUnload);
+			Router.beforePopState(() => {
+				return true;
+			});
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [message, shouldWarn]);
 };

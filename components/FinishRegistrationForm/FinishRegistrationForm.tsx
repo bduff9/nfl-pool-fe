@@ -30,6 +30,7 @@ import SocialAuthButton from '../SocialAuthButton/SocialAuthButton';
 import { TTrueFalse } from '../../utils/types';
 import { getFullName, getFirstName, getLastName } from '../../utils/user';
 import { GetCurrentUserResponse } from '../../graphql/create';
+import { useWarningOnExit } from '../../utils/hooks';
 
 import styles from './FinishRegistrationForm.module.scss';
 
@@ -82,7 +83,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 	hasTwitter,
 }) => {
 	const {
-		formState: { errors },
+		formState: { errors, isDirty },
 		handleSubmit,
 		register,
 		setValue,
@@ -111,6 +112,13 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 		'userFirstName',
 		'userLastName',
 	]);
+
+	useWarningOnExit(
+		isDirty,
+		'Are you sure you want to leave?  You have unsaved changes that will be lost',
+	);
+
+	console.debug('Errors on the form:', errors);
 
 	useEffect(() => {
 		if (watchName.match(/\w{2,}\s\w{2,}/)) return;
