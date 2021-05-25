@@ -628,6 +628,17 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 									<div className="w-100"></div>
 									<div className="flex-grow-1 text-end pe-3">
 										Send how many hours before?
+										{errors.notifications?.[i]?.notificationEmailHoursBefore?.message ? (
+											<small className="text-danger d-block">
+												{errors.notifications?.[i]?.notificationEmailHoursBefore?.message}
+											</small>
+										) : (
+											errors.notifications?.[i]?.notificationSMSHoursBefore?.message && (
+												<small className="text-danger d-block">
+													{errors.notifications?.[i]?.notificationSMSHoursBefore?.message}
+												</small>
+											)
+										)}
 									</div>
 									<div className={styles['switch-col']}>
 										{!!watchNotifications[i].notificationEmail && (
@@ -651,11 +662,6 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 												)}
 											/>
 										)}
-										{errors.notifications?.[i]?.notificationEmailHoursBefore?.message && (
-											<div className="text-danger fs-6">
-												{errors.notifications?.[i]?.notificationEmailHoursBefore?.message}
-											</div>
-										)}
 									</div>
 									<div className={styles['switch-col']}>
 										{!!watchNotifications[i].notificationSMS && (
@@ -678,11 +684,6 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 													},
 												)}
 											/>
-										)}
-										{errors.notifications?.[i]?.notificationSMSHoursBefore?.message && (
-											<div className="text-danger fs-6">
-												{errors.notifications?.[i]?.notificationSMSHoursBefore?.message}
-											</div>
 										)}
 									</div>
 								</>
