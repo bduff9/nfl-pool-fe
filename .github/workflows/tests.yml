@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node-version: "14.15.4"
       - name: Use .npmrc
@@ -33,7 +33,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Analyze the code
         id: scc
-        uses: iryanbell/scc-docker-action@v1.0.0
+        uses: iryanbell/scc-docker-action@v1.0.2
         with:
           args: ${{ env.workspace }}
       - uses: returntocorp/semgrep-action@v1
