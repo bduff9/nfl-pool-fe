@@ -14,27 +14,21 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import Head from 'next/head';
 import React, { FC } from 'react';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
-import { getPageTitle } from '../../utils';
+import CustomHead from '../../components/CustomHead/CustomHead';
 import {
 	isSignedInSSR,
 	UNAUTHENTICATED_REDIRECT,
 	isAdminSSR,
 	IS_NOT_ADMIN_REDIRECT,
 } from '../../utils/auth.server';
-import { usePageTitle } from '../../utils/hooks';
 
 const AdminLogs: FC = () => {
-	const [title] = usePageTitle('View All Logs');
-
 	return (
 		<Authenticated isAdmin>
-			<Head>
-				<title>{getPageTitle(title)}</title>
-			</Head>
+			<CustomHead title="View All Logs" />
 			<h1>Admin Logs</h1>
 		</Authenticated>
 	);

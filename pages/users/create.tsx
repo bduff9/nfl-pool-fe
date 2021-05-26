@@ -14,29 +14,26 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import Head from 'next/head';
 import React, { FC } from 'react';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
 import { TUser } from '../../models/User';
-import { getPageTitle } from '../../utils';
 import {
 	isSignedInSSR,
 	isDoneRegisteringSSR,
 	UNAUTHENTICATED_REDIRECT,
 	IS_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
-import { usePageTitle } from '../../utils/hooks';
 import FinishRegistrationForm from '../../components/FinishRegistrationForm/FinishRegistrationForm';
 import FinishRegistrationLoader from '../../components/FinishRegistrationForm/FinishRegistrationLoader';
 import { useFinishRegistrationQuery } from '../../graphql/create';
+import CustomHead from '../../components/CustomHead/CustomHead';
 
 type CreateProfileProps = {
 	user: TUser;
 };
 
 const CreateProfile: FC<CreateProfileProps> = () => {
-	const [title] = usePageTitle('Finish Registration');
 	const { data, error } = useFinishRegistrationQuery();
 
 	if (error) {
@@ -46,9 +43,7 @@ const CreateProfile: FC<CreateProfileProps> = () => {
 
 	return (
 		<Authenticated>
-			<Head>
-				<title>{getPageTitle(title)}</title>
-			</Head>
+			<CustomHead title="Finish Registration" />
 			<div className="content-bg text-dark my-3 mx-2 pt-5 pt-md-3 min-vh-100 pb-4 col">
 				{data ? (
 					<FinishRegistrationForm

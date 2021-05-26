@@ -16,7 +16,6 @@
 import Cookies from 'js-cookie';
 import { GetStaticProps } from 'next';
 import { signIn, useSession } from 'next-auth/client';
-import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -24,12 +23,13 @@ import React, { FC, FormEvent, useState } from 'react';
 import clsx from 'clsx';
 
 import Unauthenticated from '../../components/Unauthenticated/Unauthenticated';
-import { getPageTitle } from '../../utils';
 import { formatError } from '../../utils/auth.client';
 import { REDIRECT_COOKIE_NAME } from '../../utils/constants';
 import SocialAuthButton from '../../components/SocialAuthButton/SocialAuthButton';
+// eslint-disable-next-line import/no-unresolved
 import styles from '../../styles/Login.module.scss';
 import { getLoginValues } from '../../graphql/login';
+import CustomHead from '../../components/CustomHead/CustomHead';
 
 type TFormState = 'READY' | 'LOADING' | 'ERRORED' | 'SUBMITTED';
 type LoginProps = { year: string };
@@ -64,9 +64,7 @@ const Login: FC<LoginProps> = ({ year }) => {
 
 	return (
 		<Unauthenticated>
-			<Head>
-				<title>{getPageTitle('Login')}</title>
-			</Head>
+			<CustomHead title="Login" />
 			<div className="content-bg position-absolute top-50 start-50 translate-middle border border-dark rounded-3 p-4 pt-5 col col-sm-10 col-md-6 col-lg-4">
 				<div className={styles.football}>
 					<Image

@@ -14,25 +14,22 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import Head from 'next/head';
 import React, { FC } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
-import { getPageTitle } from '../../utils';
 import {
 	isSignedInSSR,
 	UNAUTHENTICATED_REDIRECT,
 	isDoneRegisteringSSR,
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
-import { usePageTitle } from '../../utils/hooks';
 import { useGetPayments } from '../../graphql/payments';
 import { PaymentType } from '../../generated/graphql';
 import PaymentSelector from '../../components/PaymentSelector/PaymentSelector';
+import CustomHead from '../../components/CustomHead/CustomHead';
 
 const ViewPayments: FC = () => {
-	const [title] = usePageTitle('View Payments');
 	const { data, error } = useGetPayments();
 	let owed = 0;
 
@@ -42,9 +39,7 @@ const ViewPayments: FC = () => {
 
 	return (
 		<Authenticated isRegistered>
-			<Head>
-				<title>{getPageTitle(title)}</title>
-			</Head>
+			<CustomHead title="View Payments" />
 			<SkeletonTheme>
 				<div className="content-bg text-dark my-3 mx-2 pt-5 pt-md-3 min-vh-100 pb-4 col">
 					<table className="table table-hover">

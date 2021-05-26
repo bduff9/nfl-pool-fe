@@ -14,27 +14,21 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import Head from 'next/head';
 import React, { FC } from 'react';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
-import { getPageTitle } from '../../utils';
+import CustomHead from '../../components/CustomHead/CustomHead';
 import {
 	isSignedInSSR,
 	UNAUTHENTICATED_REDIRECT,
 	isDoneRegisteringSSR,
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
-import { usePageTitle } from '../../utils/hooks';
 
 const Statistics: FC = () => {
-	const [title] = usePageTitle('Pool Stats');
-
 	return (
 		<Authenticated isRegistered>
-			<Head>
-				<title>{getPageTitle(title)}</title>
-			</Head>
+			<CustomHead title="Pool Stats" />
 			<h1>Statistics</h1>
 		</Authenticated>
 	);

@@ -18,18 +18,16 @@ import path from 'path';
 
 import clsx from 'clsx';
 import { GetStaticProps } from 'next';
-import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC, useEffect, useMemo } from 'react';
 import { useSession } from 'next-auth/client';
 
-import { getPageTitle } from '../utils';
 import styles from '../styles/404.module.scss';
-import { usePageTitle } from '../utils/hooks';
 import { write404Log } from '../graphql/404';
 import { TSessionUser } from '../utils/types';
+import CustomHead from '../components/CustomHead/CustomHead';
 
 type NotFoundProps = {
 	images: string[];
@@ -38,7 +36,6 @@ type NotFoundProps = {
 const NotFound: FC<NotFoundProps> = ({ images }) => {
 	const router = useRouter();
 	const [session, loading] = useSession();
-	const [title] = usePageTitle('404');
 	const image = useMemo<string>(
 		() => images[Math.floor(Math.random() * images.length)],
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -59,9 +56,7 @@ const NotFound: FC<NotFoundProps> = ({ images }) => {
 
 	return (
 		<div className="row">
-			<Head>
-				<title>{getPageTitle(title)}</title>
-			</Head>
+			<CustomHead title="404" />
 			<div className="content-bg position-absolute top-50 start-50 translate-middle border border-dark rounded-3 text-dark pb-4 col-md-6">
 				<h1 className="text-center">What have you done?!</h1>
 				<div className={clsx('mx-auto', 'position-relative', styles['image-404'])}>

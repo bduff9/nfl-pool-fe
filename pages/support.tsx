@@ -16,15 +16,14 @@
 import Fuse from 'fuse.js';
 import { GetStaticProps } from 'next';
 import { useSession } from 'next-auth/client';
-import Head from 'next/head';
 import Link from 'next/link';
 import React, { FC, FormEvent } from 'react';
 
+import CustomHead from '../components/CustomHead/CustomHead';
 import { FuseHighlight } from '../components/FuseHighlight/FuseHighlight';
 import { Faq, Rule } from '../generated/graphql';
 import { getSupportContent } from '../graphql/support';
-import { getPageTitle } from '../utils';
-import { useFuse, usePageTitle } from '../utils/hooks';
+import { useFuse } from '../utils/hooks';
 
 const convertTextToAnchor = (text: string): string => text.toLowerCase().replace(/\W/g, '');
 
@@ -63,7 +62,6 @@ type SupportProps = {
 };
 
 const Support: FC<SupportProps> = ({ faqs, rules, slackLink, supportEmail }) => {
-	const [title] = usePageTitle('Support/FAQs');
 	const [session, loading] = useSession();
 	const { hits: faqHits, onSearch: onFAQSearch } = useFuse(faqs, {
 		includeMatches: true,
@@ -92,9 +90,7 @@ const Support: FC<SupportProps> = ({ faqs, rules, slackLink, supportEmail }) => 
 
 	return (
 		<div className="h-100 row">
-			<Head>
-				<title>{getPageTitle(title)}</title>
-			</Head>
+			<CustomHead title="Support/FAQs" />
 			<div className="content-bg text-dark m-3 pt-5 pt-md-3 min-vh-100 pb-3 col" id="top">
 				<div className="form-floating mb-2">
 					<input

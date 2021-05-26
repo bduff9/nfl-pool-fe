@@ -14,27 +14,21 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import Head from 'next/head';
 import React, { FC } from 'react';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
-import { getPageTitle } from '../../utils';
+import CustomHead from '../../components/CustomHead/CustomHead';
 import {
 	isAdminSSR,
 	isSignedInSSR,
 	IS_NOT_ADMIN_REDIRECT,
 	UNAUTHENTICATED_REDIRECT,
 } from '../../utils/auth.server';
-import { usePageTitle } from '../../utils/hooks';
 
 const AdminAPICalls: FC = () => {
-	const [title] = usePageTitle('API History');
-
 	return (
 		<Authenticated isAdmin>
-			<Head>
-				<title>{getPageTitle(title)}</title>
-			</Head>
+			<CustomHead title="API History" />
 			<h1>Admin API Calls</h1>
 		</Authenticated>
 	);

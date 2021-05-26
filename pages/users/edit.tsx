@@ -14,29 +14,26 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import Head from 'next/head';
 import React, { FC } from 'react';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
+import CustomHead from '../../components/CustomHead/CustomHead';
 import EditProfileForm from '../../components/EditProfileForm/EditProfileForm';
 import EditProfileLoader from '../../components/EditProfileForm/EditProfileLoader';
 import { useEditProfileQuery } from '../../graphql/edit';
 import { TUser } from '../../models/User';
-import { getPageTitle } from '../../utils';
 import {
 	isSignedInSSR,
 	UNAUTHENTICATED_REDIRECT,
 	isDoneRegisteringSSR,
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
-import { usePageTitle } from '../../utils/hooks';
 
 type EditProfileProps = {
 	user: TUser;
 };
 
 const EditProfile: FC<EditProfileProps> = () => {
-	const [title] = usePageTitle('Edit My Profile');
 	const { data, error } = useEditProfileQuery();
 
 	if (error) {
@@ -46,9 +43,7 @@ const EditProfile: FC<EditProfileProps> = () => {
 
 	return (
 		<Authenticated isRegistered>
-			<Head>
-				<title>{getPageTitle(title)}</title>
-			</Head>
+			<CustomHead title="Edit My Profile" />
 			<div className="content-bg text-dark my-3 mx-2 pt-5 pt-md-3 min-vh-100 pb-4 col">
 				{data ? (
 					<EditProfileForm

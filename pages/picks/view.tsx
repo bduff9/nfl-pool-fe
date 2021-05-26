@@ -14,11 +14,10 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import Head from 'next/head';
 import React, { FC, useContext } from 'react';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
-import { getPageTitle } from '../../utils';
+import CustomHead from '../../components/CustomHead/CustomHead';
 import {
 	isSignedInSSR,
 	UNAUTHENTICATED_REDIRECT,
@@ -26,17 +25,13 @@ import {
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
 import { WeekContext } from '../../utils/context';
-import { usePageTitle } from '../../utils/hooks';
 
 const ViewPicks: FC = () => {
 	const [selectedWeek] = useContext(WeekContext);
-	const [title] = usePageTitle(`My week ${selectedWeek} picks`);
 
 	return (
 		<Authenticated isRegistered>
-			<Head>
-				<title>{getPageTitle(title)}</title>
-			</Head>
+			<CustomHead title={`My week ${selectedWeek} picks`} />
 			<h1>View My Picks</h1>
 		</Authenticated>
 	);

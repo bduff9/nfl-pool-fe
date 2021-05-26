@@ -18,7 +18,6 @@ import path from 'path';
 
 import clsx from 'clsx';
 import { GetStaticProps } from 'next';
-import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -26,8 +25,7 @@ import React, { FC, useMemo } from 'react';
 import { useSession } from 'next-auth/client';
 
 import styles from '../styles/500.module.scss';
-import { getPageTitle } from '../utils';
-import { usePageTitle } from '../utils/hooks';
+import CustomHead from '../components/CustomHead/CustomHead';
 
 type ErrorProps = {
 	images: string[];
@@ -36,7 +34,6 @@ type ErrorProps = {
 const Error: FC<ErrorProps> = ({ images }) => {
 	const router = useRouter();
 	const [session, loading] = useSession();
-	const [title] = usePageTitle('Error Occurred');
 	const image = useMemo<string>(
 		() => images[Math.floor(Math.random() * images.length)],
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,9 +42,7 @@ const Error: FC<ErrorProps> = ({ images }) => {
 
 	return (
 		<div className="row">
-			<Head>
-				<title>{getPageTitle(title)}</title>
-			</Head>
+			<CustomHead title="Error Occurred" />
 			<div className="content-bg position-absolute top-50 start-50 translate-middle border border-dark rounded-3 text-dark pb-4 col-md-6">
 				<h1 className="text-center">Flag on the play!</h1>
 				<div className={clsx('mx-auto', 'position-relative', styles['image-500'])}>

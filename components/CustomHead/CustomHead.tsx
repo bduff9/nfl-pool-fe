@@ -13,20 +13,37 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+import Head from 'next/head';
 import React, { FC } from 'react';
 
-import CustomHead from '../components/CustomHead/CustomHead';
+import { getPageTitle } from '../../utils';
+import { usePageTitle } from '../../utils/hooks';
 
-//TODO: style this page per Figma
-const OfflinePage: FC = () => (
-	<>
-		<CustomHead title="You are offline" />
-		<h1>This is the offline fallback page</h1>
-		<h2>When offline, any page route will fallback to this page</h2>
-	</>
-);
+type CustomHeadProps = {
+	title: string;
+};
 
-OfflinePage.whyDidYouRender = true;
+const CustomHead: FC<CustomHeadProps> = ({ title }) => {
+	const [pageTitle] = usePageTitle(title);
+	//TODO: load alerts in here
+	const data: string[] = [];
+	//TODO: update title with counts based on # of alerts
 
-// ts-prune-ignore-next
-export default OfflinePage;
+	return (
+		<div className="w-100">
+			<Head>
+				<title>{getPageTitle(pageTitle)}</title>
+			</Head>
+
+			{data.map(alert => (
+				<div className="alert alert-danger mb-0" key={alert} role="alert">
+					{alert}
+				</div>
+			))}
+		</div>
+	);
+};
+
+CustomHead.whyDidYouRender = true;
+
+export default CustomHead;
