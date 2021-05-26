@@ -296,7 +296,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 									View Picks
 								</NavLink>
 							</MenuAccordion>
-							<NavLink onClick={() => alert('TODO:')} show={user.doneRegistering}>
+							<NavLink href="/scoreboard" show={user.doneRegistering}>
 								NFL Scoreboard
 							</NavLink>
 							<MenuAccordion title="My Account">
