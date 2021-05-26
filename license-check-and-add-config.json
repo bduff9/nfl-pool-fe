@@ -29,7 +29,7 @@
   ],
   "license": "LICENSE-HEAD",
   "licenseFormats": {
-    "js|ts|svelte|scss|css": {
+    "js|ts|jsx|tsx|scss|css": {
       "prepend": "/*******************************************************************************",
       "append": " */",
       "eachLine": {
