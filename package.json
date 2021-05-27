@@ -82,7 +82,7 @@
     "@graphql-codegen/cli": "1.21.4",
     "@graphql-codegen/typescript": "1.22.0",
     "@graphql-codegen/typescript-operations": "1.17.16",
-    "@percy/cli": "1.0.0-beta.49",
+    "@percy/cli": "1.0.0-beta.52",
     "@percy/cypress": "3.1.0",
     "@types/bootstrap": "5.0.15",
     "@types/enzyme": "3.10.8",
