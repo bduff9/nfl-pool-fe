@@ -28,6 +28,8 @@ const Logout: FC = () => {
 			if (loading) return;
 
 			if (session) {
+				window.sessionStorage.clear();
+				window.localStorage.clear();
 				await signOut({
 					redirect: false,
 				});

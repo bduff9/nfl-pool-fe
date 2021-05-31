@@ -15,6 +15,7 @@
  */
 import * as Sentry from '@sentry/browser';
 import whyDidYouRender from '@welldone-software/why-did-you-render';
+import { AnimateSharedLayout } from 'framer-motion';
 import LogRocket from 'logrocket';
 import setupLogRocketReact from 'logrocket-react';
 import { Provider } from 'next-auth/client';
@@ -23,6 +24,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 import React, { FC, useEffect, useState } from 'react';
+import { syncWithLocalStorage } from 'swr-sync-storage';
 
 import Layout from '../components/Layout/Layout';
 import { NEXT_PUBLIC_ENV, NEXT_PUBLIC_SENTRY_DSN } from '../utils/constants';
@@ -30,6 +32,10 @@ import { NEXT_PUBLIC_ENV, NEXT_PUBLIC_SENTRY_DSN } from '../utils/constants';
 import '../styles/globals.scss';
 // Keep selectors for #nprogress, .bar, .peg, .spinner, & .spinner-icon
 import 'nprogress/nprogress.css';
+
+if (typeof window !== 'undefined') {
+	syncWithLocalStorage();
+}
 
 if (NEXT_PUBLIC_SENTRY_DSN) {
 	Sentry.init({
@@ -96,9 +102,11 @@ const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
 					content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
 				/>
 			</Head>
-			<Layout isLoading={isLoading}>
-				<Component {...pageProps} err={err} />
-			</Layout>
+			<AnimateSharedLayout>
+				<Layout isLoading={isLoading}>
+					<Component {...pageProps} err={err} />
+				</Layout>
+			</AnimateSharedLayout>
 		</Provider>
 	);
 };
