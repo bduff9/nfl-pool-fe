@@ -29,6 +29,34 @@ import { useRouter } from 'next/router';
 import { debounce } from 'throttle-debounce';
 
 import { TitleContext } from './context';
+import { MILLISECONDS_IN_SECOND, MINUTES_IN_HOUR, SECONDS_IN_MINUTE } from './constants';
+import { getTimeRemaining, getTimeRemainingString } from './dates';
+
+export const useCountdown = (countdownTo: Date | null): string => {
+	const end = useRef<Date>(countdownTo ?? new Date());
+	const interval = useRef<number>();
+	const timeParts = getTimeRemaining(end.current);
+	const [remaining, setRemaining] = useState<string>(getTimeRemainingString(timeParts));
+	const { days, hours, minutes, seconds, total } = timeParts;
+
+	useEffect(() => {
+		setRemaining(getTimeRemainingString({ days, hours, minutes, seconds, total }));
+
+		if (total < MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR) {
+			interval.current = window.setInterval(() => {
+				const timeParts = getTimeRemaining(end.current);
+
+				setRemaining(getTimeRemainingString(timeParts));
+			}, 1000);
+
+			return () => window.clearInterval(interval.current);
+		}
+
+		return undefined;
+	}, [days, hours, minutes, seconds, total]);
+
+	return remaining;
+};
 
 type UseFuseResult<ListType> = {
 	hits: Fuse.FuseResult<ListType>[];
