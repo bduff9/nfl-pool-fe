@@ -37,7 +37,7 @@ type GetWeeklyDashboardResponse = {
 	>;
 	getWeeklyTiedWithMeCount: number;
 	getWeeklyRankingsTotalCount: number;
-	getMyTiebreakerForWeek: Pick<Tiebreaker, 'tiebreakerHasSubmitted'>;
+	getMyTiebreakerForWeek: null | Pick<Tiebreaker, 'tiebreakerHasSubmitted'>;
 	selectedWeek: Pick<Week, 'weekNumber' | 'weekStarts' | 'weekStatus'>;
 };
 

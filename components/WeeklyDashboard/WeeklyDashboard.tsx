@@ -63,7 +63,7 @@ const WeeklyDashboard: FC = () => {
 			</motion.h2>
 			{data && (
 				<>
-					{data.getMyTiebreakerForWeek.tiebreakerHasSubmitted ? (
+					{data.getMyTiebreakerForWeek?.tiebreakerHasSubmitted ? (
 						<>
 							<div className="text-success">You have submitted your picks</div>
 							<Link href="/picks/view">
