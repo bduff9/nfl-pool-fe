@@ -13,9 +13,11 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+import clsx from 'clsx';
 import Head from 'next/head';
-import React, { FC } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 
+import { useMyAlertsQuery } from '../../graphql/customHead';
 import { getPageTitle } from '../../utils';
 import { usePageTitle } from '../../utils/hooks';
 
@@ -25,17 +27,42 @@ type CustomHeadProps = {
 
 const CustomHead: FC<CustomHeadProps> = ({ title }) => {
 	const [pageTitle] = usePageTitle(title);
-	//TODO: load alerts in here
-	const data: string[] = [];
-	//TODO: update title with counts based on # of alerts
+	const { data, error } = useMyAlertsQuery();
+	const [titleOverride, setTitleOverride] = useState<string>('');
+	const interval = useRef<number>();
+
+	if (error) {
+		console.error('Error when loading custom head:', error);
+	}
+
+	useEffect(() => {
+		if (data?.getMyAlerts?.length) {
+			if (interval.current) {
+				window.clearInterval(interval.current);
+			}
+
+			interval.current = window.setInterval(() => {
+				setTitleOverride(title => (title ? '' : `(${data.getMyAlerts.length}) Alerts`));
+			}, 2000);
+		} else if (interval.current) {
+			window.clearInterval(interval.current);
+		}
+
+		return () => window.clearInterval(interval.current);
+	}, [data?.getMyAlerts]);
 
 	return (
-		<div className="w-100">
+		<div
+			className={clsx(
+				'w-100',
+				(data?.getMyAlerts.length ?? 0) > 0 && 'mt-5',
+				(data?.getMyAlerts.length ?? 0) > 0 && 'mt-md-0',
+			)}
+		>
 			<Head>
-				<title>{getPageTitle(pageTitle)}</title>
+				<title>{titleOverride || getPageTitle(pageTitle)}</title>
 			</Head>
-
-			{data.map(alert => (
+			{data?.getMyAlerts.map(alert => (
 				<div className="alert alert-danger mb-0" key={alert} role="alert">
 					{alert}
 				</div>
