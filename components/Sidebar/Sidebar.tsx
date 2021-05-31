@@ -33,9 +33,11 @@ import Accordion from 'react-bootstrap/Accordion';
 
 import NavLink from '../NavLink/NavLink';
 import MenuAccordion from '../MenuAccordion/MenuAccordion';
+import { SeasonStatus } from '../../generated/graphql';
+import { useSidebarData } from '../../graphql/sidebar';
+import { WEEKS_IN_SEASON } from '../../utils/constants';
 import { TitleContext, WeekContext } from '../../utils/context';
 import { TSessionUser } from '../../utils/types';
-import { useSidebarData } from '../../graphql/sidebar';
 
 import styles from './Sidebar.module.scss';
 import SidebarLoader from './SidebarLoader';
@@ -54,24 +56,13 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 	const [selectedWeek, setSelectedWeek] = useContext(WeekContext);
 	const { data, error } = useSidebarData(user.doneRegistering, selectedWeek);
 	const isLoading = user.doneRegistering && !data;
-	const hasSeasonStarted =
-		(data?.currentWeek.weekNumber || 0) > 1 ||
-		data?.currentWeek.weekStatus !== 'NotStarted';
+	const hasSeasonStarted = data?.currentWeek.seasonStatus !== SeasonStatus.NotStarted;
 	let currentPage = '';
 
 	if (user.doneRegistering && error) {
 		console.error('Failed to load sidebar data', error);
 		throw error;
 	}
-
-	useEffect(() => {
-		if (!data) return;
-
-		if (selectedWeek < 1 || selectedWeek > 18) {
-			setSelectedWeek(data?.currentWeek.weekNumber);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data?.currentWeek.weekNumber]);
 
 	const updateWeek = (event: ChangeEvent<HTMLSelectElement>) => {
 		setSelectedWeek(parseInt(event.target.value, 10));
@@ -89,7 +80,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 
 	const goToNextWeek = () => {
 		setSelectedWeek(week => {
-			if (week < 18) {
+			if (week < WEEKS_IN_SEASON) {
 				return ++week;
 			}
 
@@ -129,8 +120,8 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 					'position-absolute',
 					'text-center',
 					'top-0',
-					'left-0',
-					'right-0',
+					'start-0',
+					'end-0',
 					styles['mobile-top-bar'],
 				)}
 			>
@@ -196,7 +187,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 										onChange={updateWeek}
 										value={selectedWeek}
 									>
-										{Array.from({ length: 18 }).map((_, i) => (
+										{Array.from({ length: WEEKS_IN_SEASON }).map((_, i) => (
 											<option key={`week-${i + 1}`} value={i + 1}>
 												Week {i + 1}
 											</option>
@@ -206,7 +197,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 										className={clsx(
 											'p-0',
 											'm-0',
-											selectedWeek === 18 && 'invisible',
+											selectedWeek === WEEKS_IN_SEASON && 'invisible',
 											styles['btn-week-picker'],
 										)}
 										onClick={goToNextWeek}
@@ -248,7 +239,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 								<NavLink
 									href="/picks/make"
 									isNested
-									show={!data?.getMyTiebreakerForWeek.tiebreakerHasSubmitted}
+									show={!data?.getMyTiebreakerForWeek?.tiebreakerHasSubmitted}
 								>
 									Make Picks
 								</NavLink>
@@ -258,7 +249,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 								<NavLink
 									href="/picks/viewall"
 									isNested
-									show={data?.getMyTiebreakerForWeek.tiebreakerHasSubmitted}
+									show={data?.getMyTiebreakerForWeek?.tiebreakerHasSubmitted}
 								>
 									View All Picks
 								</NavLink>

@@ -47,6 +47,11 @@ export const MINUTES_IN_HOUR = 60;
 export const SECONDS_IN_MINUTE = 60;
 
 /**
+ * Number of milliseconds in a second, used for conversions
+ */
+export const MILLISECONDS_IN_SECOND = 1000;
+
+/**
  * The total number of weeks in an NFL regular season
  */
-export const WEEKS_IN_SEASON = 17;
+export const WEEKS_IN_SEASON = 18;

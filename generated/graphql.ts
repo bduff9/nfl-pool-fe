@@ -117,8 +117,10 @@ export type Game = {
 	gameNumber: Scalars['Int'];
 	homeTeam: Team;
 	gameHomeSpread?: Maybe<Scalars['Float']>;
+	gameHomeScore: Scalars['Float'];
 	visitorTeam: Team;
 	gameVisitorSpread?: Maybe<Scalars['Float']>;
+	gameVisitorScore: Scalars['Float'];
 	winnerTeam?: Maybe<Team>;
 	gameStatus: GameStatus;
 	gameKickoff: Scalars['DateTime'];
@@ -289,6 +291,27 @@ export type NotificationType = {
 	notificationTypeUpdatedBy: Scalars['String'];
 };
 
+export type OverallMv = {
+	__typename?: 'OverallMV';
+	rank: Scalars['Int'];
+	tied: Scalars['Boolean'];
+	userID: Scalars['Int'];
+	user: User;
+	teamName: Scalars['String'];
+	userName: Scalars['String'];
+	pointsEarned: Scalars['Int'];
+	pointsWrong: Scalars['Int'];
+	pointsPossible: Scalars['Int'];
+	pointsTotal: Scalars['Int'];
+	gamesCorrect: Scalars['Int'];
+	gamesWrong: Scalars['Int'];
+	gamesPossible: Scalars['Int'];
+	gamesTotal: Scalars['Int'];
+	gamesMissed: Scalars['Int'];
+	isEliminated: Scalars['Boolean'];
+	lastUpdated: Scalars['DateTime'];
+};
+
 export type Payment = {
 	__typename?: 'Payment';
 	paymentDescription: Scalars['String'];
@@ -332,6 +355,10 @@ export type Query = {
 	getLogs: Array<Log>;
 	getMyNotifications: Array<Notification>;
 	getNotificationTypes: Array<NotificationType>;
+	getOverallRankings: Array<OverallMv>;
+	getMyOverallDashboard?: Maybe<OverallMv>;
+	getOverallTiedWithMeCount: Scalars['Int'];
+	getOverallRankingsTotalCount: Scalars['Int'];
 	getMyPayments: Array<Payment>;
 	getAllPicksForWeek: Array<Pick>;
 	getMyPicksForWeek: Array<Pick>;
@@ -342,10 +369,15 @@ export type Query = {
 	getSystemValue: SystemValue;
 	getTeam: Team;
 	getTeams: Array<Team>;
-	getMyTiebreakerForWeek: Tiebreaker;
+	getMyTiebreakerForWeek?: Maybe<Tiebreaker>;
 	getTiebreakersForWeek: Array<Tiebreaker>;
 	getCurrentUser: User;
+	getMyAlerts: Array<Scalars['String']>;
 	getUsers: Array<User>;
+	getWeeklyRankings: Array<WeeklyMv>;
+	getMyWeeklyDashboard?: Maybe<WeeklyMv>;
+	getWeeklyTiedWithMeCount: Scalars['Int'];
+	getWeeklyRankingsTotalCount: Scalars['Int'];
 	getWeek: Week;
 };
 
@@ -402,6 +434,22 @@ export type QueryGetTiebreakersForWeekArgs = {
 	Week: Scalars['Int'];
 };
 
+export type QueryGetWeeklyRankingsArgs = {
+	Week: Scalars['Int'];
+};
+
+export type QueryGetMyWeeklyDashboardArgs = {
+	Week: Scalars['Int'];
+};
+
+export type QueryGetWeeklyTiedWithMeCountArgs = {
+	Week: Scalars['Int'];
+};
+
+export type QueryGetWeeklyRankingsTotalCountArgs = {
+	Week: Scalars['Int'];
+};
+
 export type QueryGetWeekArgs = {
 	Week?: Maybe<Scalars['Int']>;
 };
@@ -418,6 +466,13 @@ export type Rule = ISupportContent & {
 	supportContentUpdated: Scalars['DateTime'];
 	supportContentUpdatedBy: Scalars['String'];
 };
+
+/** The status of the season */
+export enum SeasonStatus {
+	Complete = 'Complete',
+	InProgress = 'InProgress',
+	NotStarted = 'NotStarted',
+}
 
 /** The type of support content */
 export enum SupportContentType {
@@ -548,6 +603,7 @@ export type Week = {
 	weekNumber: Scalars['Int'];
 	weekStarts: Scalars['DateTime'];
 	weekStatus: WeekStatus;
+	seasonStatus: SeasonStatus;
 	weekFirstGame: Game;
 	weekLastGame: Game;
 	weekNumberOfGames: Scalars['Int'];
@@ -559,6 +615,32 @@ export enum WeekStatus {
 	InProgress = 'InProgress',
 	NotStarted = 'NotStarted',
 }
+
+export type WeeklyMv = {
+	__typename?: 'WeeklyMV';
+	week: Scalars['Int'];
+	rank: Scalars['Int'];
+	tied: Scalars['Boolean'];
+	userID: Scalars['Int'];
+	user: User;
+	teamName: Scalars['String'];
+	userName: Scalars['String'];
+	pointsEarned: Scalars['Int'];
+	pointsWrong: Scalars['Int'];
+	pointsPossible: Scalars['Int'];
+	pointsTotal: Scalars['Int'];
+	gamesCorrect: Scalars['Int'];
+	gamesWrong: Scalars['Int'];
+	gamesPossible: Scalars['Int'];
+	gamesTotal: Scalars['Int'];
+	gamesMissed: Scalars['Int'];
+	tiebreakerScore?: Maybe<Scalars['Int']>;
+	lastScore?: Maybe<Scalars['Int']>;
+	tiebreakerIsUnder: Scalars['Boolean'];
+	tiebreakerDiffAbsolute?: Maybe<Scalars['Int']>;
+	isEliminated: Scalars['Boolean'];
+	lastUpdated: Scalars['DateTime'];
+};
 
 /** New log data */
 export type WriteLogInput = {

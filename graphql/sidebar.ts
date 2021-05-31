@@ -14,7 +14,6 @@
  * Home: https://asitewithnoname.com/
  */
 import { gql } from 'graphql-request';
-import { useMemo } from 'react';
 import useSWR, { SWRResponse } from 'swr';
 
 import { Tiebreaker, Week } from '../generated/graphql';
@@ -24,8 +23,7 @@ const getSidebarGQL = gql`
 	query GetSidebar($week: Int!) {
 		currentWeek: getWeek {
 			weekNumber
-			weekStarts
-			weekStatus
+			seasonStatus
 		}
 		selectedWeek: getWeek(Week: $week) {
 			weekNumber
@@ -39,10 +37,11 @@ const getSidebarGQL = gql`
 	}
 `;
 
+type GetCurrentWeekResponse = Pick<Week, 'weekNumber' | 'seasonStatus'>;
 type GetWeekResponse = Pick<Week, 'weekNumber' | 'weekStarts' | 'weekStatus'>;
 type GetMyTiebreakerResponse = Pick<Tiebreaker, 'tiebreakerHasSubmitted'>;
 type GetSidebarResponse = {
-	currentWeek: GetWeekResponse;
+	currentWeek: GetCurrentWeekResponse;
 	selectedWeek: GetWeekResponse;
 	getMyTiebreakerForWeek: GetMyTiebreakerResponse;
 	isAliveInSurvivor: boolean;
@@ -51,20 +50,8 @@ type GetSidebarResponse = {
 export const useSidebarData = (
 	doneRegistering: boolean | undefined,
 	selectedWeek: number,
-): SWRResponse<GetSidebarResponse, any> => {
-	const getSidebarVars = useMemo(() => {
-		let week = selectedWeek;
-
-		if (week < 1) week = 1;
-
-		if (week > 18) week = 18;
-
-		return { week };
-	}, [selectedWeek]);
-	const result = useSWR<GetSidebarResponse>(
-		doneRegistering ? [getSidebarGQL, getSidebarVars] : null,
-		fetcher,
+): SWRResponse<GetSidebarResponse, unknown> =>
+	useSWR<GetSidebarResponse>(
+		doneRegistering ? [getSidebarGQL, selectedWeek] : null,
+		(query, week) => fetcher(query, { week }),
 	);
-
-	return result;
-};

@@ -109,7 +109,7 @@ const options: NextAuthOptions = {
 				);
 				const currentWeekPromise = getOne<{ GameWeek: number }, [string]>(
 					connection,
-					'SELECT COALESCE(MIN(GameWeek), 17) AS GameWeek FROM Games WHERE GameStatus <> ? AND GameDeleted IS NULL',
+					`SELECT COALESCE(MIN(GameWeek), ${WEEKS_IN_SEASON}) AS GameWeek FROM Games WHERE GameStatus <> ? AND GameDeleted IS NULL`,
 					['C'],
 				);
 
