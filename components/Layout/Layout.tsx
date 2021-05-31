@@ -30,7 +30,10 @@ const Layout: FC<LayoutProps> = props => {
 	const { children } = props;
 	const [session, loading] = useSession();
 	const titleContext = useState<string>('Welcome');
-	const weekContext = useState<number>(0);
+	const sessionWeek =
+		typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('selectedWeek') : null;
+	const weekContext = useState<number>(+(sessionWeek ?? '0'));
+	const week = weekContext[0];
 
 	useEffect((): void => {
 		if (session && !loading) {
@@ -43,6 +46,12 @@ const Layout: FC<LayoutProps> = props => {
 			});
 		}
 	}, [session, loading]);
+
+	useEffect(() => {
+		if (week) {
+			sessionStorage.setItem('selectedWeek', `${week}`);
+		}
+	}, [week]);
 
 	//TODO: use loading to show page loading
 
