@@ -38,7 +38,7 @@ const CreateProfile: FC<CreateProfileProps> = () => {
 
 	if (error) {
 		console.error('Error when loading finish registration form', error);
-		throw error;
+		// throw error;
 	}
 
 	return (

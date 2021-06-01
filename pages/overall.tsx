@@ -56,7 +56,7 @@ const OverallRankings: FC<OverallRankingsProps> = ({ user }) => {
 
 	if (error || myError) {
 		console.error('Error when loading overall ranks', error, myError);
-		throw error;
+		// throw error;
 	}
 
 	if (!isValidating && data?.getOverallRankings.length === 0) {

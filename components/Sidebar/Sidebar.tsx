@@ -61,8 +61,15 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 
 	if (user.doneRegistering && error) {
 		console.error('Failed to load sidebar data', error);
-		throw error;
+		// throw error;
 	}
+
+	useEffect(() => {
+		if (selectedWeek < 1 || selectedWeek > WEEKS_IN_SEASON) {
+			setSelectedWeek(data?.selectedWeek.weekNumber ?? 0);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data?.selectedWeek.weekNumber]);
 
 	const updateWeek = (event: ChangeEvent<HTMLSelectElement>) => {
 		setSelectedWeek(parseInt(event.target.value, 10));
