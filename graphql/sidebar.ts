@@ -39,7 +39,7 @@ const getSidebarGQL = gql`
 
 type GetCurrentWeekResponse = Pick<Week, 'weekNumber' | 'seasonStatus'>;
 type GetWeekResponse = Pick<Week, 'weekNumber' | 'weekStarts' | 'weekStatus'>;
-type GetMyTiebreakerResponse = Pick<Tiebreaker, 'tiebreakerHasSubmitted'>;
+type GetMyTiebreakerResponse = null | Pick<Tiebreaker, 'tiebreakerHasSubmitted'>;
 type GetSidebarResponse = {
 	currentWeek: GetCurrentWeekResponse;
 	selectedWeek: GetWeekResponse;
