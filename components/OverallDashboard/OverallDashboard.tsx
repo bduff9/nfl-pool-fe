@@ -62,7 +62,9 @@ const OverallDashboard: FC = () => {
 			) : (
 				<div>
 					<Link href="/overall">
-						<a>View Details</a>
+						<a className={clsx('d-md-inline-block', styles['overall-link'])}>
+							View Details
+						</a>
 					</Link>
 					<RankingPieChart
 						data={[

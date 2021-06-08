@@ -16,6 +16,7 @@
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { GetServerSideProps } from 'next';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
@@ -110,6 +111,11 @@ const OverallRankings: FC<OverallRankingsProps> = ({ user }) => {
 									layoutId="overallRankingPieChart"
 								/>
 							)}
+						</div>
+						<div className="mt-4 d-block d-md-none">
+							<Link href="/">
+								<a>&laquo; Back to Dashboard</a>
+							</Link>
 						</div>
 						<div className="d-none d-md-inline-block col-6">
 							<motion.h2 className="mb-4 text-center" layoutId="myOverallResultsTitle">

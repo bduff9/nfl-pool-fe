@@ -37,6 +37,8 @@ type GetWeeklyRankingsResponse = {
 			| 'gamesPossible'
 			| 'gamesTotal'
 			| 'gamesMissed'
+			| 'tiebreakerScore'
+			| 'lastScore'
 			| 'isEliminated'
 		>
 	>;
@@ -59,6 +61,8 @@ const query = gql`
 			gamesPossible
 			gamesTotal
 			gamesMissed
+			tiebreakerScore
+			lastScore
 			isEliminated
 		}
 	}

@@ -16,6 +16,7 @@
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { GetServerSideProps } from 'next';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { FC, useContext } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
@@ -113,6 +114,11 @@ const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
 								/>
 							)}
 						</div>
+						<div className="mt-4 d-block d-md-none">
+							<Link href="/">
+								<a>&laquo; Back to Dashboard</a>
+							</Link>
+						</div>
 						<div className="d-none d-md-inline-block col-6">
 							<motion.h2 className="mb-4 text-center" layoutId="myWeeklyResultsTitle">
 								My Week {selectedWeek} Results
@@ -152,6 +158,8 @@ const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
 										<th scope="col">Owner</th>
 										<th scope="col">Points</th>
 										<th scope="col">Games Correct</th>
+										<th scope="col">Tiebreaker</th>
+										<th scope="col">Last Game</th>
 										<th scope="col">Eliminated</th>
 									</tr>
 								</thead>
@@ -177,6 +185,12 @@ const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
 												<td>
 													<Skeleton />
 												</td>
+												<td>
+													<Skeleton />
+												</td>
+												<td>
+													<Skeleton />
+												</td>
 											</tr>
 										))}
 									</tbody>
@@ -187,11 +201,16 @@ const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
 												className={clsx(row.userID === user.id && 'table-warning')}
 												key={`user-rank-for-${row.userID}`}
 											>
-												<th scope="row">{row.rank}</th>
+												<th scope="row">
+													{row.tied ? 'T' : ''}
+													{row.rank}
+												</th>
 												<td>{row.teamName}</td>
 												<td>{row.userName}</td>
 												<td>{row.pointsEarned}</td>
 												<td>{row.gamesCorrect}</td>
+												<td>{row.tiebreakerScore}</td>
+												<td>{row.lastScore}</td>
 												<td className="text-danger">{row.isEliminated && <b>X</b>}</td>
 											</tr>
 										))}

@@ -23,7 +23,7 @@ const OverallDashboardLoader: FC = () => {
 	return (
 		<SkeletonTheme>
 			{/* View Details link */}
-			<div className="mb-3">
+			<div className="mb-3" style={{ marginTop: '42px' }}>
 				<Skeleton height={18} width={87} />
 			</div>
 			{/* Pie Chart */}

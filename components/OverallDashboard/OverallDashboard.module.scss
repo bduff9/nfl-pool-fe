@@ -18,3 +18,9 @@
     border-bottom: 1px solid #71717a;
   }
 }
+
+.overall-link {
+  @media (min-width: 768px) {
+    margin-bottom: 47px;
+  }
+}
