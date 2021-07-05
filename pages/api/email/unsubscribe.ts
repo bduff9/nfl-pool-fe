@@ -13,29 +13,23 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { useRouter } from 'next/router';
-import React, { FC } from 'react';
+import { withSentry } from '@sentry/nextjs';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
-import CustomHead from '../../../components/CustomHead/CustomHead';
+const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
+	const { email } = req.query;
 
-const QuickPick: FC = () => {
-	const router = useRouter();
-	const { userId, teamShort } = router.query;
+	try {
+		//TODO: if no email, show input asking for one
+		//TODO: if email, call GQL endpoint to unsubscribe user and show success regardless if found or not
+		const html = email;
 
-	//TODO: do people not need to be signed in here?  Should we generate a token to prevent abuse?
-	return (
-		<div>
-			<CustomHead title="Quick Pick" />
-			<h1>Quick Pick</h1>
-			<ul>
-				<li>User Id {userId}</li>
-				<li>Team short {teamShort}</li>
-			</ul>
-		</div>
-	);
+		res.status(200).send(html);
+	} catch (error) {
+		console.error('Error unsubscribing:', { email, error });
+		res.status(404).send('<h1>Error unsubscribing, please try again later</h1>');
+	}
 };
 
-QuickPick.whyDidYouRender = true;
-
 // ts-prune-ignore-next
-export default QuickPick;
+export default withSentry(handler);
