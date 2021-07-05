@@ -13,20 +13,18 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR, { SWRResponse } from 'swr';
+.survivor-dashboard {
+  @media (max-width: 767px) {
+    border-bottom: 1px solid #71717a;
+  }
+}
 
-import { fetcher } from '../utils/graphql';
+.survivor-link {
+  @media (min-width: 768px) {
+    margin-bottom: 47px;
+  }
+}
 
-const getMyAlertsQuery = gql`
-	query Alerts {
-		getMyAlerts
-	}
-`;
-
-type GetMyAlertsResponse = {
-	getMyAlerts: Array<string>;
-};
-
-export const useMyAlertsQuery = (): SWRResponse<GetMyAlertsResponse, unknown> =>
-	useSWR<GetMyAlertsResponse>(getMyAlertsQuery, fetcher);
+.results-title {
+  margin-top: 2rem;
+}

@@ -34,7 +34,7 @@ type DashboardProps = {
 	user: TUser;
 };
 
-const Dashboard: FC<DashboardProps> = () => (
+const Dashboard: FC<DashboardProps> = ({ user }) => (
 	<Authenticated isRegistered>
 		<CustomHead title="My Dashboard" />
 		<div className="content-bg text-dark my-3 mx-2 pt-5 pt-md-3 min-vh-100 pb-4 col">
@@ -42,7 +42,7 @@ const Dashboard: FC<DashboardProps> = () => (
 				<div className="row min-vh-100">
 					<WeeklyDashboard />
 					<OverallDashboard />
-					<SurvivorDashboard />
+					<SurvivorDashboard user={user} />
 				</div>
 			</SkeletonTheme>
 		</div>

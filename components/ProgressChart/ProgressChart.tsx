@@ -22,15 +22,17 @@ import styles from './ProgressChart.module.scss';
 type ProgressChartProps = {
 	correct: number;
 	incorrect: number;
+	inProgress?: number;
 	isOver?: boolean;
 	layoutId: string;
 	max: number;
-	type: 'Games' | 'Points';
+	type: 'Current Week Remaining' | 'Games' | 'Overall Remaining' | 'Points';
 };
 
 const ProgressChart: FC<ProgressChartProps> = ({
 	correct,
 	incorrect,
+	inProgress,
 	isOver = false,
 	layoutId,
 	max,
@@ -38,6 +40,7 @@ const ProgressChart: FC<ProgressChartProps> = ({
 }) => {
 	const correctPercent = (correct / max) * 100;
 	const incorrectPercent = (incorrect / max) * 100;
+	const inProgressPercent = (inProgress ?? 0 / max) * 100;
 
 	return (
 		<motion.div layoutId={layoutId}>
@@ -73,11 +76,34 @@ const ProgressChart: FC<ProgressChartProps> = ({
 				>
 					{incorrect}
 				</div>
+				{typeof inProgress === 'number' && (
+					<div
+						className={clsx(
+							'progress-bar',
+							!isOver && 'progress-bar-striped',
+							!isOver && 'progress-bar-animated',
+							'bg-secondary',
+						)}
+						role="progressbar"
+						style={{ width: `${inProgressPercent}%` }}
+						aria-valuenow={inProgress}
+						aria-valuemin={0}
+						aria-valuemax={max}
+					>
+						{inProgress}
+					</div>
+				)}
 			</div>
-			<div className="small d-flex justify-content-between mb-2">
-				<div>Max possible {type.toLowerCase()}</div>
-				<div>{max}</div>
-			</div>
+			{['Games', 'Points'].includes(type) ? (
+				<div className="small d-flex justify-content-between mb-2">
+					<div>Max possible {type.toLowerCase()}</div>
+					<div>{max}</div>
+				</div>
+			) : (
+				<div className="small d-flex justify-content-between mb-2">
+					<div>&nbsp;</div>
+				</div>
+			)}
 		</motion.div>
 	);
 };

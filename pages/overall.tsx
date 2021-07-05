@@ -60,7 +60,7 @@ const OverallRankings: FC<OverallRankingsProps> = ({ user }) => {
 		// throw error;
 	}
 
-	if (!isValidating && data?.getOverallRankings.length === 0) {
+	if (!isValidating && total === 0) {
 		router.replace('/');
 
 		return null;

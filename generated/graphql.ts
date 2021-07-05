@@ -32,17 +32,14 @@ export type Scalars = {
 
 export type ApiCall = {
 	__typename?: 'APICall';
-	apiCallID: Scalars['Int'];
-	apiCallDate: Scalars['DateTime'];
+	apiCallID: Scalars['String'];
 	apiCallError?: Maybe<Scalars['String']>;
 	apiCallResponse?: Maybe<Scalars['String']>;
-	apiCallURL: Scalars['String'];
+	apiCallUrl: Scalars['String'];
 	apiCallWeek?: Maybe<Scalars['Int']>;
 	apiCallYear: Scalars['Int'];
-	apiCallAdded: Scalars['DateTime'];
-	apiCallAddedBy: Scalars['String'];
-	apiCallUpdated: Scalars['DateTime'];
-	apiCallUpdatedBy: Scalars['String'];
+	createdAt: Scalars['DateTime'];
+	updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
 /** The strategy to employ for auto picking */
@@ -78,9 +75,16 @@ export type Email = {
 
 /** The sent message type */
 export enum EmailType {
+	InvalidGamesFound = 'invalidGamesFound',
 	NewUser = 'newUser',
+	PickReminder = 'pickReminder',
+	QuickPick = 'quickPick',
+	SurvivorReminder = 'survivorReminder',
 	Untrusted = 'untrusted',
 	Verification = 'verification',
+	Weekly = 'weekly',
+	WeekEnded = 'weekEnded',
+	WeekStarted = 'weekStarted',
 }
 
 export type Faq = ISupportContent & {
@@ -125,6 +129,7 @@ export type Game = {
 	gameStatus: GameStatus;
 	gameKickoff: Scalars['DateTime'];
 	gameTimeLeftInSeconds: Scalars['Int'];
+	gameTimeLeftInQuarter: Scalars['String'];
 	teamHasPossession?: Maybe<Team>;
 	teamInRedzone?: Maybe<Team>;
 	gameAdded: Scalars['DateTime'];
@@ -136,13 +141,14 @@ export type Game = {
 /** The game's current status */
 export enum GameStatus {
 	Pregame = 'Pregame',
-	Incomplete = 'Incomplete',
-	Q1 = 'Q1',
-	Q2 = 'Q2',
-	Halftime = 'Halftime',
-	Q3 = 'Q3',
-	Q4 = 'Q4',
-	Complete = 'Complete',
+	Invalid = 'Invalid',
+	FirstQuarter = 'FirstQuarter',
+	SecondQuarter = 'SecondQuarter',
+	HalfTime = 'HalfTime',
+	ThirdQuarter = 'ThirdQuarter',
+	FourthQuarter = 'FourthQuarter',
+	Overtime = 'Overtime',
+	Final = 'Final',
 }
 
 export type History = {
@@ -184,11 +190,11 @@ export type League = {
 	leagueID: Scalars['Int'];
 	leagueName: Scalars['String'];
 	admin?: Maybe<User>;
+	userLeagues: Array<UserLeague>;
 	leagueAdded: Scalars['DateTime'];
 	leagueAddedBy: Scalars['String'];
 	leagueUpdated: Scalars['DateTime'];
 	leagueUpdatedBy: Scalars['String'];
-	userLeagues: Array<UserLeague>;
 };
 
 export type Log = {
@@ -363,9 +369,14 @@ export type Query = {
 	getAllPicksForWeek: Array<Pick>;
 	getMyPicksForWeek: Array<Pick>;
 	getRules: Array<Rule>;
+	getMySurvivorDashboard?: Maybe<SurvivorMv>;
+	isAliveInSurvivor: Scalars['Boolean'];
+	getSurvivorWeekCount: Scalars['Int'];
+	getSurvivorOverallCount: Scalars['Int'];
+	getSurvivorStatus: SeasonStatus;
 	getAllSurvivorPicksForWeek: Array<SurvivorPick>;
 	getMySurvivorPicks: Array<SurvivorPick>;
-	isAliveInSurvivor: Scalars['Boolean'];
+	getMySurvivorPickForWeek?: Maybe<SurvivorPick>;
 	getSystemValue: SystemValue;
 	getTeam: Team;
 	getTeams: Array<Team>;
@@ -414,7 +425,19 @@ export type QueryGetMyPicksForWeekArgs = {
 	Week: Scalars['Int'];
 };
 
+export type QueryGetSurvivorWeekCountArgs = {
+	Type?: Maybe<SurvivorStatus>;
+};
+
+export type QueryGetSurvivorOverallCountArgs = {
+	Type?: Maybe<Scalars['Boolean']>;
+};
+
 export type QueryGetAllSurvivorPicksForWeekArgs = {
+	Week: Scalars['Int'];
+};
+
+export type QueryGetMySurvivorPickForWeekArgs = {
 	Week: Scalars['Int'];
 };
 
@@ -480,6 +503,22 @@ export enum SupportContentType {
 	Rule = 'Rule',
 }
 
+export type SurvivorMv = {
+	__typename?: 'SurvivorMV';
+	rank: Scalars['Int'];
+	tied: Scalars['Boolean'];
+	userID: Scalars['Int'];
+	user: User;
+	teamName: Scalars['String'];
+	userName: Scalars['String'];
+	weeksAlive: Scalars['Int'];
+	isAliveOverall: Scalars['Boolean'];
+	currentStatus?: Maybe<SurvivorStatus>;
+	lastPick?: Maybe<Scalars['Int']>;
+	lastPickTeam?: Maybe<Team>;
+	lastUpdated: Scalars['DateTime'];
+};
+
 export type SurvivorPick = {
 	__typename?: 'SurvivorPick';
 	survivorPickID: Scalars['Int'];
@@ -493,6 +532,13 @@ export type SurvivorPick = {
 	survivorPickUpdated: Scalars['DateTime'];
 	survivorPickUpdatedBy: Scalars['String'];
 };
+
+/** The current status of a survivor player */
+export enum SurvivorStatus {
+	Alive = 'Alive',
+	Dead = 'Dead',
+	Waiting = 'Waiting',
+}
 
 export type SystemValue = {
 	__typename?: 'SystemValue';

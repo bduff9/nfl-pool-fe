@@ -34,6 +34,8 @@ const getSidebarGQL = gql`
 			tiebreakerHasSubmitted
 		}
 		isAliveInSurvivor
+		getWeeklyRankingsTotalCount(Week: $week)
+		getOverallRankingsTotalCount
 	}
 `;
 
@@ -45,6 +47,8 @@ type GetSidebarResponse = {
 	selectedWeek: GetWeekResponse;
 	getMyTiebreakerForWeek: GetMyTiebreakerResponse;
 	isAliveInSurvivor: boolean;
+	getWeeklyRankingsTotalCount: number;
+	getOverallRankingsTotalCount: number;
 };
 
 export const useSidebarData = (

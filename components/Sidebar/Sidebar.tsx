@@ -234,11 +234,15 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 								<NavLink
 									href="/weekly"
 									isNested
-									show={data?.selectedWeek.weekStatus !== 'NotStarted'}
+									show={(data?.getWeeklyRankingsTotalCount ?? 0) > 0}
 								>
 									Week Results
 								</NavLink>
-								<NavLink href="/overall" isNested show={hasSeasonStarted}>
+								<NavLink
+									href="/overall"
+									isNested
+									show={(data?.getOverallRankingsTotalCount ?? 0) > 0}
+								>
 									Overall Results
 								</NavLink>
 							</MenuAccordion>
@@ -321,9 +325,6 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 								</NavLink>
 								<NavLink href="/admin/logs" isNested>
 									View Logs
-								</NavLink>
-								<NavLink isNested onClick={() => alert('TODO:')}>
-									Refresh Games
 								</NavLink>
 								<NavLink href="/admin/email" isNested>
 									Email Users

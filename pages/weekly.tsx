@@ -62,7 +62,7 @@ const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
 		// throw error;
 	}
 
-	if (!isValidating && data?.getWeeklyRankings.length === 0) {
+	if (!isValidating && total === 0) {
 		router.replace('/');
 
 		return null;

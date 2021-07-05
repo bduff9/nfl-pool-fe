@@ -39,7 +39,6 @@ const OverallDashboard: FC = () => {
 
 	if (error) {
 		console.error('Error when loading overall dashboard', error);
-		// throw error;
 	}
 
 	return (
