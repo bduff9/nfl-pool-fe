@@ -13,6 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+import { withSentry } from '@sentry/nextjs';
 import mysql from 'mysql';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { NextAuthOptions, Session } from 'next-auth';
@@ -110,7 +111,7 @@ const options: NextAuthOptions = {
 				const currentWeekPromise = getOne<{ GameWeek: number }, [string]>(
 					connection,
 					`SELECT COALESCE(MIN(GameWeek), ${WEEKS_IN_SEASON}) AS GameWeek FROM Games WHERE GameStatus <> ? AND GameDeleted IS NULL`,
-					['C'],
+					['Final'],
 				);
 
 				const [userResult, paymentDueWeek, currentWeek] = await Promise.all([
@@ -312,5 +313,7 @@ const options: NextAuthOptions = {
 };
 
 // ts-prune-ignore-next
-export default async (req: NextApiRequest, res: NextApiResponse): Promise<void> =>
-	NextAuth(req, res, options);
+export default withSentry(
+	async (req: NextApiRequest, res: NextApiResponse): Promise<void> =>
+		NextAuth(req, res, options),
+);

@@ -36,7 +36,7 @@
         "prepend": " * "
       }
     },
-    "dotfile|^Dockerfile": {
+    "dotfile|^Dockerfile|properties": {
       "eachLine": {
         "prepend": "# "
       }

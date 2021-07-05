@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/nextjs';
 import whyDidYouRender from '@welldone-software/why-did-you-render';
 import { AnimateSharedLayout } from 'framer-motion';
 import LogRocket from 'logrocket';
@@ -27,7 +27,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { syncWithLocalStorage } from 'swr-sync-storage';
 
 import Layout from '../components/Layout/Layout';
-import { NEXT_PUBLIC_ENV, NEXT_PUBLIC_SENTRY_DSN } from '../utils/constants';
+import { NEXT_PUBLIC_ENV } from '../utils/constants';
 
 import '../styles/globals.scss';
 // Keep selectors for #nprogress, .bar, .peg, .spinner, & .spinner-icon
@@ -35,13 +35,6 @@ import 'nprogress/nprogress.css';
 
 if (typeof window !== 'undefined') {
 	syncWithLocalStorage();
-}
-
-if (NEXT_PUBLIC_SENTRY_DSN) {
-	Sentry.init({
-		enabled: NEXT_PUBLIC_ENV === 'production',
-		dsn: NEXT_PUBLIC_SENTRY_DSN,
-	});
 }
 
 if (typeof window !== 'undefined') {

@@ -13,26 +13,17 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { withSentry } from '@sentry/nextjs';
-import type { NextApiRequest, NextApiResponse } from 'next';
+// This file configures the initialization of Sentry on the server.
+// The config you add here will be used whenever the server handles a request.
+// https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
-// eslint-disable-next-line import/order
-import { getEmail } from '../../../graphql/[emailID]';
+import * as Sentry from '@sentry/nextjs';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
-	const { emailID } = req.query;
+const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
 
-	try {
-		const {
-			getEmail: { html },
-		} = await getEmail(emailID);
-
-		res.status(200).send(html);
-	} catch (error) {
-		console.error('Error retrieving email:', error);
-		res.status(404).send('<h1>Email not found, please try again later</h1>');
-	}
-};
-
-// ts-prune-ignore-next
-export default withSentry(handler);
+Sentry.init({
+  dsn: SENTRY_DSN,
+  // Note: if you want to override the automatic release value, do not set a
+  // `release` value here - use the environment variable `SENTRY_RELEASE`, so
+  // that it will also get attached to your source maps
+});
