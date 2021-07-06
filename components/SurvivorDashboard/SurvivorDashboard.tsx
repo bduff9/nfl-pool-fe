@@ -61,16 +61,16 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 						<a
 							className={clsx(
 								'd-block',
-								(!user.hasSurvivor || data.getMySurvivorPickForWeek?.team) &&
+								(!data.isAliveInSurvivor || data.getMySurvivorPickForWeek?.team) &&
 									styles['survivor-link'],
 							)}
 						>
 							View Details
 						</a>
 					</Link>
-					{user.hasSurvivor && !data.getMySurvivorPickForWeek?.team && (
+					{data.isAliveInSurvivor && !data.getMySurvivorPickForWeek?.team && (
 						<Link href="/survivor/set">
-							<a className={clsx('d-block')}>Click here to make your pick</a>
+							<a className={clsx('d-block', 'mb-4')}>Click here to make your pick</a>
 						</Link>
 					)}
 					<SurvivorDashboardIcon

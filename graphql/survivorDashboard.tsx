@@ -38,6 +38,7 @@ type GetSurvivorDashboardResponse = {
 	};
 	getWeek: Pick<Week, 'weekStatus'>;
 	getSurvivorStatus: SeasonStatus;
+	isAliveInSurvivor: boolean;
 };
 
 const query = gql`
@@ -70,6 +71,7 @@ const query = gql`
 			weekStatus
 		}
 		getSurvivorStatus
+		isAliveInSurvivor
 	}
 `;
 
