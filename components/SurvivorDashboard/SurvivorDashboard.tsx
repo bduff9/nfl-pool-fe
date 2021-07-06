@@ -62,7 +62,7 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 							className={clsx(
 								'd-block',
 								(!data.isAliveInSurvivor || data.getMySurvivorPickForWeek?.team) &&
-									styles['survivor-link'],
+									'mb-md-5',
 							)}
 						>
 							View Details
