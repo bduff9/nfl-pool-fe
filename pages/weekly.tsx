@@ -59,7 +59,6 @@ const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
 
 	if (error || myError) {
 		console.error('Error when loading overall ranks', error, myError);
-		// throw error;
 	}
 
 	if (!isValidating && total === 0) {

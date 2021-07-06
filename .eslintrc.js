@@ -36,6 +36,7 @@ module.exports = {
 	},
 	extends: [
 		'eslint:recommended',
+		'next',
 		'plugin:@typescript-eslint/recommended',
 		'plugin:clean-regex/recommended',
 		'plugin:css-modules/recommended',
