@@ -236,6 +236,7 @@ export type Mutation = {
 	updateMyNotifications: Array<Notification>;
 	finishRegistration: User;
 	editMyProfile: User;
+	unsubscribeEmail: Scalars['Boolean'];
 };
 
 export type MutationWriteLogArgs = {
@@ -252,6 +253,10 @@ export type MutationFinishRegistrationArgs = {
 
 export type MutationEditMyProfileArgs = {
 	data: EditMyProfileInput;
+};
+
+export type MutationUnsubscribeEmailArgs = {
+	email: Scalars['String'];
 };
 
 export type Notification = {
