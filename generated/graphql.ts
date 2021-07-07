@@ -359,6 +359,7 @@ export type Query = {
 	getEmail: Email;
 	getFAQs: Array<Faq>;
 	getGame: Game;
+	getGamesForWeek: Array<Game>;
 	getCurrentWeek: Scalars['Int'];
 	getHistoryForYear: Array<History>;
 	getAllLeagues: Array<League>;
@@ -411,6 +412,10 @@ export type QueryGetEmailArgs = {
 
 export type QueryGetGameArgs = {
 	GameID: Scalars['Int'];
+};
+
+export type QueryGetGamesForWeekArgs = {
+	Week: Scalars['Int'];
 };
 
 export type QueryGetHistoryForYearArgs = {

@@ -20,6 +20,28 @@ import {
 	SECONDS_IN_MINUTE,
 } from './constants';
 
+export const formatDateForKickoff = (dateStr: string): string => {
+	const options: Intl.DateTimeFormatOptions = {
+		weekday: 'long',
+		month: 'long',
+		day: 'numeric',
+	};
+	const date = new Date(dateStr);
+
+	return date.toLocaleDateString('en-US', options);
+};
+
+export const formatTimeFromKickoff = (dateStr: string): string => {
+	const options: Intl.DateTimeFormatOptions = {
+		hour: 'numeric',
+		minute: '2-digit',
+		timeZoneName: 'short',
+	};
+	const date = new Date(dateStr);
+
+	return date.toLocaleTimeString('en-US', options);
+};
+
 type TimeParts = {
 	days: number;
 	hours: number;
