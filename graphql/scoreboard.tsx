@@ -38,9 +38,9 @@ type GetGamesForWeekResponse = {
 				Team,
 				'teamCity' | 'teamID' | 'teamLogo' | 'teamName' | 'teamShortName'
 			>;
-			winnerTeam: Pick<Team, 'teamID'>;
-			teamHasPossession: Pick<Team, 'teamID'>;
-			teamInRedzone: Pick<Team, 'teamID'>;
+			winnerTeam: null | Pick<Team, 'teamID'>;
+			teamHasPossession: null | Pick<Team, 'teamID'>;
+			teamInRedzone: null | Pick<Team, 'teamID'>;
 		}
 	>;
 };

@@ -13,13 +13,10 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { faFootballBall } from '@bduff9/pro-solid-svg-icons/faFootballBall';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
-import Image from 'next/image';
-import React, { FC, useContext } from 'react';
-import { SkeletonTheme } from 'react-loading-skeleton';
+import React, { FC, Fragment, useContext } from 'react';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../components/Authenticated/Authenticated';
 import CustomHead from '../components/CustomHead/CustomHead';
@@ -32,119 +29,49 @@ import {
 	UNAUTHENTICATED_REDIRECT,
 } from '../utils/auth.server';
 import { WeekContext } from '../utils/context';
-import { formatDateForKickoff, formatTimeFromKickoff } from '../utils/dates';
+import { formatDateForKickoff } from '../utils/dates';
 import styles from '../styles/scoreboard.module.scss';
-import { GameStatus, Team } from '../generated/graphql';
-import { convertGameStatusToDB, getShortQuarter } from '../utils/strings';
+import ScoreboardTeam from '../components/ScoreboardTeam/ScoreboardTeam';
+import GameStatusDisplay from '../components/GameStatusDisplay/GameStatusDisplay';
 
-//TODO: start functions to move to other files
-const ScoreboardLoader: FC = () => <>TODO: Skeleton loader here</>;
+const TeamLoader: FC = () => (
+	<>
+		<div className="team-logo">
+			<Skeleton height={70} width={70} />
+		</div>
+		<div className={clsx('flex-grow-1', 'd-flex', 'align-items-center', 'ps-3')}>
+			<Skeleton className="d-none d-md-inline-block" height={23} width={280} />
+			<Skeleton className="d-md-none" height={23} width={30} />
+		</div>
+		<div className={clsx('d-flex', 'align-items-center', 'pe-3')}>
+			<Skeleton height={23} width={23} />
+		</div>
+		<div className="w-100"></div>
+	</>
+);
 
-type GameStatusDisplayProps = {
-	kickoff: string;
-	status: GameStatus;
-	timeLeft: string;
-};
-
-const GameStatusDisplay: FC<GameStatusDisplayProps> = ({ kickoff, status, timeLeft }) => {
-	if (status === GameStatus.Final) {
-		return <>{status}</>;
-	}
-
-	if (status === GameStatus.Pregame) {
-		return <>{formatTimeFromKickoff(kickoff)}</>;
-	}
-
-	const gameStatus = convertGameStatusToDB(status);
-
-	return (
-		<>
-			<span className="d-none d-md-inline">{gameStatus}</span>
-			<span className="d-md-none">{getShortQuarter(gameStatus)}</span>
-			<br />
-			{timeLeft}
-		</>
-	);
-};
-
-type ScoreboardTeamProps = {
-	gameStatus: GameStatus;
-	hasPossession: boolean;
-	isInRedzone: boolean;
-	isWinner: boolean;
-	score: number;
-	team: Pick<Team, 'teamCity' | 'teamID' | 'teamLogo' | 'teamName' | 'teamShortName'>;
-};
-
-const ScoreboardTeam: FC<ScoreboardTeamProps> = ({
-	gameStatus,
-	hasPossession,
-	isInRedzone,
-	isWinner,
-	score,
-	team,
-}) => {
-	const isLoser = !isWinner && gameStatus === GameStatus.Final;
-
-	return (
-		<>
-			<div className="team-logo">
-				<Image
-					alt={`${team.teamCity} ${team.teamName}`}
-					className={clsx(isLoser && styles.loser)}
-					height={70}
-					layout="intrinsic"
-					src={`/NFLLogos/${team.teamLogo}`}
-					title={`${team.teamCity} ${team.teamName}`}
-					width={70}
-				/>
+const GameLoader: FC = () => (
+	<div className="col-12 col-md-6 mb-3">
+		<div className={clsx('p-3', 'd-flex', styles.game)}>
+			<div className={clsx('d-flex', 'flex-grow-1', 'flex-wrap')}>
+				<TeamLoader />
+				<TeamLoader />
 			</div>
-			<div
-				className={clsx(
-					'flex-grow-1',
-					'd-flex',
-					'align-items-center',
-					'ps-3',
-					isWinner && 'text-success',
-					isWinner && 'fw-bold',
-					isLoser && 'text-muted',
-					isInRedzone && 'text-danger',
-				)}
-			>
-				<span className="d-none d-md-inline">
-					{team.teamCity} {team.teamName}
-				</span>
-				<span className="d-md-none">{team.teamShortName}</span>
+			<div className={clsx('text-center', 'pt-4', 'fs-4', styles['game-status'])}>
+				<Skeleton className="d-none d-md-inline-block" height={28} width={100} />
+				<Skeleton className="d-md-none" height={28} width={72} />
 			</div>
-			<div
-				className={clsx(
-					'd-flex',
-					'align-items-center',
-					'pe-3',
-					isWinner && 'text-success',
-					isWinner && 'fw-bold',
-					isLoser && 'text-muted',
-					isInRedzone && 'text-danger',
-				)}
-			>
-				{gameStatus !== GameStatus.Pregame && (
-					<>
-						{hasPossession && (
-							<FontAwesomeIcon
-								className={clsx('me-2', !isInRedzone && styles.football)}
-								icon={faFootballBall}
-							/>
-						)}
-						{score}
-					</>
-				)}
-			</div>
-			<div className="w-100"></div>
-		</>
-	);
-};
+		</div>
+	</div>
+);
 
-//TODO: end exports
+const ScoreboardLoader: FC = () => (
+	<>
+		{[...Array(16)].map((_, i) => (
+			<GameLoader key={i} />
+		))}
+	</>
+);
 
 type ScoreboardProps = {
 	user: TUser;
@@ -176,7 +103,7 @@ const Scoreboard: FC<ScoreboardProps> = () => {
 								lastKickoff = currentKickoff;
 
 								return (
-									<>
+									<Fragment key={`game-${game.gameID}`}>
 										{differentKickoff && (
 											<>
 												<div
@@ -192,10 +119,7 @@ const Scoreboard: FC<ScoreboardProps> = () => {
 											</>
 										)}
 										<div className="col-12 col-md-6 mb-3">
-											<div
-												className={clsx('p-3', 'd-flex', styles.game)}
-												key={`game-${game.gameID}`}
-											>
+											<div className={clsx('p-3', 'd-flex', styles.game)}>
 												<div className={clsx('d-flex', 'flex-grow-1', 'flex-wrap')}>
 													<ScoreboardTeam
 														gameStatus={game.gameStatus}
@@ -238,7 +162,7 @@ const Scoreboard: FC<ScoreboardProps> = () => {
 												</div>
 											</div>
 										</div>
-									</>
+									</Fragment>
 								);
 							})
 						)}
