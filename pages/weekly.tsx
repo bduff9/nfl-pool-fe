@@ -31,6 +31,7 @@ import { WeekStatus } from '../generated/graphql';
 import { useWeeklyRankings } from '../graphql/weekly';
 import { useWeeklyDashboard } from '../graphql/weeklyDashboard';
 import { TUser } from '../models/User';
+import { getEmptyArray } from '../utils/arrays';
 import {
 	isDoneRegisteringSSR,
 	isSignedInSSR,
@@ -164,7 +165,7 @@ const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
 								</thead>
 								{!data ? (
 									<tbody>
-										{Array.from({ length: 20 }).map((_, i) => (
+										{getEmptyArray(20).map((_, i) => (
 											<tr key={`table-loader-${i}`}>
 												<th scope="row">
 													<Skeleton />

@@ -1,0 +1,42 @@
+.logo-wrapper {
+  height: 205px;
+}
+
+.bar-wrapper {
+  padding-top: 2rem;
+}
+
+.sticky-wrapper {
+  max-width: 98vw;
+  max-height: 98vh;
+}
+
+.nonsticky-row th,
+.sticky-row th,
+.solid-bg {
+  /* stylelint-disable-next-line declaration-no-important */
+  background-color: #d6d6d5 !important;
+}
+
+.sticky-row {
+  th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+
+    &:first-child {
+      left: 0;
+      z-index: 2;
+    }
+  }
+}
+
+.sticky-col {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+.pick-row {
+  height: 94px;
+}

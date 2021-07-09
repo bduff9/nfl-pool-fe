@@ -33,6 +33,7 @@ import { formatDateForKickoff } from '../utils/dates';
 import styles from '../styles/scoreboard.module.scss';
 import ScoreboardTeam from '../components/ScoreboardTeam/ScoreboardTeam';
 import GameStatusDisplay from '../components/GameStatusDisplay/GameStatusDisplay';
+import { getEmptyArray } from '../utils/arrays';
 
 const TeamLoader: FC = () => (
 	<>
@@ -67,7 +68,7 @@ const GameLoader: FC = () => (
 
 const ScoreboardLoader: FC = () => (
 	<>
-		{[...Array(16)].map((_, i) => (
+		{getEmptyArray(16).map((_, i) => (
 			<GameLoader key={i} />
 		))}
 	</>

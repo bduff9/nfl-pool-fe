@@ -31,6 +31,7 @@ import { SeasonStatus } from '../generated/graphql';
 import { useOverallRankings } from '../graphql/overall';
 import { useOverallDashboard } from '../graphql/overallDashboard';
 import { TUser } from '../models/User';
+import { getEmptyArray } from '../utils/arrays';
 import {
 	isDoneRegisteringSSR,
 	isSignedInSSR,
@@ -161,7 +162,7 @@ const OverallRankings: FC<OverallRankingsProps> = ({ user }) => {
 								</thead>
 								{!data ? (
 									<tbody>
-										{Array.from({ length: 20 }).map((_, i) => (
+										{getEmptyArray(20).map((_, i) => (
 											<tr key={`table-loader-${i}`}>
 												<th scope="row">
 													<Skeleton />

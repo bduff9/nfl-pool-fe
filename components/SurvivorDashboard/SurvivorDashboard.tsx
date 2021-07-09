@@ -50,9 +50,7 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 				styles['survivor-dashboard'],
 			)}
 		>
-			<motion.h2 className="mb-0" layoutId="survivorPoolTitle">
-				Survivor Pool
-			</motion.h2>
+			<h2 className="mb-0">Survivor Pool</h2>
 			{!data ? (
 				<OverallDashboardLoader />
 			) : (
@@ -82,12 +80,7 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 
 					{data.getSurvivorStatus !== SeasonStatus.NotStarted && (
 						<>
-							<motion.h2
-								className={styles['results-title']}
-								layoutId="survivorPoolResultsTitle"
-							>
-								Survivor Pool Results
-							</motion.h2>
+							<h2 className={styles['results-title']}>Survivor Pool Results</h2>
 							<ProgressChart
 								correct={data.survivorAliveForWeek}
 								incorrect={data.survivorDeadForWeek}
