@@ -59,3 +59,21 @@ export const useSidebarData = (
 		doneRegistering ? [getSidebarGQL, selectedWeek] : null,
 		(query, week) => fetcher(query, { week }),
 	);
+
+const registerForSurvivorMutation = gql`
+	mutation RegisterUserForSurvivorPool {
+		registerForSurvivor
+	}
+`;
+
+export const registerForSurvivor = (): Promise<boolean> =>
+	fetcher<boolean>(registerForSurvivorMutation);
+
+const unregisterForSurvivorMutation = gql`
+	mutation UnregisterUserForSurvivorPool {
+		unregisterForSurvivor
+	}
+`;
+
+export const unregisterForSurvivor = (): Promise<boolean> =>
+	fetcher<boolean>(unregisterForSurvivorMutation);

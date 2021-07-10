@@ -34,7 +34,11 @@ import Accordion from 'react-bootstrap/Accordion';
 import NavLink from '../NavLink/NavLink';
 import MenuAccordion from '../MenuAccordion/MenuAccordion';
 import { SeasonStatus } from '../../generated/graphql';
-import { useSidebarData } from '../../graphql/sidebar';
+import {
+	registerForSurvivor,
+	unregisterForSurvivor,
+	useSidebarData,
+} from '../../graphql/sidebar';
 import { WEEKS_IN_SEASON } from '../../utils/constants';
 import { TitleContext, WeekContext } from '../../utils/context';
 import { TSessionUser } from '../../utils/types';
@@ -268,14 +272,20 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 							<MenuAccordion show={user.doneRegistering} title="Survivor">
 								<NavLink
 									isNested
-									onClick={() => alert('TODO:')}
+									onClick={async () => {
+										await registerForSurvivor();
+										router.reload();
+									}}
 									show={!hasSeasonStarted && !user.hasSurvivor}
 								>
 									Register for Survivor
 								</NavLink>
 								<NavLink
 									isNested
-									onClick={() => alert('TODO:')}
+									onClick={async () => {
+										await unregisterForSurvivor();
+										router.reload();
+									}}
 									show={!hasSeasonStarted && user.hasSurvivor}
 								>
 									Drop out of Survivor
