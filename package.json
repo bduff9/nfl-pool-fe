@@ -19,8 +19,8 @@
     "url": "https://github.com/bduff9/nfl-pool-fe.git"
   },
   "scripts": {
-    "build": "next build",
-    "clean": "rm -r .next",
+    "build": "npm run clean && next build",
+    "clean": "rm -r .next/cache",
     "cypress:open": "cypress open",
     "cypress:percy": "percy exec -- cypress run --record",
     "cypress:run": "cypress run --record",
