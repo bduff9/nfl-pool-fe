@@ -20,7 +20,7 @@
   },
   "scripts": {
     "build": "npm run clean && next build",
-    "clean": "rm -r .next/cache",
+    "clean": "rm -rf .next/cache",
     "cypress:open": "cypress open",
     "cypress:percy": "percy exec -- cypress run --record",
     "cypress:run": "cypress run --record",

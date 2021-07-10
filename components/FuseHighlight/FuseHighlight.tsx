@@ -15,6 +15,7 @@
  */
 import React from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const resolveAttribute = <T extends Record<string, any>>(obj: T, key: string): T =>
 	key.split('.').reduce((prev, curr) => prev?.[curr], obj);
 
@@ -37,6 +38,7 @@ type FuseHighlightProps<T> = {
 	hit: T;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const FuseHighlight = <T extends Record<string, any>>({
 	attribute,
 	hit,

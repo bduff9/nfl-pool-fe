@@ -93,6 +93,7 @@ export const survivorPopover = (
 		<Popover.Body>
 			You can choose to join or leave the survivor pool up until the start of the first game
 			of the season. For more questions,{' '}
+			{/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
 			<a href="/support#survivorpool" target="survivorFAQ">
 				click here
 			</a>

@@ -209,40 +209,36 @@ const ViewSurvivor: FC<ViewSurvivorProps> = ({ user }) => {
 														{row.teamName}
 													</span>
 												</th>
-												{row.allPicks.map(pick => {
-													console.log({ pick, row });
-
-													return (
-														<td
-															className={clsx(
-																pick.game.winnerTeam &&
-																	pick.game.winnerTeam.teamID === pick.team?.teamID &&
-																	'bg-success',
-																pick.game.winnerTeam &&
-																	pick.game.winnerTeam.teamID !== pick.team?.teamID &&
-																	'bg-danger',
-															)}
-															key={`pick-for-user-${row.userID}-week-${pick.survivorPickWeek}`}
-														>
-															{pick.team ? (
-																<Image
-																	alt={`${pick.team.teamCity} ${pick.team.teamName}`}
-																	height={70}
-																	layout="fixed"
-																	src={`/NFLLogos/${pick.team.teamLogo}`}
-																	title={`${pick.team.teamCity} ${pick.team.teamName}`}
-																	width={70}
-																/>
-															) : (
-																<h4 className="mb-0">
-																	No
-																	<br />
-																	Pick
-																</h4>
-															)}
-														</td>
-													);
-												})}
+												{row.allPicks.map(pick => (
+													<td
+														className={clsx(
+															pick.game.winnerTeam &&
+																pick.game.winnerTeam.teamID === pick.team?.teamID &&
+																'bg-success',
+															pick.game.winnerTeam &&
+																pick.game.winnerTeam.teamID !== pick.team?.teamID &&
+																'bg-danger',
+														)}
+														key={`pick-for-user-${row.userID}-week-${pick.survivorPickWeek}`}
+													>
+														{pick.team ? (
+															<Image
+																alt={`${pick.team.teamCity} ${pick.team.teamName}`}
+																height={70}
+																layout="fixed"
+																src={`/NFLLogos/${pick.team.teamLogo}`}
+																title={`${pick.team.teamCity} ${pick.team.teamName}`}
+																width={70}
+															/>
+														) : (
+															<h4 className="mb-0">
+																No
+																<br />
+																Pick
+															</h4>
+														)}
+													</td>
+												))}
 											</tr>
 										))}
 									</tbody>

@@ -45,7 +45,12 @@ const Logout: FC = () => {
 	return (
 		<div className="text-center w-100 position-absolute top-50 start-50 translate-middle">
 			<h1 className="text-white">
-				<Image height={200} src="/spinningfootball.gif" width={200} />
+				<Image
+					alt="Spinning football loader"
+					height={200}
+					src="/spinningfootball.gif"
+					width={200}
+				/>
 				<div className="mt-n4">Logging out...</div>
 			</h1>
 		</div>
