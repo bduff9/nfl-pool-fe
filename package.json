@@ -91,7 +91,7 @@
     "@types/enzyme": "3.10.8",
     "@types/enzyme-adapter-react-16": "1.0.6",
     "@types/eslint": "7.2.13",
-    "@types/jest": "26.0.23",
+    "@types/jest": "26.0.24",
     "@types/js-cookie": "2.2.6",
     "@types/logrocket-react": "3.0.0",
     "@types/mysql": "2.15.18",
