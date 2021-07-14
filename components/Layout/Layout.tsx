@@ -59,16 +59,16 @@ const Layout: FC<LayoutProps> = props => {
 		<TitleContext.Provider value={titleContext}>
 			<WeekContext.Provider value={weekContext}>
 				<div className="container-fluid h-100">
-					<div className="row h-100">
+					<div className="row h-100 pt-3 pt-md-0">
 						{session && session.user ? (
 							<>
 								<Sidebar user={session.user as TSessionUser} />
-								<div className="h-100 col col-sm-9 offset-sm-3 ml-sm-auto ml-print-0 col-lg-10 offset-lg-2 main">
+								<div className="h-100 col col-sm-9 offset-sm-3 ml-sm-auto ml-print-0 col-lg-10 offset-lg-2 position-relative main">
 									{children}
 								</div>
 							</>
 						) : (
-							<div className="h-100 col">{children}</div>
+							<div className="h-100 col position-relative">{children}</div>
 						)}
 					</div>
 				</div>

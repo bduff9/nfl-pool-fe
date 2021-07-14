@@ -230,10 +230,20 @@ export enum LogAction {
 	SurvivorPick = 'SurvivorPick',
 }
 
+/** Survivor pick data */
+export type MakeSurvivorPickInput = {
+	survivorPickWeek: Scalars['Int'];
+	gameID: Scalars['Int'];
+	teamID: Scalars['Int'];
+};
+
 export type Mutation = {
 	__typename?: 'Mutation';
 	writeLog: Log;
 	updateMyNotifications: Array<Notification>;
+	registerForSurvivor: Scalars['Boolean'];
+	unregisterForSurvivor: Scalars['Boolean'];
+	makeSurvivorPick: SurvivorPick;
 	finishRegistration: User;
 	editMyProfile: User;
 	unsubscribeEmail: Scalars['Boolean'];
@@ -245,6 +255,10 @@ export type MutationWriteLogArgs = {
 
 export type MutationUpdateMyNotificationsArgs = {
 	data: Array<NotificationInput>;
+};
+
+export type MutationMakeSurvivorPickArgs = {
+	data: MakeSurvivorPickInput;
 };
 
 export type MutationFinishRegistrationArgs = {
@@ -375,16 +389,17 @@ export type Query = {
 	getAllPicksForWeek: Array<Pick>;
 	getMyPicksForWeek: Array<Pick>;
 	getRules: Array<Rule>;
+	getSurvivorRankings: Array<SurvivorMv>;
 	getMySurvivorDashboard?: Maybe<SurvivorMv>;
 	isAliveInSurvivor: Scalars['Boolean'];
 	getSurvivorWeekCount: Scalars['Int'];
 	getSurvivorOverallCount: Scalars['Int'];
 	getSurvivorStatus: SeasonStatus;
-	getAllSurvivorPicksForWeek: Array<SurvivorPick>;
 	getMySurvivorPicks: Array<SurvivorPick>;
 	getMySurvivorPickForWeek?: Maybe<SurvivorPick>;
 	getSystemValue: SystemValue;
 	getTeam: Team;
+	getTeamsOnBye: Array<Team>;
 	getTeams: Array<Team>;
 	getMyTiebreakerForWeek?: Maybe<Tiebreaker>;
 	getTiebreakersForWeek: Array<Tiebreaker>;
@@ -396,6 +411,7 @@ export type Query = {
 	getWeeklyTiedWithMeCount: Scalars['Int'];
 	getWeeklyRankingsTotalCount: Scalars['Int'];
 	getWeek: Week;
+	getWeekInProgress: Scalars['Int'];
 };
 
 export type QueryHasSocialLinkedArgs = {
@@ -443,10 +459,6 @@ export type QueryGetSurvivorOverallCountArgs = {
 	Type?: Maybe<Scalars['Boolean']>;
 };
 
-export type QueryGetAllSurvivorPicksForWeekArgs = {
-	Week: Scalars['Int'];
-};
-
 export type QueryGetMySurvivorPickForWeekArgs = {
 	Week: Scalars['Int'];
 };
@@ -457,6 +469,10 @@ export type QueryGetSystemValueArgs = {
 
 export type QueryGetTeamArgs = {
 	TeamShort: Scalars['String'];
+};
+
+export type QueryGetTeamsOnByeArgs = {
+	Week: Scalars['Int'];
 };
 
 export type QueryGetMyTiebreakerForWeekArgs = {
@@ -526,6 +542,7 @@ export type SurvivorMv = {
 	currentStatus?: Maybe<SurvivorStatus>;
 	lastPick?: Maybe<Scalars['Int']>;
 	lastPickTeam?: Maybe<Team>;
+	allPicks: Array<SurvivorPick>;
 	lastUpdated: Scalars['DateTime'];
 };
 
@@ -578,6 +595,8 @@ export type Team = {
 	teamRushOffenseRank?: Maybe<Scalars['Int']>;
 	teamPassOffenseRank?: Maybe<Scalars['Int']>;
 	teamByeWeek: Scalars['Int'];
+	teamRecord: Scalars['String'];
+	teamHistory: Array<Game>;
 	teamAdded: Scalars['DateTime'];
 	teamAddedBy: Scalars['String'];
 	teamUpdated: Scalars['DateTime'];

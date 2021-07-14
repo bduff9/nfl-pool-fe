@@ -13,9 +13,11 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+@import "../../styles/variables";
+
 .nav-link {
   font-size: 25px;
-  /* stylelint-disable-next-line font-weight-notation */
+  // stylelint-disable-next-line font-weight-notation
   font-weight: bold;
   line-height: 29px;
   color: inherit;
@@ -34,14 +36,14 @@
 }
 
 .active {
-  /* stylelint-disable-next-line declaration-no-important */
-  color: #106630 !important;
+  // stylelint-disable-next-line declaration-no-important
+  color: $green-5 !important;
   background-color: #c4c4c4;
 }
 
 .nested {
   font-size: 18px;
-  /* stylelint-disable-next-line font-weight-notation */
+  // stylelint-disable-next-line font-weight-notation
   font-weight: normal;
   line-height: 21px;
   color: inherit;

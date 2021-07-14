@@ -13,43 +13,44 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-@import "./variables";
+// Billy's colors
+$gray-1: #f2f2f2;
+$gray-2: #e0e0e0;
+$gray-3: #bdbdbd;
+$gray-4: #828282;
+$gray-5: #4f4f4f;
+$gray-6: #333;
+$green-1: #e7f2eb;
+$green-2: #8abf9e;
+$green-3: #439963;
+$green-4: #15803d;
+$green-5: #106630;
+$green-6: #0a401e;
+$red-1: #f8d3d3;
+$red-2: #ed9292;
+$red-3: #eb5757;
+$red-4: #dc2626;
+$red-5: #841616;
+$red-6: #580f0f;
+$blue-1: #e9eff8;
+$blue-2: #92b3df;
+$blue-3: #5085cb;
+$blue-4: #2567bf;
+$blue-5: #194885;
+$blue-6: #0e294c;
+$yellow-1: #fbfbd9;
+$yellow-2: #f7f8b4;
+$yellow-3: #f3f48e;
+$yellow-4: #ecee44;
+$yellow-5: #a5a62f;
+$yellow-6: #464714;
 
-.football {
-  position: absolute;
-  top: -74px;
-  left: 50%;
-  width: 140px;
-  height: 140px;
-  margin-left: -70px;
-}
-
-.separator {
-  display: flex;
-  align-items: center;
-  color: $gray-4;
-  text-align: center;
-
-  &::before,
-  &::after {
-    flex: 1;
-    content: "";
-    border-bottom: 1px solid $gray-4;
-  }
-
-  &:not(:empty)::before {
-    margin-right: 2em;
-  }
-
-  &:not(:empty)::after {
-    margin-left: 2em;
-  }
-}
-
-.error {
-  font-size: 23px;
-  // stylelint-disable-next-line font-weight-notation
-  font-weight: bold;
-  line-height: 27px;
-  color: $red-3;
-}
+// Bootstrap theme colors
+$primary: $green-4;
+$secondary: $gray-4;
+$success: $green-3;
+$info: $gray-3;
+// $warning: $yellow;
+$danger: $red-4;
+$light: $gray-1;
+$dark: $gray-6;

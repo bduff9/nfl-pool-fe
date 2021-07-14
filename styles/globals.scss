@@ -14,16 +14,9 @@
  * Home: https://asitewithnoname.com/
  */
 @import "../node_modules/bootstrap/scss/functions";
+@import "./variables";
 
 // default variable overrides here
-$primary: #15803d;
-$secondary: #828282;
-$success: #439963;
-$info: #bdbdbd;
-// $warning: $yellow;
-$danger: #dc2626;
-$light: #f2f2f2;
-$dark: #333;
 $font-family-base: "Roboto", sans-serif;
 $enable-negative-margins: true;
 $spacer: 1rem;
@@ -103,7 +96,7 @@ body {
 }
 
 .bare-link {
-  color: #2567bf;
+  color: $blue-4;
   text-decoration: none;
 }
 
@@ -116,7 +109,7 @@ body {
 }
 
 .required::after {
-  color: #dc2626;
+  color: $red-4;
   content: " *";
 }
 

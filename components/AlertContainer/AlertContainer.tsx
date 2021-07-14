@@ -13,43 +13,14 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-@import "./variables";
+import React, { FC } from 'react';
 
-.football {
-  position: absolute;
-  top: -74px;
-  left: 50%;
-  width: 140px;
-  height: 140px;
-  margin-left: -70px;
-}
+const AlertContainer: FC = ({ children }) => (
+	<div className="toast-container position-fixed top-0 end-0" style={{ zIndex: 1 }}>
+		{children}
+	</div>
+);
 
-.separator {
-  display: flex;
-  align-items: center;
-  color: $gray-4;
-  text-align: center;
+AlertContainer.whyDidYouRender = true;
 
-  &::before,
-  &::after {
-    flex: 1;
-    content: "";
-    border-bottom: 1px solid $gray-4;
-  }
-
-  &:not(:empty)::before {
-    margin-right: 2em;
-  }
-
-  &:not(:empty)::after {
-    margin-left: 2em;
-  }
-}
-
-.error {
-  font-size: 23px;
-  // stylelint-disable-next-line font-weight-notation
-  font-weight: bold;
-  line-height: 27px;
-  color: $red-3;
-}
+export default AlertContainer;

@@ -13,43 +13,22 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-@import "./variables";
+@import "../variables";
 
-.football {
-  position: absolute;
-  top: -74px;
-  left: 50%;
-  width: 140px;
-  height: 140px;
-  margin-left: -70px;
+.bg-game {
+  background-color: $gray-1;
 }
 
-.separator {
-  display: flex;
-  align-items: center;
-  color: $gray-4;
-  text-align: center;
-
-  &::before,
-  &::after {
-    flex: 1;
-    content: "";
-    border-bottom: 1px solid $gray-4;
-  }
-
-  &:not(:empty)::before {
-    margin-right: 2em;
-  }
-
-  &:not(:empty)::after {
-    margin-left: 2em;
-  }
+.game-header {
+  height: 25px;
+  cursor: pointer;
 }
 
-.error {
-  font-size: 23px;
-  // stylelint-disable-next-line font-weight-notation
-  font-weight: bold;
-  line-height: 27px;
-  color: $red-3;
+.game-team {
+  height: 152px;
+}
+
+.at {
+  padding: 1px 4px;
+  background-color: $gray-3;
 }
