@@ -104,7 +104,7 @@
     "@types/stylelint": "13.13.1",
     "@types/terser-webpack-plugin": "5.0.4",
     "@types/throttle-debounce": "2.1.0",
-    "@types/yup": "0.29.12",
+    "@types/yup": "0.29.13",
     "@typescript-eslint/eslint-plugin": "4.28.2",
     "@typescript-eslint/parser": "4.28.2",
     "@welldone-software/why-did-you-render": "6.2.0",
