@@ -411,7 +411,7 @@ export type Query = {
 	getWeeklyTiedWithMeCount: Scalars['Int'];
 	getWeeklyRankingsTotalCount: Scalars['Int'];
 	getWeek: Week;
-	getWeekInProgress: Scalars['Int'];
+	getWeekInProgress?: Maybe<Scalars['Int']>;
 };
 
 export type QueryHasSocialLinkedArgs = {
@@ -447,7 +447,6 @@ export type QueryGetAllPicksForWeekArgs = {
 };
 
 export type QueryGetMyPicksForWeekArgs = {
-	UserID: Scalars['Int'];
 	Week: Scalars['Int'];
 };
 

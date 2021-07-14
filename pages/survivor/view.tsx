@@ -67,7 +67,7 @@ const ViewSurvivor: FC<ViewSurvivorProps> = ({ user }) => {
 	}
 
 	return (
-		<Authenticated isSurvivorPlayer>
+		<Authenticated isRegistered>
 			<CustomHead title="View Survivor Picks" />
 			<div className="content-bg text-dark my-3 mx-2 pt-5 pt-md-3 min-vh-100 pb-4 col">
 				<SkeletonTheme>

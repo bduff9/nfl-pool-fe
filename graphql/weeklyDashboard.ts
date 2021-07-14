@@ -33,6 +33,8 @@ type GetWeeklyDashboardResponse = {
 		| 'gamesPossible'
 		| 'gamesTotal'
 		| 'gamesMissed'
+		| 'tiebreakerScore'
+		| 'lastScore'
 		| 'isEliminated'
 	>;
 	getWeeklyTiedWithMeCount: number;
@@ -55,6 +57,8 @@ const query = gql`
 			gamesPossible
 			gamesTotal
 			gamesMissed
+			tiebreakerScore
+			lastScore
 			isEliminated
 		}
 		getWeeklyTiedWithMeCount(Week: $week)

@@ -13,11 +13,20 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAt } from '@bduff9/pro-duotone-svg-icons/faAt';
+import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
+import Image from 'next/image';
 import React, { FC, useContext } from 'react';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
+import { useViewMyPicks } from '../../graphql/picksView';
+import { useWeeklyDashboard } from '../../graphql/weeklyDashboard';
+import { TUser } from '../../models/User';
+import { getEmptyArray } from '../../utils/arrays';
 import {
 	isSignedInSSR,
 	UNAUTHENTICATED_REDIRECT,
@@ -25,14 +34,186 @@ import {
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
 import { WeekContext } from '../../utils/context';
+import styles from '../../styles/picks/view.module.scss';
+import { WeekStatus } from '../../generated/graphql';
+import MyProgressChart from '../../components/MyProgressChart/MyProgressChart';
 
-const ViewPicks: FC = () => {
+type ViewPicksProps = {
+	user: TUser;
+};
+
+const ViewPicks: FC<ViewPicksProps> = () => {
 	const [selectedWeek] = useContext(WeekContext);
+	const { data: myRankData, error: myRankError } = useWeeklyDashboard(selectedWeek);
+	const { data, error } = useViewMyPicks(selectedWeek);
+
+	if (myRankError) {
+		console.error('Error when loading my rank data for View My Picks', myRankError);
+	}
+
+	if (error) {
+		console.error('Error when loading pick data for View My Picks', error);
+	}
 
 	return (
 		<Authenticated isRegistered>
 			<CustomHead title={`My week ${selectedWeek} picks`} />
-			<h1>View My Picks</h1>
+			<div className="text-dark my-3 mx-2 min-vh-100 pb-4 col">
+				<SkeletonTheme>
+					<div className="row min-vh-100">
+						{myRankData?.getMyWeeklyDashboard && (
+							<>
+								<div className="col-12 col-md-4 pb-3">
+									<div className="content-bg rounded px-3 h-100">
+										<h5 className="text-center mb-0">Current Score</h5>
+										<MyProgressChart
+											correct={myRankData.getMyWeeklyDashboard.pointsEarned}
+											correctLabel="Your Current Score"
+											isOver={myRankData.selectedWeek.weekStatus === WeekStatus.Complete}
+											max={myRankData.getMyWeeklyDashboard.pointsTotal}
+											maxLabel="Max Score"
+											possible={myRankData.getMyWeeklyDashboard.pointsPossible}
+											possibleLabel="Your Max Possible Score"
+										/>
+									</div>
+								</div>
+								<div className="col-12 col-md-4 pb-3">
+									<div className="content-bg rounded px-3 h-100">
+										<h5 className="text-center mb-0">Games Correct</h5>
+										<MyProgressChart
+											correct={myRankData.getMyWeeklyDashboard.gamesCorrect}
+											correctLabel="Your Correct Games"
+											isOver={myRankData.selectedWeek.weekStatus === WeekStatus.Complete}
+											max={myRankData.getMyWeeklyDashboard.gamesTotal}
+											maxLabel="Max Games"
+											possible={myRankData.getMyWeeklyDashboard.gamesPossible}
+											possibleLabel="Your Max Possible Games"
+										/>
+									</div>
+								</div>
+								<div className="col-6 col-md-2 pb-3">
+									<div className="content-bg rounded text-center px-3 h-100">
+										<h5>My Tiebreaker</h5>
+										<div className="h1">
+											{!myRankData ? (
+												<Skeleton />
+											) : (
+												myRankData.getMyWeeklyDashboard.tiebreakerScore
+											)}
+										</div>
+									</div>
+								</div>
+								<div className="col-6 col-md-2 pb-3">
+									<div className="content-bg rounded text-center px-3 h-100">
+										<h5>Final Game Total</h5>
+										<div className="h1">
+											{!myRankData ? (
+												<Skeleton />
+											) : (
+												myRankData.getMyWeeklyDashboard.lastScore
+											)}
+										</div>
+									</div>
+								</div>
+							</>
+						)}
+						<div className="col-12">
+							<div className="content-bg rounded table-responsive">
+								<table className="table table-hover align-middle">
+									<thead>
+										<tr>
+											<th className="w-100" scope="col">
+												Game
+											</th>
+											<th className="text-center" scope="col">
+												Pick
+											</th>
+											<th className="text-center" scope="col">
+												Points
+											</th>
+										</tr>
+									</thead>
+									{!data ? (
+										<tbody>
+											{getEmptyArray(16).map((_, i) => (
+												<tr key={`table-loader-${i}`}>
+													<th scope="row">
+														<Skeleton />
+													</th>
+													<td>
+														<Skeleton height={40} width={40} />
+													</td>
+													<td>
+														<Skeleton height={18} width={19} />
+													</td>
+												</tr>
+											))}
+										</tbody>
+									) : (
+										<tbody>
+											{data.getMyPicksForWeek.map(row => (
+												<tr
+													className={clsx(
+														row.game.winnerTeam.teamID &&
+															row.game.winnerTeam.teamID === row.team.teamID &&
+															styles['correct-pick'],
+														row.game.winnerTeam.teamID &&
+															row.game.winnerTeam.teamID !== row.team.teamID &&
+															styles['incorrect-pick'],
+													)}
+													key={`pick-for-game-${row.game.gameID}`}
+												>
+													<th scope="row">
+														<div className="d-flex justify-content-start align-items-center">
+															<Image
+																alt={`${row.game.visitorTeam.teamCity} ${row.game.visitorTeam.teamName}`}
+																height={40}
+																layout="fixed"
+																src={`/NFLLogos/${row.game.visitorTeam.teamLogo}`}
+																title={`${row.game.visitorTeam.teamCity} ${row.game.visitorTeam.teamName}`}
+																width={40}
+															/>
+															<span className="d-none d-md-inline">
+																{row.game.visitorTeam.teamCity}{' '}
+																{row.game.visitorTeam.teamName}
+															</span>
+															<FontAwesomeIcon className="mx-2" icon={faAt} />
+															<Image
+																alt={`${row.game.homeTeam.teamCity} ${row.game.homeTeam.teamName}`}
+																height={40}
+																layout="fixed"
+																src={`/NFLLogos/${row.game.homeTeam.teamLogo}`}
+																title={`${row.game.homeTeam.teamCity} ${row.game.homeTeam.teamName}`}
+																width={40}
+															/>
+															<span className="d-none d-md-inline">
+																{row.game.homeTeam.teamCity} {row.game.homeTeam.teamName}
+															</span>
+														</div>
+													</th>
+													<td className="text-center">
+														<Image
+															alt={`${row.team.teamCity} ${row.team.teamName}`}
+															height={40}
+															layout="fixed"
+															src={`/NFLLogos/${row.team.teamLogo}`}
+															title={`${row.team.teamCity} ${row.team.teamName}`}
+															width={40}
+														/>
+													</td>
+													<td className={clsx('text-center', styles.points)}>
+														{row.pickPoints}
+													</td>
+												</tr>
+											))}
+										</tbody>
+									)}
+								</table>
+							</div>
+						</div>
+					</div>
+				</SkeletonTheme>
+			</div>
 		</Authenticated>
 	);
 };
