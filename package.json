@@ -99,7 +99,7 @@
     "@types/node": "16.0.0",
     "@types/nprogress": "0.2.0",
     "@types/react": "17.0.13",
-    "@types/react-dom": "17.0.8",
+    "@types/react-dom": "17.0.9",
     "@types/sass": "1.16.0",
     "@types/stylelint": "13.13.1",
     "@types/terser-webpack-plugin": "5.0.4",
