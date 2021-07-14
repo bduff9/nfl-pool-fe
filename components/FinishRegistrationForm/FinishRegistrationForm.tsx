@@ -31,6 +31,8 @@ import { TTrueFalse } from '../../utils/types';
 import { getFullName, getFirstName, getLastName } from '../../utils/user';
 import { GetCurrentUserResponse } from '../../graphql/create';
 import { useWarningOnExit } from '../../utils/hooks';
+import AlertContainer from '../AlertContainer/AlertContainer';
+import Alert from '../Alert/Alert';
 
 import styles from './FinishRegistrationForm.module.scss';
 
@@ -107,6 +109,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 		!currentUser.userTrusted && !!currentUser.userReferredByRaw,
 	);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [watchName, watchFirstName, watchLastName] = watch([
 		'userName',
 		'userFirstName',
@@ -158,6 +161,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 			setShowUntrusted(true);
 		} catch (error) {
 			console.error('Error during finish registration submit:', error);
+			setErrorMessage('Error when trying to save your registration, please try again');
 		} finally {
 			setIsLoading(false);
 		}
@@ -176,6 +180,18 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} noValidate>
+			<AlertContainer>
+				{errorMessage && (
+					<Alert
+						autoHide
+						delay={5000}
+						message={errorMessage}
+						onClose={() => setErrorMessage(null)}
+						title="Error!"
+						type="danger"
+					/>
+				)}
+			</AlertContainer>
 			<div className="row mb-3">
 				<div className="col">
 					<label htmlFor="userEmail" className="form-label required">

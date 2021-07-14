@@ -35,6 +35,8 @@ import {
 import SocialAuthButton from '../SocialAuthButton/SocialAuthButton';
 import { GetCurrentUserResponse, GetMyNotificationsResponse } from '../../graphql/edit';
 import { useWarningOnExit } from '../../utils/hooks';
+import AlertContainer from '../AlertContainer/AlertContainer';
+import Alert from '../Alert/Alert';
 
 import styles from './EditProfileForm.module.scss';
 
@@ -195,6 +197,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 		formState: { errors, isDirty },
 		handleSubmit,
 		register,
+		reset,
 		setValue,
 		watch,
 	} = useForm<FormData>({
@@ -224,6 +227,8 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 		resolver: yupResolver(schema),
 	});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [errorMessage, setErrorMessage] = useState<null | string>(null);
+	const [successMessage, setSuccessMessage] = useState<null | string>(null);
 	const watchNotifications = watch('notifications');
 	const watchPhone = watch('userPhone');
 
@@ -268,9 +273,11 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 				notifications.map(({ hasValidPhone, ...notification }) => notification),
 			);
 
-			//TODO: show success notification
+			setSuccessMessage('Your profile changes have been successfully saved');
+			reset(data);
 		} catch (error) {
 			console.error('Error during edit profile submit:', error);
+			setErrorMessage('Failed to save profile changes, please try again');
 		} finally {
 			setIsLoading(false);
 		}
@@ -278,6 +285,28 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} noValidate>
+			<AlertContainer>
+				{errorMessage && (
+					<Alert
+						autoHide
+						delay={5000}
+						message={errorMessage}
+						onClose={() => setErrorMessage(null)}
+						title="Error!"
+						type="danger"
+					/>
+				)}
+				{successMessage && (
+					<Alert
+						autoHide
+						delay={5000}
+						message={successMessage}
+						onClose={() => setSuccessMessage(null)}
+						title="Success!"
+						type="success"
+					/>
+				)}
+			</AlertContainer>
 			<div className="row mb-3">
 				<div className="col">
 					<div className="separator">Account Info</div>

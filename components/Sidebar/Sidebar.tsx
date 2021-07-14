@@ -65,7 +65,6 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 
 	if (user.doneRegistering && error) {
 		console.error('Failed to load sidebar data', error);
-		// throw error;
 	}
 
 	useEffect(() => {

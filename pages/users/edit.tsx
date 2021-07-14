@@ -38,7 +38,6 @@ const EditProfile: FC<EditProfileProps> = () => {
 
 	if (error) {
 		console.error('Error when loading edit profile form', error);
-		// throw error;
 	}
 
 	return (

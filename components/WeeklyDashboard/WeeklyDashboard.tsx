@@ -45,7 +45,6 @@ const WeeklyDashboard: FC = () => {
 
 	if (error) {
 		console.error(`Error when loading week ${selectedWeek} dashboard`, error);
-		// throw error;
 	}
 
 	return (
