@@ -100,7 +100,7 @@
     "@types/node": "16.3.3",
     "@types/nprogress": "0.2.0",
     "@types/react": "17.0.14",
-    "@types/react-beautiful-dnd": "13.1.0",
+    "@types/react-beautiful-dnd": "13.1.1",
     "@types/react-dom": "17.0.9",
     "@types/sass": "1.16.1",
     "@types/stylelint": "13.13.1",
