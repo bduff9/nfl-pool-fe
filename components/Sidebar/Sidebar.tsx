@@ -251,7 +251,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 							</MenuAccordion>
 							<MenuAccordion show={user.doneRegistering} title="Picks">
 								<NavLink
-									href="/picks/make"
+									href="/picks/set"
 									isNested
 									show={!data?.getMyTiebreakerForWeek?.tiebreakerHasSubmitted}
 								>
