@@ -84,4 +84,8 @@ const query = gql`
 export const useGamesForWeek = (
 	week: number,
 ): SWRResponse<GetGamesForWeekResponse, unknown> =>
-	useSWR<GetGamesForWeekResponse>([query, week], (query, week) => fetcher(query, { week }));
+	useSWR<GetGamesForWeekResponse>(
+		[query, week],
+		(query, week) => fetcher(query, { week }),
+		{ refreshInterval: 60000 },
+	);
