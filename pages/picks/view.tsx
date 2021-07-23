@@ -154,11 +154,11 @@ const ViewPicks: FC<ViewPicksProps> = () => {
 											{data.getMyPicksForWeek.map(row => (
 												<tr
 													className={clsx(
-														row.game.winnerTeam.teamID &&
-															row.game.winnerTeam.teamID === row.team.teamID &&
+														row.game.winnerTeam?.teamID &&
+															row.game.winnerTeam.teamID === row.team?.teamID &&
 															styles['correct-pick'],
-														row.game.winnerTeam.teamID &&
-															row.game.winnerTeam.teamID !== row.team.teamID &&
+														row.game.winnerTeam?.teamID &&
+															row.game.winnerTeam.teamID !== row.team?.teamID &&
 															styles['incorrect-pick'],
 													)}
 													key={`pick-for-game-${row.game.gameID}`}
@@ -192,14 +192,16 @@ const ViewPicks: FC<ViewPicksProps> = () => {
 														</div>
 													</th>
 													<td className="text-center">
-														<Image
-															alt={`${row.team.teamCity} ${row.team.teamName}`}
-															height={40}
-															layout="fixed"
-															src={`/NFLLogos/${row.team.teamLogo}`}
-															title={`${row.team.teamCity} ${row.team.teamName}`}
-															width={40}
-														/>
+														{row.team && (
+															<Image
+																alt={`${row.team.teamCity} ${row.team.teamName}`}
+																height={40}
+																layout="fixed"
+																src={`/NFLLogos/${row.team.teamLogo}`}
+																title={`${row.team.teamCity} ${row.team.teamName}`}
+																width={40}
+															/>
+														)}
 													</td>
 													<td className={clsx('text-center', styles.points)}>
 														{row.pickPoints}
