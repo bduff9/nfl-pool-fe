@@ -55,6 +55,7 @@ import TeamDetail from '../../components/TeamDetail/TeamDetail';
 import { useWarningOnExit } from '../../utils/hooks';
 import PickGameLoader from '../../components/PickGame/PickGameLoader';
 import PickGame, { PointBankLoader, Point } from '../../components/PickGame/PickGame';
+import { updateSidebarData } from '../../graphql/sidebar';
 
 export type LoadingType = 'autopick' | 'reset' | 'save' | 'submit';
 
@@ -366,6 +367,8 @@ const MakePicks: FC<MakePicksProps> = () => {
 
 			await submitMyPicks(selectedWeek);
 			setSuccessMessage(`Successfully submitted your picks for week ${selectedWeek}`);
+			setPicksUpdating(false);
+			await Promise.all([updateSidebarData(selectedWeek), tiebreakerMutate()]);
 		} catch (error) {
 			console.error('Error saving user picks', { error, selectedWeek });
 			setErrorMessage(
@@ -373,10 +376,10 @@ const MakePicks: FC<MakePicksProps> = () => {
 					error.message ??
 					'Something went wrong, please try again',
 			);
+			await tiebreakerMutate();
 		} finally {
 			setPicksUpdating(false);
 			setLoading(null);
-			await tiebreakerMutate();
 		}
 	};
 

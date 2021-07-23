@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { gql } from 'graphql-request';
-import useSWR, { SWRResponse } from 'swr';
+import useSWR, { mutate, SWRResponse } from 'swr';
 
 import { Tiebreaker, Week } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
@@ -59,6 +59,9 @@ export const useSidebarData = (
 		doneRegistering ? [getSidebarGQL, selectedWeek] : null,
 		(query, week) => fetcher(query, { week }),
 	);
+
+export const updateSidebarData = async (week: number): Promise<GetSidebarResponse> =>
+	mutate([getSidebarGQL, week]);
 
 const registerForSurvivorMutation = gql`
 	mutation RegisterUserForSurvivorPool {
