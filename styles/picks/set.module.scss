@@ -1,0 +1,58 @@
+/*******************************************************************************
+ * NFL Confidence Pool FE - the frontend implementation of an NFL confidence pool.
+ * Copyright (C) 2015-present Brian Duffey and Billy Alexander
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see {http://www.gnu.org/licenses/}.
+ * Home: https://asitewithnoname.com/
+ */
+@import "../variables";
+
+.point-bank {
+  min-height: 92px;
+  background-color: $gray-1;
+
+  div {
+    margin: .25rem;
+  }
+}
+
+.dragging-over {
+  background-color: $blue-1;
+}
+
+$toolbar-height: 70px;
+
+.toolbar-placeholder {
+  padding-bottom: $toolbar-height;
+}
+
+.toolbar {
+  z-index: 1000;
+  height: $toolbar-height;
+  background-color: #000;
+
+  @media (max-width: 767px) {
+    z-index: 999;
+  }
+
+  button {
+    @media (max-width: 767px) {
+      padding-right: 0;
+      padding-left: 0;
+    }
+  }
+}
+
+.spinner {
+  width: 10rem;
+  height: 10rem;
+  border-width: .75rem;
+}

@@ -1,0 +1,84 @@
+/*******************************************************************************
+ * NFL Confidence Pool FE - the frontend implementation of an NFL confidence pool.
+ * Copyright (C) 2015-present Brian Duffey and Billy Alexander
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see {http://www.gnu.org/licenses/}.
+ * Home: https://asitewithnoname.com/
+ */
+@import "../../styles/variables";
+
+.dragging-over {
+  background-color: $blue-1;
+}
+
+.is-dragging {
+  opacity: .75;
+}
+
+.point {
+  width: 60px;
+  height: 60px;
+  font-size: 2rem;
+  cursor: move;
+
+  @media (max-width: 767px) {
+    width: 31px;
+    height: 31px;
+    font-size: 1rem;
+  }
+
+  &.placeholder {
+    background-color: #fff;
+    border: 1px solid #000;
+  }
+
+  &.point-disabled {
+    cursor: not-allowed;
+  }
+}
+
+.made-pick {
+  background-color: $blue-2;
+}
+
+.made-pick-final {
+  background-color: $blue-4;
+
+  .point {
+    cursor: not-allowed;
+    opacity: .75;
+  }
+}
+
+.missed-pick {
+  background-color: $red-3;
+
+  .point {
+    cursor: not-allowed;
+  }
+}
+
+.game-info {
+  width: 20%;
+  cursor: pointer;
+
+  @media (max-width: 767px) {
+    width: 40%;
+  }
+}
+
+.at-symbol {
+  width: 20%;
+
+  @media (max-width: 767px) {
+    width: 20%;
+  }
+}

@@ -241,9 +241,14 @@ export type Mutation = {
 	__typename?: 'Mutation';
 	writeLog: Log;
 	updateMyNotifications: Array<Notification>;
+	resetMyPicksForWeek: Array<Pick>;
+	setMyPick?: Maybe<Pick>;
+	autoPick: Array<Pick>;
 	registerForSurvivor: Scalars['Boolean'];
 	unregisterForSurvivor: Scalars['Boolean'];
 	makeSurvivorPick: SurvivorPick;
+	updateMyTiebreakerScore: Tiebreaker;
+	submitPicksForWeek: Tiebreaker;
 	finishRegistration: User;
 	editMyProfile: User;
 	unsubscribeEmail: Scalars['Boolean'];
@@ -257,8 +262,33 @@ export type MutationUpdateMyNotificationsArgs = {
 	data: Array<NotificationInput>;
 };
 
+export type MutationResetMyPicksForWeekArgs = {
+	Week: Scalars['Int'];
+};
+
+export type MutationSetMyPickArgs = {
+	Points: Scalars['Int'];
+	TeamID?: Maybe<Scalars['Int']>;
+	GameID?: Maybe<Scalars['Int']>;
+	Week: Scalars['Int'];
+};
+
+export type MutationAutoPickArgs = {
+	Type: AutoPickStrategy;
+	Week: Scalars['Int'];
+};
+
 export type MutationMakeSurvivorPickArgs = {
 	data: MakeSurvivorPickInput;
+};
+
+export type MutationUpdateMyTiebreakerScoreArgs = {
+	Score: Scalars['Int'];
+	Week: Scalars['Int'];
+};
+
+export type MutationSubmitPicksForWeekArgs = {
+	Week: Scalars['Int'];
 };
 
 export type MutationFinishRegistrationArgs = {
@@ -388,6 +418,7 @@ export type Query = {
 	getMyPayments: Array<Payment>;
 	getAllPicksForWeek: Array<Pick>;
 	getMyPicksForWeek: Array<Pick>;
+	validatePicksForWeek: Scalars['Boolean'];
 	getRules: Array<Rule>;
 	getSurvivorRankings: Array<SurvivorMv>;
 	getMySurvivorDashboard?: Maybe<SurvivorMv>;
@@ -447,6 +478,12 @@ export type QueryGetAllPicksForWeekArgs = {
 };
 
 export type QueryGetMyPicksForWeekArgs = {
+	Week: Scalars['Int'];
+};
+
+export type QueryValidatePicksForWeekArgs = {
+	LastScore: Scalars['Int'];
+	Unused: Scalars['String'];
 	Week: Scalars['Int'];
 };
 
@@ -622,7 +659,7 @@ export type Tiebreaker = {
 	user?: Maybe<User>;
 	league?: Maybe<League>;
 	tiebreakerWeek: Scalars['Int'];
-	tiebreakerLastScore?: Maybe<Scalars['Int']>;
+	tiebreakerLastScore: Scalars['Int'];
 	tiebreakerHasSubmitted: Scalars['Boolean'];
 	tiebreakerAdded: Scalars['DateTime'];
 	tiebreakerAddedBy: Scalars['String'];
