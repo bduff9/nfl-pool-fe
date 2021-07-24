@@ -13,6 +13,10 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-/// <reference types="next" />
-/// <reference types="next/types/global" />
-/// <reference types="next/image-types/global" />
+export const isNumber = (value: unknown): value is number => {
+	if (!['number', 'string'].includes(typeof value)) return false;
+
+	const num = typeof value === 'string' ? +value : value;
+
+	return !Number.isNaN(num);
+};

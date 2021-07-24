@@ -78,6 +78,7 @@ export enum EmailType {
 	InvalidGamesFound = 'invalidGamesFound',
 	NewUser = 'newUser',
 	PickReminder = 'pickReminder',
+	PicksSubmitted = 'picksSubmitted',
 	QuickPick = 'quickPick',
 	SurvivorReminder = 'survivorReminder',
 	Untrusted = 'untrusted',
@@ -244,6 +245,7 @@ export type Mutation = {
 	resetMyPicksForWeek: Array<Pick>;
 	setMyPick?: Maybe<Pick>;
 	autoPick: Array<Pick>;
+	quickPick: Scalars['Boolean'];
 	registerForSurvivor: Scalars['Boolean'];
 	unregisterForSurvivor: Scalars['Boolean'];
 	makeSurvivorPick: SurvivorPick;
@@ -276,6 +278,11 @@ export type MutationSetMyPickArgs = {
 export type MutationAutoPickArgs = {
 	Type: AutoPickStrategy;
 	Week: Scalars['Int'];
+};
+
+export type MutationQuickPickArgs = {
+	TeamID: Scalars['Int'];
+	UserID: Scalars['Int'];
 };
 
 export type MutationMakeSurvivorPickArgs = {

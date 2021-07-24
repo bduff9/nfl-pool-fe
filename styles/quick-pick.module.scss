@@ -13,6 +13,8 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-/// <reference types="next" />
-/// <reference types="next/types/global" />
-/// <reference types="next/image-types/global" />
+@import "./variables";
+
+.message {
+  color: $gray-1;
+}

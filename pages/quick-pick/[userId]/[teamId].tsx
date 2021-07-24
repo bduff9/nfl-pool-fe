@@ -13,24 +13,46 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 
 import CustomHead from '../../../components/CustomHead/CustomHead';
+import { quickPick } from '../../../graphql/quickPick';
+import styles from '../../../styles/quick-pick.module.scss';
+import { isNumber } from '../../../utils/numbers';
 
 const QuickPick: FC = () => {
 	const router = useRouter();
 	const { userId, teamId } = router.query;
 
-	//TODO: do people not need to be signed in here?  Should we generate a token to prevent abuse?
+	useEffect(() => {
+		const doQuickPick = async () => {
+			if (isNumber(userId) && isNumber(teamId)) {
+				await quickPick(+teamId, +userId);
+			}
+
+			router.replace('/picks/set');
+		};
+
+		doQuickPick();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
-		<div>
+		<div className="min-vh-100">
 			<CustomHead title="Quick Pick" />
-			<h1>Quick Pick</h1>
-			<ul>
-				<li>User Id {userId}</li>
-				<li>Team short {teamId}</li>
-			</ul>
+			<h2
+				className={clsx(
+					'position-absolute',
+					'top-50',
+					'start-50',
+					'translate-middle',
+					styles.message,
+				)}
+			>
+				Saving your quick pick...
+			</h2>
 		</div>
 	);
 };
