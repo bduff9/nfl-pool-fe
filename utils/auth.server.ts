@@ -120,7 +120,7 @@ export const isSignedInSSR = async (
 	const { req, res } = context;
 	const session = await getSession({ req });
 
-	if (!session) {
+	if (!session && !req.url?.includes('auth/')) {
 		res.setHeader(
 			'Set-Cookie',
 			`${REDIRECT_COOKIE_NAME}=${NEXT_PUBLIC_SITE_URL}${req.url || '/'}`,
