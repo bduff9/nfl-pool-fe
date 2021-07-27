@@ -1,3 +1,5 @@
+import { Game, Pick as PoolPick, Team, User, WeeklyMv } from '../generated/graphql';
+
 /*******************************************************************************
  * NFL Confidence Pool FE - the frontend implementation of an NFL confidence pool.
  * Copyright (C) 2015-present Brian Duffey and Billy Alexander
@@ -15,4 +17,175 @@
  */
 export const getEmptyArray = (length: number): Array<unknown> => {
 	return [...Array(length)];
+};
+
+const weekPlacer = (
+	user1: Pick<
+		WeeklyMv,
+		| 'rank'
+		| 'tied'
+		| 'userID'
+		| 'userName'
+		| 'teamName'
+		| 'pointsEarned'
+		| 'gamesCorrect'
+		| 'tiebreakerScore'
+		| 'lastScore'
+	>,
+	user2: Pick<
+		WeeklyMv,
+		| 'rank'
+		| 'tied'
+		| 'userID'
+		| 'userName'
+		| 'teamName'
+		| 'pointsEarned'
+		| 'gamesCorrect'
+		| 'tiebreakerScore'
+		| 'lastScore'
+	>,
+): -1 | 0 | 1 => {
+	// First, sort by points
+	if (user1.pointsEarned > user2.pointsEarned) return -1;
+
+	if (user1.pointsEarned < user2.pointsEarned) return 1;
+
+	// Then, sort by games correct
+	if (user1.gamesCorrect > user2.gamesCorrect) return -1;
+
+	if (user1.gamesCorrect > user2.gamesCorrect) return 1;
+
+	// Stop here if last game hasn't been played
+	if (typeof user1.lastScore !== 'number' || typeof user2.lastScore !== 'number') return 0;
+
+	// Otherwise, sort by whomever didn't go over the last game's score
+	const lastScoreDiff1 = (user1.lastScore ?? 0) - (user1.tiebreakerScore ?? 0);
+	const lastScoreDiff2 = (user2.lastScore ?? 0) - (user2.tiebreakerScore ?? 0);
+
+	if (lastScoreDiff1 >= 0 && lastScoreDiff2 < 0) return -1;
+
+	if (lastScoreDiff1 < 0 && lastScoreDiff2 >= 0) return 1;
+
+	// Next, sort by the closer to the last games score
+	if (Math.abs(lastScoreDiff1) < Math.abs(lastScoreDiff2)) return -1;
+
+	if (Math.abs(lastScoreDiff1) > Math.abs(lastScoreDiff2)) return 1;
+
+	// Finally, if we get here, then they are identical
+	console.log('points, games, and tiebreaker are identical');
+
+	return 0;
+};
+
+export const sortPicks = (
+	picks:
+		| Array<
+				Pick<PoolPick, 'pickID' | 'pickPoints'> & {
+					user: Pick<User, 'userID'>;
+					game: Pick<Game, 'gameID'>;
+					team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
+				}
+		  >
+		| undefined,
+	games: Record<
+		number,
+		Pick<Game, 'gameID'> & {
+			homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
+			visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
+			winnerTeam: Pick<Team, 'teamID'>;
+		}
+	>,
+	ranks:
+		| Array<
+				Pick<
+					WeeklyMv,
+					| 'rank'
+					| 'tied'
+					| 'userID'
+					| 'userName'
+					| 'teamName'
+					| 'pointsEarned'
+					| 'gamesCorrect'
+					| 'tiebreakerScore'
+					| 'lastScore'
+				>
+		  >
+		| undefined,
+):
+	| Array<
+			Pick<
+				WeeklyMv,
+				| 'rank'
+				| 'tied'
+				| 'userID'
+				| 'userName'
+				| 'teamName'
+				| 'pointsEarned'
+				| 'gamesCorrect'
+				| 'tiebreakerScore'
+				| 'lastScore'
+			>
+	  >
+	| undefined => {
+	if (!picks || !ranks) return undefined;
+
+	const customRanks = ranks.map(rank => ({
+		...rank,
+		rank: 0,
+		tied: false,
+		pointsEarned: 0,
+		gamesCorrect: 0,
+	}));
+
+	for (const user of customRanks) {
+		const [pointsEarned, gamesCorrect] = picks.reduce(
+			(acc, pick) => {
+				if (pick.user.userID !== user.userID) return acc;
+
+				const game = games[pick.game.gameID];
+
+				if (pick.team.teamID === game.winnerTeam.teamID) {
+					acc[0] += pick.pickPoints ?? 0;
+					acc[1]++;
+				}
+
+				return acc;
+			},
+			[0, 0],
+		);
+
+		user.pointsEarned = pointsEarned;
+		user.gamesCorrect = gamesCorrect;
+	}
+
+	customRanks.sort(weekPlacer);
+
+	customRanks.forEach((user, i, allUsers) => {
+		let currPlace = i + 1;
+		let result;
+
+		if (!user.tied || i === 0) {
+			user.rank = currPlace;
+		} else {
+			currPlace = user.rank ?? 0;
+		}
+
+		const nextUser = allUsers[i + 1];
+
+		if (nextUser) {
+			result = weekPlacer(user, nextUser);
+
+			if (result === 0) {
+				user.tied = true;
+				nextUser.rank = currPlace;
+				nextUser.tied = true;
+			} else {
+				if (i === 0) user.tied = false;
+
+				nextUser.tied = false;
+			}
+		}
+	});
+
+	return customRanks;
 };

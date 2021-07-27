@@ -80,6 +80,7 @@ export enum EmailType {
 	PickReminder = 'pickReminder',
 	PicksSubmitted = 'picksSubmitted',
 	QuickPick = 'quickPick',
+	QuickPickConfirmation = 'quickPickConfirmation',
 	SurvivorReminder = 'survivorReminder',
 	Untrusted = 'untrusted',
 	Verification = 'verification',

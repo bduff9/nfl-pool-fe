@@ -551,7 +551,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 								)}
 							</button>
 						</div>
-						{/* Will need dropdown dropdown-toggle dropdown-menu dropdown-item here */}
+						{/* Classes needed: dropdown dropdown-toggle dropdown-menu dropdown-item */}
 						<div className="col-3 px-1 px-md-2">
 							<Dropdown>
 								<Dropdown.Toggle
