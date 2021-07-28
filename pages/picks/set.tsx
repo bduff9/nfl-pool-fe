@@ -423,7 +423,8 @@ const MakePicks: FC<MakePicksProps> = () => {
 				<SkeletonTheme>
 					<div className="row min-vh-100">
 						<h4 className="col-12 mb-3 text-center flex-shrink-1">
-							Drag points to your chosen winning team or click a game to see the details
+							Drag points to your chosen winning team or click a team to see the game
+							details
 						</h4>
 						<DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
 							<Droppable droppableId="pointBank" direction="horizontal">

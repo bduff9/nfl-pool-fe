@@ -271,7 +271,7 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 													setSurvivorPick(game.gameID, game.visitorTeam.teamID)
 												}
 												pick={data.getMySurvivorPicks.find(
-													pick => pick.team.teamID === game.visitorTeam.teamID,
+													pick => pick.team?.teamID === game.visitorTeam.teamID,
 												)}
 												team={game.visitorTeam}
 												weekInProgress={data.getWeekInProgress ?? 0}
