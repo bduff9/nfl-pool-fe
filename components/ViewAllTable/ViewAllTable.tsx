@@ -31,14 +31,14 @@ type ViewAllTableProps = {
 		Pick<Game, 'gameID'> & {
 			homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
 			visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-			winnerTeam: Pick<Team, 'teamID'>;
+			winnerTeam: Pick<Team, 'teamID'> | null;
 		}
 	>;
 	picks?: Array<
 		Pick<PoolPick, 'pickID' | 'pickPoints'> & {
 			user: Pick<User, 'userID'>;
 			game: Pick<Game, 'gameID'>;
-			team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
+			team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'> | null;
 		}
 	>;
 	ranks?: Array<
@@ -161,9 +161,13 @@ const ViewAllTable: FC<ViewAllTableProps> = ({ games, picks, ranks }) => {
 
 										if (!game) {
 											return (
-												<Fragment
-													key={`missing-pick-game-for-${pick.game.gameID}`}
-												></Fragment>
+												<td
+													className="text-center"
+													key={`td-skeleton-for-missing-game-${pick.game.gameID}`}
+												>
+													<Skeleton height={60} width={60} />
+													<Skeleton height={20} width={20} />
+												</td>
 											);
 										}
 
@@ -172,10 +176,10 @@ const ViewAllTable: FC<ViewAllTableProps> = ({ games, picks, ranks }) => {
 												className={clsx(
 													'text-center',
 													game.winnerTeam &&
-														pick.team.teamID === game.winnerTeam.teamID &&
+														pick.team?.teamID === game.winnerTeam.teamID &&
 														styles.correct,
 													game.winnerTeam &&
-														pick.team.teamID !== game.winnerTeam.teamID &&
+														pick.team?.teamID !== game.winnerTeam.teamID &&
 														styles.incorrect,
 												)}
 												key={`pick-${pick.pickID}`}

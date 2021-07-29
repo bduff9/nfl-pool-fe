@@ -24,14 +24,14 @@ type GetAllPicksResponse = {
 		Pick<PoolPick, 'pickID' | 'pickPoints'> & {
 			user: Pick<User, 'userID'>;
 			game: Pick<Game, 'gameID'>;
-			team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
+			team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'> | null;
 		}
 	>;
 	getGamesForWeek: Array<
 		Pick<Game, 'gameID'> & {
 			homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
 			visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-			winnerTeam: Pick<Team, 'teamID'>;
+			winnerTeam: Pick<Team, 'teamID'> | null;
 		}
 	>;
 };

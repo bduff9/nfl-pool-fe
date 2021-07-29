@@ -60,7 +60,7 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 			Pick<Game, 'gameID'> & {
 				homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
 				visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				winnerTeam: Pick<Team, 'teamID'>;
+				winnerTeam: Pick<Team, 'teamID'> | null;
 			}
 		>
 	>({});
@@ -72,7 +72,7 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 			Pick<Game, 'gameID'> & {
 				homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
 				visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				winnerTeam: Pick<Team, 'teamID'>;
+				winnerTeam: Pick<Team, 'teamID'> | null;
 			}
 		>,
 	) => {
@@ -91,7 +91,7 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 				Pick<Game, 'gameID'> & {
 					homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
 					visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-					winnerTeam: Pick<Team, 'teamID'>;
+					winnerTeam: Pick<Team, 'teamID'> | null;
 				}
 			>,
 		);
@@ -100,10 +100,10 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 	};
 
 	useEffect(() => {
-		if (picksData && Object.keys(games).length === 0) {
+		if (picksData) {
 			updateGames(picksData.getGamesForWeek);
 		}
-	}, [picksData, games]);
+	}, [picksData]);
 
 	if (ranksError) {
 		console.error('Error when loading weekly rank data for View All Picks', ranksError);
@@ -128,7 +128,7 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 			Pick<Game, 'gameID'> & {
 				homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
 				visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				winnerTeam: Pick<Team, 'teamID'>;
+				winnerTeam: Pick<Team, 'teamID'> | null;
 			}
 		>,
 	): void => {
@@ -221,12 +221,14 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 								/>
 							)}
 						</div>
-						<ViewAllModal
-							closeModal={() => setIsModalOpen(false)}
-							games={picksData?.getGamesForWeek ?? []}
-							isOpen={isModalOpen}
-							saveChanges={saveModalChanges}
-						/>
+						{mode === 'What If' && (
+							<ViewAllModal
+								closeModal={() => setIsModalOpen(false)}
+								games={picksData?.getGamesForWeek ?? []}
+								isOpen={isModalOpen}
+								saveChanges={saveModalChanges}
+							/>
+						)}
 					</div>
 				</SkeletonTheme>
 			</div>

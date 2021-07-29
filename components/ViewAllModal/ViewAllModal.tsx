@@ -29,7 +29,7 @@ type ViewAllModalProps = {
 		Pick<Game, 'gameID'> & {
 			homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
 			visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-			winnerTeam: Pick<Team, 'teamID'>;
+			winnerTeam: Pick<Team, 'teamID'> | null;
 		}
 	>;
 	isOpen?: boolean;
@@ -38,7 +38,7 @@ type ViewAllModalProps = {
 			Pick<Game, 'gameID'> & {
 				homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
 				visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				winnerTeam: Pick<Team, 'teamID'>;
+				winnerTeam: Pick<Team, 'teamID'> | null;
 			}
 		>,
 	) => void;
@@ -55,7 +55,7 @@ const ViewAllModal: FC<ViewAllModalProps> = ({
 			Pick<Game, 'gameID'> & {
 				homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
 				visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				winnerTeam: Pick<Team, 'teamID'>;
+				winnerTeam: Pick<Team, 'teamID'> | null;
 			}
 		>
 	>([]);
@@ -121,7 +121,7 @@ const ViewAllModal: FC<ViewAllModalProps> = ({
 												className={clsx(
 													'rounded-circle',
 													styles['what-if'],
-													game.winnerTeam.teamID === game.visitorTeam.teamID &&
+													game.winnerTeam?.teamID === game.visitorTeam.teamID &&
 														styles.winner,
 												)}
 												onClick={event =>
@@ -149,7 +149,7 @@ const ViewAllModal: FC<ViewAllModalProps> = ({
 												className={clsx(
 													'rounded-circle',
 													styles['what-if'],
-													game.winnerTeam.teamID === game.homeTeam.teamID && styles.winner,
+													game.winnerTeam?.teamID === game.homeTeam.teamID && styles.winner,
 												)}
 												onClick={event =>
 													selectWinner(event, game.gameID, game.homeTeam.teamID)

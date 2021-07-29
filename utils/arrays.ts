@@ -83,7 +83,7 @@ export const sortPicks = (
 				Pick<PoolPick, 'pickID' | 'pickPoints'> & {
 					user: Pick<User, 'userID'>;
 					game: Pick<Game, 'gameID'>;
-					team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
+					team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'> | null;
 				}
 		  >
 		| undefined,
@@ -92,7 +92,7 @@ export const sortPicks = (
 		Pick<Game, 'gameID'> & {
 			homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
 			visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-			winnerTeam: Pick<Team, 'teamID'>;
+			winnerTeam: Pick<Team, 'teamID'> | null;
 		}
 	>,
 	ranks:
@@ -143,6 +143,10 @@ export const sortPicks = (
 				if (pick.user.userID !== user.userID) return acc;
 
 				const game = games[pick.game.gameID];
+
+				if (!game) return acc;
+
+				if (!pick.team || !game.winnerTeam) return acc;
 
 				if (pick.team.teamID === game.winnerTeam.teamID) {
 					acc[0] += pick.pickPoints ?? 0;
