@@ -83,7 +83,7 @@
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "4.0.3",
-    "@graphql-codegen/cli": "1.21.7",
+    "@graphql-codegen/cli": "1.21.8",
     "@graphql-codegen/typescript": "1.23.0",
     "@graphql-codegen/typescript-operations": "1.18.4",
     "@percy/cli": "1.0.0-beta.60",
