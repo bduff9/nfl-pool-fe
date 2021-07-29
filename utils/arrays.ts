@@ -53,7 +53,7 @@ const weekPlacer = (
 	// Then, sort by games correct
 	if (user1.gamesCorrect > user2.gamesCorrect) return -1;
 
-	if (user1.gamesCorrect > user2.gamesCorrect) return 1;
+	if (user1.gamesCorrect < user2.gamesCorrect) return 1;
 
 	// Stop here if last game hasn't been played
 	if (typeof user1.lastScore !== 'number' || typeof user2.lastScore !== 'number') return 0;
@@ -72,8 +72,6 @@ const weekPlacer = (
 	if (Math.abs(lastScoreDiff1) > Math.abs(lastScoreDiff2)) return 1;
 
 	// Finally, if we get here, then they are identical
-	console.log('points, games, and tiebreaker are identical');
-
 	return 0;
 };
 
