@@ -15,7 +15,7 @@
  */
 import clsx from 'clsx';
 import Image from 'next/image';
-import React, { FC, Fragment } from 'react';
+import React, { FC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 import { Game, Pick as PoolPick, Team, User, WeeklyMv } from '../../generated/graphql';
