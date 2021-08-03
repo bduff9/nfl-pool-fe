@@ -113,6 +113,8 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 		currentPage = 'Survivor';
 	} else if (router.pathname.startsWith('/users')) {
 		currentPage = 'My Account';
+	} else if (router.pathname.startsWith('/admin')) {
+		currentPage = 'Admin';
 	} else if (['/', '/weekly', '/overall'].includes(router.pathname)) {
 		currentPage = 'Dashboard';
 	}
@@ -136,7 +138,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 				)}
 			>
 				<span
-					className={clsx('position-absolute', styles['mobile-menu'])}
+					className={clsx('position-absolute', 'cursor-pointer', styles['mobile-menu'])}
 					onClick={toggleMenu}
 				>
 					<FontAwesomeIcon icon={faBars} size="lg" />
@@ -166,7 +168,10 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 				) : (
 					<>
 						<span className="d-md-none" onClick={toggleMenu}>
-							<FontAwesomeIcon className={styles['close-menu']} icon={faTimes} />
+							<FontAwesomeIcon
+								className={clsx('cursor-pointer', styles['close-menu'])}
+								icon={faTimes}
+							/>
 						</span>
 						{user.doneRegistering && (
 							<>
@@ -193,7 +198,12 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 										<FontAwesomeIcon icon={faChevronLeft} />
 									</button>
 									<select
-										className={clsx('text-center', 'px-2', styles['week-picker'])}
+										className={clsx(
+											'text-center',
+											'px-2',
+											'cursor-pointer',
+											styles['week-picker'],
+										)}
 										onChange={updateWeek}
 										value={selectedWeek}
 									>

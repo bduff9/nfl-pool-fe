@@ -96,6 +96,7 @@ const MakeSurvivorPickLoader: FC = () => (
 						'd-flex',
 						'justify-content-around',
 						'overflow-hidden',
+						'cursor-pointer',
 						styles['game-header'],
 					)}
 				>
@@ -253,6 +254,7 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 													'd-flex',
 													'justify-content-around',
 													'overflow-hidden',
+													'cursor-pointer',
 													styles['game-header'],
 													styles['bg-game'],
 												)}

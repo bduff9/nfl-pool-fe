@@ -32,12 +32,10 @@
   position: absolute;
   top: 5px;
   right: 10px;
-  cursor: pointer;
 }
 
 .week-picker {
   color: inherit;
-  cursor: pointer;
   background: none;
 }
 
@@ -46,7 +44,6 @@
   left: 10px;
   z-index: 1;
   color: $gray-1;
-  cursor: pointer;
 }
 
 .mobile-top-bar {

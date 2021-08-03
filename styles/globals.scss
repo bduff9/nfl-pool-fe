@@ -101,7 +101,7 @@ body {
 }
 
 .content-bg {
-  background-color: rgba(247, 247, 247, .8);
+  background-color: rgba(247, 247, 247, 0.8);
 }
 
 .football-brown {
@@ -132,4 +132,24 @@ body {
   &:not(:empty)::after {
     margin-left: 2em;
   }
+}
+
+.cursor-default {
+  /* stylelint-disable-next-line declaration-no-important */
+  cursor: default !important;
+}
+
+.cursor-move {
+  /* stylelint-disable-next-line declaration-no-important */
+  cursor: move !important;
+}
+
+.cursor-not-allowed {
+  /* stylelint-disable-next-line declaration-no-important */
+  cursor: not-allowed !important;
+}
+
+.cursor-pointer {
+  /* stylelint-disable-next-line declaration-no-important */
+  cursor: pointer !important;
 }

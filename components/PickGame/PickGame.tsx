@@ -69,9 +69,9 @@ const DraggablePoint: FC<DraggablePointProps> = ({
 						'rounded-circle',
 						'text-center',
 						'pt-1',
+						isDragDisabled ? 'cursor-not-allowed' : 'cursor-move',
 						styles.point,
 						snapshot.isDragging && styles['is-dragging'],
-						isDragDisabled && styles['point-disabled'],
 					)}
 					ref={provided.innerRef}
 					{...provided.draggableProps}
@@ -116,6 +116,7 @@ export const Point: FC<PointProps> = ({
 						'd-inline-block',
 						'rounded-circle',
 						'text-center',
+						'cursor-move',
 						styles.point,
 						!value && styles.placeholder,
 						snapshot.isDraggingOver && styles['dragging-over'],
@@ -179,7 +180,7 @@ const PickGame: FC<PickGameProps> = ({ dragGameID, gameCount, loading, onClick, 
 				/>
 			</div>
 			<div className="col-6 col-md-8 d-flex align-items-center text-center">
-				<div className={clsx(styles['game-info'])} onClick={onClick}>
+				<div className={clsx('cursor-pointer', styles['game-info'])} onClick={onClick}>
 					<Image
 						alt={`${pick.game.visitorTeam.teamCity} ${pick.game.visitorTeam.teamName}`}
 						height={60}
@@ -191,7 +192,7 @@ const PickGame: FC<PickGameProps> = ({ dragGameID, gameCount, loading, onClick, 
 					<div className="d-block d-md-none">{pick.game.visitorTeam.teamName}</div>
 				</div>
 				<div
-					className={clsx('d-none', 'd-md-block', styles['game-info'])}
+					className={clsx('d-none', 'd-md-block', 'cursor-pointer', styles['game-info'])}
 					onClick={onClick}
 				>
 					{pick.game.visitorTeam.teamCity}
@@ -202,14 +203,14 @@ const PickGame: FC<PickGameProps> = ({ dragGameID, gameCount, loading, onClick, 
 					<FontAwesomeIcon icon={faAt} />
 				</div>
 				<div
-					className={clsx('d-none', 'd-md-block', styles['game-info'])}
+					className={clsx('d-none', 'd-md-block', 'cursor-pointer', styles['game-info'])}
 					onClick={onClick}
 				>
 					{pick.game.homeTeam.teamCity}
 					<br />
 					{pick.game.homeTeam.teamName}
 				</div>
-				<div className={clsx(styles['game-info'])} onClick={onClick}>
+				<div className={clsx('cursor-pointer', styles['game-info'])} onClick={onClick}>
 					<Image
 						alt={`${pick.game.homeTeam.teamCity} ${pick.game.homeTeam.teamName}`}
 						height={60}

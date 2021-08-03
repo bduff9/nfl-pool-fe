@@ -27,7 +27,6 @@
   width: 60px;
   height: 60px;
   font-size: 2rem;
-  cursor: move;
 
   @media (max-width: 767px) {
     width: 31px;
@@ -39,10 +38,6 @@
     background-color: #fff;
     border: 1px solid #000;
   }
-
-  &.point-disabled {
-    cursor: not-allowed;
-  }
 }
 
 .made-pick {
@@ -53,22 +48,16 @@
   background-color: $blue-4;
 
   .point {
-    cursor: not-allowed;
     opacity: .75;
   }
 }
 
 .missed-pick {
   background-color: $red-3;
-
-  .point {
-    cursor: not-allowed;
-  }
 }
 
 .game-info {
   width: 20%;
-  cursor: pointer;
 
   @media (max-width: 767px) {
     width: 40%;

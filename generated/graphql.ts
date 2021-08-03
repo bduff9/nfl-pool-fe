@@ -42,6 +42,34 @@ export type ApiCall = {
 	updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
+export type Account = {
+	__typename?: 'Account';
+	accountID: Scalars['Int'];
+	accountCompoundID: Scalars['String'];
+	user: User;
+	accountProviderType: Scalars['String'];
+	accountProviderID: Scalars['String'];
+	accountProviderAccountID: Scalars['String'];
+	accountRefreshToken?: Maybe<Scalars['String']>;
+	accountAccessToken?: Maybe<Scalars['String']>;
+	accountAccessTokenExpires?: Maybe<Scalars['DateTime']>;
+	accountAdded: Scalars['DateTime'];
+	accountAddedBy: Scalars['String'];
+	accountUpdated: Scalars['DateTime'];
+	accountUpdatedBy: Scalars['String'];
+};
+
+/** The filter type for the admin users screen */
+export enum AdminUserType {
+	All = 'All',
+	Inactive = 'Inactive',
+	Incomplete = 'Incomplete',
+	Owes = 'Owes',
+	Registered = 'Registered',
+	Rookies = 'Rookies',
+	Veterans = 'Veterans',
+}
+
 /** The strategy to employ for auto picking */
 export enum AutoPickStrategy {
 	Away = 'Away',
@@ -75,6 +103,7 @@ export type Email = {
 
 /** The sent message type */
 export enum EmailType {
+	Interest = 'interest',
 	InvalidGamesFound = 'invalidGamesFound',
 	NewUser = 'newUser',
 	PickReminder = 'pickReminder',
@@ -255,6 +284,10 @@ export type Mutation = {
 	finishRegistration: User;
 	editMyProfile: User;
 	unsubscribeEmail: Scalars['Boolean'];
+	updateUserPaid: Scalars['Int'];
+	toggleSurvivor: Scalars['Boolean'];
+	trustUser: Scalars['Boolean'];
+	removeUser: Scalars['Boolean'];
 };
 
 export type MutationWriteLogArgs = {
@@ -309,6 +342,25 @@ export type MutationEditMyProfileArgs = {
 
 export type MutationUnsubscribeEmailArgs = {
 	email: Scalars['String'];
+};
+
+export type MutationUpdateUserPaidArgs = {
+	AmountPaid: Scalars['Float'];
+	UserID: Scalars['Int'];
+};
+
+export type MutationToggleSurvivorArgs = {
+	IsPlaying: Scalars['Boolean'];
+	UserID: Scalars['Int'];
+};
+
+export type MutationTrustUserArgs = {
+	ReferredByUserID: Scalars['Int'];
+	UserID: Scalars['Int'];
+};
+
+export type MutationRemoveUserArgs = {
+	UserID: Scalars['Int'];
 };
 
 export type Notification = {
@@ -444,11 +496,12 @@ export type Query = {
 	getTiebreakersForWeek: Array<Tiebreaker>;
 	getCurrentUser: User;
 	getMyAlerts: Array<Scalars['String']>;
-	getUsers: Array<User>;
+	getUsersForAdmins: Array<User>;
 	getWeeklyRankings: Array<WeeklyMv>;
 	getMyWeeklyDashboard?: Maybe<WeeklyMv>;
 	getWeeklyTiedWithMeCount: Scalars['Int'];
 	getWeeklyRankingsTotalCount: Scalars['Int'];
+	getTime: Scalars['DateTime'];
 	getWeek: Week;
 	getWeekInProgress?: Maybe<Scalars['Int']>;
 };
@@ -525,6 +578,10 @@ export type QueryGetMyTiebreakerForWeekArgs = {
 
 export type QueryGetTiebreakersForWeekArgs = {
 	Week: Scalars['Int'];
+};
+
+export type QueryGetUsersForAdminsArgs = {
+	UserType: AdminUserType;
 };
 
 export type QueryGetWeeklyRankingsArgs = {
@@ -695,11 +752,14 @@ export type User = {
 	userPaymentType?: Maybe<PaymentType>;
 	userPaymentAccount?: Maybe<Scalars['String']>;
 	userPaid: Scalars['Float'];
+	userOwes: Scalars['Float'];
 	userAutoPicksLeft: Scalars['Int'];
 	userAutoPickStrategy?: Maybe<AutoPickStrategy>;
 	userCommunicationsOptedOut: Scalars['Boolean'];
-	notifications: Notification;
+	notifications: Array<Notification>;
 	userLeagues: Array<UserLeague>;
+	yearsPlayed: Scalars['String'];
+	accounts: Array<Account>;
 	userAdded: Scalars['DateTime'];
 	userAddedBy: Scalars['String'];
 	userUpdated: Scalars['DateTime'];

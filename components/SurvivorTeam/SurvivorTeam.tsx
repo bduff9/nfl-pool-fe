@@ -46,6 +46,7 @@ const SurvivorTeam: FC<SurvivorTeamProps> = ({
 			className={clsx(
 				...(pick
 					? [
+						'cursor-default',
 						styles['picked'],
 						pick.survivorPickWeek < weekInProgress && styles['past-pick'],
 						pick.survivorPickWeek === weekInProgress && styles['current-pick'],
@@ -54,12 +55,13 @@ const SurvivorTeam: FC<SurvivorTeamProps> = ({
 					: isOnBye
 						? ['border', 'border-dark', styles['bg-game']]
 						: [
-							styles['not-picked'],
-							styles['bg-game'],
-							!isHome && 'border-start',
 							'border-bottom',
 							'border-end',
 							'border-dark',
+							'cursor-pointer',
+							!isHome && 'border-start',
+							styles['not-picked'],
+							styles['bg-game'],
 						]),
 				'position-relative',
 				'pt-2',

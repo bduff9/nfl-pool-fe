@@ -25,7 +25,6 @@
 
 .picked {
   pointer-events: none;
-  cursor: default;
   border: 4px solid;
 }
 
@@ -48,8 +47,6 @@
 }
 
 .not-picked {
-  cursor: pointer;
-
   &:hover {
     // stylelint-disable-next-line declaration-no-important
     background-color: $blue-1 !important;

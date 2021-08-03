@@ -49,6 +49,7 @@
     "@fortawesome/fontawesome-svg-core": "1.2.35",
     "@fortawesome/free-brands-svg-icons": "5.15.3",
     "@fortawesome/free-regular-svg-icons": "5.15.3",
+    "@fortawesome/free-solid-svg-icons": "5.15.3",
     "@fortawesome/react-fontawesome": "0.1.14",
     "@hookform/resolvers": "2.6.1",
     "@sentry/nextjs": "6.10.0",
@@ -149,17 +150,14 @@
   "private": true,
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "eslint --quiet --fix",
-      "git add"
+      "eslint --quiet --fix"
     ],
     "*.{md,json,css,scss}": [
-      "prettierx --write",
-      "git add"
+      "prettierx --write"
     ],
     "package.json": [
       "scriptlint --fix --config .stylelintrc.json",
-      "npmPkgJsonLint .",
-      "git add"
+      "npmPkgJsonLint ."
     ],
     "*.js": "eslint --cache --fix",
     "*.{css,scss}": "stylelint --fix"

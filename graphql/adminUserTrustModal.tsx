@@ -13,21 +13,25 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-@import "../variables";
+import { gql } from 'graphql-request';
+import useSWR, { SWRResponse } from 'swr';
 
-.bg-game {
-  background-color: $gray-1;
-}
+import { User } from '../generated/graphql';
+import { fetcher } from '../utils/graphql';
 
-.game-header {
-  height: 25px;
-}
+type GetUserDropdownResponse = {
+	userDropdown: Array<Pick<User, 'userID' | 'userFirstName' | 'userLastName'>>;
+};
 
-.game-team {
-  height: 152px;
-}
+const query = gql`
+	query UserDropdown {
+		userDropdown: getUsersForAdmins(UserType: All) {
+			userID
+			userFirstName
+			userLastName
+		}
+	}
+`;
 
-.at {
-  padding: 1px 4px;
-  background-color: $gray-3;
-}
+export const useUserDropdown = (): SWRResponse<GetUserDropdownResponse, unknown> =>
+	useSWR<GetUserDropdownResponse>(query, fetcher);

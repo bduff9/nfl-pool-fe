@@ -110,65 +110,64 @@ const ViewAllModal: FC<ViewAllModalProps> = ({
 							></button>
 						</div>
 						<div className="modal-body" id="whatIfModalBody">
-							{customGames.map(game => {
-								return (
-									<div
-										className="d-flex justify-content-around align-items-center text-center"
-										key={`what-if-for-game-${game.gameID}`}
-									>
-										<div className={clsx('col-5')}>
-											<div
-												className={clsx(
-													'rounded-circle',
-													styles['what-if'],
-													game.winnerTeam?.teamID === game.visitorTeam.teamID &&
-														styles.winner,
-												)}
-												onClick={event =>
-													selectWinner(event, game.gameID, game.visitorTeam.teamID)
-												}
-											>
-												<Image
-													alt={`${game.visitorTeam.teamCity} ${game.visitorTeam.teamName}`}
-													height={50}
-													layout="fixed"
-													src={`/NFLLogos/${game.visitorTeam.teamLogo}`}
-													title={`${game.visitorTeam.teamCity} ${game.visitorTeam.teamName}`}
-													width={50}
-												/>
-												<div style={{ marginTop: '-1rem' }}>
-													{game.visitorTeam.teamName}
-												</div>
-											</div>
-										</div>
-										<div className="col-2">
-											<FontAwesomeIcon icon={faAt} />
-										</div>
-										<div className={clsx('col-5')}>
-											<div
-												className={clsx(
-													'rounded-circle',
-													styles['what-if'],
-													game.winnerTeam?.teamID === game.homeTeam.teamID && styles.winner,
-												)}
-												onClick={event =>
-													selectWinner(event, game.gameID, game.homeTeam.teamID)
-												}
-											>
-												<Image
-													alt={`${game.homeTeam.teamCity} ${game.homeTeam.teamName}`}
-													height={50}
-													layout="fixed"
-													src={`/NFLLogos/${game.homeTeam.teamLogo}`}
-													title={`${game.homeTeam.teamCity} ${game.homeTeam.teamName}`}
-													width={50}
-												/>
-												<div style={{ marginTop: '-1rem' }}>{game.homeTeam.teamName}</div>
-											</div>
+							{customGames.map(game => (
+								<div
+									className="d-flex justify-content-around align-items-center text-center"
+									key={`what-if-for-game-${game.gameID}`}
+								>
+									<div className={clsx('col-5')}>
+										<div
+											className={clsx(
+												'rounded-circle',
+												styles['what-if'],
+												...(game.winnerTeam?.teamID === game.visitorTeam.teamID
+													? ['cursor-default', styles.winner]
+													: ['cursor-pointer']),
+											)}
+											onClick={event =>
+												selectWinner(event, game.gameID, game.visitorTeam.teamID)
+											}
+										>
+											<Image
+												alt={`${game.visitorTeam.teamCity} ${game.visitorTeam.teamName}`}
+												height={50}
+												layout="fixed"
+												src={`/NFLLogos/${game.visitorTeam.teamLogo}`}
+												title={`${game.visitorTeam.teamCity} ${game.visitorTeam.teamName}`}
+												width={50}
+											/>
+											<div style={{ marginTop: '-1rem' }}>{game.visitorTeam.teamName}</div>
 										</div>
 									</div>
-								);
-							})}
+									<div className="col-2">
+										<FontAwesomeIcon icon={faAt} />
+									</div>
+									<div className={clsx('col-5')}>
+										<div
+											className={clsx(
+												'rounded-circle',
+												styles['what-if'],
+												...(game.winnerTeam?.teamID === game.homeTeam.teamID
+													? ['cursor-default', styles.winner]
+													: ['cursor-pointer']),
+											)}
+											onClick={event =>
+												selectWinner(event, game.gameID, game.homeTeam.teamID)
+											}
+										>
+											<Image
+												alt={`${game.homeTeam.teamCity} ${game.homeTeam.teamName}`}
+												height={50}
+												layout="fixed"
+												src={`/NFLLogos/${game.homeTeam.teamLogo}`}
+												title={`${game.homeTeam.teamCity} ${game.homeTeam.teamName}`}
+												width={50}
+											/>
+											<div style={{ marginTop: '-1rem' }}>{game.homeTeam.teamName}</div>
+										</div>
+									</div>
+								</div>
+							))}
 						</div>
 						<div className="modal-footer">
 							<button className="btn btn-secondary" onClick={closeModal} type="button">

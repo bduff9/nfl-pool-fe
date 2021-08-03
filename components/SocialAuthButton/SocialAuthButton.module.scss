@@ -13,10 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-$google-background: #db4437;
-$google-text: #fff;
-$twitter-background: #1da1f2;
-$twitter-text: #f5f8fa;
+@import "../../styles/variables";
 
 .btn-google {
   color: $google-text;

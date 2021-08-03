@@ -15,19 +15,26 @@
  */
 @import "../variables";
 
-.bg-game {
-  background-color: $gray-1;
+.btn-filter {
+  width: 100%;
+
+  @media (min-width: 768px) {
+    width: auto;
+  }
 }
 
-.game-header {
-  height: 25px;
+.caret {
+  transition: transform .25s;
 }
 
-.game-team {
-  height: 152px;
+.text-email {
+  color: $yellow-5;
 }
 
-.at {
-  padding: 1px 4px;
-  background-color: $gray-3;
+.text-google {
+  color: $google-background;
+}
+
+.text-twitter {
+  color: $twitter-background;
 }
