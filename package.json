@@ -134,7 +134,7 @@
     "postcss": "8.3.6",
     "postcss-flexbugs-fixes": "5.0.2",
     "postcss-preset-env": "6.7.0",
-    "sass": "1.36.0",
+    "sass": "1.37.5",
     "scriptlint": "2.1.6",
     "stylelint": "13.13.1",
     "stylelint-config-twbs-bootstrap": "2.2.3",
