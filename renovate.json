@@ -1,7 +1,6 @@
 {
-  "extends": [
-    "config:base"
-  ],
+  "enabled": false,
+  "extends": ["config:base"],
   "assignees": ["bduff9"],
   "supportPolicy": ["LTS"],
   "baseBranches": ["develop"]
