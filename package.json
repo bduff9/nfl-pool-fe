@@ -44,13 +44,13 @@
   },
   "config": {},
   "dependencies": {
-    "@bduff9/pro-duotone-svg-icons": "5.15.3",
-    "@bduff9/pro-solid-svg-icons": "5.15.3",
-    "@fortawesome/fontawesome-svg-core": "1.2.35",
-    "@fortawesome/free-brands-svg-icons": "5.15.3",
-    "@fortawesome/free-regular-svg-icons": "5.15.3",
-    "@fortawesome/free-solid-svg-icons": "5.15.3",
-    "@fortawesome/react-fontawesome": "0.1.14",
+    "@bduff9/pro-duotone-svg-icons": "5.15.4",
+    "@bduff9/pro-solid-svg-icons": "5.15.4",
+    "@fortawesome/fontawesome-svg-core": "1.2.36",
+    "@fortawesome/free-brands-svg-icons": "5.15.4",
+    "@fortawesome/free-regular-svg-icons": "5.15.4",
+    "@fortawesome/free-solid-svg-icons": "5.15.4",
+    "@fortawesome/react-fontawesome": "0.1.15",
     "@hookform/resolvers": "2.7.1",
     "@sentry/nextjs": "6.10.0",
     "axios": "0.21.1",
@@ -63,7 +63,7 @@
     "js-cookie": "3.0.0",
     "logrocket": "2.0.0",
     "logrocket-react": "4.0.1",
-    "mysql2": "2.2.5",
+    "mysql2": "2.3.0",
     "next": "11.0.1",
     "next-auth": "<3.18.0",
     "next-pwa": "5.2.24",
@@ -141,7 +141,7 @@
     "terser-webpack-plugin": "5.1.4",
     "ts-jest": "27.0.4",
     "typescript": "4.3.5",
-    "vercel": "23.0.1"
+    "vercel": "23.1.0"
   },
   "engines": {
     "node": "14.x"
