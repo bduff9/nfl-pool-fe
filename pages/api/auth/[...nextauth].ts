@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { withSentry } from '@sentry/nextjs';
-import mysql from 'mysql';
+import mysql from 'mysql2';
 import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { NextAuthOptions, Session } from 'next-auth';
 import Adapters from 'next-auth/adapters';

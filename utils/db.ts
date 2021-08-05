@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import mysql from 'mysql';
+import mysql from 'mysql2';
 
 const { DATABASE_URL } = process.env;
 
@@ -33,10 +33,10 @@ export const getAll = async <Result extends Record<string, unknown>, Vars>(
 	variables: Vars,
 ): Promise<Array<Result>> => {
 	const result = await new Promise<Array<Result>>((resolve, reject) => {
-		connection.query(query, variables || [], (error, results) => {
+		connection.query(query, variables ?? [], (error, results) => {
 			if (error) reject(error);
 
-			resolve(results);
+			resolve(results as Array<Result>);
 		});
 	});
 
@@ -49,10 +49,10 @@ export const getOne = async <Result, Vars>(
 	variables: Vars,
 ): Promise<Result> => {
 	const [result] = await new Promise<Array<Result>>((resolve, reject) => {
-		connection.query(query, variables || [], (error, results) => {
+		connection.query(query, variables ?? [], (error, results) => {
 			if (error) reject(error);
 
-			resolve(results);
+			resolve(results as Array<Result>);
 		});
 	});
 
