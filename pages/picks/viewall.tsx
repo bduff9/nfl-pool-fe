@@ -162,7 +162,6 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 										'text-nowrap',
 										'flex-grow-1',
 										'flex-shrink-0',
-										styles['mode-button'],
 										mode === 'What If' && styles['btn-blue'],
 									)}
 									disabled={mode === 'Live Results'}
@@ -175,7 +174,6 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 									className={clsx(
 										'flex-grow-0',
 										'flex-shrink-1',
-										styles['mode-button'],
 										mode === 'What If' && styles['btn-blue'],
 									)}
 									split
