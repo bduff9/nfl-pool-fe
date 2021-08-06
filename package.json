@@ -52,7 +52,7 @@
     "@fortawesome/free-solid-svg-icons": "5.15.4",
     "@fortawesome/react-fontawesome": "0.1.15",
     "@hookform/resolvers": "2.7.1",
-    "@sentry/nextjs": "6.10.0",
+    "@sentry/nextjs": "6.11.0",
     "axios": "0.21.1",
     "bootstrap": "5.1.0",
     "clsx": "1.1.1",
