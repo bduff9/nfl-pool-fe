@@ -331,7 +331,7 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 								`${data.getUsersForAdmins.length} users`
 							)}
 						</div>
-						<div className="col-12 col-md-6 order-1 order-md-2 text-center text-md-start">
+						<div className="col-12 col-md-6 order-1 order-md-2 text-center text-md-end">
 							<span className="d-none d-md-inline">Filter By: </span>
 							<Dropdown className={clsx('d-inline-block', styles['btn-filter'])}>
 								<Dropdown.Toggle
