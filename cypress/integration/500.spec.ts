@@ -31,7 +31,7 @@ describe('500 page', () => {
 					.should('be.visible')
 					.and('have.attr', 'alt')
 					.and('equal', 'Flag on the play');
-				cy.get('h2').should('be.visible').and('have.text', 'There has been an error.');
+				cy.get('h2').should('be.visible').and('contain.text', 'There has been an error.');
 				cy.get('a').should('have.length', 2);
 
 				if (Cypress.env('SKIP_PERCY') !== 'true') {
