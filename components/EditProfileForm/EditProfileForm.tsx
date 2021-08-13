@@ -24,7 +24,11 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import 'yup-phone';
 
-import { AutoPickStrategy, NotificationInput, PaymentType } from '../../generated/graphql';
+import {
+	AutoPickStrategy,
+	NotificationInput,
+	PaymentMethod,
+} from '../../generated/graphql';
 import { editProfile } from '../../graphql/editProfileForm';
 import {
 	autoPickPopover,
@@ -55,7 +59,7 @@ type FormData = {
 	userFirstName: string;
 	userLastName: string;
 	userPaymentAccount: string;
-	userPaymentType: PaymentType;
+	userPaymentType: PaymentMethod;
 	userPhone: string;
 	userTeamName: string;
 	notifications: Array<NotificationInput & { hasValidPhone: boolean }>;
@@ -73,7 +77,7 @@ const schema = Yup.object().shape({
 		.required('Please enter your surname'),
 	userTeamName: Yup.string(),
 	userPaymentType: Yup.string()
-		.oneOf(Object.values(PaymentType), 'Please select a valid account type')
+		.oneOf(Object.values(PaymentMethod), 'Please select a valid account type')
 		.required('Please select an account type'),
 	userPaymentAccount: Yup.string().when('userPaymentType', {
 		is: 'Venmo',
@@ -410,9 +414,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userPaymentType', { required: true })}
 					>
 						<option value="">-- Select a payment type --</option>
-						{Object.values(PaymentType).map(paymentType => (
-							<option value={paymentType} key={paymentType}>
-								{paymentType}
+						{Object.values(PaymentMethod).map(paymentMethod => (
+							<option value={paymentMethod} key={paymentMethod}>
+								{paymentMethod}
 							</option>
 						))}
 					</select>

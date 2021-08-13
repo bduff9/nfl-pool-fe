@@ -185,7 +185,7 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 					if (user.userID === userID) {
 						return {
 							...user,
-							userPaid: amountPaid,
+							userPaid: user.userPaid + amountPaid,
 						};
 					}
 

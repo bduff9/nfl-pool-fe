@@ -16,63 +16,63 @@
 import React, { FC, useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 
-type AdminUserPaymentModalProps = {
+import { Winner } from '../../graphql/manageAdminPayouts';
+
+type AdminUserPayoutModalProps = {
 	handleClose: () => void;
-	owe: null | number;
-	paid: null | number;
 	show?: boolean;
-	updateAmount: (userID: number | undefined, paid: number) => Promise<void>;
-	userID: number | undefined;
+	updateAmount: (userID: number | undefined, amount: number) => Promise<void>;
+	winner: null | Winner;
 };
 
-const AdminUserPaymentModal: FC<AdminUserPaymentModalProps> = ({
+const AdminUserPayoutModal: FC<AdminUserPayoutModalProps> = ({
 	handleClose,
-	owe,
-	paid,
 	show = false,
 	updateAmount,
-	userID,
+	winner,
 }) => {
-	const left = (owe ?? 0) - (paid ?? 0);
-	const [userPaid, setUserPaid] = useState<number>(left);
+	const remainingToPay = (winner?.userWon ?? 0) - (winner?.userPaidOut ?? 0);
+	const [toPay, setToPay] = useState<number>(remainingToPay);
 	const [loading, setLoading] = useState<boolean>(false);
 
 	useEffect(() => {
-		setUserPaid(left);
-	}, [left]);
+		setToPay(remainingToPay);
+	}, [remainingToPay]);
 
 	const handleSave = async (): Promise<void> => {
 		setLoading(true);
-		await updateAmount(userID, userPaid ?? 0);
+		await updateAmount(winner?.userID, toPay ?? 0);
 		setLoading(false);
 	};
 
 	return (
 		<Modal onHide={handleClose} show={show}>
 			<Modal.Header closeButton>
-				<Modal.Title>How much did they pay?</Modal.Title>
+				<Modal.Title>How much have they been paid?</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
 				<div className="mb-3">
-					<label htmlFor="userPaidAmount" className="form-label">
-						{left > 0 ? `User owes $${left} / $${owe}` : `User has paid $${owe}`}
+					<label htmlFor="userPayoutAmount" className="form-label">
+						{remainingToPay > 0
+							? `User is still owed $${remainingToPay} / $${winner?.userWon}`
+							: `User has been paid $${winner?.userWon}`}
 					</label>
 					<input
 						className="form-control"
-						id="userPaidAmount"
-						max={left}
+						id="userPayoutAmount"
+						max={remainingToPay}
 						onChange={event => {
 							let value = +event.target.value;
 
 							if (value < 0) value = 0;
 
-							if (value > (owe ?? 0)) value = owe ?? 0;
+							if (value > (winner?.userWon ?? 0)) value = winner?.userWon ?? 0;
 
-							setUserPaid(value);
+							setToPay(value);
 						}}
-						placeholder="Paid amount in $"
+						placeholder="To pay amount in $"
 						type="number"
-						value={left}
+						value={remainingToPay}
 					/>
 				</div>
 			</Modal.Body>
@@ -109,6 +109,6 @@ const AdminUserPaymentModal: FC<AdminUserPaymentModalProps> = ({
 	);
 };
 
-AdminUserPaymentModal.whyDidYouRender = true;
+AdminUserPayoutModal.whyDidYouRender = true;
 
-export default AdminUserPaymentModal;
+export default AdminUserPayoutModal;

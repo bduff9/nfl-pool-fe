@@ -330,9 +330,10 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 								<NavLink href="/users/payments" isNested show={user.doneRegistering}>
 									View Payments
 								</NavLink>
+								{/* TODO: generate stats page
 								<NavLink href="/users/stats" isNested show={user.doneRegistering}>
 									Statistics
-								</NavLink>
+								</NavLink> */}
 							</MenuAccordion>
 							<NavLink href="/support">Help</NavLink>
 							<MenuAccordion show={user.isAdmin} title="Admin">

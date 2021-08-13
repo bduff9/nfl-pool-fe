@@ -23,7 +23,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 
-import { PaymentType } from '../../generated/graphql';
+import { PaymentMethod } from '../../generated/graphql';
 import { finishRegistration } from '../../graphql/finishRegistrationForm';
 import { survivorPopover, paymentPopover } from '../Popover/Popover';
 import SocialAuthButton from '../SocialAuthButton/SocialAuthButton';
@@ -43,7 +43,7 @@ type FormData = {
 	userLastName: string;
 	userName: string;
 	userPaymentAccount: string;
-	userPaymentType: PaymentType;
+	userPaymentType: PaymentMethod;
 	userPlaysSurvivor: TTrueFalse;
 	userReferredByRaw: string;
 	userTeamName: string;
@@ -62,7 +62,7 @@ const schema = Yup.object().shape({
 		.matches(/\w{2,}\s\w{2,}/, 'Please input the full name of the person that invited you')
 		.required('Please input the name of the person that invited you'),
 	userPaymentType: Yup.string()
-		.oneOf(Object.values(PaymentType), 'Please select a valid account type')
+		.oneOf(Object.values(PaymentMethod), 'Please select a valid account type')
 		.required('Please select an account type'),
 	userPaymentAccount: Yup.string().when('userPaymentType', {
 		is: 'Venmo',
@@ -339,9 +339,11 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 						{...register('userPaymentType')}
 					>
 						<option value="">-- Select a payment type --</option>
-						<option value="Paypal">Paypal</option>
-						<option value="Venmo">Venmo</option>
-						<option value="Zelle">Zelle</option>
+						{Object.values(PaymentMethod).map(paymentMethod => (
+							<option value={paymentMethod} key={paymentMethod}>
+								{paymentMethod}
+							</option>
+						))}
 					</select>
 					{errors.userPaymentType?.message && (
 						<span className="text-danger fs-6">{errors.userPaymentType.message}</span>

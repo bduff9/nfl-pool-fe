@@ -82,7 +82,7 @@ export type EditMyProfileInput = {
 	userFirstName: Scalars['String'];
 	userLastName: Scalars['String'];
 	userPaymentAccount: Scalars['String'];
-	userPaymentType: PaymentType;
+	userPaymentType: PaymentMethod;
 	userTeamName?: Maybe<Scalars['String']>;
 	userPhone?: Maybe<Scalars['String']>;
 	userAutoPickStrategy?: Maybe<AutoPickStrategy>;
@@ -139,7 +139,7 @@ export type FinishRegistrationInput = {
 	userLastName: Scalars['String'];
 	userName: Scalars['String'];
 	userPaymentAccount: Scalars['String'];
-	userPaymentType: PaymentType;
+	userPaymentType: PaymentMethod;
 	userPlaysSurvivor: Scalars['Boolean'];
 	userReferredByRaw: Scalars['String'];
 	userTeamName?: Maybe<Scalars['String']>;
@@ -236,9 +236,6 @@ export type Log = {
 	logMessage?: Maybe<Scalars['String']>;
 	user?: Maybe<User>;
 	league?: Maybe<League>;
-	logIsRead?: Maybe<Scalars['Boolean']>;
-	logIsDeleted?: Maybe<Scalars['Boolean']>;
-	toUser?: Maybe<User>;
 	logAdded: Scalars['DateTime'];
 	logAddedBy: Scalars['String'];
 	logUpdated: Scalars['DateTime'];
@@ -250,6 +247,7 @@ export enum LogAction {
 	Error404 = 'Error404',
 	AuthenticationError = 'AuthenticationError',
 	CreatedAccount = 'CreatedAccount',
+	EmailActivity = 'EmailActivity',
 	LinkedAccount = 'LinkedAccount',
 	Login = 'Login',
 	Logout = 'Logout',
@@ -258,7 +256,10 @@ export enum LogAction {
 	Register = 'Register',
 	Slack = 'Slack',
 	SubmitPicks = 'SubmitPicks',
+	SupportSearch = 'SupportSearch',
 	SurvivorPick = 'SurvivorPick',
+	Unsubscribe = 'Unsubscribe',
+	ViewHtmlEmail = 'ViewHTMLEmail',
 }
 
 /** Survivor pick data */
@@ -272,6 +273,8 @@ export type Mutation = {
 	__typename?: 'Mutation';
 	writeLog: Log;
 	updateMyNotifications: Array<Notification>;
+	updateUserPaid: Scalars['Int'];
+	updateUserPayout: Scalars['Int'];
 	resetMyPicksForWeek: Array<Pick>;
 	setMyPick?: Maybe<Pick>;
 	autoPick: Array<Pick>;
@@ -279,12 +282,12 @@ export type Mutation = {
 	registerForSurvivor: Scalars['Boolean'];
 	unregisterForSurvivor: Scalars['Boolean'];
 	makeSurvivorPick: SurvivorPick;
+	setPrizeAmounts: Scalars['Boolean'];
 	updateMyTiebreakerScore: Tiebreaker;
 	submitPicksForWeek: Tiebreaker;
 	finishRegistration: User;
 	editMyProfile: User;
 	unsubscribeEmail: Scalars['Boolean'];
-	updateUserPaid: Scalars['Int'];
 	toggleSurvivor: Scalars['Boolean'];
 	trustUser: Scalars['Boolean'];
 	removeUser: Scalars['Boolean'];
@@ -296,6 +299,16 @@ export type MutationWriteLogArgs = {
 
 export type MutationUpdateMyNotificationsArgs = {
 	data: Array<NotificationInput>;
+};
+
+export type MutationUpdateUserPaidArgs = {
+	AmountPaid: Scalars['Float'];
+	UserID: Scalars['Int'];
+};
+
+export type MutationUpdateUserPayoutArgs = {
+	AmountPaid: Scalars['Float'];
+	UserID: Scalars['Int'];
 };
 
 export type MutationResetMyPicksForWeekArgs = {
@@ -323,6 +336,12 @@ export type MutationMakeSurvivorPickArgs = {
 	data: MakeSurvivorPickInput;
 };
 
+export type MutationSetPrizeAmountsArgs = {
+	SurvivorPrizes: Scalars['String'];
+	OverallPrizes: Scalars['String'];
+	WeeklyPrizes: Scalars['String'];
+};
+
 export type MutationUpdateMyTiebreakerScoreArgs = {
 	Score: Scalars['Int'];
 	Week: Scalars['Int'];
@@ -342,11 +361,6 @@ export type MutationEditMyProfileArgs = {
 
 export type MutationUnsubscribeEmailArgs = {
 	email: Scalars['String'];
-};
-
-export type MutationUpdateUserPaidArgs = {
-	AmountPaid: Scalars['Float'];
-	UserID: Scalars['Int'];
 };
 
 export type MutationToggleSurvivorArgs = {
@@ -429,17 +443,31 @@ export type OverallMv = {
 
 export type Payment = {
 	__typename?: 'Payment';
+	paymentID: Scalars['Int'];
+	user: User;
+	paymentType: PaymentType;
 	paymentDescription: Scalars['String'];
 	paymentWeek?: Maybe<Scalars['Int']>;
 	paymentAmount: Scalars['Float'];
-	paymentUser: User;
+	paymentAdded: Scalars['DateTime'];
+	paymentAddedBy: Scalars['String'];
+	paymentUpdated: Scalars['DateTime'];
+	paymentUpdatedBy: Scalars['String'];
 };
 
-/** The chosen payment type for the user */
-export enum PaymentType {
+/** The chosen payment method for the user */
+export enum PaymentMethod {
 	Paypal = 'Paypal',
 	Venmo = 'Venmo',
 	Zelle = 'Zelle',
+}
+
+/** The payment type for the payment */
+export enum PaymentType {
+	Fee = 'Fee',
+	Paid = 'Paid',
+	Payout = 'Payout',
+	Prize = 'Prize',
 }
 
 export type Pick = {
@@ -496,7 +524,10 @@ export type Query = {
 	getTiebreakersForWeek: Array<Tiebreaker>;
 	getCurrentUser: User;
 	getMyAlerts: Array<Scalars['String']>;
+	getRegisteredCount: Scalars['Float'];
+	getSurvivorCount: Scalars['Float'];
 	getUsersForAdmins: Array<User>;
+	getUserPaymentsForAdmin: Array<User>;
 	getWeeklyRankings: Array<WeeklyMv>;
 	getMyWeeklyDashboard?: Maybe<WeeklyMv>;
 	getWeeklyTiedWithMeCount: Scalars['Int'];
@@ -749,10 +780,14 @@ export type User = {
 	userDoneRegistering: Scalars['Boolean'];
 	userIsAdmin: Scalars['Boolean'];
 	userPlaysSurvivor: Scalars['Boolean'];
-	userPaymentType?: Maybe<PaymentType>;
+	userPaymentType?: Maybe<PaymentMethod>;
 	userPaymentAccount?: Maybe<Scalars['String']>;
+	payments: Array<Payment>;
 	userPaid: Scalars['Float'];
 	userOwes: Scalars['Float'];
+	userWon: Scalars['Float'];
+	userPaidOut: Scalars['Float'];
+	userBalance: Scalars['Float'];
 	userAutoPicksLeft: Scalars['Int'];
 	userAutoPickStrategy?: Maybe<AutoPickStrategy>;
 	userCommunicationsOptedOut: Scalars['Boolean'];

@@ -15,63 +15,59 @@
  */
 import React, { ChangeEventHandler, FC, useState } from 'react';
 
-import { PaymentType } from '../../generated/graphql';
+import { PaymentMethod } from '../../generated/graphql';
 
 type PaymentSelectorProps = {
 	amount: number;
-	defaultPayment: PaymentType;
+	defaultPayment: PaymentMethod;
 };
 
 const PAYMENT_MESSAGE =
 	'NOTE: Please be sure to use an account tied to your name or put your name in the memo field so we correctly attribute your payment to you';
 
 const PaymentSelector: FC<PaymentSelectorProps> = ({ amount, defaultPayment }) => {
-	const [paymentType, setPaymentType] = useState<PaymentType>(defaultPayment);
+	const [paymentType, setPaymentType] = useState<PaymentMethod>(defaultPayment);
 
 	const updatePayment: ChangeEventHandler<HTMLSelectElement> = event => {
-		setPaymentType(event.currentTarget.value as PaymentType);
+		setPaymentType(event.currentTarget.value as PaymentMethod);
 	};
 
 	return (
 		<div className="mt-2 mx-3">
-			<div>Pay with:</div>
+			<div>How would you like to pay your balance?</div>
 			<select className="form-select" onChange={updatePayment} value={paymentType}>
-				<option value="Paypal">Paypal</option>
-				<option value="Venmo">Venmo</option>
-				<option value="Zelle">Zelle</option>
+				{Object.values(PaymentMethod).map(paymentMethod => (
+					<option value={paymentMethod} key={paymentMethod}>
+						{paymentMethod}
+					</option>
+				))}
 			</select>
-			{paymentType === 'Paypal' && (
-				<div className="text-center mt-2">
-					Please pay ${amount} using PayPal:{' '}
-					<a
-						href={`https://www.paypal.me/brianduffey/${amount}`}
-						rel="noopener noreferrer"
-						target="_blank"
-					>
-						paypal.me/brianduffey/{amount}
-					</a>
-					<br />
-					<br />
-					<strong>{PAYMENT_MESSAGE}</strong>
-				</div>
-			)}
-			{paymentType === 'Venmo' && (
-				<div className="text-center mt-2">
-					Please pay ${amount} using Venmo to account @brianduffey
-					<br />
-					<br />
-					<strong>{PAYMENT_MESSAGE}</strong>
-				</div>
-			)}
-			{paymentType === 'Zelle' && (
-				<div className="text-center mt-2">
-					Please pay ${amount} using your bank&apos;s Zelle service to account
-					bduff9@gmail.com
-					<br />
-					<br />
-					<strong>{PAYMENT_MESSAGE}</strong>
-				</div>
-			)}
+			<div className="text-center mt-2">
+				{paymentType === 'Paypal' && (
+					<div className=" fs-3 fw-bold text-danger">
+						Please pay ${amount} using PayPal:{' '}
+						<a
+							href={`https://www.paypal.me/brianduffey/${amount}`}
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							paypal.me/brianduffey/{amount}
+						</a>
+					</div>
+				)}
+				{paymentType === 'Venmo' && (
+					<div className=" fs-3 fw-bold text-danger">
+						Please pay ${amount} using Venmo to account @brianduffey
+					</div>
+				)}
+				{paymentType === 'Zelle' && (
+					<div className=" fs-3 fw-bold text-danger">
+						Please pay ${amount} using your bank&apos;s Zelle service to account
+						bduff9@gmail.com
+					</div>
+				)}
+				<div className="mt-4 fw-bolder">{PAYMENT_MESSAGE}</div>
+			</div>
 		</div>
 	);
 };

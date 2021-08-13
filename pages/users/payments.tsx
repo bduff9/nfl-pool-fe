@@ -16,6 +16,7 @@
 import { GetServerSideProps } from 'next';
 import React, { FC } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import Link from 'next/link';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
 import {
@@ -25,7 +26,7 @@ import {
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
 import { useGetPayments } from '../../graphql/payments';
-import { PaymentType } from '../../generated/graphql';
+import { PaymentMethod } from '../../generated/graphql';
 import PaymentSelector from '../../components/PaymentSelector/PaymentSelector';
 import CustomHead from '../../components/CustomHead/CustomHead';
 
@@ -148,7 +149,7 @@ const ViewPayments: FC = () => {
 					{data && owed < 0 && (
 						<PaymentSelector
 							amount={Math.abs(owed)}
-							defaultPayment={data.getCurrentUser.userPaymentType ?? PaymentType.Paypal}
+							defaultPayment={data.getCurrentUser.userPaymentType ?? PaymentMethod.Paypal}
 						/>
 					)}
 					<h3 className="text-center text-danger">
@@ -159,7 +160,7 @@ const ViewPayments: FC = () => {
 						)}
 					</h3>
 					<div className="separator">
-						{!data ? <Skeleton height={17} width={150} /> : 'Payment Info'}
+						{!data ? <Skeleton height={17} width={150} /> : 'My Prize Payment Info'}
 					</div>
 					<div className="mx-3">
 						{!data ? (
@@ -174,6 +175,11 @@ const ViewPayments: FC = () => {
 						) : (
 							`Payment Account: ${data.getCurrentUser.userPaymentAccount}`
 						)}
+					</div>
+					<div className="mx-3">
+						<Link href="/users/edit">
+							<a>Change the account to be paid out</a>
+						</Link>
 					</div>
 				</div>
 			</SkeletonTheme>
