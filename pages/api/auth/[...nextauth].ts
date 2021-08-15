@@ -208,6 +208,8 @@ const options: NextAuthOptions = {
 
 			if (url.includes('logout')) return baseUrl;
 
+			if (url.includes('_next')) return baseUrl;
+
 			return url;
 		},
 		async session (session, user) {
