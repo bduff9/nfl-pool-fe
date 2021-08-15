@@ -30,12 +30,16 @@ const Logout: FC = () => {
 			if (session) {
 				window.sessionStorage.clear();
 				window.localStorage.clear();
-				await signOut({
+
+				const data = await signOut({
+					callbackUrl: '/auth/login',
 					redirect: false,
 				});
-			}
 
-			await router.replace('/auth/login');
+				router.push(data.url);
+			} else {
+				router.replace('/');
+			}
 		};
 
 		handleSignOut();

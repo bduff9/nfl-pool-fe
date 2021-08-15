@@ -201,6 +201,15 @@ const options: NextAuthOptions = {
 				if (connection) connection.end();
 			}
 		},
+		async redirect (url, baseUrl) {
+			log.debug('~~~redirect: ', { baseUrl, url });
+
+			if (!url.startsWith(baseUrl)) return `${baseUrl}${url.startsWith('/') ? url : ''}`;
+
+			if (url.includes('logout')) return baseUrl;
+
+			return url;
+		},
 		async session (session, user) {
 			const {
 				doneRegistering,

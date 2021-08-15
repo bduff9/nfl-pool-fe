@@ -122,15 +122,17 @@ export const isSignedInSSR = async (
 
 	console.log('~~~~~~~~~> req.url: ', req.url);
 
-	if (!session && !req.url?.includes('auth')) {
+	if (!session) {
+		const redirectUrl = req.url?.includes('auth') ? '/' : req.url ?? '/';
+
 		res.setHeader(
 			'Set-Cookie',
-			`${REDIRECT_COOKIE_NAME}=${NEXT_PUBLIC_SITE_URL}${req.url || '/'}`,
+			`${REDIRECT_COOKIE_NAME}=${NEXT_PUBLIC_SITE_URL}${redirectUrl}; Secure; Path=/`,
 		);
 		//FIXME: Workaround for bug in NextAuth: https://github.com/nextauthjs/next-auth/issues/1542
 		res.setHeader(
 			'Set-Cookie',
-			`next-auth.callback-url=${NEXT_PUBLIC_SITE_URL}${req.url || '/'}`,
+			`__Secure-next-auth.callback-url=${NEXT_PUBLIC_SITE_URL}${redirectUrl}; Secure; Path=/`,
 		);
 	}
 
