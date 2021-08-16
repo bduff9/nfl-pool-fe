@@ -191,8 +191,11 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 									<Dropdown.Item
 										onClick={() => {
 											setMode('Live Results');
-											setGames({});
 											setHasWhatIfBeenSet(false);
+
+											if (picksData) {
+												updateGames(picksData.getGamesForWeek);
+											}
 										}}
 									>
 										Live Results
