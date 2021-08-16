@@ -337,23 +337,23 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 							</MenuAccordion>
 							<NavLink href="/support">Help</NavLink>
 							<MenuAccordion show={user.isAdmin} title="Admin">
-								<NavLink href="/admin/users" isNested>
-									Manage Users
-								</NavLink>
-								<NavLink href="/admin/payments" isNested>
-									Manage Payments
-								</NavLink>
-								<NavLink href="/admin/logs" isNested>
-									View Logs
-								</NavLink>
-								<NavLink href="/admin/email" isNested>
-									Email Users
-								</NavLink>
 								<NavLink href="/admin/api" isNested>
-									View API Logs
+									API Logs
 								</NavLink>
 								<NavLink href="/admin/backups" isNested>
-									View Backups
+									Backups
+								</NavLink>
+								<NavLink href="/admin/email" isNested>
+									Emails
+								</NavLink>
+								<NavLink href="/admin/logs" isNested>
+									Logs
+								</NavLink>
+								<NavLink href="/admin/payments" isNested>
+									Payments
+								</NavLink>
+								<NavLink href="/admin/users" isNested>
+									Users
 								</NavLink>
 							</MenuAccordion>
 							<NavLink href="/auth/logout">Signout</NavLink>

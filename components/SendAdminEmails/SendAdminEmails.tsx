@@ -38,6 +38,8 @@ const SendAdminEmails: FC<SendAdminEmailsProps> = ({
 			setLoading(true);
 			await sendAdminEmail(emailType, sendTo, userEmail || null, userFirstName || null);
 			setSuccessMessage('Email has been sent successfully!');
+			setUserEmail('');
+			setUserFirstName('');
 		} catch (error) {
 			console.error('Error when sending email: ', {
 				emailType,
