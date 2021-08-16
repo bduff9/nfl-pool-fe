@@ -352,6 +352,9 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 								<NavLink href="/admin/api" isNested>
 									View API Logs
 								</NavLink>
+								<NavLink href="/admin/backups" isNested>
+									View Backups
+								</NavLink>
 							</MenuAccordion>
 							<NavLink href="/auth/logout">Signout</NavLink>
 						</Accordion>

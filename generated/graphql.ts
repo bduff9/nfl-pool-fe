@@ -70,12 +70,25 @@ export enum AdminUserType {
 	Veterans = 'Veterans',
 }
 
+/** Is this from the morning (AM) or evening (PM)? */
+export enum AmPm {
+	Am = 'AM',
+	Pm = 'PM',
+}
+
 /** The strategy to employ for auto picking */
 export enum AutoPickStrategy {
 	Away = 'Away',
 	Home = 'Home',
 	Random = 'Random',
 }
+
+export type Backup = {
+	__typename?: 'Backup';
+	backupName: Scalars['String'];
+	backupDate: Scalars['DateTime'];
+	backupWhen: AmPm;
+};
 
 /** User profile data */
 export type EditMyProfileInput = {
@@ -271,6 +284,8 @@ export type MakeSurvivorPickInput = {
 
 export type Mutation = {
 	__typename?: 'Mutation';
+	restoreBackup: Scalars['Boolean'];
+	sendAdminEmail: Scalars['Boolean'];
 	writeLog: Log;
 	updateMyNotifications: Array<Notification>;
 	updateUserPaid: Scalars['Int'];
@@ -291,6 +306,17 @@ export type Mutation = {
 	toggleSurvivor: Scalars['Boolean'];
 	trustUser: Scalars['Boolean'];
 	removeUser: Scalars['Boolean'];
+};
+
+export type MutationRestoreBackupArgs = {
+	BackupName: Scalars['String'];
+};
+
+export type MutationSendAdminEmailArgs = {
+	UserFirstname?: Maybe<Scalars['String']>;
+	UserEmail?: Maybe<Scalars['String']>;
+	SendTo: Scalars['String'];
+	EmailType: EmailType;
 };
 
 export type MutationWriteLogArgs = {
@@ -488,6 +514,7 @@ export type Query = {
 	__typename?: 'Query';
 	hasSocialLinked: Scalars['Boolean'];
 	getAPICallsForWeek: Array<ApiCall>;
+	getBackups: Array<Backup>;
 	getEmail: Email;
 	getFAQs: Array<Faq>;
 	getGame: Game;

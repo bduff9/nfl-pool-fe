@@ -20,15 +20,27 @@ import {
 	SECONDS_IN_MINUTE,
 } from './constants';
 
-export const formatDateForKickoff = (dateStr: string): string => {
+export const formatDateForBackup = (date: string): string => {
+	const options: Intl.DateTimeFormatOptions = {
+		weekday: 'long',
+		month: 'long',
+		day: 'numeric',
+		timeZone: 'UTC',
+	};
+	const toFormat = new Date(date);
+
+	return toFormat.toLocaleDateString('en-US', options);
+};
+
+export const formatDateForKickoff = (date: string): string => {
 	const options: Intl.DateTimeFormatOptions = {
 		weekday: 'long',
 		month: 'long',
 		day: 'numeric',
 	};
-	const date = new Date(dateStr);
+	const toFormat = new Date(date);
 
-	return date.toLocaleDateString('en-US', options);
+	return toFormat.toLocaleDateString('en-US', options);
 };
 
 export const formatTimeFromKickoff = (dateStr: string): string => {
