@@ -75,12 +75,14 @@ const schema = Yup.object().shape({
 
 type FinishRegistrationFormProps = {
 	currentUser: GetCurrentUserResponse;
+	currentWeek: number;
 	hasGoogle: boolean;
 	hasTwitter: boolean;
 };
 
 const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 	currentUser,
+	currentWeek,
 	hasGoogle,
 	hasTwitter,
 }) => {
@@ -99,7 +101,8 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 			userLastName: getLastName(currentUser),
 			userPaymentAccount: currentUser.userPaymentAccount || '',
 			userPaymentType: currentUser.userPaymentType || undefined,
-			userPlaysSurvivor: `${currentUser.userPlaysSurvivor}` as TTrueFalse,
+			userPlaysSurvivor:
+				currentWeek > 1 ? 'false' : (`${currentUser.userPlaysSurvivor}` as TTrueFalse),
 			userReferredByRaw: currentUser.userReferredByRaw || '',
 			userTeamName: currentUser.userTeamName || '',
 		},
@@ -288,7 +291,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 					</div>
 				</div>
 			)}
-			<div className="row mb-3">
+			<div className={clsx('row', 'mb-3', currentWeek > 1 && 'd-none')}>
 				<div className="col">
 					<label htmlFor="userPlaysSurvivor" className="form-label required">
 						Add on survivor game?&nbsp;

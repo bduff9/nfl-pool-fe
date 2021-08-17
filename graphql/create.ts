@@ -19,26 +19,6 @@ import useSWR, { SWRResponse } from 'swr';
 import { User } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
-const getCurrentUserQuery = gql`
-	query CurrentUser {
-		getCurrentUser {
-			userID
-			userName
-			userEmail
-			userFirstName
-			userLastName
-			userTeamName
-			userPaymentAccount
-			userPaymentType
-			userPlaysSurvivor
-			userReferredByRaw
-			userTrusted
-		}
-		hasGoogle: hasSocialLinked(Type: "google")
-		hasTwitter: hasSocialLinked(Type: "twitter")
-	}
-`;
-
 export type GetCurrentUserResponse = Pick<
 	User,
 	| 'userID'
@@ -54,16 +34,33 @@ export type GetCurrentUserResponse = Pick<
 	| 'userTrusted'
 >;
 
-export const useFinishRegistrationQuery = (): SWRResponse<
-	{
-		getCurrentUser: GetCurrentUserResponse;
-		hasGoogle: boolean;
-		hasTwitter: boolean;
-	},
-	unknown
-> =>
-	useSWR<{
-		getCurrentUser: GetCurrentUserResponse;
-		hasGoogle: boolean;
-		hasTwitter: boolean;
-	}>(getCurrentUserQuery, fetcher);
+type CurrentUserResponse = {
+	getCurrentUser: GetCurrentUserResponse;
+	getCurrentWeek: number;
+	hasGoogle: boolean;
+	hasTwitter: boolean;
+};
+
+const getCurrentUserQuery = gql`
+	query CurrentUser {
+		getCurrentUser {
+			userID
+			userName
+			userEmail
+			userFirstName
+			userLastName
+			userTeamName
+			userPaymentAccount
+			userPaymentType
+			userPlaysSurvivor
+			userReferredByRaw
+			userTrusted
+		}
+		getCurrentWeek
+		hasGoogle: hasSocialLinked(Type: "google")
+		hasTwitter: hasSocialLinked(Type: "twitter")
+	}
+`;
+
+export const useFinishRegistrationQuery = (): SWRResponse<CurrentUserResponse, unknown> =>
+	useSWR<CurrentUserResponse>(getCurrentUserQuery, fetcher);

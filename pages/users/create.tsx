@@ -47,6 +47,7 @@ const CreateProfile: FC<CreateProfileProps> = () => {
 				{data ? (
 					<FinishRegistrationForm
 						currentUser={data.getCurrentUser}
+						currentWeek={data.getCurrentWeek}
 						hasGoogle={data.hasGoogle}
 						hasTwitter={data.hasTwitter}
 					/>

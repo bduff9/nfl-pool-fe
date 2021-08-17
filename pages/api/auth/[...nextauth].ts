@@ -252,6 +252,7 @@ const options: NextAuthOptions = {
 			);
 		},
 		async signOut (message: null | Session): Promise<void> {
+			log.debug('~~~~signOut: ', { message });
 			await writeLog(LogAction.Logout, `${message?.email} signed out`, `${message?.id}`);
 		},
 		async createUser (message): Promise<void> {
