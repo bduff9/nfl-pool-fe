@@ -15,7 +15,15 @@
  */
 import { gql } from 'graphql-request';
 
-import { Faq, Rule, Scalars, SystemValue } from '../generated/graphql';
+import {
+	Faq,
+	Log,
+	LogAction,
+	MutationWriteLogArgs,
+	Rule,
+	Scalars,
+	SystemValue,
+} from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
 type GetSupportContentVars = {
@@ -48,7 +56,7 @@ type GetSupportContentResponse = {
 	supportEmail: Pick<SystemValue, 'systemValueID' | 'systemValueName' | 'systemValueValue'>;
 };
 
-const query = gql`
+const getSupportContentQuery = gql`
 	query GetSupportContent($Name1: String!, $Name2: String!) {
 		supportEmail: getSystemValue(Name: $Name1) {
 			systemValueID
@@ -83,5 +91,34 @@ export const getSupportContent = async (): Promise<GetSupportContentResponse> =>
 		Name2: 'SlackLink',
 	};
 
-	return await fetcher<GetSupportContentResponse, GetSupportContentVars>(query, vars);
+	return await fetcher<GetSupportContentResponse, GetSupportContentVars>(
+		getSupportContentQuery,
+		vars,
+	);
+};
+
+type WriteLogResponse = { writeLog: Pick<Log, 'logID'> };
+
+const writeLogMutation = gql`
+	mutation WriteToLog($data: WriteLogInput!) {
+		writeLog(data: $data) {
+			logID
+		}
+	}
+`;
+
+export const writeSupportLog = async (
+	logAction: LogAction,
+	userID: null | number,
+	logMessage: string,
+): Promise<WriteLogResponse> => {
+	const args: MutationWriteLogArgs = {
+		data: {
+			logAction,
+			logMessage,
+			sub: userID ? `${userID}` : null,
+		},
+	};
+
+	return fetcher<WriteLogResponse, MutationWriteLogArgs>(writeLogMutation, args);
 };

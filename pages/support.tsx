@@ -18,11 +18,13 @@ import { GetStaticProps } from 'next';
 import { useSession } from 'next-auth/client';
 import Link from 'next/link';
 import React, { FC, FormEvent } from 'react';
+import { debounce } from 'throttle-debounce';
 
 import CustomHead from '../components/CustomHead/CustomHead';
 import { FuseHighlight } from '../components/FuseHighlight/FuseHighlight';
-import { Faq, Rule } from '../generated/graphql';
-import { getSupportContent } from '../graphql/support';
+import { Faq, LogAction, Rule } from '../generated/graphql';
+import { getSupportContent, writeSupportLog } from '../graphql/support';
+import { TUser } from '../models/User';
 import { useFuse } from '../utils/hooks';
 
 const convertTextToAnchor = (text: string): string => text.toLowerCase().replace(/\W/g, '');
@@ -83,9 +85,34 @@ const Support: FC<SupportProps> = ({ faqs, rules, slackLink, supportEmail }) => 
 		threshold: 0.7,
 	});
 
-	const searchAll = (event: FormEvent<HTMLInputElement>) => {
+	const logSupportSearch = debounce(
+		1000,
+		false,
+		async (value: string): Promise<void> => {
+			try {
+				await writeSupportLog(LogAction.SupportSearch, (session?.user as TUser)?.id, value);
+			} catch (error) {
+				console.error('Error when writing log for support search: ', { error, event });
+			}
+		},
+	);
+
+	const searchAll = async (event: FormEvent<HTMLInputElement>): Promise<void> => {
 		onFAQSearch(event);
 		onRuleSearch(event);
+		await logSupportSearch(event.currentTarget.value);
+	};
+
+	const logSlackClick = async (): Promise<void> => {
+		try {
+			await writeSupportLog(
+				LogAction.Slack,
+				(session?.user as TUser)?.id,
+				'User clicked Slack link',
+			);
+		} catch (error) {
+			console.error('Error when writing log for slack link click: ', { error });
+		}
 	};
 
 	return (
@@ -136,7 +163,7 @@ const Support: FC<SupportProps> = ({ faqs, rules, slackLink, supportEmail }) => 
 				</h2>
 				<hr />
 				<div className="text-center">
-					<a href={slackLink} target="slack">
+					<a href={slackLink} onClick={logSlackClick} target="slack">
 						Join our Slack
 					</a>
 					<br />
