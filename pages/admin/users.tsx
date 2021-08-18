@@ -392,11 +392,11 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 														className="d-flex justify-content-between flex-wrap"
 														scope="row"
 													>
-														<div className="">
+														<div>
 															<Skeleton height={20} width={65} />
 														</div>
 														<div className="w-100 d-none d-md-block"></div>
-														<div className="">
+														<div>
 															<Skeleton height={20} width={80} />
 														</div>
 													</th>

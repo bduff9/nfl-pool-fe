@@ -259,6 +259,7 @@ export type Log = {
 export enum LogAction {
 	Error404 = 'Error404',
 	AuthenticationError = 'AuthenticationError',
+	BackupRestore = 'BackupRestore',
 	CreatedAccount = 'CreatedAccount',
 	EmailActivity = 'EmailActivity',
 	LinkedAccount = 'LinkedAccount',
@@ -274,6 +275,14 @@ export enum LogAction {
 	Unsubscribe = 'Unsubscribe',
 	ViewHtmlEmail = 'ViewHTMLEmail',
 }
+
+export type LogResult = {
+	__typename?: 'LogResult';
+	totalCount: Scalars['Int'];
+	page: Scalars['Int'];
+	count: Scalars['Int'];
+	results: Array<Log>;
+};
 
 /** Survivor pick data */
 export type MakeSurvivorPickInput = {
@@ -523,7 +532,8 @@ export type Query = {
 	getHistoryForYear: Array<History>;
 	getAllLeagues: Array<League>;
 	getLeaguesForUser: Array<UserLeague>;
-	getLogs: Array<Log>;
+	getLogs: LogResult;
+	getLogActions: Array<Array<Scalars['String']>>;
 	getMyNotifications: Array<Notification>;
 	getNotificationTypes: Array<NotificationType>;
 	getOverallRankings: Array<OverallMv>;
@@ -590,6 +600,15 @@ export type QueryGetHistoryForYearArgs = {
 
 export type QueryGetLeaguesForUserArgs = {
 	UserID: Scalars['Int'];
+};
+
+export type QueryGetLogsArgs = {
+	LogAction?: Maybe<LogAction>;
+	UserID?: Maybe<Scalars['Int']>;
+	Page?: Maybe<Scalars['Int']>;
+	PerPage: Scalars['Int'];
+	SortDir: Scalars['String'];
+	Sort: Scalars['String'];
 };
 
 export type QueryGetAllPicksForWeekArgs = {

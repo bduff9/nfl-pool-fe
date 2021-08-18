@@ -44,7 +44,7 @@ const SurvivorDashboardIcon: FC<SurvivorDashboardIconProps> = ({
 				<div className={clsx('mx-auto', styles.icon)}>
 					<FontAwesomeIcon className="h-100 w-100" icon={faUsersClass} />
 				</div>
-				<h3 className="">Observer</h3>
+				<h3>Observer</h3>
 			</>
 		);
 	}
