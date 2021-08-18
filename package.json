@@ -78,7 +78,7 @@
     "swr": "0.5.6",
     "swr-sync-storage": "1.0.1",
     "throttle-debounce": "3.0.1",
-    "tslog": "3.2.0",
+    "tslog": "3.2.1",
     "yup": "0.32.9",
     "yup-phone": "1.2.19"
   },
