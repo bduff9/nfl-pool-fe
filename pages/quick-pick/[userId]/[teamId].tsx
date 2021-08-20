@@ -28,6 +28,9 @@ const QuickPick: FC = () => {
 
 	useEffect(() => {
 		const doQuickPick = async () => {
+			//TODO: remove after debugging
+			console.log({ teamId, userId });
+
 			if (isNumber(userId) && isNumber(teamId)) {
 				await quickPick(+teamId, +userId);
 			}
