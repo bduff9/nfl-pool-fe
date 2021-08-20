@@ -245,7 +245,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 
 	useEffect(() => {
 		watchNotifications.forEach((_, i) => {
-			if (watchPhone.length > 9 && !errors.userPhone?.message) {
+			if ((watchPhone?.length ?? 0) > 9 && !errors.userPhone?.message) {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				//@ts-ignore
 				setValue(`notifications.${i}.hasValidPhone` as const, true);
