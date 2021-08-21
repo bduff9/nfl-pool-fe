@@ -141,22 +141,22 @@ export const usePageTitle = (title: string): [string, Dispatch<SetStateAction<st
 };
 
 export const useWarningOnExit = (shouldWarn: boolean, warningText?: string): void => {
-	const Router = useRouter();
+	const router = useRouter();
 	const message = warningText || 'Are you sure that you want to leave?';
 
 	useEffect(() => {
 		let isWarned = false;
 
 		const routeChangeStart = (url: string) => {
-			if (Router.asPath !== url && shouldWarn && !isWarned) {
+			if (router.asPath !== url && shouldWarn && !isWarned) {
 				isWarned = true;
 
 				if (window.confirm(message)) {
-					Router.push(url);
+					router.push(url);
 				} else {
 					isWarned = false;
-					Router.events.emit('routeChangeError');
-					Router.replace(Router, Router.asPath, { shallow: true });
+					router.events.emit('routeChangeError');
+					router.replace(router, router.asPath, { shallow: true });
 					// eslint-disable-next-line no-throw-literal
 					throw 'Abort route change. Please ignore this error.';
 				}
@@ -175,10 +175,10 @@ export const useWarningOnExit = (shouldWarn: boolean, warningText?: string): voi
 			return null;
 		};
 
-		Router.events.on('routeChangeStart', routeChangeStart);
+		router.events.on('routeChangeStart', routeChangeStart);
 		window.addEventListener('beforeunload', beforeUnload);
-		Router.beforePopState(({ url }) => {
-			if (Router.asPath !== url && shouldWarn && !isWarned) {
+		router.beforePopState(({ url }) => {
+			if (router.asPath !== url && shouldWarn && !isWarned) {
 				isWarned = true;
 
 				if (window.confirm(message)) {
@@ -186,7 +186,7 @@ export const useWarningOnExit = (shouldWarn: boolean, warningText?: string): voi
 				} else {
 					isWarned = false;
 					window.history.pushState(null, '', url);
-					Router.replace(Router, Router.asPath, { shallow: true });
+					router.replace(router, router.asPath, { shallow: true });
 
 					return false;
 				}
@@ -196,9 +196,9 @@ export const useWarningOnExit = (shouldWarn: boolean, warningText?: string): voi
 		});
 
 		return () => {
-			Router.events.off('routeChangeStart', routeChangeStart);
+			router.events.off('routeChangeStart', routeChangeStart);
 			window.removeEventListener('beforeunload', beforeUnload);
-			Router.beforePopState(() => {
+			router.beforePopState(() => {
 				return true;
 			});
 		};
