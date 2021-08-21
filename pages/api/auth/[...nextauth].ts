@@ -253,7 +253,11 @@ const options: NextAuthOptions = {
 		},
 		async signOut (message: null | Session): Promise<void> {
 			log.debug('~~~~signOut: ', { message });
-			await writeLog(LogAction.Logout, `${message?.email} signed out`, `${message?.id}`);
+			await writeLog(
+				LogAction.Logout,
+				`${message?.email ?? message?.user?.email ?? message?.userId} signed out`,
+				`${message?.id}`,
+			);
 		},
 		async createUser (message): Promise<void> {
 			log.debug('~~~~createUser: ', { message });
@@ -275,14 +279,12 @@ const options: NextAuthOptions = {
 			log.debug('~~~session: ', { message, rest });
 		},
 		async error (message): Promise<void> {
-			const result = await writeLog(
+			log.debug('~~~error: ', { message });
+			await writeLog(
 				LogAction.AuthenticationError,
 				`{message.email} had an authentication error`,
 				`{message.sub}`,
 			);
-
-			//TODO: clean up once tested
-			log.debug('~~~error event start~~~', { message, result });
 		},
 	},
 	pages: {

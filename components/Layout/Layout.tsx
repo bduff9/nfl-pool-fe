@@ -53,8 +53,6 @@ const Layout: FC<LayoutProps> = props => {
 		}
 	}, [week]);
 
-	//TODO: use loading to show page loading
-
 	return (
 		<TitleContext.Provider value={titleContext}>
 			<WeekContext.Provider value={weekContext}>
