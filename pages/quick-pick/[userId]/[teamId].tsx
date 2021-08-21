@@ -28,9 +28,6 @@ const QuickPick: FC = () => {
 
 	useEffect(() => {
 		const doQuickPick = async () => {
-			//TODO: remove after debugging
-			console.log({ teamId, userId });
-
 			if (isNumber(userId) && isNumber(teamId)) {
 				await quickPick(+teamId, +userId);
 			}
@@ -38,9 +35,9 @@ const QuickPick: FC = () => {
 			router.replace('/picks/set');
 		};
 
-		doQuickPick();
+		if (router.isReady) doQuickPick();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [teamId, userId, router.isReady]);
 
 	return (
 		<div className="min-vh-100">
