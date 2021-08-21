@@ -99,7 +99,7 @@
     "@types/next-auth": "3.15.0",
     "@types/node": "16.6.1",
     "@types/nprogress": "0.2.0",
-    "@types/react": "17.0.18",
+    "@types/react": "17.0.19",
     "@types/react-beautiful-dnd": "13.1.1",
     "@types/react-dom": "17.0.9",
     "@types/sass": "1.16.1",
