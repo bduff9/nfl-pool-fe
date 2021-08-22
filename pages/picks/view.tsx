@@ -93,7 +93,9 @@ const ViewPicks: FC<ViewPicksProps> = () => {
 								</div>
 								<div className="col-6 col-md-2 pb-3">
 									<div className="content-bg rounded text-center px-3 h-100">
-										<h5>My Tiebreaker</h5>
+										<h5 className="px-2" style={{ height: '3rem' }}>
+											My Tiebreaker
+										</h5>
 										<div className="h1">
 											{!myRankData ? (
 												<Skeleton />
@@ -105,7 +107,7 @@ const ViewPicks: FC<ViewPicksProps> = () => {
 								</div>
 								<div className="col-6 col-md-2 pb-3">
 									<div className="content-bg rounded text-center px-3 h-100">
-										<h5>Final Game Total</h5>
+										<h5 style={{ height: '3rem' }}>Final Game Total</h5>
 										<div className="h1">
 											{!myRankData ? (
 												<Skeleton />
