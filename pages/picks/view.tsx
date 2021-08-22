@@ -18,7 +18,7 @@ import { faAt } from '@bduff9/pro-duotone-svg-icons/faAt';
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
@@ -33,7 +33,7 @@ import {
 	isDoneRegisteringSSR,
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
-import { WeekContext } from '../../utils/context';
+import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import styles from '../../styles/picks/view.module.scss';
 import { WeekStatus } from '../../generated/graphql';
 import MyProgressChart from '../../components/MyProgressChart/MyProgressChart';
@@ -44,8 +44,18 @@ type ViewPicksProps = {
 
 const ViewPicks: FC<ViewPicksProps> = () => {
 	const [selectedWeek] = useContext(WeekContext);
-	const { data: myRankData, error: myRankError } = useWeeklyDashboard(selectedWeek);
-	const { data, error } = useViewMyPicks(selectedWeek);
+	const {
+		data: myRankData,
+		error: myRankError,
+		isValidating: myRankIsValidating,
+	} = useWeeklyDashboard(selectedWeek);
+	const { data, error, isValidating } = useViewMyPicks(selectedWeek);
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
+
+	useEffect(() => {
+		setBackgroundLoading((!!data && isValidating) || (!!myRankData && myRankIsValidating));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating, myRankData, myRankIsValidating]);
 
 	if (myRankError) {
 		console.error('Error when loading my rank data for View My Picks', myRankError);

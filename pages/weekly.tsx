@@ -18,7 +18,7 @@ import { motion } from 'framer-motion';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../components/Authenticated/Authenticated';
@@ -38,7 +38,7 @@ import {
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 	UNAUTHENTICATED_REDIRECT,
 } from '../utils/auth.server';
-import { WeekContext } from '../utils/context';
+import { BackgroundLoadingContext, WeekContext } from '../utils/context';
 
 type WeeklyRankingsProps = {
 	user: TUser;
@@ -48,7 +48,10 @@ const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
 	const router = useRouter();
 	const [selectedWeek] = useContext(WeekContext);
 	const { data, error, isValidating } = useWeeklyRankings(selectedWeek);
-	const { data: myData, error: myError } = useWeeklyDashboard(selectedWeek);
+	const { data: myData, error: myError, isValidating: myIsValidating } = useWeeklyDashboard(
+		selectedWeek,
+	);
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const myPlace = `${myData?.getMyWeeklyDashboard?.tied ? 'T' : ''}${
 		myData?.getMyWeeklyDashboard?.rank
 	}`;
@@ -57,6 +60,11 @@ const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
 	const tiedWithMe = myData?.getWeeklyTiedWithMeCount ?? 0;
 	const aheadOfMe = me - 1;
 	const behindMe = total - me - tiedWithMe;
+
+	useEffect(() => {
+		setBackgroundLoading((!!data && isValidating) || (!!myData && myIsValidating));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating, myData, myIsValidating]);
 
 	if (error || myError) {
 		console.error('Error when loading overall ranks', error, myError);

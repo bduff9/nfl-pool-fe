@@ -24,7 +24,7 @@ import { faCaretRight } from '@fortawesome/free-solid-svg-icons/faCaretRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
@@ -56,6 +56,7 @@ import {
 import styles from '../../styles/admin/users.module.scss';
 import AdminUserPaymentModal from '../../components/AdminUserPaymentModal/AdminUserPaymentModal';
 import AdminUserTrustModal from '../../components/AdminUserTrustModal/AdminUserTrustModal';
+import { BackgroundLoadingContext } from '../../utils/context';
 
 type AdminUserStatusProps = {
 	user: Pick<
@@ -153,7 +154,8 @@ type AdminUsersProps = {
 
 const AdminUsers: FC<AdminUsersProps> = () => {
 	const [userType, setUserType] = useState<AdminUserType>(AdminUserType.Registered);
-	const { data, error, mutate } = useAdminUsers(userType);
+	const { data, error, isValidating, mutate } = useAdminUsers(userType);
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [successMessage, setSuccessMessage] = useState<null | string>(null);
 	const [userExpanded, setUserExpanded] = useState<null | number>(null);
@@ -162,6 +164,11 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 		| { type: 'payment'; owe: number; paid: number; userID: number }
 		| { type: 'referredBy'; referredBy: null | string; userID: number }
 	>(null);
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error) {
 		console.error('Error when rendering users for admin users screen', error);

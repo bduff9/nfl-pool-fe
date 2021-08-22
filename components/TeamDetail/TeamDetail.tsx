@@ -14,10 +14,11 @@
  * Home: https://asitewithnoname.com/
  */
 import clsx from 'clsx';
-import React, { FC } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import { DetailTeam, useTeamDetails } from '../../graphql/teamDetail';
+import { BackgroundLoadingContext } from '../../utils/context';
 
 import styles from './TeamDetail.module.scss';
 
@@ -130,7 +131,13 @@ type TeamDetailProps = {
 };
 
 const TeamDetail: FC<TeamDetailProps> = ({ gameID }) => {
-	const { data, error } = useTeamDetails(gameID);
+	const { data, error, isValidating } = useTeamDetails(gameID);
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error) {
 		console.error('Error when loading data for Team Details component', error);

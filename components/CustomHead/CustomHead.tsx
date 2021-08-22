@@ -15,10 +15,11 @@
  */
 import clsx from 'clsx';
 import Head from 'next/head';
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useContext, useEffect, useRef, useState } from 'react';
 
 import { useMyAlertsQuery } from '../../graphql/customHead';
 import { getPageTitle } from '../../utils';
+import { BackgroundLoadingContext } from '../../utils/context';
 import { usePageTitle } from '../../utils/hooks';
 
 type CustomHeadProps = {
@@ -27,9 +28,15 @@ type CustomHeadProps = {
 
 const CustomHead: FC<CustomHeadProps> = ({ title }) => {
 	const [pageTitle] = usePageTitle(title);
-	const { data, error } = useMyAlertsQuery();
+	const { data, error, isValidating } = useMyAlertsQuery();
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [titleOverride, setTitleOverride] = useState<string>('');
 	const interval = useRef<number>();
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error) {
 		console.error('Error when loading custom head:', error);

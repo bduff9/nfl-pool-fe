@@ -37,7 +37,7 @@ import {
 	isDoneRegisteringSSR,
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
-import { WeekContext } from '../../utils/context';
+import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import styles from '../../styles/picks/viewall.module.scss';
 import ViewAllModal from '../../components/ViewAllModal/ViewAllModal';
 
@@ -48,11 +48,22 @@ type ViewAllPicksProps = {
 const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 	const router = useRouter();
 	const [selectedWeek] = useContext(WeekContext);
-	const { data: ranksData, error: ranksError } = useWeeklyRankings(selectedWeek);
-	const { data: picksData, error: picksError } = useViewAllPicks(selectedWeek);
-	const { data: tiebreakerData, error: tiebreakerError } = useMyTiebreakerForWeek(
-		selectedWeek,
-	);
+	const {
+		data: ranksData,
+		error: ranksError,
+		isValidating: ranksIsValidating,
+	} = useWeeklyRankings(selectedWeek);
+	const {
+		data: picksData,
+		error: picksError,
+		isValidating: picksIsValidating,
+	} = useViewAllPicks(selectedWeek);
+	const {
+		data: tiebreakerData,
+		error: tiebreakerError,
+		isValidating: tiebreakerIsValidating,
+	} = useMyTiebreakerForWeek(selectedWeek);
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [mode, setMode] = useState<'Live Results' | 'What If'>('Live Results');
 	const [games, setGames] = useState<
 		Record<
@@ -66,6 +77,22 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 	>({});
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [hasWhatIfBeenSet, setHasWhatIfBeenSet] = useState<boolean>(false);
+
+	useEffect(() => {
+		setBackgroundLoading(
+			(!!ranksData && ranksIsValidating) ||
+				(!!picksData && picksIsValidating) ||
+				(!!tiebreakerData && tiebreakerIsValidating),
+		);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		ranksData,
+		ranksIsValidating,
+		picksData,
+		picksIsValidating,
+		tiebreakerData,
+		tiebreakerIsValidating,
+	]);
 
 	const updateGames = (
 		games: Array<

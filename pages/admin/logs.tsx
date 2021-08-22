@@ -24,6 +24,7 @@ import React, {
 	Dispatch,
 	FC,
 	SetStateAction,
+	useContext,
 	useEffect,
 	useState,
 } from 'react';
@@ -44,6 +45,7 @@ import {
 } from '../../utils/auth.server';
 import { formatTimestampForLog } from '../../utils/dates';
 import Pagination from '../../components/Pagination/Pagination';
+import { BackgroundLoadingContext } from '../../utils/context';
 
 type LogFilterProps = {
 	id: string;
@@ -104,7 +106,7 @@ const AdminLogs: FC<AdminLogsProps> = () => {
 	const [sort] = useState<'logID'>('logID');
 	const [sortDir, setSortDir] = useState<'ASC' | 'DESC'>('DESC');
 	const [userID, setUserID] = useState<null | number>(null);
-	const { data, error } = useAdminLogs({
+	const { data, error, isValidating } = useAdminLogs({
 		logAction,
 		page,
 		perPage,
@@ -112,6 +114,12 @@ const AdminLogs: FC<AdminLogsProps> = () => {
 		sortDir,
 		userID,
 	});
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	useEffect(() => {
 		setPage(1);

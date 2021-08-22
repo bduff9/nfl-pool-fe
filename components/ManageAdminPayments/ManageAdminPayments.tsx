@@ -14,11 +14,20 @@
  * Home: https://asitewithnoname.com/
  */
 import clsx from 'clsx';
-import React, { Dispatch, FC, FormEvent, SetStateAction, useEffect, useState } from 'react';
+import React, {
+	Dispatch,
+	FC,
+	FormEvent,
+	SetStateAction,
+	useContext,
+	useEffect,
+	useState,
+} from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 import { setPrizeAmounts, usePayoutAmounts } from '../../graphql/manageAdminPayments';
 import { WEEKS_IN_SEASON } from '../../utils/constants';
+import { BackgroundLoadingContext } from '../../utils/context';
 
 import styles from './ManageAdminPayments.module.scss';
 
@@ -88,7 +97,8 @@ const ManageAdminPayments: FC<ManageAdminPaymentsProps> = ({
 	setErrorMessage,
 	setSuccessMessage,
 }) => {
-	const { data, error, mutate } = usePayoutAmounts();
+	const { data, error, isValidating, mutate } = usePayoutAmounts();
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [weekly1stPrize, setWeekly1stPrize] = useState<null | number>(null);
 	const [weekly2ndPrize, setWeekly2ndPrize] = useState<null | number>(null);
 	const [overall1stPrize, setOverall1stPrize] = useState<null | number>(null);
@@ -102,6 +112,11 @@ const ManageAdminPayments: FC<ManageAdminPaymentsProps> = ({
 	const survivorCost = data?.survivorCost?.systemValueValue
 		? +data.survivorCost.systemValueValue
 		: null;
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	useEffect(() => {
 		const prizes: [number, number, number] = JSON.parse(

@@ -17,7 +17,7 @@ import { faDatabase } from '@bduff9/pro-duotone-svg-icons/faDatabase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Alert from '../../components/Alert/Alert';
@@ -34,16 +34,24 @@ import {
 } from '../../utils/auth.server';
 import { restoreBackup, useAdminBackups } from '../../graphql/adminBackups';
 import { formatDateForBackup } from '../../utils/dates';
+import { BackgroundLoadingContext } from '../../utils/context';
+import styles from '../../styles/admin/backups.module.scss';
 
 type AdminBackupsProps = {
 	user: TUser;
 };
 
 const AdminBackups: FC<AdminBackupsProps> = () => {
-	const { data, error } = useAdminBackups();
+	const { data, error, isValidating } = useAdminBackups();
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [successMessage, setSuccessMessage] = useState<null | string>(null);
 	const [loading, setLoading] = useState<null | string>(null);
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error) {
 		console.error('Error when rendering backups for admin backups screen', error);
@@ -112,7 +120,7 @@ const AdminBackups: FC<AdminBackupsProps> = () => {
 								`${data.getBackups.length} backups`
 							)}
 						</div>
-						<div className="col-12" style={{ height: '90vh' }}>
+						<div className={clsx('col-12', styles['backups-table'])}>
 							<div className="content-bg rounded table-responsive">
 								<table className="table table-hover align-middle">
 									<thead>

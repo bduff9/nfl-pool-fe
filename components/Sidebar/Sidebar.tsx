@@ -40,7 +40,7 @@ import {
 	useSidebarData,
 } from '../../graphql/sidebar';
 import { WEEKS_IN_SEASON } from '../../utils/constants';
-import { TitleContext, WeekContext } from '../../utils/context';
+import { BackgroundLoadingContext, TitleContext, WeekContext } from '../../utils/context';
 import { TSessionUser } from '../../utils/types';
 
 import styles from './Sidebar.module.scss';
@@ -58,10 +58,16 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 	}, [openMenu]);
 	const [title] = useContext(TitleContext);
 	const [selectedWeek, setSelectedWeek] = useContext(WeekContext);
-	const { data, error } = useSidebarData(user.doneRegistering, selectedWeek);
+	const { data, error, isValidating } = useSidebarData(user.doneRegistering, selectedWeek);
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const isLoading = user.doneRegistering && !data;
 	const hasSeasonStarted = data?.currentWeek.seasonStatus !== SeasonStatus.NotStarted;
 	let currentPage = '';
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (user.doneRegistering && error) {
 		console.error('Failed to load sidebar data', error);

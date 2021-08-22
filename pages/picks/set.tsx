@@ -21,7 +21,14 @@ import { faCloudUpload } from '@bduff9/pro-duotone-svg-icons/faCloudUpload';
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import React, { FC, FocusEventHandler, useCallback, useContext, useState } from 'react';
+import React, {
+	FC,
+	FocusEventHandler,
+	useCallback,
+	useContext,
+	useEffect,
+	useState,
+} from 'react';
 import { DragDropContext, Droppable, DropResult, DragStart } from 'react-beautiful-dnd';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { SkeletonTheme } from 'react-loading-skeleton';
@@ -47,7 +54,7 @@ import {
 	isDoneRegisteringSSR,
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
-import { WeekContext } from '../../utils/context';
+import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import { parseDragData } from '../../utils/strings';
 import { AutoPickStrategy } from '../../generated/graphql';
 import styles from '../../styles/picks/set.module.scss';
@@ -66,14 +73,19 @@ type MakePicksProps = {
 const MakePicks: FC<MakePicksProps> = () => {
 	const router = useRouter();
 	const [selectedWeek] = useContext(WeekContext);
-	const { data: picksData, error: picksError, mutate: picksMutate } = useViewMyPicks(
-		selectedWeek,
-	);
+	const {
+		data: picksData,
+		error: picksError,
+		isValidating: picksIsValidating,
+		mutate: picksMutate,
+	} = useViewMyPicks(selectedWeek);
 	const {
 		data: tiebreakerData,
 		error: tiebreakerError,
+		isValidating: tiebreakerIsValidating,
 		mutate: tiebreakerMutate,
 	} = useMyTiebreakerForWeek(selectedWeek);
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [successMessage, setSuccessMessage] = useState<null | string>(null);
 	const [selectedGame, setSelectedGame] = useState<null | number>(null);
@@ -85,6 +97,13 @@ const MakePicks: FC<MakePicksProps> = () => {
 	const [loading, setLoading] = useState<LoadingType | null>(null);
 	const lastGame =
 		picksData?.getMyPicksForWeek[picksData.getMyPicksForWeek.length - 1].game;
+
+	useEffect(() => {
+		setBackgroundLoading(
+			(!!picksData && picksIsValidating) || (!!tiebreakerData && tiebreakerIsValidating),
+		);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [picksData, picksIsValidating, tiebreakerData, tiebreakerIsValidating]);
 
 	useWarningOnExit(
 		picksUpdating,

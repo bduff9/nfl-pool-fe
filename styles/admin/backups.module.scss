@@ -13,19 +13,12 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { createContext, Dispatch, SetStateAction } from 'react';
+@import "../variables";
 
-export const BackgroundLoadingContext = createContext<
-	[boolean, Dispatch<SetStateAction<boolean>>]
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
->([false, () => {}]);
+.backups-table {
+  height: 90vh;
 
-export const TitleContext = createContext<
-	[string, Dispatch<SetStateAction<string>>]
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
->(['Welcome', () => {}]);
-
-export const WeekContext = createContext<
-	[number, Dispatch<SetStateAction<number>>]
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
->([1, () => {}]);
+  @media (max-width: 767px) {
+    height: auto;
+  }
+}

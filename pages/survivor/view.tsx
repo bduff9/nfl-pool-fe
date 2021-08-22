@@ -18,7 +18,7 @@ import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
@@ -38,7 +38,7 @@ import {
 	isDoneRegisteringSSR,
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
-import { WeekContext } from '../../utils/context';
+import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import styles from '../../styles/survivor/view.module.scss';
 import { WEEKS_IN_SEASON } from '../../utils/constants';
 
@@ -49,8 +49,20 @@ type ViewSurvivorProps = {
 const ViewSurvivor: FC<ViewSurvivorProps> = ({ user }) => {
 	const router = useRouter();
 	const [selectedWeek] = useContext(WeekContext);
-	const { data: dashboardData, error: dashboardError } = useSurvivorDashboard(selectedWeek);
-	const { data, error } = useSurvivorView();
+	const {
+		data: dashboardData,
+		error: dashboardError,
+		isValidating: dashboardIsValidating,
+	} = useSurvivorDashboard(selectedWeek);
+	const { data, error, isValidating } = useSurvivorView();
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
+
+	useEffect(() => {
+		setBackgroundLoading(
+			(!!data && isValidating) || (!!dashboardData && dashboardIsValidating),
+		);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating, dashboardData, dashboardIsValidating]);
 
 	if (dashboardError) {
 		console.error('Error when loading dashboard data for View Survivor', dashboardError);

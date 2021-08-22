@@ -15,12 +15,12 @@
  */
 import clsx from 'clsx';
 import Link from 'next/link';
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 
 import { SeasonStatus, WeekStatus } from '../../generated/graphql';
 import { useSurvivorDashboard } from '../../graphql/survivorDashboard';
 import { TUser } from '../../models/User';
-import { WeekContext } from '../../utils/context';
+import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import OverallDashboardLoader from '../OverallDashboard/OverallDashboardLoader';
 import ProgressChart from '../ProgressChart/ProgressChart';
 import SurvivorDashboardIcon from '../SurvivorDashboardIcon/SurvivorDashboardIcon';
@@ -33,7 +33,13 @@ type SurvivorDashboardProps = {
 
 const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 	const [selectedWeek] = useContext(WeekContext);
-	const { data, error } = useSurvivorDashboard(selectedWeek);
+	const { data, error, isValidating } = useSurvivorDashboard(selectedWeek);
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error) {
 		console.error('Error when loading survivor dashboard', error);

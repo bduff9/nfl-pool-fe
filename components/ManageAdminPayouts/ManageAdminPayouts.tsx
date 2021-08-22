@@ -16,12 +16,13 @@
 import { faDollarSign } from '@bduff9/pro-duotone-svg-icons/faDollarSign';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
-import React, { Dispatch, FC, useState } from 'react';
+import React, { Dispatch, FC, useContext, useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 import { getEmptyArray } from '../../utils/arrays';
 import { insertUserPayout, useWinners, Winner } from '../../graphql/manageAdminPayouts';
 import AdminUserPayoutModal from '../AdminUserPayoutModal/AdminUserPayoutModal';
+import { BackgroundLoadingContext } from '../../utils/context';
 
 type ManageAdminPayoutsProps = {
 	setErrorMessage: Dispatch<React.SetStateAction<string | null>>;
@@ -32,8 +33,14 @@ const ManageAdminPayouts: FC<ManageAdminPayoutsProps> = ({
 	setErrorMessage,
 	setSuccessMessage,
 }) => {
-	const { data, error, mutate } = useWinners();
+	const { data, error, isValidating, mutate } = useWinners();
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [modalOpen, setModalOpen] = useState<null | Winner>(null);
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error) {
 		console.error('Error when rendering winners for admin payments screen', error);

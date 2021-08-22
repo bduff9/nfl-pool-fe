@@ -13,11 +13,12 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Skeleton from 'react-loading-skeleton';
 
 import { useUserDropdown } from '../../graphql/adminUserTrustModal';
+import { BackgroundLoadingContext } from '../../utils/context';
 
 type AdminUserTrustModalProps = {
 	handleClose: () => void;
@@ -34,9 +35,15 @@ const AdminUserTrustModal: FC<AdminUserTrustModalProps> = ({
 	trustUser,
 	userID,
 }) => {
-	const { data, error } = useUserDropdown();
+	const { data, error, isValidating } = useUserDropdown();
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [referredBy, setReferredBy] = useState<null | number>(null);
 	const [loading, setLoading] = useState<boolean>(false);
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error) {
 		console.error('Error loading user dropdown for user admin screen', error);

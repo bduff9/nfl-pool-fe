@@ -15,7 +15,7 @@
  */
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
-import React, { FC, Fragment, useContext } from 'react';
+import React, { FC, Fragment, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../components/Authenticated/Authenticated';
@@ -28,7 +28,7 @@ import {
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 	UNAUTHENTICATED_REDIRECT,
 } from '../utils/auth.server';
-import { WeekContext } from '../utils/context';
+import { BackgroundLoadingContext, WeekContext } from '../utils/context';
 import { formatDateForKickoff } from '../utils/dates';
 import styles from '../styles/scoreboard.module.scss';
 import ScoreboardTeam from '../components/ScoreboardTeam/ScoreboardTeam';
@@ -80,8 +80,14 @@ type ScoreboardProps = {
 
 const Scoreboard: FC<ScoreboardProps> = () => {
 	const [selectedWeek] = useContext(WeekContext);
-	const { data, error } = useGamesForWeek(selectedWeek);
+	const { data, error, isValidating } = useGamesForWeek(selectedWeek);
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	let lastKickoff: string;
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error) {
 		console.error('Error when loading weekly games for NFL scoreboard', error);

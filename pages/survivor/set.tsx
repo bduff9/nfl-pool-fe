@@ -19,7 +19,7 @@ import { faAt } from '@bduff9/pro-duotone-svg-icons/faAt';
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
@@ -32,7 +32,7 @@ import {
 	isDoneRegisteringSSR,
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
-import { WeekContext } from '../../utils/context';
+import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import { formatDateForKickoff, formatTimeFromKickoff } from '../../utils/dates';
 import styles from '../../styles/survivor/set.module.scss';
 import { getEmptyArray } from '../../utils/arrays';
@@ -138,10 +138,16 @@ type SetSurvivorProps = {
 const SetSurvivor: FC<SetSurvivorProps> = () => {
 	const router = useRouter();
 	const [selectedWeek] = useContext(WeekContext);
-	const { data, error, mutate } = useMakeSurvivorPickView(selectedWeek);
+	const { data, error, isValidating, mutate } = useMakeSurvivorPickView(selectedWeek);
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [selectedGame, setSelectedGame] = useState<null | number>(null);
 	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [successMessage, setSuccessMessage] = useState<null | string>(null);
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	const setSurvivorPick = async (gameID: number, teamID: number): Promise<void> => {
 		try {

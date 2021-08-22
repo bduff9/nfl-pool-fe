@@ -96,7 +96,7 @@ const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
 				/>
 			</Head>
 			<AnimateSharedLayout>
-				<Layout isLoading={isLoading}>
+				<Layout>
 					<Component {...pageProps} err={err} />
 				</Layout>
 			</AnimateSharedLayout>

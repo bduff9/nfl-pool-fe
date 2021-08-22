@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import React, { FC } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
 import { TUser } from '../../models/User';
@@ -28,13 +28,20 @@ import FinishRegistrationForm from '../../components/FinishRegistrationForm/Fini
 import FinishRegistrationLoader from '../../components/FinishRegistrationForm/FinishRegistrationLoader';
 import { useFinishRegistrationQuery } from '../../graphql/create';
 import CustomHead from '../../components/CustomHead/CustomHead';
+import { BackgroundLoadingContext } from '../../utils/context';
 
 type CreateProfileProps = {
 	user: TUser;
 };
 
 const CreateProfile: FC<CreateProfileProps> = () => {
-	const { data, error } = useFinishRegistrationQuery();
+	const { data, error, isValidating } = useFinishRegistrationQuery();
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error) {
 		console.error('Error when loading finish registration form', error);

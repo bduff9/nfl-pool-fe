@@ -16,18 +16,20 @@
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import React, { FC } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 
 import { SeasonStatus } from '../../generated/graphql';
 import { useOverallDashboard } from '../../graphql/overallDashboard';
 import ProgressChart from '../ProgressChart/ProgressChart';
 import RankingPieChart from '../RankingPieChart/RankingPieChart';
+import { BackgroundLoadingContext } from '../../utils/context';
 
 import OverallDashboardLoader from './OverallDashboardLoader';
 import styles from './OverallDashboard.module.scss';
 
 const OverallDashboard: FC = () => {
-	const { data, error } = useOverallDashboard();
+	const { data, error, isValidating } = useOverallDashboard();
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const myPlace = `${data?.getMyOverallDashboard?.tied ? 'T' : ''}${
 		data?.getMyOverallDashboard?.rank
 	}`;
@@ -36,6 +38,11 @@ const OverallDashboard: FC = () => {
 	const tiedWithMe = data?.getOverallTiedWithMeCount ?? 0;
 	const aheadOfMe = me - 1;
 	const behindMe = total - me - tiedWithMe;
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error) {
 		console.error('Error when loading overall dashboard', error);

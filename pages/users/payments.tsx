@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import React, { FC } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import Link from 'next/link';
 
@@ -29,10 +29,17 @@ import { useGetPayments } from '../../graphql/payments';
 import { PaymentMethod } from '../../generated/graphql';
 import PaymentSelector from '../../components/PaymentSelector/PaymentSelector';
 import CustomHead from '../../components/CustomHead/CustomHead';
+import { BackgroundLoadingContext } from '../../utils/context';
 
 const ViewPayments: FC = () => {
-	const { data, error } = useGetPayments();
+	const { data, error, isValidating } = useGetPayments();
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	let owed = 0;
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error) {
 		console.error('Error during GetPayments query:', error);

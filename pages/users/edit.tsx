@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import React, { FC } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
@@ -28,13 +28,20 @@ import {
 	isDoneRegisteringSSR,
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
+import { BackgroundLoadingContext } from '../../utils/context';
 
 type EditProfileProps = {
 	user: TUser;
 };
 
 const EditProfile: FC<EditProfileProps> = () => {
-	const { data, error } = useEditProfileQuery();
+	const { data, error, isValidating } = useEditProfileQuery();
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error) {
 		console.error('Error when loading edit profile form', error);

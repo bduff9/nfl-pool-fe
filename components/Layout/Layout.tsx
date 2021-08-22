@@ -13,27 +13,27 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+import clsx from 'clsx';
 import LogRocket from 'logrocket';
 import { useSession } from 'next-auth/client';
 import React, { FC, useEffect, useState } from 'react';
 
 import { TUser } from '../../models/User';
-import { TitleContext, WeekContext } from '../../utils/context';
+import { BackgroundLoadingContext, TitleContext, WeekContext } from '../../utils/context';
 import { TSessionUser } from '../../utils/types';
 import Sidebar from '../Sidebar/Sidebar';
 
-type LayoutProps = {
-	isLoading?: boolean;
-};
+import styles from './Layout.module.scss';
 
-const Layout: FC<LayoutProps> = props => {
-	const { children } = props;
+const Layout: FC = ({ children }) => {
 	const [session, loading] = useSession();
 	const titleContext = useState<string>('Welcome');
 	const sessionWeek =
 		typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('selectedWeek') : null;
 	const weekContext = useState<number>(+(sessionWeek ?? '0'));
 	const week = weekContext[0];
+	const backgroundLoadingContext = useState<boolean>(false);
+	const isBackgroundLoading = backgroundLoadingContext[0];
 
 	useEffect((): void => {
 		if (session && !loading) {
@@ -56,20 +56,35 @@ const Layout: FC<LayoutProps> = props => {
 	return (
 		<TitleContext.Provider value={titleContext}>
 			<WeekContext.Provider value={weekContext}>
-				<div className="container-fluid h-100">
-					<div className="row h-100 pt-3 pt-md-0">
-						{session && session.user ? (
-							<>
-								<Sidebar user={session.user as TSessionUser} />
-								<div className="h-100 col col-sm-9 offset-sm-3 ml-sm-auto ml-print-0 col-lg-10 offset-lg-2 position-relative main">
-									{children}
+				<BackgroundLoadingContext.Provider value={backgroundLoadingContext}>
+					<div className="container-fluid h-100">
+						<div className="row h-100 pt-3 pt-md-0">
+							{session && session.user ? (
+								<>
+									<Sidebar user={session.user as TSessionUser} />
+									<div className="h-100 col col-sm-9 offset-sm-3 ml-sm-auto ml-print-0 col-lg-10 offset-lg-2 position-relative main">
+										{children}
+									</div>
+								</>
+							) : (
+								<div className="h-100 col position-relative">{children}</div>
+							)}
+							{isBackgroundLoading && (
+								<div
+									className={clsx(
+										'spinner-border',
+										'text-primary',
+										'position-fixed',
+										styles['background-loader'],
+									)}
+									role="status"
+								>
+									<span className="visually-hidden">Loading data in the background...</span>
 								</div>
-							</>
-						) : (
-							<div className="h-100 col position-relative">{children}</div>
-						)}
+							)}
+						</div>
 					</div>
-				</div>
+				</BackgroundLoadingContext.Provider>
 			</WeekContext.Provider>
 		</TitleContext.Provider>
 	);

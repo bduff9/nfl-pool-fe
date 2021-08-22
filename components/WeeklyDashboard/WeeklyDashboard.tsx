@@ -16,11 +16,11 @@
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 
 import { WeekStatus } from '../../generated/graphql';
 import { useWeeklyDashboard } from '../../graphql/weeklyDashboard';
-import { WeekContext } from '../../utils/context';
+import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import { useCountdown } from '../../utils/hooks';
 import OverallDashboardLoader from '../OverallDashboard/OverallDashboardLoader';
 import ProgressChart from '../ProgressChart/ProgressChart';
@@ -30,7 +30,8 @@ import styles from './WeeklyDashboard.module.scss';
 
 const WeeklyDashboard: FC = () => {
 	const [selectedWeek] = useContext(WeekContext);
-	const { data, error } = useWeeklyDashboard(selectedWeek);
+	const { data, error, isValidating } = useWeeklyDashboard(selectedWeek);
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const timeRemaining = useCountdown(
 		data?.selectedWeek.weekStarts ? new Date(data?.selectedWeek.weekStarts) : null,
 	);
@@ -42,6 +43,11 @@ const WeeklyDashboard: FC = () => {
 	const tiedWithMe = data?.getWeeklyTiedWithMeCount ?? 0;
 	const aheadOfMe = me - 1;
 	const behindMe = total - me - tiedWithMe;
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error) {
 		console.error(`Error when loading week ${selectedWeek} dashboard`, error);

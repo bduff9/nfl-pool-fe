@@ -18,7 +18,7 @@ import { motion } from 'framer-motion';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { FC } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../components/Authenticated/Authenticated';
@@ -38,6 +38,7 @@ import {
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 	UNAUTHENTICATED_REDIRECT,
 } from '../utils/auth.server';
+import { BackgroundLoadingContext } from '../utils/context';
 
 type OverallRankingsProps = {
 	user: TUser;
@@ -46,6 +47,7 @@ type OverallRankingsProps = {
 const OverallRankings: FC<OverallRankingsProps> = ({ user }) => {
 	const router = useRouter();
 	const { data, error, isValidating } = useOverallRankings();
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const { data: myData, error: myError } = useOverallDashboard();
 	const myPlace = `${myData?.getMyOverallDashboard?.tied ? 'T' : ''}${
 		myData?.getMyOverallDashboard?.rank
@@ -55,6 +57,11 @@ const OverallRankings: FC<OverallRankingsProps> = ({ user }) => {
 	const tiedWithMe = myData?.getOverallTiedWithMeCount ?? 0;
 	const aheadOfMe = me - 1;
 	const behindMe = total - me - tiedWithMe;
+
+	useEffect(() => {
+		setBackgroundLoading(!!data && isValidating);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [data, isValidating]);
 
 	if (error || myError) {
 		console.error('Error when loading overall ranks', error, myError);
