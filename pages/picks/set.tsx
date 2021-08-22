@@ -550,7 +550,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 						<div className="col-3 px-1 px-md-2">
 							<button
 								className="btn btn-danger w-100 my-3"
-								disabled={loading !== null}
+								disabled={loading !== null || picksUpdating}
 								type="button"
 								onClick={resetPicks}
 							>
@@ -576,7 +576,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 							<Dropdown>
 								<Dropdown.Toggle
 									className="text-nowrap w-100 my-3"
-									disabled={loading !== null}
+									disabled={loading !== null || picksUpdating}
 									id="auto-pick-button"
 									variant="secondary"
 								>
@@ -615,7 +615,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 						<div className="col-3 px-1 px-md-2">
 							<button
 								className="btn btn-primary w-100 my-3"
-								disabled={loading !== null}
+								disabled={loading !== null || picksUpdating}
 								type="button"
 								onClick={savePicks}
 							>
@@ -639,7 +639,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 						<div className="col-3 px-1 px-md-2">
 							<button
 								className="btn btn-success w-100 my-3"
-								disabled={loading !== null}
+								disabled={loading !== null || picksUpdating}
 								type="button"
 								onClick={submitPicks}
 							>
