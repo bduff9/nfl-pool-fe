@@ -42,6 +42,14 @@ export type ApiCall = {
 	updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
+export type ApiCallResult = {
+	__typename?: 'APICallResult';
+	lastKey?: Maybe<Scalars['String']>;
+	hasMore: Scalars['Boolean'];
+	count: Scalars['Int'];
+	results: Array<ApiCall>;
+};
+
 export type Account = {
 	__typename?: 'Account';
 	accountID: Scalars['Int'];
@@ -105,6 +113,7 @@ export type Email = {
 	__typename?: 'Email';
 	emailID: Scalars['String'];
 	emailType: EmailType;
+	to: Array<Scalars['String']>;
 	toUsers: Array<User>;
 	subject?: Maybe<Scalars['String']>;
 	html?: Maybe<Scalars['String']>;
@@ -114,6 +123,14 @@ export type Email = {
 	updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
+export type EmailResult = {
+	__typename?: 'EmailResult';
+	lastKey?: Maybe<Scalars['String']>;
+	hasMore: Scalars['Boolean'];
+	count: Scalars['Int'];
+	results: Array<Email>;
+};
+
 /** The sent message type */
 export enum EmailType {
 	Interest = 'interest',
@@ -121,10 +138,12 @@ export enum EmailType {
 	NewUser = 'newUser',
 	PickReminder = 'pickReminder',
 	PicksSubmitted = 'picksSubmitted',
+	PrizesSet = 'prizesSet',
 	QuickPick = 'quickPick',
 	QuickPickConfirmation = 'quickPickConfirmation',
 	SurvivorReminder = 'survivorReminder',
 	Untrusted = 'untrusted',
+	UserTrusted = 'userTrusted',
 	Verification = 'verification',
 	Weekly = 'weekly',
 	WeekEnded = 'weekEnded',
@@ -522,9 +541,10 @@ export type Pick = {
 export type Query = {
 	__typename?: 'Query';
 	hasSocialLinked: Scalars['Boolean'];
-	getAPICallsForWeek: Array<ApiCall>;
+	loadAPICalls: ApiCallResult;
 	getBackups: Array<Backup>;
 	getEmail: Email;
+	loadEmails: EmailResult;
 	getFAQs: Array<Faq>;
 	getGame: Game;
 	getGamesForWeek: Array<Game>;
@@ -554,7 +574,6 @@ export type Query = {
 	getMySurvivorPicks: Array<SurvivorPick>;
 	getMySurvivorPickForWeek?: Maybe<SurvivorPick>;
 	getSystemValue: SystemValue;
-	getTeam: Team;
 	getTeamsOnBye: Array<Team>;
 	getTeams: Array<Team>;
 	getMyTiebreakerForWeek?: Maybe<Tiebreaker>;
@@ -578,12 +597,18 @@ export type QueryHasSocialLinkedArgs = {
 	Type: Scalars['String'];
 };
 
-export type QueryGetApiCallsForWeekArgs = {
-	Week: Scalars['Int'];
+export type QueryLoadApiCallsArgs = {
+	LastKey?: Maybe<Scalars['String']>;
+	Count: Scalars['Int'];
 };
 
 export type QueryGetEmailArgs = {
 	EmailID: Scalars['String'];
+};
+
+export type QueryLoadEmailsArgs = {
+	LastKey?: Maybe<Scalars['String']>;
+	Count: Scalars['Int'];
 };
 
 export type QueryGetGameArgs = {
@@ -639,10 +664,6 @@ export type QueryGetMySurvivorPickForWeekArgs = {
 
 export type QueryGetSystemValueArgs = {
 	Name: Scalars['String'];
-};
-
-export type QueryGetTeamArgs = {
-	TeamShort: Scalars['String'];
 };
 
 export type QueryGetTeamsOnByeArgs = {

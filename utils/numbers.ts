@@ -13,6 +13,16 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+export const getRandomInteger = (from = 0, to = 10): number => {
+	if (to <= from) {
+		console.error('Invalid to passed in: ', { from, to });
+
+		return 0;
+	}
+
+	return Math.floor(Math.random() * (to - from)) + from;
+};
+
 export const isNumber = (value: unknown): value is number => {
 	if (!['number', 'string'].includes(typeof value)) return false;
 
