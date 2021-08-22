@@ -20,6 +20,7 @@ import Skeleton from 'react-loading-skeleton';
 
 import { Game, Pick as PoolPick, Team, User, WeeklyMv } from '../../generated/graphql';
 import { getEmptyArray } from '../../utils/arrays';
+import { getRandomInteger } from '../../utils/numbers';
 
 import styles from './ViewAllTable.module.scss';
 
@@ -86,10 +87,10 @@ const ViewAllTable: FC<ViewAllTableProps> = ({ games, picks, ranks }) => {
 						{getEmptyArray(20).map((_, i) => (
 							<tr key={`table-loader-${i}`}>
 								<th className={clsx(styles['sticky-col'], styles['solid-bg'])} scope="row">
-									<Skeleton width={120} />
+									<Skeleton height={20} width={getRandomInteger(100, 150)} />
 									<span className="d-none d-md-inline">
 										<br />
-										<Skeleton width={160} />
+										<Skeleton height={20} width={getRandomInteger(100, 150)} />
 									</span>
 								</th>
 								{getEmptyArray(Object.keys(games).length || DEFAULT_GAME_COUNT).map(
@@ -100,16 +101,16 @@ const ViewAllTable: FC<ViewAllTableProps> = ({ games, picks, ranks }) => {
 										</td>
 									),
 								)}
-								<td className="d-none d-md-table-cell">
+								<td className="d-none d-md-table-cell text-center">
 									<Skeleton height={21} width={60} />
 								</td>
-								<td className="d-none d-md-table-cell">
+								<td className="d-none d-md-table-cell text-center">
 									<Skeleton height={21} width={60} />
 								</td>
-								<td className="d-none d-md-table-cell">
+								<td className="d-none d-md-table-cell text-center">
 									<Skeleton height={21} width={60} />
 								</td>
-								<td className="d-none d-md-table-cell">
+								<td className="d-none d-md-table-cell text-center">
 									<Skeleton height={21} width={60} />
 								</td>
 							</tr>
@@ -131,8 +132,14 @@ const ViewAllTable: FC<ViewAllTableProps> = ({ games, picks, ranks }) => {
 										scope="row"
 									>
 										{user.tied && 'T'}
-										{user.rank} {user.userName}
-										<div className="d-none d-md-block">{user.teamName}</div>
+										{user.rank}. {user.userName}
+										<div className="d-none d-md-block">
+											<span className="invisible">
+												{user.tied && 'T'}
+												{user.rank}.
+											</span>{' '}
+											{user.teamName}
+										</div>
 										<div className="d-flex d-md-none fw-light justify-content-between">
 											<div>
 												PE
@@ -209,10 +216,16 @@ const ViewAllTable: FC<ViewAllTableProps> = ({ games, picks, ranks }) => {
 											</td>
 										);
 									})}
-									<td className="d-none d-md-table-cell">{user.pointsEarned}</td>
-									<td className="d-none d-md-table-cell">{user.gamesCorrect}</td>
-									<td className="d-none d-md-table-cell">{user.tiebreakerScore}</td>
-									<td className="d-none d-md-table-cell">{user.lastScore}</td>
+									<td className="d-none d-md-table-cell text-center">
+										{user.pointsEarned}
+									</td>
+									<td className="d-none d-md-table-cell text-center">
+										{user.gamesCorrect}
+									</td>
+									<td className="d-none d-md-table-cell text-center">
+										{user.tiebreakerScore}
+									</td>
+									<td className="d-none d-md-table-cell text-center">{user.lastScore}</td>
 								</tr>
 							);
 						})}

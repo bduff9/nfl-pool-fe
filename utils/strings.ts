@@ -32,6 +32,13 @@ export const convertGameStatusToDB = (gameStatus: GameStatus): string => {
 	}
 };
 
+export const getAbbreviation = (sentence: string): string => {
+	const words = sentence.split(/\s/g);
+	const letters = words.map(word => word.charAt(0).toUpperCase());
+
+	return letters.join('');
+};
+
 export const getBackgroundColor = (
 	value: number,
 	maxValue: number,

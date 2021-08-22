@@ -20,6 +20,7 @@ import Image from 'next/image';
 import React, { FC, useEffect, useState } from 'react';
 
 import { Game, Team } from '../../generated/graphql';
+import { getAbbreviation } from '../../utils/strings';
 
 import styles from './ViewAllModal.module.scss';
 
@@ -136,7 +137,15 @@ const ViewAllModal: FC<ViewAllModalProps> = ({
 												title={`${game.visitorTeam.teamCity} ${game.visitorTeam.teamName}`}
 												width={50}
 											/>
-											<div style={{ marginTop: '-1rem' }}>{game.visitorTeam.teamName}</div>
+											{game.visitorTeam.teamName.includes(' ') ? (
+												<div style={{ marginTop: '-.5rem' }}>
+													{getAbbreviation(game.visitorTeam.teamName)}
+												</div>
+											) : (
+												<div style={{ marginTop: '-1rem' }}>
+													{game.visitorTeam.teamName}
+												</div>
+											)}
 										</div>
 									</div>
 									<div className="col-2">
@@ -163,7 +172,13 @@ const ViewAllModal: FC<ViewAllModalProps> = ({
 												title={`${game.homeTeam.teamCity} ${game.homeTeam.teamName}`}
 												width={50}
 											/>
-											<div style={{ marginTop: '-1rem' }}>{game.homeTeam.teamName}</div>
+											{game.homeTeam.teamName.includes(' ') ? (
+												<div style={{ marginTop: '-.5rem' }}>
+													{getAbbreviation(game.homeTeam.teamName)}
+												</div>
+											) : (
+												<div style={{ marginTop: '-1rem' }}>{game.homeTeam.teamName}</div>
+											)}
 										</div>
 									</div>
 								</div>

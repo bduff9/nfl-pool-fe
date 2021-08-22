@@ -159,6 +159,7 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 							<Dropdown as={ButtonGroup} className={clsx(styles['mode-button'])}>
 								<Button
 									className={clsx(
+										'px-7',
 										'text-nowrap',
 										'flex-grow-1',
 										'flex-shrink-0',
