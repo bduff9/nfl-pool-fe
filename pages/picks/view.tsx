@@ -74,7 +74,7 @@ const ViewPicks: FC<ViewPicksProps> = () => {
 						{myRankData?.getMyWeeklyDashboard && (
 							<>
 								<div className="col-12 col-md-4 pb-3">
-									<div className="content-bg rounded px-3 h-100">
+									<div className="content-bg rounded px-3 pt-2 h-100">
 										<h5 className="text-center mb-0">Current Score</h5>
 										<MyProgressChart
 											correct={myRankData.getMyWeeklyDashboard.pointsEarned}
@@ -88,7 +88,7 @@ const ViewPicks: FC<ViewPicksProps> = () => {
 									</div>
 								</div>
 								<div className="col-12 col-md-4 pb-3">
-									<div className="content-bg rounded px-3 h-100">
+									<div className="content-bg rounded px-3 pt-2 h-100">
 										<h5 className="text-center mb-0">Games Correct</h5>
 										<MyProgressChart
 											correct={myRankData.getMyWeeklyDashboard.gamesCorrect}
@@ -102,7 +102,7 @@ const ViewPicks: FC<ViewPicksProps> = () => {
 									</div>
 								</div>
 								<div className="col-6 col-md-2 pb-3">
-									<div className="content-bg rounded text-center px-3 h-100">
+									<div className="content-bg rounded text-center px-3 pt-2 h-100">
 										<h5 className="px-2" style={{ height: '3rem' }}>
 											My Tiebreaker
 										</h5>
@@ -116,7 +116,7 @@ const ViewPicks: FC<ViewPicksProps> = () => {
 									</div>
 								</div>
 								<div className="col-6 col-md-2 pb-3">
-									<div className="content-bg rounded text-center px-3 h-100">
+									<div className="content-bg rounded text-center px-3 pt-2 h-100">
 										<h5 style={{ height: '3rem' }}>Final Game Total</h5>
 										<div className="h1">
 											{!myRankData ? (
@@ -185,10 +185,10 @@ const ViewPicks: FC<ViewPicksProps> = () => {
 																title={`${row.game.visitorTeam.teamCity} ${row.game.visitorTeam.teamName}`}
 																width={40}
 															/>
-															<span className="d-none d-md-inline">
+															<div className="ps-1 d-none d-md-block">
 																{row.game.visitorTeam.teamCity}{' '}
 																{row.game.visitorTeam.teamName}
-															</span>
+															</div>
 															<FontAwesomeIcon className="mx-2" icon={faAt} />
 															<Image
 																alt={`${row.game.homeTeam.teamCity} ${row.game.homeTeam.teamName}`}
@@ -198,9 +198,9 @@ const ViewPicks: FC<ViewPicksProps> = () => {
 																title={`${row.game.homeTeam.teamCity} ${row.game.homeTeam.teamName}`}
 																width={40}
 															/>
-															<span className="d-none d-md-inline">
+															<div className="ps-1 d-none d-md-block">
 																{row.game.homeTeam.teamCity} {row.game.homeTeam.teamName}
-															</span>
+															</div>
 														</div>
 													</th>
 													<td className="text-center">
