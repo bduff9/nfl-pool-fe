@@ -28,16 +28,17 @@ import styles from '../styles/404.module.scss';
 import { write404Log } from '../graphql/404';
 import { TSessionUser } from '../utils/types';
 import CustomHead from '../components/CustomHead/CustomHead';
+import { getRandomInteger } from '../utils/numbers';
 
 type NotFoundProps = {
-	images: string[];
+	images: Array<string>;
 };
 
 const NotFound: FC<NotFoundProps> = ({ images }) => {
 	const router = useRouter();
 	const [session, loading] = useSession();
 	const image = useMemo<string>(
-		() => images[Math.floor(Math.random() * images.length)],
+		() => images[getRandomInteger(0, images.length)],
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[router.asPath],
 	);
