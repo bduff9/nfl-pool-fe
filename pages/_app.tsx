@@ -23,7 +23,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import NProgress from 'nprogress';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 import { syncWithLocalStorage } from 'swr-sync-storage';
 
 import Layout from '../components/Layout/Layout';
@@ -55,23 +55,16 @@ type SentryProps = { err: unknown };
 
 const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
 	const router = useRouter();
-	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	useEffect((): (() => void) => {
 		let mounted = true;
 
 		const handleStart = (_url: string): void => {
-			if (mounted) {
-				setIsLoading(true);
-				NProgress.start();
-			}
+			if (mounted) NProgress.start();
 		};
 
 		const handleComplete = (_url: string): void => {
-			if (mounted) {
-				setIsLoading(false);
-				NProgress.done();
-			}
+			if (mounted) NProgress.done();
 		};
 
 		router.events.on('routeChangeStart', handleStart);

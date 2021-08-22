@@ -299,16 +299,6 @@ const options: NextAuthOptions = {
 		Providers.Google({
 			clientId: GOOGLE_ID,
 			clientSecret: GOOGLE_SECRET,
-			// profile: async function (profile, tokens) {
-			// 	log.info({ profile, tokens });
-
-			// 	return {
-			// 		id: profile.id as string,
-			// 		name: profile.name,
-			// 		email: profile.email,
-			// 		image: profile.picture,
-			// 	} as User & { id: string };
-			// },
 		}),
 		Providers.Twitter({
 			clientId: TWITTER_ID,
