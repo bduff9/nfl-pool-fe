@@ -17,7 +17,8 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import React, { FC } from 'react';
 
-import { SurvivorPick, Game, Team } from '../../generated/graphql';
+import { Team } from '../../generated/graphql';
+import { SetSurvivorPick } from '../../graphql/survivorSet';
 
 import styles from './SurvivorTeam.module.scss';
 
@@ -25,10 +26,7 @@ type SurvivorTeamProps = {
 	isHome?: boolean;
 	isOnBye?: boolean;
 	onClick?: () => void;
-	pick?: Pick<SurvivorPick, 'survivorPickWeek'> & {
-		game: Pick<Game, 'gameID'>;
-		team: Pick<Team, 'teamID'>;
-	};
+	pick?: SetSurvivorPick;
 	team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
 	weekInProgress: number;
 };

@@ -288,7 +288,7 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 												isHome
 												onClick={() => setSurvivorPick(game.gameID, game.homeTeam.teamID)}
 												pick={data.getMySurvivorPicks.find(
-													pick => pick.team.teamID === game.homeTeam.teamID,
+													pick => pick.team?.teamID === game.homeTeam.teamID,
 												)}
 												team={game.homeTeam}
 												weekInProgress={data.getWeekInProgress ?? 0}
@@ -320,7 +320,7 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 												key={`bye-week-team-${team.teamID}`}
 												isOnBye
 												pick={data.getMySurvivorPicks.find(
-													pick => pick.team.teamID === team.teamID,
+													pick => pick.team?.teamID === team.teamID,
 												)}
 												team={team}
 												weekInProgress={data.getWeekInProgress ?? 0}

@@ -60,24 +60,32 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 				<OverallDashboardLoader />
 			) : (
 				<div>
-					<Link href="/survivor/view">
-						<a
-							className={clsx(
-								'd-block',
-								(!data.isAliveInSurvivor || data.getMySurvivorPickForWeek?.team) &&
-									'mb-md-5',
-							)}
-						>
-							View Details
-						</a>
-					</Link>
+					{!data.getMySurvivorDashboard ? (
+						data.isAliveInSurvivor && !data.getMySurvivorPickForWeek?.team ? (
+							<div className="text-danger">You have not submitted your picks yet!</div>
+						) : (
+							<div className="text-success">You have submitted your picks</div>
+						)
+					) : (
+						<Link href="/survivor/view">
+							<a
+								className={clsx(
+									'd-block',
+									(!data.isAliveInSurvivor || data.getMySurvivorPickForWeek?.team) &&
+										'mb-md-5',
+								)}
+							>
+								View Details
+							</a>
+						</Link>
+					)}
 					{data.isAliveInSurvivor && !data.getMySurvivorPickForWeek?.team && (
 						<Link href="/survivor/set">
 							<a className={clsx('d-block', 'mb-4')}>Click here to make your pick</a>
 						</Link>
 					)}
 					<SurvivorDashboardIcon
-						isAlive={data.getMySurvivorDashboard?.isAliveOverall}
+						isAlive={data.isAliveInSurvivor}
 						isPlaying={user.hasSurvivor}
 						lastPick={data.getMySurvivorDashboard?.lastPickTeam}
 						pickForWeek={data.getMySurvivorPickForWeek?.team}

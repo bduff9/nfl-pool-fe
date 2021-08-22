@@ -19,6 +19,11 @@ import useSWR, { SWRResponse } from 'swr';
 import { Game, SurvivorPick, Team } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
+export type SetSurvivorPick = Pick<SurvivorPick, 'survivorPickWeek'> & {
+	game: Pick<Game, 'gameID'>;
+	team: null | Pick<Team, 'teamID'>;
+};
+
 type MakeSurvivorPickViewResponse = {
 	getWeekInProgress: null | number;
 	isAliveInSurvivor: boolean;
@@ -28,12 +33,7 @@ type MakeSurvivorPickViewResponse = {
 			visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
 		}
 	>;
-	getMySurvivorPicks: Array<
-		Pick<SurvivorPick, 'survivorPickWeek'> & {
-			game: Pick<Game, 'gameID'>;
-			team: Pick<Team, 'teamID'>;
-		}
-	>;
+	getMySurvivorPicks: Array<SetSurvivorPick>;
 	getTeamsOnBye: Array<Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>>;
 };
 
