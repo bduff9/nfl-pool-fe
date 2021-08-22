@@ -141,23 +141,23 @@ const ViewAllTable: FC<ViewAllTableProps> = ({ games, picks, ranks }) => {
 											{user.teamName}
 										</div>
 										<div className="d-flex d-md-none fw-light justify-content-between">
-											<div>
+											<div title="Points Earned">
 												PE
 												<br />
 												{user.pointsEarned}
 											</div>
-											<div>
+											<div title="Games Correct">
 												GC
 												<br />
 												{user.gamesCorrect}
 											</div>
-											<div>
+											<div title="My Tiebreaker">
 												MT
 												<br />
 												{user.tiebreakerScore}
 											</div>
-											<div>
-												AT
+											<div title="Actual Score">
+												AS
 												<br />
 												{user.lastScore}
 											</div>
