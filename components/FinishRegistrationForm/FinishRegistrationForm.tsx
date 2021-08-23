@@ -22,7 +22,6 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 // eslint-disable-next-line import/named
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
-import { useRouter } from 'next/router';
 
 import { PaymentMethod } from '../../generated/graphql';
 import { finishRegistration } from '../../graphql/finishRegistrationForm';
@@ -89,7 +88,6 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 	hasTwitter,
 	revalidateUser,
 }) => {
-	const router = useRouter();
 	const {
 		formState: { errors, isDirty },
 		handleSubmit,
@@ -162,7 +160,8 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 				result.finishRegistration.userTrusted
 			) {
 				await revalidateUser();
-				router.replace('/users/payments');
+				// We must use this to force a server side load to avoid endless loop
+				window.location.assign('/users/payments');
 
 				return;
 			}
