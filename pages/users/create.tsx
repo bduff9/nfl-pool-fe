@@ -50,7 +50,7 @@ const CreateProfile: FC<CreateProfileProps> = ({ user }) => {
 	}
 
 	if (user.doneRegistering) {
-		router.replace(IS_DONE_REGISTERING_REDIRECT.redirect.destination);
+		router.replace('/users/edit');
 
 		return <></>;
 	}
