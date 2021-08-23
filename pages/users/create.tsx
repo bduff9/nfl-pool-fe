@@ -15,6 +15,7 @@
  */
 import { GetServerSideProps } from 'next';
 import React, { FC, useContext, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
 import { TUser } from '../../models/User';
@@ -34,7 +35,8 @@ type CreateProfileProps = {
 	user: TUser;
 };
 
-const CreateProfile: FC<CreateProfileProps> = () => {
+const CreateProfile: FC<CreateProfileProps> = ({ user }) => {
+	const router = useRouter();
 	const { data, error, isValidating } = useFinishRegistrationQuery();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 
@@ -45,6 +47,12 @@ const CreateProfile: FC<CreateProfileProps> = () => {
 
 	if (error) {
 		console.error('Error when loading finish registration form', error);
+	}
+
+	if (router.isReady && user.doneRegistering) {
+		router.replace('/');
+
+		return <></>;
 	}
 
 	return (
