@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { FC, useCallback, useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
@@ -37,8 +37,11 @@ type CreateProfileProps = {
 
 const CreateProfile: FC<CreateProfileProps> = ({ user }) => {
 	const router = useRouter();
-	const { data, error, isValidating } = useFinishRegistrationQuery();
+	const { data, error, isValidating, mutate } = useFinishRegistrationQuery();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
+	const revalidateUser = useCallback(async () => {
+		await mutate();
+	}, [mutate]);
 
 	useEffect(() => {
 		setBackgroundLoading(!!data && isValidating);
@@ -65,6 +68,7 @@ const CreateProfile: FC<CreateProfileProps> = ({ user }) => {
 						currentWeek={data.getCurrentWeek}
 						hasGoogle={data.hasGoogle}
 						hasTwitter={data.hasTwitter}
+						revalidateUser={revalidateUser}
 					/>
 				) : (
 					<FinishRegistrationLoader />

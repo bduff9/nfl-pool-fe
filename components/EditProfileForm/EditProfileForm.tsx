@@ -235,13 +235,14 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 	const [successMessage, setSuccessMessage] = useState<null | string>(null);
 	const watchNotifications = watch('notifications');
 	const watchPhone = watch('userPhone');
+	const errorCount = Object.keys(errors).length;
 
 	useWarningOnExit(
 		isDirty,
 		'Are you sure you want to leave?  You have unsaved changes that will be lost',
 	);
 
-	console.debug('Errors on the form:', errors);
+	console.debug(`${errorCount} errors on the form: `, errors);
 
 	useEffect(() => {
 		watchNotifications.forEach((_, i) => {
@@ -318,6 +319,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						Email
 					</label>
 					<input
+						aria-invalid={!!errors.userEmail}
 						aria-label="Email"
 						className="form-control-plaintext"
 						id="userEmail"
@@ -326,7 +328,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userEmail', { required: true })}
 					/>
 					{errors.userEmail?.message && (
-						<div className="text-danger fs-6">{errors.userEmail.message}</div>
+						<div className="text-danger fs-6" role="alert">
+							{errors.userEmail.message}
+						</div>
 					)}
 				</div>
 			</div>
@@ -336,6 +340,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						First Name
 					</label>
 					<input
+						aria-invalid={!!errors.userFirstName}
 						aria-label="First Name"
 						className={clsx('form-control', errors.userFirstName?.message && 'is-invalid')}
 						id="userFirstName"
@@ -343,7 +348,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userFirstName', { required: true, minLength: 2 })}
 					/>
 					{errors.userFirstName?.message && (
-						<div className="text-danger fs-6">{errors.userFirstName.message}</div>
+						<div className="text-danger fs-6" role="alert">
+							{errors.userFirstName.message}
+						</div>
 					)}
 				</div>
 				<div className="col-md">
@@ -351,6 +358,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						Last Name
 					</label>
 					<input
+						aria-invalid={!!errors.userLastName}
 						aria-label="Last Name"
 						className={clsx('form-control', errors.userLastName?.message && 'is-invalid')}
 						id="userLastName"
@@ -358,7 +366,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userLastName', { required: true, minLength: 2 })}
 					/>
 					{errors.userLastName?.message && (
-						<div className="text-danger fs-6">{errors.userLastName.message}</div>
+						<div className="text-danger fs-6" role="alert">
+							{errors.userLastName.message}
+						</div>
 					)}
 				</div>
 			</div>
@@ -368,6 +378,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						Team Name <span className="form-text">(optional)</span>
 					</label>
 					<input
+						aria-invalid={!!errors.userTeamName}
 						aria-label="Team Name"
 						className={clsx('form-control', errors.userTeamName?.message && 'is-invalid')}
 						id="userTeamName"
@@ -375,7 +386,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userTeamName')}
 					/>
 					{errors.userTeamName?.message && (
-						<div className="text-danger fs-6">{errors.userTeamName.message}</div>
+						<div className="text-danger fs-6" role="alert">
+							{errors.userTeamName.message}
+						</div>
 					)}
 				</div>
 				<div className="col-md">
@@ -389,6 +402,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						</OverlayTrigger>
 					</label>
 					<input
+						aria-invalid={!!errors.userPhone}
 						aria-label="Phone Number"
 						className={clsx('form-control', errors.userPhone?.message && 'is-invalid')}
 						id="userPhone"
@@ -397,7 +411,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userPhone')}
 					/>
 					{errors.userPhone?.message && (
-						<div className="text-danger fs-6">{errors.userPhone.message}</div>
+						<div className="text-danger fs-6" role="alert">
+							{errors.userPhone.message}
+						</div>
 					)}
 				</div>
 			</div>
@@ -408,6 +424,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						Payment Type
 					</label>
 					<select
+						aria-invalid={!!errors.userPaymentType}
 						aria-label="Payment Type"
 						className={clsx('form-select', errors.userPaymentType?.message && 'is-invalid')}
 						id="userPaymentType"
@@ -421,7 +438,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						))}
 					</select>
 					{errors.userPaymentType?.message && (
-						<div className="text-danger fs-6">{errors.userPaymentType.message}</div>
+						<div className="text-danger fs-6" role="alert">
+							{errors.userPaymentType.message}
+						</div>
 					)}
 					<label htmlFor="userPaymentAccount" className="form-label required">
 						Payment Account&nbsp;
@@ -432,6 +451,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						</OverlayTrigger>
 					</label>
 					<input
+						aria-invalid={!!errors.userPaymentAccount}
 						aria-label="Payment Account"
 						className={clsx(
 							'form-control',
@@ -442,7 +462,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						{...register('userPaymentAccount', { required: true })}
 					/>
 					{errors.userPaymentAccount?.message && (
-						<div className="text-danger fs-6">{errors.userPaymentAccount.message}</div>
+						<div className="text-danger fs-6" role="alert">
+							{errors.userPaymentAccount.message}
+						</div>
 					)}
 				</div>
 				<div className="col-md">
@@ -456,6 +478,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						</OverlayTrigger>
 					</label>
 					<input
+						aria-invalid={!!errors.userAutoPicksLeft}
 						aria-label="Auto picks left"
 						className="form-control-plaintext"
 						id="userAutoPicksLeft"
@@ -515,7 +538,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 						</label>
 					</div>
 					{errors.userAutoPickStrategy?.message && (
-						<div className="text-danger fs-6">{errors.userAutoPickStrategy.message}</div>
+						<div className="text-danger fs-6" role="alert">
+							{errors.userAutoPickStrategy.message}
+						</div>
 					)}
 				</div>
 			</div>
@@ -596,6 +621,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 									}
 								>
 									<input
+										aria-invalid={!!errors.notifications?.[i]?.notificationEmail}
 										aria-label={`Email for ${notification.notificationDefinition.notificationTypeDescription}`}
 										className={clsx(
 											'form-check-input',
@@ -613,7 +639,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 								</fieldset>
 							)}
 							{errors.notifications?.[i]?.notificationEmail?.message && (
-								<div className="text-danger fs-6">
+								<div className="text-danger fs-6" role="alert">
 									{errors.notifications?.[i]?.notificationEmail?.message}
 								</div>
 							)}
@@ -632,6 +658,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 									disabled={watchPhone?.length < 10 || !!errors.userPhone?.message}
 								>
 									<input
+										aria-invalid={!!errors.notifications?.[i]?.notificationSMS}
 										aria-label={`SMS for ${notification.notificationDefinition.notificationTypeDescription}`}
 										className={clsx(
 											'form-check-input',
@@ -649,7 +676,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 								</fieldset>
 							)}
 							{errors.notifications?.[i]?.notificationSMS?.message && (
-								<div className="text-danger fs-6">
+								<div className="text-danger fs-6" role="alert">
 									{errors.notifications?.[i]?.notificationSMS?.message}
 								</div>
 							)}
@@ -676,6 +703,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 									<div className={styles['switch-col']}>
 										{!!watchNotifications[i].notificationEmail && (
 											<input
+												aria-invalid={
+													!!errors.notifications?.[i]?.notificationEmailHoursBefore
+												}
 												aria-label="Send email hours before"
 												className={clsx(
 													'form-control',
@@ -699,6 +729,9 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 									<div className={styles['switch-col']}>
 										{!!watchNotifications[i].notificationSMS && (
 											<input
+												aria-invalid={
+													!!errors.notifications?.[i]?.notificationSMSHoursBefore
+												}
 												aria-label="Send SMS hours before"
 												className={clsx(
 													'form-control',
@@ -732,8 +765,24 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 			</div>
 			<div className="d-grid border-top border-dark pt-3 mt-3">
 				<button className="btn btn-primary" disabled={isLoading} type="submit">
-					{isLoading ? 'Submitting...' : 'Save Changes'}
+					{isLoading ? (
+						<>
+							<span
+								className="spinner-grow spinner-grow-sm d-none d-md-inline-block"
+								role="status"
+								aria-hidden="true"
+							></span>
+							Submitting...
+						</>
+					) : (
+						'Save Changes'
+					)}
 				</button>
+				{errorCount > 0 && (
+					<div className="text-danger fs-6" role="alert">
+						Please fix {errorCount} {errorCount === 1 ? 'error' : 'errors'} above
+					</div>
+				)}
 			</div>
 		</form>
 	);

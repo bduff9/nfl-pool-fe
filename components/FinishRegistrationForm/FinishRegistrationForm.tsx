@@ -22,6 +22,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 // eslint-disable-next-line import/named
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
+import { useRouter } from 'next/router';
 
 import { PaymentMethod } from '../../generated/graphql';
 import { finishRegistration } from '../../graphql/finishRegistrationForm';
@@ -78,6 +79,7 @@ type FinishRegistrationFormProps = {
 	currentWeek: number;
 	hasGoogle: boolean;
 	hasTwitter: boolean;
+	revalidateUser: () => Promise<void>;
 };
 
 const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
@@ -85,7 +87,9 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 	currentWeek,
 	hasGoogle,
 	hasTwitter,
+	revalidateUser,
 }) => {
+	const router = useRouter();
 	const {
 		formState: { errors, isDirty },
 		handleSubmit,
@@ -118,13 +122,14 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 		'userFirstName',
 		'userLastName',
 	]);
+	const errorCount = Object.keys(errors).length;
 
 	useWarningOnExit(
 		isDirty,
 		'Are you sure you want to leave?  You have unsaved changes that will be lost',
 	);
 
-	console.debug('Errors on the form:', errors);
+	console.debug(`${errorCount} errors on the form: `, errors);
 
 	useEffect(() => {
 		if (watchName.match(/\w{2,}\s\w{2,}/)) return;
@@ -156,7 +161,8 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 				result.finishRegistration.userDoneRegistering &&
 				result.finishRegistration.userTrusted
 			) {
-				window.location.assign('/users/payments');
+				await revalidateUser();
+				router.replace('/users/payments');
 
 				return;
 			}
@@ -201,6 +207,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 						Email
 					</label>
 					<input
+						aria-invalid={!!errors.userEmail}
 						aria-label="Email"
 						className="form-control-plaintext"
 						id="userEmail"
@@ -210,10 +217,14 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 					/>
 					<input type="hidden" {...register('userName')} />
 					{errors.userEmail?.message && (
-						<span className="text-danger fs-6">{errors.userEmail.message}</span>
+						<span className="text-danger fs-6" role="alert">
+							{errors.userEmail.message}
+						</span>
 					)}
 					{errors.userName?.message && (
-						<span className="text-danger fs-6">{errors.userName.message}</span>
+						<span className="text-danger fs-6" role="alert">
+							{errors.userName.message}
+						</span>
 					)}
 				</div>
 			</div>
@@ -223,6 +234,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 						First Name
 					</label>
 					<input
+						aria-invalid={!!errors.userFirstName}
 						aria-label="First Name"
 						className={clsx('form-control', errors.userFirstName?.message && 'is-invalid')}
 						id="userFirstName"
@@ -230,7 +242,9 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 						{...register('userFirstName')}
 					/>
 					{errors.userFirstName?.message && (
-						<span className="text-danger fs-6">{errors.userFirstName.message}</span>
+						<span className="text-danger fs-6" role="alert">
+							{errors.userFirstName.message}
+						</span>
 					)}
 				</div>
 				<div className="col-md">
@@ -238,6 +252,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 						Last Name
 					</label>
 					<input
+						aria-invalid={!!errors.userLastName}
 						aria-label="Last Name"
 						className={clsx('form-control', errors.userLastName?.message && 'is-invalid')}
 						id="userLastName"
@@ -245,7 +260,9 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 						{...register('userLastName')}
 					/>
 					{errors.userLastName?.message && (
-						<span className="text-danger fs-6">{errors.userLastName.message}</span>
+						<span className="text-danger fs-6" role="alert">
+							{errors.userLastName.message}
+						</span>
 					)}
 				</div>
 			</div>
@@ -255,6 +272,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 						Team Name <span className="form-text">(optional)</span>
 					</label>
 					<input
+						aria-invalid={!!errors.userTeamName}
 						aria-label="Team Name"
 						className={clsx('form-control', errors.userTeamName?.message && 'is-invalid')}
 						id="userTeamName"
@@ -262,7 +280,9 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 						{...register('userTeamName')}
 					/>
 					{errors.userTeamName?.message && (
-						<span className="text-danger fs-6">{errors.userTeamName.message}</span>
+						<span className="text-danger fs-6" role="alert">
+							{errors.userTeamName.message}
+						</span>
 					)}
 				</div>
 			</div>
@@ -275,6 +295,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 							Who referred you to play?
 						</label>
 						<input
+							aria-invalid={!!errors.userReferredByRaw}
 							aria-label="Referred By"
 							className={clsx(
 								'form-control',
@@ -286,7 +307,9 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 							{...register('userReferredByRaw')}
 						/>
 						{errors.userReferredByRaw?.message && (
-							<span className="text-danger fs-6">{errors.userReferredByRaw.message}</span>
+							<span className="text-danger fs-6" role="alert">
+								{errors.userReferredByRaw.message}
+							</span>
 						)}
 					</div>
 				</div>
@@ -326,7 +349,9 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 						</label>
 					</div>
 					{errors.userPlaysSurvivor?.message && (
-						<span className="text-danger fs-6">{errors.userPlaysSurvivor.message}</span>
+						<span className="text-danger fs-6" role="alert">
+							{errors.userPlaysSurvivor.message}
+						</span>
 					)}
 				</div>
 			</div>
@@ -336,6 +361,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 						Payment Type
 					</label>
 					<select
+						aria-invalid={!!errors.userPaymentType}
 						aria-label="Payment Type"
 						className={clsx('form-select', errors.userPaymentType?.message && 'is-invalid')}
 						id="userPaymentType"
@@ -349,7 +375,9 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 						))}
 					</select>
 					{errors.userPaymentType?.message && (
-						<span className="text-danger fs-6">{errors.userPaymentType.message}</span>
+						<span className="text-danger fs-6" role="alert">
+							{errors.userPaymentType.message}
+						</span>
 					)}
 				</div>
 				<div className="col-md">
@@ -362,6 +390,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 						</OverlayTrigger>
 					</label>
 					<input
+						aria-invalid={!!errors.userPaymentAccount}
 						aria-label="Payment Account"
 						className={clsx(
 							'form-control',
@@ -372,7 +401,9 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 						{...register('userPaymentAccount')}
 					/>
 					{errors.userPaymentAccount?.message && (
-						<span className="text-danger fs-6">{errors.userPaymentAccount.message}</span>
+						<span className="text-danger fs-6" role="alert">
+							{errors.userPaymentAccount.message}
+						</span>
 					)}
 				</div>
 			</div>
@@ -382,8 +413,24 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 			</div>
 			<div className="d-grid">
 				<button className="btn btn-primary" disabled={isLoading} type="submit">
-					{isLoading ? 'Submitting...' : 'Register'}
+					{isLoading ? (
+						<>
+							<span
+								className="spinner-grow spinner-grow-sm d-none d-md-inline-block"
+								role="status"
+								aria-hidden="true"
+							></span>
+							Submitting...
+						</>
+					) : (
+						'Register'
+					)}
 				</button>
+				{errorCount > 0 && (
+					<div className="text-danger fs-6" role="alert">
+						Please fix {errorCount} {errorCount === 1 ? 'error' : 'errors'} above
+					</div>
+				)}
 			</div>
 		</form>
 	);
