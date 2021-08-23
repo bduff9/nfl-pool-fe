@@ -49,8 +49,8 @@ const CreateProfile: FC<CreateProfileProps> = ({ user }) => {
 		console.error('Error when loading finish registration form', error);
 	}
 
-	if (router.isReady && user.doneRegistering) {
-		router.replace('/');
+	if (user.doneRegistering) {
+		router.replace(IS_DONE_REGISTERING_REDIRECT.redirect.destination);
 
 		return <></>;
 	}
