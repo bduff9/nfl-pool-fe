@@ -161,6 +161,13 @@ const ViewAdminEmails: FC = () => {
 										</td>
 									</tr>
 								)}
+								{!hasMore && (
+									<tr>
+										<td className="fs-6 text-muted" colSpan={5}>
+											No more emails found
+										</td>
+									</tr>
+								)}
 							</tbody>
 						)}
 					</table>

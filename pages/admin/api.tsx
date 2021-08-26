@@ -166,6 +166,13 @@ const AdminAPICalls: FC<AdminAPICallsProps> = () => {
 													</td>
 												</tr>
 											)}
+											{!hasMore && (
+												<tr>
+													<td className="fs-6 text-muted" colSpan={5}>
+														No more API calls found
+													</td>
+												</tr>
+											)}
 										</tbody>
 									)}
 								</table>
