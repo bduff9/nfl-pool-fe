@@ -41,6 +41,7 @@ import { GetCurrentUserResponse, GetMyNotificationsResponse } from '../../graphq
 import { useWarningOnExit } from '../../utils/hooks';
 import AlertContainer from '../AlertContainer/AlertContainer';
 import Alert from '../Alert/Alert';
+import { isEmailAddress, isPhoneNumber, isUsername } from '../../utils/strings';
 
 import styles from './EditProfileForm.module.scss';
 
@@ -80,11 +81,60 @@ const schema = Yup.object().shape({
 		.oneOf(Object.values(PaymentMethod), 'Please select a valid account type')
 		.required('Please select an account type'),
 	userPaymentAccount: Yup.string().when('userPaymentType', {
-		is: 'Venmo',
-		then: Yup.string().required('Please enter your Venmo user name'),
-		otherwise: Yup.string()
-			.email('Please enter your account email address')
-			.required('Please enter your account email address'),
+		is: PaymentMethod.Paypal,
+		then: Yup.lazy(value => {
+			if (isPhoneNumber(value)) {
+				return (Yup.string() as Yup.StringSchema & {
+					validatePhone: () => Yup.StringSchema;
+				})
+					.validatePhone()
+					.required('Please enter your account phone number');
+			}
+
+			if (isEmailAddress(value)) {
+				return Yup.string()
+					.email('Please enter your account email address')
+					.required('Please enter your account email address');
+			}
+
+			return Yup.string()
+				.test(
+					'is-invalid',
+					'Please enter your account email address or phone number',
+					() => false,
+				)
+				.required('Please enter your account email address or phone number');
+		}),
+		otherwise: Yup.lazy(value => {
+			if (isPhoneNumber(value)) {
+				return (Yup.string() as Yup.StringSchema & {
+					validatePhone: () => Yup.StringSchema;
+				})
+					.validatePhone()
+					.required('Please enter your account phone number');
+			}
+
+			if (isEmailAddress(value)) {
+				return Yup.string()
+					.email('Please enter your account email address')
+					.required('Please enter your account email address');
+			}
+
+			if (isUsername(value)) {
+				return Yup.string()
+					.min(3)
+					.max(20)
+					.matches(/^[\w-]{3,20}$/, 'Please enter a valid account username');
+			}
+
+			return Yup.string()
+				.test(
+					'is-invalid',
+					'Please enter your account email address, phone number or user name',
+					() => false,
+				)
+				.required('Please enter your account email address, phone number or user name');
+		}),
 	}),
 	userPhone: (Yup.string() as Yup.StringSchema & {
 		validatePhone: () => Yup.StringSchema;

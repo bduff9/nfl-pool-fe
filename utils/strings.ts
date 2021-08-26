@@ -68,6 +68,12 @@ export const getShortQuarter = (quarter: string): string => {
 		.join('');
 };
 
+export const isEmailAddress = (value: string): boolean => !!value.match(/^.+@.+\..+$/);
+
+export const isPhoneNumber = (value: string): boolean => !!value.match(/^[\d() -]+$/);
+
+export const isUsername = (value: string): boolean => !!value.match(/^[\w-]{3,}$/);
+
 type DragData =
 	| { gameID: number; type: 'home' | 'visitor' }
 	| { gameID: null; type: 'pointBank' };
