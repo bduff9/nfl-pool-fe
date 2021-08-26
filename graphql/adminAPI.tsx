@@ -41,8 +41,8 @@ type LoadAdminAPICallsInput = {
 };
 
 const query = gql`
-	query LoadAPICalls($count: Int!) {
-		loadAPICalls(Count: $count) {
+	query LoadAPICalls($count: Int!, $lastKey: String) {
+		loadAPICalls(Count: $count, LastKey: $lastKey) {
 			count
 			hasMore
 			lastKey

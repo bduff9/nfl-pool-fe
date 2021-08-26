@@ -40,8 +40,8 @@ type LoadAdminEmailsInput = {
 };
 
 const query = gql`
-	query LoadEmails($count: Int!) {
-		loadEmails(Count: $count) {
+	query LoadEmails($count: Int!, $lastKey: String) {
+		loadEmails(Count: $count, LastKey: $lastKey) {
 			count
 			hasMore
 			lastKey
