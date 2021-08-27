@@ -14,6 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { faAt } from '@bduff9/pro-duotone-svg-icons';
+import { faInfoCircle } from '@bduff9/pro-duotone-svg-icons/faInfoCircle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import Image from 'next/image';
@@ -189,26 +190,48 @@ const PickGame: FC<PickGameProps> = ({ dragGameID, gameCount, loading, onClick, 
 						title={`${pick.game.visitorTeam.teamCity} ${pick.game.visitorTeam.teamName}`}
 						width={60}
 					/>
-					<div className="d-block d-md-none">{pick.game.visitorTeam.teamName}</div>
+					<div className={clsx('d-block', 'd-md-none', styles['team-link'])}>
+						{pick.game.visitorTeam.teamName}
+					</div>
 				</div>
 				<div
-					className={clsx('d-none', 'd-md-block', 'cursor-pointer', styles['game-info'])}
+					className={clsx(
+						'd-none',
+						'd-md-block',
+						'position-relative',
+						'cursor-pointer',
+						styles['game-info'],
+					)}
 					onClick={onClick}
 				>
 					{pick.game.visitorTeam.teamCity}
 					<br />
 					{pick.game.visitorTeam.teamName}
+					<FontAwesomeIcon
+						className="position-absolute top-50 start-0 translate-middle"
+						icon={faInfoCircle}
+					/>
 				</div>
 				<div className={clsx(styles['at-symbol'])}>
 					<FontAwesomeIcon icon={faAt} />
 				</div>
 				<div
-					className={clsx('d-none', 'd-md-block', 'cursor-pointer', styles['game-info'])}
+					className={clsx(
+						'd-none',
+						'd-md-block',
+						'position-relative',
+						'cursor-pointer',
+						styles['game-info'],
+					)}
 					onClick={onClick}
 				>
 					{pick.game.homeTeam.teamCity}
 					<br />
 					{pick.game.homeTeam.teamName}
+					<FontAwesomeIcon
+						className="position-absolute top-50 start-100 translate-middle"
+						icon={faInfoCircle}
+					/>
 				</div>
 				<div className={clsx('cursor-pointer', styles['game-info'])} onClick={onClick}>
 					<Image
@@ -219,7 +242,9 @@ const PickGame: FC<PickGameProps> = ({ dragGameID, gameCount, loading, onClick, 
 						title={`${pick.game.homeTeam.teamCity} ${pick.game.homeTeam.teamName}`}
 						width={60}
 					/>
-					<div className="d-block d-md-none">{pick.game.homeTeam.teamName}</div>
+					<div className={clsx('d-block', 'd-md-none', styles['team-link'])}>
+						{pick.game.homeTeam.teamName}
+					</div>
 				</div>
 			</div>
 			<div className="col-3 col-md-2 d-flex align-items-center justify-content-start">

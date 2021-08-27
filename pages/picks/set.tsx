@@ -457,6 +457,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 											'align-items-center',
 											'p-3',
 											'mb-3',
+											'sticky-top',
 											styles['point-bank'],
 											snapshot.isDraggingOver && styles['dragging-over'],
 										)}
