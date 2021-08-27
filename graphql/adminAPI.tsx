@@ -21,12 +21,12 @@ import { fetcher } from '../utils/graphql';
 export type APICallObject = Pick<
 	ApiCall,
 	| 'apiCallID'
+	| 'apiCallDate'
 	| 'apiCallError'
 	| 'apiCallResponse'
 	| 'apiCallUrl'
 	| 'apiCallWeek'
 	| 'apiCallYear'
-	| 'createdAt'
 >;
 
 type LoadAdminAPICallsResponse = {
@@ -48,12 +48,12 @@ const query = gql`
 			lastKey
 			results {
 				apiCallID
+				apiCallDate
 				apiCallError
 				apiCallResponse
 				apiCallUrl
 				apiCallWeek
 				apiCallYear
-				createdAt
 			}
 		}
 	}

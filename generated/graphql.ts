@@ -33,13 +33,12 @@ export type Scalars = {
 export type ApiCall = {
 	__typename?: 'APICall';
 	apiCallID: Scalars['String'];
+	apiCallDate: Scalars['DateTime'];
 	apiCallError?: Maybe<Scalars['String']>;
 	apiCallResponse?: Maybe<Scalars['String']>;
 	apiCallUrl: Scalars['String'];
 	apiCallWeek?: Maybe<Scalars['Int']>;
 	apiCallYear: Scalars['Int'];
-	createdAt: Scalars['DateTime'];
-	updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
 export type ApiCallResult = {
@@ -588,7 +587,6 @@ export type Query = {
 	getMyWeeklyDashboard?: Maybe<WeeklyMv>;
 	getWeeklyTiedWithMeCount: Scalars['Int'];
 	getWeeklyRankingsTotalCount: Scalars['Int'];
-	getTime: Scalars['DateTime'];
 	getWeek: Week;
 	getWeekInProgress?: Maybe<Scalars['Int']>;
 };

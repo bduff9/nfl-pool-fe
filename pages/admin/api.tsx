@@ -135,7 +135,7 @@ const AdminAPICalls: FC<AdminAPICallsProps> = () => {
 													<td>{apiCall.apiCallUrl}</td>
 													<td>{apiCall.apiCallYear}</td>
 													<td>{apiCall.apiCallWeek}</td>
-													<td>{apiCall.createdAt}</td>
+													<td>{apiCall.apiCallDate}</td>
 													<td>
 														{apiCall.apiCallResponse && (
 															<DynamicReactJson
