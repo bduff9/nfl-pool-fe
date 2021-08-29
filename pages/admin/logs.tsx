@@ -274,8 +274,7 @@ const AdminLogs: FC<AdminLogsProps> = () => {
 													<td>{log.logAction}</td>
 													<td>{log.user?.userName}</td>
 													<td>
-														{log.logMessage}
-														{log.logData}
+														{log.logMessage} {log.logData !== 'null' && log.logData}
 													</td>
 													<td>{formatTimestampForLog(log.logDate)}</td>
 												</tr>
