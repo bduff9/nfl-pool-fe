@@ -81,7 +81,7 @@ const schema = Yup.object().shape({
 		.oneOf(Object.values(PaymentMethod), 'Please select a valid account type')
 		.required('Please select an account type'),
 	userPaymentAccount: Yup.string().when('userPaymentType', {
-		is: PaymentMethod.Paypal,
+		is: PaymentMethod.Zelle,
 		then: Yup.lazy(value => {
 			if (isPhoneNumber(value)) {
 				return (Yup.string() as Yup.StringSchema & {
