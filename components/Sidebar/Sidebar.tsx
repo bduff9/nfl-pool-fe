@@ -279,7 +279,10 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 								<NavLink
 									href="/picks/viewall"
 									isNested
-									show={data?.getMyTiebreakerForWeek?.tiebreakerHasSubmitted}
+									show={
+										(data?.getWeeklyRankingsTotalCount ?? 0) > 0 &&
+										data?.getMyTiebreakerForWeek?.tiebreakerHasSubmitted
+									}
 								>
 									View All Picks
 								</NavLink>
