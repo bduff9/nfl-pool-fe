@@ -37,6 +37,14 @@ import { isPhoneNumber, isEmailAddress, isUsername } from '../../utils/strings';
 
 import styles from './FinishRegistrationForm.module.scss';
 
+Yup.addMethod(Yup.string, 'validatePhone', function () {
+	return this.test('test-phone', 'Please enter a valid phone number', value => {
+		if (value) return this.phone('US', true).isValidSync(value);
+
+		return true;
+	});
+});
+
 type FormData = {
 	userEmail: string;
 	userFirstName: string;
