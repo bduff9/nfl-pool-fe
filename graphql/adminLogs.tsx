@@ -22,7 +22,7 @@ import { fetcher } from '../utils/graphql';
 type GetAdminLogsResponse = {
 	getLogs: Pick<LogResult, 'totalCount' | 'page' | 'count'> & {
 		results: Array<
-			Pick<Log, 'logID' | 'logAction' | 'logDate' | 'logMessage'> & {
+			Pick<Log, 'logID' | 'logAction' | 'logDate' | 'logMessage' | 'logData'> & {
 				user: null | Pick<User, 'userID' | 'userName'>;
 			}
 		>;
@@ -65,6 +65,7 @@ const query = gql`
 				logAction
 				logDate
 				logMessage
+				logData
 				user {
 					userID
 					userName

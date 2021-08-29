@@ -265,6 +265,7 @@ export type Log = {
 	logAction: LogAction;
 	logDate: Scalars['DateTime'];
 	logMessage?: Maybe<Scalars['String']>;
+	logData?: Maybe<Scalars['String']>;
 	user?: Maybe<User>;
 	league?: Maybe<League>;
 	logAdded: Scalars['DateTime'];
@@ -924,7 +925,8 @@ export type WeeklyMv = {
 /** New log data */
 export type WriteLogInput = {
 	logAction: LogAction;
-	logMessage: Scalars['String'];
+	logMessage?: Maybe<Scalars['String']>;
+	logDataString?: Maybe<Scalars['String']>;
 	leagueID?: Maybe<Scalars['Int']>;
 	sub?: Maybe<Scalars['String']>;
 };
