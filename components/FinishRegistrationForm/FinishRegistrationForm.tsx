@@ -22,6 +22,7 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 // eslint-disable-next-line import/named
 import { SubmitHandler, useForm } from 'react-hook-form';
 import * as Yup from 'yup';
+import 'yup-phone';
 
 import { PaymentMethod } from '../../generated/graphql';
 import { finishRegistration } from '../../graphql/finishRegistrationForm';
