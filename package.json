@@ -77,7 +77,7 @@
     "react-json-view": "1.21.3",
     "react-loading-skeleton": "2.2.0",
     "recharts": "2.1.0",
-    "swr": "0.5.6",
+    "swr": "1.0.0",
     "swr-sync-storage": "1.0.1",
     "throttle-debounce": "3.0.1",
     "tslog": "3.2.1",
