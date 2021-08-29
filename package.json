@@ -105,7 +105,7 @@
     "@types/react-beautiful-dnd": "13.1.1",
     "@types/react-dom": "17.0.9",
     "@types/sass": "1.16.1",
-    "@types/stylelint": "13.13.1",
+    "@types/stylelint": "13.13.2",
     "@types/terser-webpack-plugin": "5.0.4",
     "@types/throttle-debounce": "2.1.0",
     "@types/yup": "0.29.13",
