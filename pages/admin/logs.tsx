@@ -273,7 +273,10 @@ const AdminLogs: FC<AdminLogsProps> = () => {
 												<tr key={`log-${log.logID}`}>
 													<td>{log.logAction}</td>
 													<td>{log.user?.userName}</td>
-													<td>{log.logMessage}</td>
+													<td>
+														{log.logMessage}
+														{log.logData}
+													</td>
 													<td>{formatTimestampForLog(log.logDate)}</td>
 												</tr>
 											))}

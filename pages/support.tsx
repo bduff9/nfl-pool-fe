@@ -100,7 +100,10 @@ const Support: FC<SupportProps> = ({ faqs, rules, slackLink, supportEmail }) => 
 	const searchAll = async (event: FormEvent<HTMLInputElement>): Promise<void> => {
 		onFAQSearch(event);
 		onRuleSearch(event);
-		await logSupportSearch(event.currentTarget.value);
+
+		if (event.currentTarget.value) {
+			await logSupportSearch(event.currentTarget.value);
+		}
 	};
 
 	const logSlackClick = async (): Promise<void> => {
