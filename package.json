@@ -127,7 +127,7 @@
     "eslint-plugin-react-hooks": "4.2.0",
     "eslint-plugin-you-dont-need-momentjs": "1.6.0",
     "husky": "7.0.1",
-    "jest": "27.0.6",
+    "jest": "27.1.0",
     "jest-css-modules": "2.1.0",
     "license-check-and-add": "4.0.2",
     "lint-staged": "11.1.2",
