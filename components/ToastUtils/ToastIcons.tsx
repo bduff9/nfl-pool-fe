@@ -16,11 +16,16 @@
 import { faCheckCircle } from '@bduff9/pro-duotone-svg-icons/faCheckCircle';
 import { faExclamationCircle } from '@bduff9/pro-duotone-svg-icons/faExclamationCircle';
 import { faExclamationTriangle } from '@bduff9/pro-duotone-svg-icons/faExclamationTriangle';
+import { faInfoCircle } from '@bduff9/pro-duotone-svg-icons/faInfoCircle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FC } from 'react';
 
 export const ErrorIcon: FC = () => (
 	<FontAwesomeIcon className="text-danger" icon={faExclamationCircle} />
+);
+
+export const InfoIcon: FC = () => (
+	<FontAwesomeIcon className="text-info" icon={faInfoCircle} />
 );
 
 export const SuccessIcon: FC = () => (

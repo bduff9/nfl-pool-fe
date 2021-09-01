@@ -21,11 +21,13 @@ import setupLogRocketReact from 'logrocket-react';
 import { Provider } from 'next-auth/client';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import React, { FC } from 'react';
-import { ToastContainer } from 'react-toastify';
+import React, { FC, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import { SWRConfig } from 'swr';
 import { syncWithLocalStorage } from 'swr-sync-storage';
 
 import Layout from '../components/Layout/Layout';
+import { InfoIcon } from '../components/ToastUtils/ToastIcons';
 import { NEXT_PUBLIC_ENV } from '../utils/constants';
 import {
 	useOfflineNotifications,
@@ -62,6 +64,8 @@ const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
 	useRouteChangeLoader();
 	useOfflineNotifications();
 
+	const [, setSlowCount] = useState<number>(0);
+
 	return (
 		<Provider session={pageProps.session}>
 			<Head>
@@ -70,11 +74,50 @@ const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
 					content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
 				/>
 			</Head>
-			<AnimateSharedLayout>
-				<Layout>
-					<Component {...pageProps} err={err} />
-				</Layout>
-			</AnimateSharedLayout>
+			<SWRConfig
+				value={{
+					dedupingInterval: 30000,
+					focusThrottleInterval: 30000,
+					loadingTimeout: 2000,
+					onLoadingSlow: () => {
+						toast.info('Hmm, this seems to be taking longer than normal', {
+							autoClose: false,
+							icon: InfoIcon,
+							position: 'bottom-right',
+							toastId: 'slow-loading-toast',
+						});
+						setSlowCount(count => count + 1);
+					},
+					onSuccess: () => {
+						setSlowCount(count => {
+							count--;
+
+							if (count === 0) {
+								toast.dismiss('slow-loading-toast');
+							}
+
+							return count;
+						});
+					},
+					onError: () => {
+						setSlowCount(count => {
+							count--;
+
+							if (count === 0) {
+								toast.dismiss('slow-loading-toast');
+							}
+
+							return count;
+						});
+					},
+				}}
+			>
+				<AnimateSharedLayout>
+					<Layout>
+						<Component {...pageProps} err={err} />
+					</Layout>
+				</AnimateSharedLayout>
+			</SWRConfig>
 			<ToastContainer theme="dark" />
 		</Provider>
 	);
