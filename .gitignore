@@ -42,3 +42,9 @@ cypress.env.json
 
 # Deepcode
 .dccache
+
+# Local SW
+sw.js
+sw.js.map
+workbox-*.js
+workbox-*.js.map
