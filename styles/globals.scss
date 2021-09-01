@@ -87,6 +87,18 @@ $spacers: (
   --toastify-color-warning: #{$warning};
   --toastify-color-error: #{$danger};
 }
+// stylelint-disable-next-line selector-class-pattern
+.Toastify__toast-body {
+  // stylelint-disable-next-line selector-class-pattern
+  .Toastify__toast-icon {
+    flex-shrink: 1;
+  }
+
+  // stylelint-disable-next-line selector-class-pattern
+  div:not(.Toastify__toast-icon) {
+    flex-grow: 1;
+  }
+}
 
 // additional custom code here
 
