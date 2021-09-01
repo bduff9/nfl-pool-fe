@@ -14,12 +14,11 @@
  * Home: https://asitewithnoname.com/
  */
 @import "../../styles/variables";
-@import "../../node_modules/bootstrap/scss/variables";
 
 .loser {
   filter: grayscale(100%);
 }
 
 .football {
-  color: $orange-800;
+  color: $football;
 }
