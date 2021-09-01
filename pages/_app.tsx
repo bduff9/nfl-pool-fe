@@ -64,7 +64,7 @@ const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
 	useRouteChangeLoader();
 	useOfflineNotifications();
 
-	const [, setSlowCount] = useState<number>(0);
+	const [, setSlowQuery] = useState<Array<string>>([]);
 
 	return (
 		<Provider session={pageProps.session}>
@@ -79,35 +79,35 @@ const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
 					dedupingInterval: 30000,
 					focusThrottleInterval: 30000,
 					loadingTimeout: 2000,
-					onLoadingSlow: () => {
+					onLoadingSlow: key => {
 						toast.info('Hmm, this seems to be taking longer than normal', {
 							autoClose: false,
 							icon: InfoIcon,
 							position: 'bottom-right',
 							toastId: 'slow-loading-toast',
 						});
-						setSlowCount(count => count + 1);
+						setSlowQuery(list => [...list, key]);
 					},
-					onSuccess: () => {
-						setSlowCount(count => {
-							count--;
+					onSuccess: (_, key) => {
+						setSlowQuery(list => {
+							const newList = list.filter(item => item !== key);
 
-							if (count <= 0) {
+							if (newList.length === 0) {
 								toast.dismiss('slow-loading-toast');
 							}
 
-							return count;
+							return newList;
 						});
 					},
-					onError: () => {
-						setSlowCount(count => {
-							count--;
+					onError: (_, key) => {
+						setSlowQuery(list => {
+							const newList = list.filter(item => item !== key);
 
-							if (count <= 0) {
+							if (newList.length === 0) {
 								toast.dismiss('slow-loading-toast');
 							}
 
-							return count;
+							return newList;
 						});
 					},
 				}}
