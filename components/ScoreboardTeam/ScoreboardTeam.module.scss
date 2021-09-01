@@ -13,10 +13,12 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+@import "../../styles/variables";
+
 .loser {
   filter: grayscale(100%);
 }
 
 .football {
-  color: #905036;
+  color: $orange-800;
 }

@@ -14,19 +14,14 @@
  * Home: https://asitewithnoname.com/
  */
 import clsx from 'clsx';
-import React, { Dispatch, FC, useState } from 'react';
+import { ClientError } from 'graphql-request';
+import React, { FC, useState } from 'react';
+import { toast } from 'react-toastify';
 
 import { sendAdminEmail } from '../../graphql/sendAdminEmails';
+import { ErrorIcon, SuccessIcon } from '../ToastUtils/ToastIcons';
 
-type SendAdminEmailsProps = {
-	setErrorMessage: Dispatch<React.SetStateAction<string | null>>;
-	setSuccessMessage: Dispatch<React.SetStateAction<string | null>>;
-};
-
-const SendAdminEmails: FC<SendAdminEmailsProps> = ({
-	setErrorMessage,
-	setSuccessMessage,
-}) => {
+const SendAdminEmails: FC = () => {
 	const [emailType, setEmailType] = useState<string>('');
 	const [sendTo, setSendTo] = useState<string>('');
 	const [userEmail, setUserEmail] = useState<string>('');
@@ -36,8 +31,33 @@ const SendAdminEmails: FC<SendAdminEmailsProps> = ({
 	const onSubmit = async (): Promise<void> => {
 		try {
 			setLoading(true);
-			await sendAdminEmail(emailType, sendTo, userEmail || null, userFirstName || null);
-			setSuccessMessage('Email has been sent successfully!');
+
+			await toast.promise(
+				sendAdminEmail(emailType, sendTo, userEmail || null, userFirstName || null),
+				{
+					error: {
+						icon: ErrorIcon,
+						render ({ data }) {
+							console.debug('~~~~~~~ERROR DATA: ', { data });
+
+							if (data instanceof ClientError) {
+								//TODO: toast all errors, not just first
+								return data.response.errors?.[0]?.message;
+							}
+
+							return 'Something went wrong, please try again';
+						},
+					},
+					pending: 'Sending...',
+					success: {
+						icon: SuccessIcon,
+						render () {
+							return 'Email has been sent successfully!';
+						},
+					},
+				},
+			);
+
 			setUserEmail('');
 			setUserFirstName('');
 		} catch (error) {
@@ -48,9 +68,6 @@ const SendAdminEmails: FC<SendAdminEmailsProps> = ({
 				userEmail,
 				userFirstName,
 			});
-			setErrorMessage(
-				error?.response?.errors?.[0]?.message ?? 'Something went wrong, please try again',
-			);
 		} finally {
 			setLoading(false);
 		}

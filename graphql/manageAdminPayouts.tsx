@@ -14,7 +14,8 @@
  * Home: https://asitewithnoname.com/
  */
 import { gql } from 'graphql-request';
-import useSWR, { SWRResponse } from 'swr';
+import useSWR from 'swr';
+import type { SWRResponse } from 'swr/dist/types';
 
 import { Payment, User } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';

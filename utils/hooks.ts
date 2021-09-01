@@ -13,7 +13,10 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import {
+import Fuse from 'fuse.js';
+import { useRouter } from 'next/router';
+import NProgress from 'nprogress';
+import React, {
 	Dispatch,
 	SetStateAction,
 	useCallback,
@@ -24,9 +27,17 @@ import {
 	FormEvent,
 	useContext,
 } from 'react';
-import Fuse from 'fuse.js';
-import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
 import { debounce } from 'throttle-debounce';
+import type { Workbox } from 'workbox-window';
+import { WorkboxLifecycleEvent } from 'workbox-window/utils/WorkboxEvent';
+
+import SWUpdatedToast from '../components/ToastUtils/SWUpdatedToast';
+import {
+	LargeWarningIcon,
+	SuccessIcon,
+	WarningIcon,
+} from '../components/ToastUtils/ToastIcons';
 
 import { TitleContext } from './context';
 import { MILLISECONDS_IN_SECOND, MINUTES_IN_HOUR, SECONDS_IN_MINUTE } from './constants';
@@ -129,6 +140,49 @@ export const useInterval = (callback: () => void, delay: number): void => {
 	}, [delay]);
 };
 
+export const useOfflineNotifications = (): void => {
+	const OFFLINE_ID = 'offline-toast-notification';
+	const ONLINE_ID = 'online-toast-notification';
+
+	const handleNetworkChange = (): void => {
+		if (window.navigator.onLine) {
+			toast.dismiss(OFFLINE_ID);
+			toast.success('You are back online!', {
+				icon: SuccessIcon,
+				position: 'bottom-center',
+				toastId: ONLINE_ID,
+			});
+		} else {
+			toast.dismiss(ONLINE_ID);
+			toast.success('You are currently offline!', {
+				autoClose: false,
+				icon: WarningIcon,
+				position: 'bottom-center',
+				toastId: OFFLINE_ID,
+			});
+		}
+	};
+
+	useEffect(() => {
+		if (typeof window !== 'undefined' && 'ononline' in window && 'onoffline' in window) {
+			if (!window.ononline) {
+				window.addEventListener('online', handleNetworkChange);
+			}
+
+			if (!window.onoffline) {
+				window.addEventListener('offline', handleNetworkChange);
+			}
+		}
+
+		return () => {
+			if (typeof window !== 'undefined' && 'ononline' in window && 'onoffline' in window) {
+				window.removeEventListener('online', handleNetworkChange);
+				window.removeEventListener('offline', handleNetworkChange);
+			}
+		};
+	}, []);
+};
+
 export const usePageTitle = (title: string): [string, Dispatch<SetStateAction<string>>] => {
 	const [currentTitle, setTitle] = useContext(TitleContext);
 
@@ -138,6 +192,118 @@ export const usePageTitle = (title: string): [string, Dispatch<SetStateAction<st
 	}, []);
 
 	return [currentTitle, setTitle];
+};
+
+export const useRouteChangeLoader = (): void => {
+	const router = useRouter();
+
+	useEffect((): (() => void) => {
+		let mounted = true;
+
+		const handleStart = (_url: string): void => {
+			if (mounted) NProgress.start();
+		};
+
+		const handleComplete = (_url: string): void => {
+			if (mounted) NProgress.done();
+		};
+
+		router.events.on('routeChangeStart', handleStart);
+		router.events.on('routeChangeComplete', handleComplete);
+		router.events.on('routeChangeError', handleComplete);
+
+		return (): void => {
+			mounted = false;
+			router.events.off('routeChangeStart', handleStart);
+			router.events.off('routeChangeComplete', handleComplete);
+			router.events.off('routeChangeError', handleComplete);
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+};
+
+declare global {
+	interface Window {
+		workbox: Workbox;
+	}
+}
+
+export const useServiceWorker = (): void => {
+	useEffect((): void => {
+		if (
+			typeof window !== 'undefined' &&
+			'serviceWorker' in navigator &&
+			window.workbox !== undefined
+		) {
+			const wb = window.workbox;
+
+			/**
+			 * Add event listeners to handle any of PWA lifecycle event
+			 * https://developers.google.com/web/tools/workbox/reference-docs/latest/module-workbox-window.Workbox#events
+			 */
+			wb.addEventListener('installed', event => {
+				console.debug(`Event ${event.type} is triggered.`);
+				console.debug(event);
+			});
+
+			wb.addEventListener('controlling', event => {
+				console.debug(`Event ${event.type} is triggered.`);
+				console.debug(event);
+			});
+
+			wb.addEventListener('activated', event => {
+				console.debug(`Event ${event.type} is triggered.`);
+				console.debug(event);
+			});
+
+			/**
+			 * A common UX pattern for progressive web apps is to show a banner when a service worker has updated and waiting to install.
+			 * NOTE: MUST set skipWaiting to false in next.config.js pwa object
+			 * https://developers.google.com/web/tools/workbox/guides/advanced-recipes#offer_a_page_reload_for_users
+			 */
+			const promptNewVersionAvailable = (event: WorkboxLifecycleEvent): void => {
+				console.debug(`Event ${event.type} is triggered.`);
+				console.debug(event);
+
+				toast.info(
+					React.createElement(SWUpdatedToast, {
+						onUpdate: () => {
+							wb.addEventListener('controlling', _event => {
+								window.location.reload();
+							});
+
+							wb.messageSkipWaiting();
+						},
+					}),
+					{
+						autoClose: false,
+						icon: LargeWarningIcon,
+						onClose: () => {
+							console.debug(
+								'User rejected to reload the web app, keep using old version. New version will be automatically load when user open the app next time.',
+							);
+						},
+						position: 'bottom-center',
+					},
+				);
+			};
+
+			wb.addEventListener('waiting', promptNewVersionAvailable);
+
+			//FIXME: ISSUE - this is not working as expected, why?
+			// I could only make message event listener work when I manually add this listener into sw.js file
+			wb.addEventListener('message', event => {
+				console.debug(`Event ${event.type} is triggered.`);
+				console.debug(event);
+			});
+			wb.addEventListener('redundant', event => {
+				console.log(`Event ${event.type} is triggered.`);
+				console.log(event);
+			});
+
+			wb.register();
+		}
+	}, []);
 };
 
 export const useWarningOnExit = (shouldWarn: boolean, warningText?: string): void => {

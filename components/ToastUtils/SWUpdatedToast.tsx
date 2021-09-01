@@ -13,26 +13,22 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import React, { FC } from 'react';
 
-import { User } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type GetUserDropdownResponse = {
-	userDropdown: Array<Pick<User, 'userID' | 'userFirstName' | 'userLastName'>>;
+type SWUpdatedToastProps = {
+	closeToast?: () => void;
+	onUpdate: () => void;
 };
 
-const query = gql`
-	query UserDropdown {
-		userDropdown: getUsersForAdmins(UserType: All) {
-			userID
-			userFirstName
-			userLastName
-		}
-	}
-`;
+const SWUpdatedToast: FC<SWUpdatedToastProps> = ({ onUpdate }) => (
+	<div className="text-center">
+		<div>There is a new version of the app. Reload now?</div>
+		<button className="btn btn-warning" onClick={onUpdate} type="button">
+			Reload
+		</button>
+	</div>
+);
 
-export const useUserDropdown = (): SWRResponse<GetUserDropdownResponse, unknown> =>
-	useSWR<GetUserDropdownResponse>(query, fetcher);
+SWUpdatedToast.whyDidYouRender = true;
+
+export default SWUpdatedToast;

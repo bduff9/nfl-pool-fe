@@ -19,8 +19,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import clsx from 'clsx';
 import React, { FC, useEffect, useState } from 'react';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-// eslint-disable-next-line import/named
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import type { SubmitHandler } from 'react-hook-form/dist/types/form';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import 'yup-phone';
 
@@ -37,10 +38,9 @@ import {
 	phonePopover,
 } from '../Popover/Popover';
 import SocialAuthButton from '../SocialAuthButton/SocialAuthButton';
+import { ErrorIcon, SuccessIcon } from '../ToastUtils/ToastIcons';
 import { GetCurrentUserResponse, GetMyNotificationsResponse } from '../../graphql/edit';
 import { useWarningOnExit } from '../../utils/hooks';
-import AlertContainer from '../AlertContainer/AlertContainer';
-import Alert from '../Alert/Alert';
 import { isEmailAddress, isPhoneNumber, isUsername } from '../../utils/strings';
 
 import styles from './EditProfileForm.module.scss';
@@ -281,8 +281,6 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 		resolver: yupResolver(schema),
 	});
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [errorMessage, setErrorMessage] = useState<null | string>(null);
-	const [successMessage, setSuccessMessage] = useState<null | string>(null);
 	const watchNotifications = watch('notifications');
 	const watchPhone = watch('userPhone');
 	const errorCount = Object.keys(errors).length;
@@ -323,16 +321,33 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 		setIsLoading(true);
 
 		try {
-			await editProfile(
-				profile,
-				notifications.map(({ hasValidPhone, ...notification }) => notification),
+			await toast.promise(
+				editProfile(
+					profile,
+					notifications.map(({ hasValidPhone, ...notification }) => notification),
+				),
+				{
+					error: {
+						icon: ErrorIcon,
+						render ({ data }) {
+							console.debug('~~~~~~~ERROR DATA: ', { data });
+
+							return 'Failed to save profile changes, please try again';
+						},
+					},
+					pending: 'Saving...',
+					success: {
+						icon: SuccessIcon,
+						render () {
+							return 'Your profile changes have been successfully saved';
+						},
+					},
+				},
 			);
 
-			setSuccessMessage('Your profile changes have been successfully saved');
 			reset(data);
 		} catch (error) {
 			console.error('Error during edit profile submit:', error);
-			setErrorMessage('Failed to save profile changes, please try again');
 		} finally {
 			setIsLoading(false);
 		}
@@ -340,28 +355,6 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} noValidate>
-			<AlertContainer>
-				{errorMessage && (
-					<Alert
-						autoHide
-						delay={5000}
-						message={errorMessage}
-						onClose={() => setErrorMessage(null)}
-						title="Error!"
-						type="danger"
-					/>
-				)}
-				{successMessage && (
-					<Alert
-						autoHide
-						delay={5000}
-						message={successMessage}
-						onClose={() => setSuccessMessage(null)}
-						title="Success!"
-						type="success"
-					/>
-				)}
-			</AlertContainer>
 			<div className="row mb-3">
 				<div className="col">
 					<div className="separator">Account Info</div>

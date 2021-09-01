@@ -37,7 +37,7 @@ $toolbar-height: 70px;
 .toolbar {
   z-index: 1000;
   height: $toolbar-height;
-  background-color: #000;
+  background-color: $black;
 
   @media (max-width: 767px) {
     z-index: 999;
@@ -52,6 +52,7 @@ $toolbar-height: 70px;
 }
 
 .spinner {
+  /* stylelint-disable-line CssSyntaxError */
   width: 10rem;
   height: 10rem;
   border-width: .75rem;

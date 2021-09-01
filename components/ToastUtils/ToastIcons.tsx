@@ -13,14 +13,24 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+import { faCheckCircle } from '@bduff9/pro-duotone-svg-icons/faCheckCircle';
+import { faExclamationCircle } from '@bduff9/pro-duotone-svg-icons/faExclamationCircle';
+import { faExclamationTriangle } from '@bduff9/pro-duotone-svg-icons/faExclamationTriangle';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { FC } from 'react';
 
-const AlertContainer: FC = ({ children }) => (
-	<div className="toast-container position-fixed top-0 end-0" style={{ zIndex: 1 }}>
-		{children}
-	</div>
+export const ErrorIcon: FC = () => (
+	<FontAwesomeIcon className="text-danger" icon={faExclamationCircle} />
 );
 
-AlertContainer.whyDidYouRender = true;
+export const SuccessIcon: FC = () => (
+	<FontAwesomeIcon className="text-success" icon={faCheckCircle} />
+);
 
-export default AlertContainer;
+export const WarningIcon: FC = () => (
+	<FontAwesomeIcon className="text-warning" icon={faExclamationTriangle} />
+);
+
+export const LargeWarningIcon: FC = () => (
+	<FontAwesomeIcon className="text-warning" icon={faExclamationTriangle} size="3x" />
+);

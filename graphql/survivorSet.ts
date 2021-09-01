@@ -13,8 +13,9 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR, { SWRResponse } from 'swr';
+import { ClientError, gql } from 'graphql-request';
+import useSWR from 'swr';
+import type { SWRResponse } from 'swr/dist/types';
 
 import { Game, SurvivorPick, Team } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
@@ -77,9 +78,10 @@ const query = gql`
 
 export const useMakeSurvivorPickView = (
 	week: number,
-): SWRResponse<MakeSurvivorPickViewResponse, unknown> =>
-	useSWR<MakeSurvivorPickViewResponse, { week: number }>([query, week], () =>
-		fetcher(query, { week }),
+): SWRResponse<MakeSurvivorPickViewResponse, ClientError> =>
+	useSWR<MakeSurvivorPickViewResponse, ClientError>(
+		[query, week],
+		(): Promise<MakeSurvivorPickViewResponse> => fetcher(query, { week }),
 	);
 
 type MakePickMutationResult = {

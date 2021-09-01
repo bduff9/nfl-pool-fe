@@ -15,11 +15,9 @@
  */
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { SkeletonTheme } from 'react-loading-skeleton';
 
-import Alert from '../../components/Alert/Alert';
-import AlertContainer from '../../components/AlertContainer/AlertContainer';
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
 import { TUser } from '../../models/User';
@@ -37,44 +35,13 @@ type AdminPaymentsProps = {
 };
 
 const AdminPayments: FC<AdminPaymentsProps> = () => {
-	const [errorMessage, setErrorMessage] = useState<null | string>(null);
-	const [successMessage, setSuccessMessage] = useState<null | string>(null);
-
 	return (
 		<Authenticated isAdmin>
 			<CustomHead title="Manage Payments" />
-			<AlertContainer>
-				{errorMessage && (
-					<Alert
-						autoHide
-						delay={5000}
-						message={errorMessage}
-						onClose={() => setErrorMessage(null)}
-						title="Error!"
-						type="danger"
-					/>
-				)}
-				{successMessage && (
-					<Alert
-						autoHide
-						delay={5000}
-						message={successMessage}
-						onClose={() => setSuccessMessage(null)}
-						title="Success!"
-						type="success"
-					/>
-				)}
-			</AlertContainer>
 			<div className={clsx('text-dark', 'my-3', 'mx-2', 'col', 'min-vh-100')}>
 				<SkeletonTheme>
-					<ManageAdminPayments
-						setErrorMessage={setErrorMessage}
-						setSuccessMessage={setSuccessMessage}
-					/>
-					<ManageAdminPayouts
-						setErrorMessage={setErrorMessage}
-						setSuccessMessage={setSuccessMessage}
-					/>
+					<ManageAdminPayments />
+					<ManageAdminPayouts />
 				</SkeletonTheme>
 			</div>
 		</Authenticated>

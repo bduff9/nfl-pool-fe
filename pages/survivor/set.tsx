@@ -17,10 +17,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@bduff9/pro-duotone-svg-icons/faInfoCircle';
 import { faAt } from '@bduff9/pro-duotone-svg-icons/faAt';
 import clsx from 'clsx';
+import { ClientError } from 'graphql-request';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import { toast } from 'react-toastify';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
@@ -38,8 +40,7 @@ import styles from '../../styles/survivor/set.module.scss';
 import { getEmptyArray } from '../../utils/arrays';
 import TeamDetail from '../../components/TeamDetail/TeamDetail';
 import SurvivorTeam from '../../components/SurvivorTeam/SurvivorTeam';
-import Alert from '../../components/Alert/Alert';
-import AlertContainer from '../../components/AlertContainer/AlertContainer';
+import { ErrorIcon, SuccessIcon } from '../../components/ToastUtils/ToastIcons';
 
 type SurvivorTeamLoaderProps = {
 	isHome?: boolean;
@@ -141,8 +142,6 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 	const { data, error, isValidating, mutate } = useMakeSurvivorPickView(selectedWeek);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [selectedGame, setSelectedGame] = useState<null | number>(null);
-	const [errorMessage, setErrorMessage] = useState<null | string>(null);
-	const [successMessage, setSuccessMessage] = useState<null | string>(null);
 
 	useEffect(() => {
 		setBackgroundLoading(!!data && isValidating);
@@ -168,13 +167,31 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 
 				return { ...data, getMySurvivorPicks };
 			}, false);
-			await makeSurvivorPick(selectedWeek, gameID, teamID);
-			setSuccessMessage(`Successfully saved survivor pick for week ${selectedWeek}`);
+
+			await toast.promise(makeSurvivorPick(selectedWeek, gameID, teamID), {
+				error: {
+					icon: ErrorIcon,
+					render ({ data }) {
+						console.debug('~~~~~~~ERROR DATA: ', { data });
+
+						if (data instanceof ClientError) {
+							//TODO: toast all errors, not just first
+							return data.response.errors?.[0]?.message;
+						}
+
+						return 'Something went wrong, please try again';
+					},
+				},
+				pending: 'Saving pick...',
+				success: {
+					icon: SuccessIcon,
+					render () {
+						return `Successfully saved survivor pick for week ${selectedWeek}`;
+					},
+				},
+			});
 		} catch (error) {
 			console.error('Error making survivor pick', { error, gameID, selectedWeek, teamID });
-			setErrorMessage(
-				error?.response?.errors?.[0]?.message ?? 'Something went wrong, please try again',
-			);
 		} finally {
 			await mutate();
 		}
@@ -201,28 +218,6 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 	return (
 		<Authenticated isSurvivorPlayer>
 			<CustomHead title="Make Survivor Picks" />
-			<AlertContainer>
-				{errorMessage && (
-					<Alert
-						autoHide
-						delay={5000}
-						message={errorMessage}
-						onClose={() => setErrorMessage(null)}
-						title="Failed to set survivor pick"
-						type="danger"
-					/>
-				)}
-				{successMessage && (
-					<Alert
-						autoHide
-						delay={5000}
-						message={successMessage}
-						onClose={() => setSuccessMessage(null)}
-						title="Success!"
-						type="success"
-					/>
-				)}
-			</AlertContainer>
 			<div className="content-bg text-dark my-3 mx-2 pt-5 pt-md-3 min-vh-100 pb-4 col">
 				<SkeletonTheme>
 					<div className="row min-vh-100">

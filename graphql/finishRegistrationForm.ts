@@ -24,11 +24,6 @@ import { fetcher } from '../utils/graphql';
 
 type FinishRegistrationResponse = Pick<User, 'userDoneRegistering' | 'userTrusted'>;
 
-// class FinishRegistrationResponse implements Partial<User> {
-// 	userDoneRegistering!: boolean;
-// 	userTrusted!: boolean;
-// }
-
 type TFinishRegistrationResult = {
 	finishRegistration: FinishRegistrationResponse;
 };

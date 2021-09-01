@@ -13,10 +13,9 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { User } from '@sentry/nextjs';
 import { gql } from 'graphql-request';
 
-import { Email, EmailResult } from '../generated/graphql';
+import { Email, EmailResult, User } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
 export type EmailResponse = Pick<

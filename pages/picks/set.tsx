@@ -19,6 +19,7 @@ import { faUserRobot } from '@bduff9/pro-duotone-svg-icons/faUserRobot';
 import { faSave } from '@bduff9/pro-duotone-svg-icons/faSave';
 import { faCloudUpload } from '@bduff9/pro-duotone-svg-icons/faCloudUpload';
 import clsx from 'clsx';
+import { ClientError } from 'graphql-request';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, {
@@ -29,12 +30,12 @@ import React, {
 	useEffect,
 	useState,
 } from 'react';
-import { DragDropContext, Droppable, DropResult, DragStart } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import type { DropResult, DragStart } from 'react-beautiful-dnd';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { SkeletonTheme } from 'react-loading-skeleton';
+import { toast } from 'react-toastify';
 
-import Alert from '../../components/Alert/Alert';
-import AlertContainer from '../../components/AlertContainer/AlertContainer';
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
 import {
@@ -63,6 +64,7 @@ import { useWarningOnExit } from '../../utils/hooks';
 import PickGameLoader from '../../components/PickGame/PickGameLoader';
 import PickGame, { PointBankLoader, Point } from '../../components/PickGame/PickGame';
 import { updateSidebarData } from '../../graphql/sidebar';
+import { ErrorIcon, SuccessIcon } from '../../components/ToastUtils/ToastIcons';
 
 export type LoadingType = 'autopick' | 'reset' | 'save' | 'submit';
 
@@ -86,8 +88,6 @@ const MakePicks: FC<MakePicksProps> = () => {
 		mutate: tiebreakerMutate,
 	} = useMyTiebreakerForWeek(selectedWeek);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
-	const [errorMessage, setErrorMessage] = useState<null | string>(null);
-	const [successMessage, setSuccessMessage] = useState<null | string>(null);
 	const [selectedGame, setSelectedGame] = useState<null | number>(null);
 	const [dragGameID, setDragGameID] = useState<null | string>(null);
 	const [tiebreakerLastScoreError, setTiebreakerLastScoreError] = useState<null | string>(
@@ -183,9 +183,18 @@ const MakePicks: FC<MakePicksProps> = () => {
 					sourceData,
 					teamID,
 				});
-				setErrorMessage(
-					error?.response?.errors?.[0]?.message ?? 'Something went wrong, please try again',
-				);
+
+				if (error instanceof ClientError) {
+					error.response.errors?.forEach(error => {
+						toast.error(error.message, {
+							icon: ErrorIcon,
+						});
+					});
+				} else {
+					toast.error('Something went wrong, please try again', {
+						icon: ErrorIcon,
+					});
+				}
 			} finally {
 				await picksMutate();
 				setPicksUpdating(false);
@@ -276,9 +285,18 @@ const MakePicks: FC<MakePicksProps> = () => {
 				selectedWeek,
 				tiebreakerLastScore,
 			});
-			setErrorMessage(
-				error?.response?.errors?.[0]?.message ?? 'Something went wrong, please try again',
-			);
+
+			if (error instanceof ClientError) {
+				error.response.errors?.forEach(error => {
+					toast.error(error.message, {
+						icon: ErrorIcon,
+					});
+				});
+			} else {
+				toast.error('Something went wrong, please try again', {
+					icon: ErrorIcon,
+				});
+			}
 		} finally {
 			await tiebreakerMutate();
 			setPicksUpdating(false);
@@ -306,13 +324,31 @@ const MakePicks: FC<MakePicksProps> = () => {
 
 				return { ...data, getMyPicksForWeek };
 			}, false);
-			await resetMyPicksForWeek(selectedWeek);
-			setSuccessMessage(`Successfully reset your picks for week ${selectedWeek}`);
+
+			await toast.promise(resetMyPicksForWeek(selectedWeek), {
+				error: {
+					icon: ErrorIcon,
+					render ({ data }) {
+						console.debug('~~~~~~~ERROR DATA: ', { data });
+
+						if (data instanceof ClientError) {
+							//TODO: toast all errors, not just first
+							return data.response.errors?.[0]?.message;
+						}
+
+						return 'Something went wrong, please try again';
+					},
+				},
+				pending: 'Resetting...',
+				success: {
+					icon: SuccessIcon,
+					render () {
+						return `Successfully reset your picks for week ${selectedWeek}`;
+					},
+				},
+			});
 		} catch (error) {
 			console.error('Error resetting user picks', { error, selectedWeek });
-			setErrorMessage(
-				error?.response?.errors?.[0]?.message ?? 'Something went wrong, please try again',
-			);
 		} finally {
 			setPicksUpdating(false);
 			setLoading(null);
@@ -324,13 +360,31 @@ const MakePicks: FC<MakePicksProps> = () => {
 		try {
 			setLoading('autopick');
 			setPicksUpdating(true);
-			await autoPickMyPicks(selectedWeek, type);
-			setSuccessMessage(`Successfully auto picked your picks for week ${selectedWeek}`);
+
+			await toast.promise(autoPickMyPicks(selectedWeek, type), {
+				error: {
+					icon: ErrorIcon,
+					render ({ data }) {
+						console.debug('~~~~~~~ERROR DATA: ', { data });
+
+						if (data instanceof ClientError) {
+							//TODO: toast all errors, not just first
+							return data.response.errors?.[0]?.message;
+						}
+
+						return 'Something went wrong, please try again';
+					},
+				},
+				pending: 'Auto picking...',
+				success: {
+					icon: SuccessIcon,
+					render () {
+						return `Successfully auto picked your picks for week ${selectedWeek}`;
+					},
+				},
+			});
 		} catch (error) {
 			console.error('Error auto picking user picks', { error, selectedWeek });
-			setErrorMessage(
-				error?.response?.errors?.[0]?.message ?? 'Something went wrong, please try again',
-			);
 		} finally {
 			setPicksUpdating(false);
 			await picksMutate();
@@ -342,17 +396,38 @@ const MakePicks: FC<MakePicksProps> = () => {
 		try {
 			setLoading('save');
 			setPicksUpdating(true);
-			await validateMyPicks(
-				selectedWeek,
-				available,
-				tiebreakerData?.getMyTiebreakerForWeek.tiebreakerLastScore ?? 0,
+
+			await toast.promise(
+				validateMyPicks(
+					selectedWeek,
+					available,
+					tiebreakerData?.getMyTiebreakerForWeek.tiebreakerLastScore ?? 0,
+				),
+				{
+					error: {
+						icon: ErrorIcon,
+						render ({ data }) {
+							console.debug('~~~~~~~ERROR DATA: ', { data });
+
+							if (data instanceof ClientError) {
+								//TODO: toast all errors, not just first
+								return data.response.errors?.[0]?.message;
+							}
+
+							return 'Something went wrong, please try again';
+						},
+					},
+					pending: 'Saving...',
+					success: {
+						icon: SuccessIcon,
+						render () {
+							return `Successfully saved your picks for week ${selectedWeek}`;
+						},
+					},
+				},
 			);
-			setSuccessMessage(`Successfully saved your picks for week ${selectedWeek}`);
 		} catch (error) {
 			console.error('Error saving user picks', { error, selectedWeek });
-			setErrorMessage(
-				error?.response?.errors?.[0]?.message ?? 'Something went wrong, please try again',
-			);
 		} finally {
 			setPicksUpdating(false);
 			setLoading(null);
@@ -366,13 +441,17 @@ const MakePicks: FC<MakePicksProps> = () => {
 			setPicksUpdating(true);
 
 			if (!picksData || !tiebreakerData) {
-				throw new Error('No pick data found, please try again later');
+				toast.error('No pick data found, please try again later', { icon: ErrorIcon });
+
+				return;
 			}
 
 			if (available.length > 0) {
-				throw new Error(
-					'Missing point value found! Please use all points before submitting',
-				);
+				toast.error('Missing point value found! Please use all points before submitting', {
+					icon: ErrorIcon,
+				});
+
+				return;
 			}
 
 			const lastGameHasStarted = new Date(lastGame?.gameKickoff) < new Date();
@@ -381,20 +460,41 @@ const MakePicks: FC<MakePicksProps> = () => {
 				tiebreakerData.getMyTiebreakerForWeek.tiebreakerLastScore < 1 &&
 				!lastGameHasStarted
 			) {
-				throw new Error('Tiebreaker last score must be greater than zero');
+				toast.error('Tiebreaker last score must be greater than zero', {
+					icon: ErrorIcon,
+				});
+
+				return;
 			}
 
-			await submitMyPicks(selectedWeek);
-			setSuccessMessage(`Successfully submitted your picks for week ${selectedWeek}`);
+			await toast.promise(submitMyPicks(selectedWeek), {
+				error: {
+					icon: ErrorIcon,
+					render ({ data }) {
+						console.debug('~~~~~~~ERROR DATA: ', { data });
+
+						if (data instanceof ClientError) {
+							//TODO: toast all errors, not just first
+							return data.response.errors?.[0]?.message ?? data.message;
+						}
+
+						return 'Something went wrong, please try again';
+					},
+				},
+				pending: 'Submitting...',
+				success: {
+					icon: SuccessIcon,
+					render () {
+						return `Successfully submitted your picks for week ${selectedWeek}`;
+					},
+				},
+			});
+
 			setPicksUpdating(false);
 			await Promise.all([updateSidebarData(selectedWeek), tiebreakerMutate()]);
 		} catch (error) {
 			console.error('Error saving user picks', { error, selectedWeek });
-			setErrorMessage(
-				error?.response?.errors?.[0]?.message ??
-					error.message ??
-					'Something went wrong, please try again',
-			);
+
 			await tiebreakerMutate();
 		} finally {
 			setPicksUpdating(false);
@@ -405,28 +505,6 @@ const MakePicks: FC<MakePicksProps> = () => {
 	return (
 		<Authenticated isRegistered>
 			<CustomHead title={`Make week ${selectedWeek} picks`} />
-			<AlertContainer>
-				{errorMessage && (
-					<Alert
-						autoHide
-						delay={5000}
-						message={errorMessage}
-						onClose={() => setErrorMessage(null)}
-						title="Error!"
-						type="danger"
-					/>
-				)}
-				{successMessage && (
-					<Alert
-						autoHide
-						delay={5000}
-						message={successMessage}
-						onClose={() => setSuccessMessage(null)}
-						title="Success!"
-						type="success"
-					/>
-				)}
-			</AlertContainer>
 			<div
 				className={clsx(
 					'content-bg',

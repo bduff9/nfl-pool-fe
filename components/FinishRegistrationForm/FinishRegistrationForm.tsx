@@ -19,8 +19,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import clsx from 'clsx';
 import React, { FC, useEffect, useState } from 'react';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-// eslint-disable-next-line import/named
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
+import type { SubmitHandler } from 'react-hook-form/dist/types/form';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import 'yup-phone';
 
@@ -28,12 +29,11 @@ import { PaymentMethod } from '../../generated/graphql';
 import { finishRegistration } from '../../graphql/finishRegistrationForm';
 import { survivorPopover, paymentPopover } from '../Popover/Popover';
 import SocialAuthButton from '../SocialAuthButton/SocialAuthButton';
+import { ErrorIcon, SuccessIcon } from '../ToastUtils/ToastIcons';
 import { TTrueFalse } from '../../utils/types';
 import { getFullName, getFirstName, getLastName } from '../../utils/user';
 import { GetCurrentUserResponse } from '../../graphql/create';
 import { useWarningOnExit } from '../../utils/hooks';
-import AlertContainer from '../AlertContainer/AlertContainer';
-import Alert from '../Alert/Alert';
 import { isPhoneNumber, isEmailAddress, isUsername } from '../../utils/strings';
 
 import styles from './FinishRegistrationForm.module.scss';
@@ -173,7 +173,6 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 		!currentUser.userTrusted && !!currentUser.userReferredByRaw,
 	);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
-	const [errorMessage, setErrorMessage] = useState<null | string>(null);
 	const [watchName, watchFirstName, watchLastName] = watch([
 		'userName',
 		'userFirstName',
@@ -209,10 +208,29 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 				rest.userName = getFullName(rest);
 			}
 
-			const result = await finishRegistration({
-				...rest,
-				userPlaysSurvivor: userPlaysSurvivor === 'true',
-			});
+			const result = await toast.promise(
+				finishRegistration({
+					...rest,
+					userPlaysSurvivor: userPlaysSurvivor === 'true',
+				}),
+				{
+					error: {
+						icon: ErrorIcon,
+						render ({ data }) {
+							console.debug('~~~~~~~ERROR DATA: ', { data });
+
+							return 'Error when trying to save your registration, please try again';
+						},
+					},
+					pending: 'Submitting...',
+					success: {
+						icon: SuccessIcon,
+						render () {
+							return 'Your registration has been successfully submitted';
+						},
+					},
+				},
+			);
 
 			if (
 				result.finishRegistration.userDoneRegistering &&
@@ -228,7 +246,6 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 			setShowUntrusted(true);
 		} catch (error) {
 			console.error('Error during finish registration submit:', error);
-			setErrorMessage('Error when trying to save your registration, please try again');
 		} finally {
 			setIsLoading(false);
 		}
@@ -247,18 +264,6 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} noValidate>
-			<AlertContainer>
-				{errorMessage && (
-					<Alert
-						autoHide
-						delay={5000}
-						message={errorMessage}
-						onClose={() => setErrorMessage(null)}
-						title="Error!"
-						type="danger"
-					/>
-				)}
-			</AlertContainer>
 			<div className="row mb-3">
 				<div className="col">
 					<label htmlFor="userEmail" className="form-label required">

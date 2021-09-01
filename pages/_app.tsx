@@ -21,13 +21,17 @@ import setupLogRocketReact from 'logrocket-react';
 import { Provider } from 'next-auth/client';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
-import NProgress from 'nprogress';
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
+import { ToastContainer } from 'react-toastify';
 import { syncWithLocalStorage } from 'swr-sync-storage';
 
 import Layout from '../components/Layout/Layout';
 import { NEXT_PUBLIC_ENV } from '../utils/constants';
+import {
+	useOfflineNotifications,
+	useRouteChangeLoader,
+	useServiceWorker,
+} from '../utils/hooks';
 
 import '../styles/globals.scss';
 // Keep selectors for #nprogress, .bar, .peg, .spinner, & .spinner-icon
@@ -54,31 +58,9 @@ if (typeof window !== 'undefined') {
 type SentryProps = { err: unknown };
 
 const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
-	const router = useRouter();
-
-	useEffect((): (() => void) => {
-		let mounted = true;
-
-		const handleStart = (_url: string): void => {
-			if (mounted) NProgress.start();
-		};
-
-		const handleComplete = (_url: string): void => {
-			if (mounted) NProgress.done();
-		};
-
-		router.events.on('routeChangeStart', handleStart);
-		router.events.on('routeChangeComplete', handleComplete);
-		router.events.on('routeChangeError', handleComplete);
-
-		return (): void => {
-			mounted = false;
-			router.events.off('routeChangeStart', handleStart);
-			router.events.off('routeChangeComplete', handleComplete);
-			router.events.off('routeChangeError', handleComplete);
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	useServiceWorker();
+	useRouteChangeLoader();
+	useOfflineNotifications();
 
 	return (
 		<Provider session={pageProps.session}>
@@ -93,6 +75,7 @@ const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
 					<Component {...pageProps} err={err} />
 				</Layout>
 			</AnimateSharedLayout>
+			<ToastContainer theme="dark" />
 		</Provider>
 	);
 };

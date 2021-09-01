@@ -14,6 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import clsx from 'clsx';
+import { ClientError } from 'graphql-request';
 import React, {
 	Dispatch,
 	FC,
@@ -24,10 +25,12 @@ import React, {
 	useState,
 } from 'react';
 import Skeleton from 'react-loading-skeleton';
+import { toast } from 'react-toastify';
 
 import { setPrizeAmounts, usePayoutAmounts } from '../../graphql/manageAdminPayments';
 import { WEEKS_IN_SEASON } from '../../utils/constants';
 import { BackgroundLoadingContext } from '../../utils/context';
+import { ErrorIcon, SuccessIcon } from '../ToastUtils/ToastIcons';
 
 import styles from './ManageAdminPayments.module.scss';
 
@@ -88,15 +91,7 @@ const CalculatedRow: FC<CalculatedRowProps> = ({
 	);
 };
 
-type ManageAdminPaymentsProps = {
-	setErrorMessage: Dispatch<React.SetStateAction<string | null>>;
-	setSuccessMessage: Dispatch<React.SetStateAction<string | null>>;
-};
-
-const ManageAdminPayments: FC<ManageAdminPaymentsProps> = ({
-	setErrorMessage,
-	setSuccessMessage,
-}) => {
+const ManageAdminPayments: FC = () => {
 	const { data, error, isValidating, mutate } = usePayoutAmounts();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [weekly1stPrize, setWeekly1stPrize] = useState<null | number>(null);
@@ -175,7 +170,9 @@ const ManageAdminPayments: FC<ManageAdminPaymentsProps> = ({
 
 	const onSubmit = async (): Promise<void> => {
 		if (!weekly1stPrize || !weekly2ndPrize) {
-			setErrorMessage('Invalid weekly prize value(s)');
+			toast.error('Invalid weekly prize value(s)', {
+				icon: ErrorIcon,
+			});
 
 			return;
 		}
@@ -183,7 +180,9 @@ const ManageAdminPayments: FC<ManageAdminPaymentsProps> = ({
 		const weeklyPrizeStr = JSON.stringify([0, weekly1stPrize, weekly2ndPrize]);
 
 		if (!overall1stPrize || !overall2ndPrize || !overall3rdPrize) {
-			setErrorMessage('Invalid overall prize value(s)');
+			toast.error('Invalid overall prize value(s)', {
+				icon: ErrorIcon,
+			});
 
 			return;
 		}
@@ -196,7 +195,9 @@ const ManageAdminPayments: FC<ManageAdminPaymentsProps> = ({
 		]);
 
 		if (!survivor1stPrize || !survivor2ndPrize) {
-			setErrorMessage('Invalid survivor prize value(s)');
+			toast.error('Invalid survivor prize value(s)', {
+				icon: ErrorIcon,
+			});
 
 			return;
 		}
@@ -219,8 +220,32 @@ const ManageAdminPayments: FC<ManageAdminPaymentsProps> = ({
 
 				return { ...data, overallPrizes, survivorPrizes, weeklyPrizes };
 			}, false);
-			await setPrizeAmounts(weeklyPrizeStr, overallPrizeStr, survivorPrizeStr);
-			setSuccessMessage('Successfully set prize amounts!');
+
+			await toast.promise(
+				setPrizeAmounts(weeklyPrizeStr, overallPrizeStr, survivorPrizeStr),
+				{
+					error: {
+						icon: ErrorIcon,
+						render ({ data }) {
+							console.debug('~~~~~~~ERROR DATA: ', { data });
+
+							if (data instanceof ClientError) {
+								//TODO: toast all errors, not just first
+								return data.response.errors?.[0]?.message;
+							}
+
+							return 'Something went wrong, please try again';
+						},
+					},
+					pending: 'Setting prizes...',
+					success: {
+						icon: SuccessIcon,
+						render () {
+							return 'Successfully set prize amounts!';
+						},
+					},
+				},
+			);
 		} catch (error) {
 			console.error('Error setting prize amounts', {
 				error,
@@ -232,9 +257,6 @@ const ManageAdminPayments: FC<ManageAdminPaymentsProps> = ({
 				weekly1stPrize,
 				weekly2ndPrize,
 			});
-			setErrorMessage(
-				error?.response?.errors?.[0]?.message ?? 'Something went wrong, please try again',
-			);
 		} finally {
 			await mutate();
 		}

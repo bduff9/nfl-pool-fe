@@ -14,7 +14,8 @@
  * Home: https://asitewithnoname.com/
  */
 import { gql } from 'graphql-request';
-import useSWR, { mutate, SWRResponse } from 'swr';
+import useSWR, { mutate } from 'swr';
+import type { SWRResponse } from 'swr/dist/types';
 
 import { Tiebreaker, Week } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';

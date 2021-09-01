@@ -13,9 +13,11 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+@import "../../styles/variables";
+
 .overall-dashboard {
   @media (max-width: 767px) {
-    border-bottom: 1px solid #71717a;
+    border-bottom: 1px solid $gray-4;
   }
 }
 

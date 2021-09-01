@@ -23,13 +23,13 @@ import { faTwitter } from '@fortawesome/free-brands-svg-icons/faTwitter';
 import { faCaretRight } from '@fortawesome/free-solid-svg-icons/faCaretRight';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
+import { ClientError } from 'graphql-request';
 import { GetServerSideProps } from 'next';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import { toast } from 'react-toastify';
 
-import Alert from '../../components/Alert/Alert';
-import AlertContainer from '../../components/AlertContainer/AlertContainer';
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
 import {
@@ -57,6 +57,7 @@ import styles from '../../styles/admin/users.module.scss';
 import AdminUserPaymentModal from '../../components/AdminUserPaymentModal/AdminUserPaymentModal';
 import AdminUserTrustModal from '../../components/AdminUserTrustModal/AdminUserTrustModal';
 import { BackgroundLoadingContext } from '../../utils/context';
+import { ErrorIcon, SuccessIcon } from '../../components/ToastUtils/ToastIcons';
 
 type AdminUserStatusProps = {
 	user: Pick<
@@ -156,8 +157,6 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 	const [userType, setUserType] = useState<AdminUserType>(AdminUserType.Registered);
 	const { data, error, isValidating, mutate } = useAdminUsers(userType);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
-	const [errorMessage, setErrorMessage] = useState<null | string>(null);
-	const [successMessage, setSuccessMessage] = useState<null | string>(null);
 	const [userExpanded, setUserExpanded] = useState<null | number>(null);
 	const [modalOpen, setModalOpen] = useState<
 		| null
@@ -179,7 +178,9 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 		amountPaid: number,
 	): Promise<void> => {
 		if (!userID) {
-			setErrorMessage('Missing user ID to update, please try again');
+			toast.error('Missing user ID to update, please try again', {
+				icon: ErrorIcon,
+			});
 
 			return;
 		}
@@ -201,18 +202,37 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 
 				return { getUsersForAdmins };
 			}, false);
-			await setUserPaid(userID, amountPaid);
+
+			await toast.promise(setUserPaid(userID, amountPaid), {
+				error: {
+					icon: ErrorIcon,
+					render ({ data }) {
+						console.debug('~~~~~~~ERROR DATA: ', { data });
+
+						if (data instanceof ClientError) {
+							//TODO: toast all errors, not just first
+							return data.response.errors?.[0]?.message;
+						}
+
+						return 'Something went wrong, please try again';
+					},
+				},
+				pending: 'Saving...',
+				success: {
+					icon: SuccessIcon,
+					render () {
+						return 'Successfully updated user paid amount!';
+					},
+				},
+			});
+
 			setModalOpen(null);
-			setSuccessMessage('Successfully updated user paid amount!');
 		} catch (error) {
 			console.error('Error updating user amount paid', {
 				amountPaid,
 				error,
 				userID,
 			});
-			setErrorMessage(
-				error?.response?.errors?.[0]?.message ?? 'Something went wrong, please try again',
-			);
 		} finally {
 			await mutate();
 		}
@@ -223,13 +243,17 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 		referredBy: null | number,
 	): Promise<void> => {
 		if (!userID) {
-			setErrorMessage('Missing user ID to update, please try again');
+			toast.error('Missing user ID to update, please try again', {
+				icon: ErrorIcon,
+			});
 
 			return;
 		}
 
 		if (!referredBy) {
-			setErrorMessage('Missing referred by user ID, please try again');
+			toast.error('Missing referred by user ID, please try again', {
+				icon: ErrorIcon,
+			});
 
 			return;
 		}
@@ -252,18 +276,37 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 
 				return { getUsersForAdmins };
 			}, false);
-			await trustUser(userID, referredBy);
+
+			await toast.promise(trustUser(userID, referredBy), {
+				error: {
+					icon: ErrorIcon,
+					render ({ data }) {
+						console.debug('~~~~~~~ERROR DATA: ', { data });
+
+						if (data instanceof ClientError) {
+							//TODO: toast all errors, not just first
+							return data.response.errors?.[0]?.message;
+						}
+
+						return 'Something went wrong, please try again';
+					},
+				},
+				pending: 'Saving...',
+				success: {
+					icon: SuccessIcon,
+					render () {
+						return 'Successfully marked user as trusted!';
+					},
+				},
+			});
+
 			setModalOpen(null);
-			setSuccessMessage('Successfully marked user as trusted!');
 		} catch (error) {
 			console.error('Error marking user as trusted', {
 				error,
 				referredBy,
 				userID,
 			});
-			setErrorMessage(
-				error?.response?.errors?.[0]?.message ?? 'Something went wrong, please try again',
-			);
 		} finally {
 			await mutate();
 		}
@@ -271,53 +314,55 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 
 	const deleteUser = async (userID: number): Promise<void> => {
 		try {
-			await removeUser(userID);
-			setSuccessMessage(`Successfully removed untrusted user!`);
+			await toast.promise(removeUser(userID), {
+				error: {
+					icon: ErrorIcon,
+					render ({ data }) {
+						console.debug('~~~~~~~ERROR DATA: ', { data });
+
+						return 'Failed to remove untrusted user from pool, please see logs for more details';
+					},
+				},
+				pending: 'Deleting...',
+				success: {
+					icon: SuccessIcon,
+					render () {
+						return 'Successfully removed untrusted user!';
+					},
+				},
+			});
 		} catch (error) {
 			console.error('Failed to remove untrusted user:', { error, userID });
-			setErrorMessage(
-				`Failed to remove untrusted user from pool, please see logs for more details`,
-			);
 		}
 	};
 
 	const updateSurvivor = async (userID: number, isPlaying: boolean): Promise<void> => {
 		try {
-			await toggleSurvivor(userID, isPlaying);
-			setSuccessMessage(`Successfully updated user's survivor status!`);
+			await toast.promise(toggleSurvivor(userID, isPlaying), {
+				error: {
+					icon: ErrorIcon,
+					render ({ data }) {
+						console.debug('~~~~~~~ERROR DATA: ', { data });
+
+						return `Failed to update user's survivor status, please see logs for more details`;
+					},
+				},
+				pending: 'Saving...',
+				success: {
+					icon: SuccessIcon,
+					render () {
+						return `Successfully updated user's survivor status!`;
+					},
+				},
+			});
 		} catch (error) {
 			console.error('Failed to update survivor status:', { error, isPlaying, userID });
-			setErrorMessage(
-				`Failed to update user's survivor status, please see logs for more details`,
-			);
 		}
 	};
 
 	return (
 		<Authenticated isAdmin>
 			<CustomHead title="User Admin" />
-			<AlertContainer>
-				{errorMessage && (
-					<Alert
-						autoHide
-						delay={5000}
-						message={errorMessage}
-						onClose={() => setErrorMessage(null)}
-						title="Error!"
-						type="danger"
-					/>
-				)}
-				{successMessage && (
-					<Alert
-						autoHide
-						delay={5000}
-						message={successMessage}
-						onClose={() => setSuccessMessage(null)}
-						title="Success!"
-						type="success"
-					/>
-				)}
-			</AlertContainer>
 			<div
 				className={clsx(
 					'content-bg',

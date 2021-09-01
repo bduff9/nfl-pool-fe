@@ -39,7 +39,11 @@ module.exports = {
 				fontFace: true,
 				keyframes: true,
 				rejected: true,
-				safelist: ['html', 'body', '__next', 'form-control:disabled'],
+				safelist: {
+					deep: [],
+					greedy: [/^Toastify/],
+					standard: ['html', 'body', '__next', 'form-control:disabled'],
+				},
 			},
 		],
 	],

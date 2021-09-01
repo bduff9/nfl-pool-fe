@@ -16,12 +16,12 @@
 import { faDatabase } from '@bduff9/pro-duotone-svg-icons/faDatabase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
+import { ClientError } from 'graphql-request';
 import { GetServerSideProps } from 'next';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import { toast } from 'react-toastify';
 
-import Alert from '../../components/Alert/Alert';
-import AlertContainer from '../../components/AlertContainer/AlertContainer';
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
 import { TUser } from '../../models/User';
@@ -36,6 +36,7 @@ import { restoreBackup, useAdminBackups } from '../../graphql/adminBackups';
 import { formatDateForBackup } from '../../utils/dates';
 import { BackgroundLoadingContext } from '../../utils/context';
 import styles from '../../styles/admin/backups.module.scss';
+import { ErrorIcon, SuccessIcon } from '../../components/ToastUtils/ToastIcons';
 
 type AdminBackupsProps = {
 	user: TUser;
@@ -44,8 +45,6 @@ type AdminBackupsProps = {
 const AdminBackups: FC<AdminBackupsProps> = () => {
 	const { data, error, isValidating } = useAdminBackups();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
-	const [errorMessage, setErrorMessage] = useState<null | string>(null);
-	const [successMessage, setSuccessMessage] = useState<null | string>(null);
 	const [loading, setLoading] = useState<null | string>(null);
 
 	useEffect(() => {
@@ -60,16 +59,33 @@ const AdminBackups: FC<AdminBackupsProps> = () => {
 	const restoreABackup = async (backupName: string): Promise<void> => {
 		try {
 			setLoading(backupName);
-			await restoreBackup(backupName);
-			setSuccessMessage(`Successfully restored backup ${backupName}!`);
+			await toast.promise(restoreBackup(backupName), {
+				error: {
+					icon: ErrorIcon,
+					render ({ data }) {
+						console.debug('~~~~~~~ERROR DATA: ', { data });
+
+						if (data instanceof ClientError) {
+							//TODO: toast all errors, not just first
+							return data.response.errors?.[0]?.message;
+						}
+
+						return 'Something went wrong, please try again';
+					},
+				},
+				pending: 'Restoring...',
+				success: {
+					icon: SuccessIcon,
+					render () {
+						return `Successfully restored backup ${backupName}!`;
+					},
+				},
+			});
 		} catch (error) {
 			console.error('Error updating user amount paid', {
 				backupName,
 				error,
 			});
-			setErrorMessage(
-				error?.response?.errors?.[0]?.message ?? 'Something went wrong, please try again',
-			);
 		} finally {
 			setLoading(null);
 		}
@@ -78,28 +94,6 @@ const AdminBackups: FC<AdminBackupsProps> = () => {
 	return (
 		<Authenticated isAdmin>
 			<CustomHead title="Backups Admin" />
-			<AlertContainer>
-				{errorMessage && (
-					<Alert
-						autoHide
-						delay={5000}
-						message={errorMessage}
-						onClose={() => setErrorMessage(null)}
-						title="Error!"
-						type="danger"
-					/>
-				)}
-				{successMessage && (
-					<Alert
-						autoHide
-						delay={5000}
-						message={successMessage}
-						onClose={() => setSuccessMessage(null)}
-						title="Success!"
-						type="success"
-					/>
-				)}
-			</AlertContainer>
 			<div
 				className={clsx(
 					'content-bg',

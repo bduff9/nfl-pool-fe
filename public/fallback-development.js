@@ -13,26 +13,39 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+var __webpack_exports__ = {};
 
-import { User } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
 
-type GetUserDropdownResponse = {
-	userDropdown: Array<Pick<User, 'userID' | 'userFirstName' | 'userLastName'>>;
+self.fallback = async request => {
+  // https://developer.mozilla.org/en-US/docs/Web/API/RequestDestination
+  switch (request.destination) {
+    case 'document':
+      if (true) return caches.match("/_offline", {
+        ignoreSearch: true
+      });
+
+    case 'image':
+      if (false) {}
+
+    case 'audio':
+      if (false) {}
+
+    case 'video':
+      if (false) {}
+
+    case 'font':
+      if (false) {}
+
+    case '':
+      if (false) {}
+
+    default:
+      return Response.error();
+  }
+
+  ;
 };
-
-const query = gql`
-	query UserDropdown {
-		userDropdown: getUsersForAdmins(UserType: All) {
-			userID
-			userFirstName
-			userLastName
-		}
-	}
-`;
-
-export const useUserDropdown = (): SWRResponse<GetUserDropdownResponse, unknown> =>
-	useSWR<GetUserDropdownResponse>(query, fetcher);
+/******/ })()
+;

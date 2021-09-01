@@ -16,23 +16,18 @@
 import { faDollarSign } from '@bduff9/pro-duotone-svg-icons/faDollarSign';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
-import React, { Dispatch, FC, useContext, useEffect, useState } from 'react';
+import { ClientError } from 'graphql-request';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
+import { toast } from 'react-toastify';
 
 import { getEmptyArray } from '../../utils/arrays';
 import { insertUserPayout, useWinners, Winner } from '../../graphql/manageAdminPayouts';
 import AdminUserPayoutModal from '../AdminUserPayoutModal/AdminUserPayoutModal';
 import { BackgroundLoadingContext } from '../../utils/context';
+import { ErrorIcon, SuccessIcon } from '../ToastUtils/ToastIcons';
 
-type ManageAdminPayoutsProps = {
-	setErrorMessage: Dispatch<React.SetStateAction<string | null>>;
-	setSuccessMessage: Dispatch<React.SetStateAction<string | null>>;
-};
-
-const ManageAdminPayouts: FC<ManageAdminPayoutsProps> = ({
-	setErrorMessage,
-	setSuccessMessage,
-}) => {
+const ManageAdminPayouts: FC = () => {
 	const { data, error, isValidating, mutate } = useWinners();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [modalOpen, setModalOpen] = useState<null | Winner>(null);
@@ -51,7 +46,9 @@ const ManageAdminPayouts: FC<ManageAdminPayoutsProps> = ({
 		amount: number,
 	): Promise<void> => {
 		if (!userID) {
-			setErrorMessage('Missing user ID to update, please try again');
+			toast.error('Missing user ID to update, please try again', {
+				icon: ErrorIcon,
+			});
 
 			return;
 		}
@@ -74,18 +71,37 @@ const ManageAdminPayouts: FC<ManageAdminPayoutsProps> = ({
 
 				return { getUserPaymentsForAdmin };
 			}, false);
-			await insertUserPayout(userID, amount);
+
+			await toast.promise(insertUserPayout(userID, amount), {
+				error: {
+					icon: ErrorIcon,
+					render ({ data }) {
+						console.debug('~~~~~~~ERROR DATA: ', { data });
+
+						if (data instanceof ClientError) {
+							//TODO: toast all errors, not just first
+							return data.response.errors?.[0]?.message;
+						}
+
+						return 'Something went wrong, please try again';
+					},
+				},
+				pending: 'Saving...',
+				success: {
+					icon: SuccessIcon,
+					render () {
+						return 'Successfully updated user payout amount!';
+					},
+				},
+			});
+
 			setModalOpen(null);
-			setSuccessMessage('Successfully updated user payout amount!');
 		} catch (error) {
 			console.error('Error updating user amount paid out', {
 				amount,
 				error,
 				userID,
 			});
-			setErrorMessage(
-				error?.response?.errors?.[0]?.message ?? 'Something went wrong, please try again',
-			);
 		} finally {
 			await mutate();
 		}
