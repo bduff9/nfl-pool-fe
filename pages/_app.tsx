@@ -92,7 +92,7 @@ const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
 						setSlowCount(count => {
 							count--;
 
-							if (count === 0) {
+							if (count <= 0) {
 								toast.dismiss('slow-loading-toast');
 							}
 
@@ -103,7 +103,7 @@ const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
 						setSlowCount(count => {
 							count--;
 
-							if (count === 0) {
+							if (count <= 0) {
 								toast.dismiss('slow-loading-toast');
 							}
 
