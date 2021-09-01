@@ -22,9 +22,9 @@ type SWUpdatedToastProps = {
 
 const SWUpdatedToast: FC<SWUpdatedToastProps> = ({ onUpdate }) => (
 	<div className="text-center">
-		<div>There is a new version of the app. Reload now?</div>
+		<div>A new version of the app is available.</div>
 		<button className="btn btn-warning" onClick={onUpdate} type="button">
-			Reload
+			Refresh
 		</button>
 	</div>
 );

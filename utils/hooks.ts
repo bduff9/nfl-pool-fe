@@ -279,8 +279,8 @@ export const useServiceWorker = (): void => {
 						autoClose: false,
 						icon: LargeWarningIcon,
 						onClose: () => {
-							console.debug(
-								'User rejected to reload the web app, keep using old version. New version will be automatically load when user open the app next time.',
+							console.warn(
+								'User rejected to reload the web app, keep using old version. New version will be automatically loaded when user opens the app next time.',
 							);
 						},
 						position: 'bottom-center',
