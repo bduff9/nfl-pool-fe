@@ -130,6 +130,12 @@ export type EmailResult = {
 	results: Array<Email>;
 };
 
+/** The group to send an email to */
+export enum EmailSendTo {
+	All = 'All',
+	New = 'New',
+}
+
 /** The sent message type */
 export enum EmailType {
 	Interest = 'interest',
@@ -343,7 +349,7 @@ export type MutationRestoreBackupArgs = {
 export type MutationSendAdminEmailArgs = {
 	UserFirstname?: Maybe<Scalars['String']>;
 	UserEmail?: Maybe<Scalars['String']>;
-	SendTo: Scalars['String'];
+	SendTo: EmailSendTo;
 	EmailType: EmailType;
 };
 

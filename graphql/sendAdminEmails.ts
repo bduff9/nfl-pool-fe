@@ -31,7 +31,7 @@ type SendAdminEmailResult = {
 const sendAdminEmailMutation = gql`
 	mutation SendAdminEmail(
 		$emailType: EmailType!
-		$sendTo: String!
+		$sendTo: EmailSendTo!
 		$userEmail: String
 		$userFirstName: String
 	) {

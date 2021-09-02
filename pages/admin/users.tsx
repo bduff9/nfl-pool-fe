@@ -314,6 +314,16 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 
 	const deleteUser = async (userID: number): Promise<void> => {
 		try {
+			mutate(data => {
+				if (!data) return data;
+
+				const getUsersForAdmins = data.getUsersForAdmins.filter(
+					user => user.userID !== userID,
+				);
+
+				return { getUsersForAdmins };
+			}, false);
+
 			await toast.promise(removeUser(userID), {
 				error: {
 					icon: ErrorIcon,
@@ -331,6 +341,8 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 					},
 				},
 			});
+
+			await mutate();
 		} catch (error) {
 			console.error('Failed to remove untrusted user:', { error, userID });
 		}
@@ -338,6 +350,23 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 
 	const updateSurvivor = async (userID: number, isPlaying: boolean): Promise<void> => {
 		try {
+			mutate(data => {
+				if (!data) return data;
+
+				const getUsersForAdmins = data.getUsersForAdmins.map(user => {
+					if (user.userID === userID) {
+						return {
+							...user,
+							userPlaysSurvivor: isPlaying,
+						};
+					}
+
+					return user;
+				});
+
+				return { getUsersForAdmins };
+			}, false);
+
 			await toast.promise(toggleSurvivor(userID, isPlaying), {
 				error: {
 					icon: ErrorIcon,
@@ -355,6 +384,8 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 					},
 				},
 			});
+
+			await mutate();
 		} catch (error) {
 			console.error('Failed to update survivor status:', { error, isPlaying, userID });
 		}
