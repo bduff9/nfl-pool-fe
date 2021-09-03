@@ -61,10 +61,16 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 			) : (
 				<div>
 					{!data.getMySurvivorDashboard ? (
-						data.isAliveInSurvivor && !data.getMySurvivorPickForWeek?.team ? (
-							<div className="text-danger">You have not submitted your picks yet!</div>
+						!data.isAliveInSurvivor ? (
+							<></>
+						) : !data.getMySurvivorPickForWeek?.team ? (
+							<div className="text-danger">
+								You have not submitted your survivor pick for this week yet!
+							</div>
 						) : (
-							<div className="text-success">You have submitted your picks</div>
+							<div className="text-success">
+								You have submitted your survivor pick for this week
+							</div>
 						)
 					) : (
 						<Link href="/survivor/view">
