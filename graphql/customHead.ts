@@ -14,6 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { gql } from 'graphql-request';
+import { Session } from 'next-auth';
 import useSWR from 'swr';
 import type { SWRResponse } from 'swr/dist/types';
 
@@ -29,5 +30,7 @@ type GetMyAlertsResponse = {
 	getMyAlerts: Array<string>;
 };
 
-export const useMyAlertsQuery = (): SWRResponse<GetMyAlertsResponse, unknown> =>
-	useSWR<GetMyAlertsResponse>(getMyAlertsQuery, fetcher);
+export const useMyAlertsQuery = (
+	session: null | Session,
+): SWRResponse<GetMyAlertsResponse, unknown> =>
+	useSWR<GetMyAlertsResponse>(session ? getMyAlertsQuery : null, fetcher);

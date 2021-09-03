@@ -14,6 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import clsx from 'clsx';
+import { useSession } from 'next-auth/client';
 import Head from 'next/head';
 import React, { FC, useContext, useEffect, useRef, useState } from 'react';
 
@@ -27,8 +28,9 @@ type CustomHeadProps = {
 };
 
 const CustomHead: FC<CustomHeadProps> = ({ title }) => {
+	const [session] = useSession();
 	const [pageTitle] = usePageTitle(title);
-	const { data, error, isValidating } = useMyAlertsQuery();
+	const { data, error, isValidating } = useMyAlertsQuery(session);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [titleOverride, setTitleOverride] = useState<string>('');
 	const interval = useRef<number>();
@@ -55,7 +57,9 @@ const CustomHead: FC<CustomHeadProps> = ({ title }) => {
 			window.clearInterval(interval.current);
 		}
 
-		return () => window.clearInterval(interval.current);
+		return () => {
+			if (interval.current) window.clearInterval(interval.current);
+		};
 	}, [data?.getMyAlerts]);
 
 	return (
