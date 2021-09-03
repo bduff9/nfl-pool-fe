@@ -777,7 +777,10 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 													<td className="d-none d-md-table-cell">
 														{user.userEmailVerified && (
 															<FontAwesomeIcon
-																className={styles['text-email']}
+																className={clsx(
+																	styles['account-icon'],
+																	styles['text-email'],
+																)}
 																icon={faEnvelope}
 																title="Email sign in"
 															/>
@@ -786,7 +789,10 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 															account => account.accountProviderID === 'google',
 														) && (
 															<FontAwesomeIcon
-																className={clsx('ms-2', styles['text-google'])}
+																className={clsx(
+																	styles['account-icon'],
+																	styles['text-google'],
+																)}
 																icon={faGoogle}
 																title="Google sign in"
 															/>
@@ -795,7 +801,10 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 															account => account.accountProviderID === 'twitter',
 														) && (
 															<FontAwesomeIcon
-																className={clsx('ms-2', styles['text-twitter'])}
+																className={clsx(
+																	styles['account-icon'],
+																	styles['text-twitter'],
+																)}
 																icon={faTwitter}
 																title="Twitter sign in"
 															/>

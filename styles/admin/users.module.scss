@@ -27,6 +27,10 @@
   transition: transform .25s;
 }
 
+.account-icon:not(:first-child) {
+  margin-left: .5rem;
+}
+
 .text-email {
   color: $yellow-5;
 }
