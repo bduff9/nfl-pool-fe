@@ -68,7 +68,7 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 								You have not submitted your survivor pick yet!
 							</div>
 						) : (
-							<div className="text-success">You have submitted your survivor pick week</div>
+							<div className="text-success">You have submitted your survivor pick</div>
 						)}
 						{data.getMySurvivorDashboard && (
 							<Link href="/survivor/view">
