@@ -108,7 +108,7 @@ const AdminUserStatus: FC<AdminUserStatusProps> = ({ user }) => {
 		return <span className="text-warning">Untrusted</span>;
 	}
 
-	return <span className="text-info">Verified</span>;
+	return <span className="text-muted">Verified</span>;
 };
 
 type AdminUserNotificationsProps = {
