@@ -44,9 +44,10 @@ import { MILLISECONDS_IN_SECOND, MINUTES_IN_HOUR, SECONDS_IN_MINUTE } from './co
 import { getTimeRemaining, getTimeRemainingString } from './dates';
 
 export const useCountdown = (countdownTo: Date | null): string => {
-	const end = useRef<Date>(countdownTo ?? new Date());
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const end = useMemo(() => countdownTo ?? new Date(), [countdownTo?.getTime() ?? null]);
 	const interval = useRef<number>();
-	const timeParts = getTimeRemaining(end.current);
+	const timeParts = getTimeRemaining(end);
 	const [remaining, setRemaining] = useState<string>(getTimeRemainingString(timeParts));
 	const { days, hours, minutes, seconds, total } = timeParts;
 
@@ -55,7 +56,7 @@ export const useCountdown = (countdownTo: Date | null): string => {
 
 		if (total < MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR) {
 			interval.current = window.setInterval(() => {
-				const timeParts = getTimeRemaining(end.current);
+				const timeParts = getTimeRemaining(end);
 
 				setRemaining(getTimeRemainingString(timeParts));
 			}, 1000);
@@ -64,7 +65,7 @@ export const useCountdown = (countdownTo: Date | null): string => {
 		}
 
 		return undefined;
-	}, [days, hours, minutes, seconds, total]);
+	}, [days, end, hours, minutes, seconds, total]);
 
 	return remaining;
 };

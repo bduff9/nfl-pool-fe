@@ -64,7 +64,7 @@ const WeeklyDashboard: FC = () => {
 			)}
 		>
 			<motion.h2 className="mb-0" layoutId="weeklyRankTitle">
-				Week {selectedWeek} Rank
+				Week {selectedWeek > 0 && selectedWeek} Rank
 			</motion.h2>
 			{data && (
 				<>
