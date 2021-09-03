@@ -98,15 +98,17 @@ type AdminUserStatusProps = {
 };
 
 const AdminUserStatus: FC<AdminUserStatusProps> = ({ user }) => {
-	if (!user.userEmailVerified) return <span className="text-danger">Unverified</span>;
-
-	if (!user.userTrusted) return <span className="text-warning">Untrusted</span>;
-
-	if (!user.userDoneRegistering) {
-		return <span className="text-info">Verified</span>;
+	if (user.userDoneRegistering) {
+		return <span className="text-success">Registered</span>;
 	}
 
-	return <span className="text-success">Registered</span>;
+	if (!user.userTrusted) {
+		if (!user.userEmailVerified) return <span className="text-danger">Unverified</span>;
+
+		return <span className="text-warning">Untrusted</span>;
+	}
+
+	return <span className="text-info">Verified</span>;
 };
 
 type AdminUserNotificationsProps = {
@@ -773,11 +775,13 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 														{user.userAutoPickStrategy}: {user.userAutoPicksLeft}
 													</td>
 													<td className="d-none d-md-table-cell">
-														<FontAwesomeIcon
-															className={styles['text-email']}
-															icon={faEnvelope}
-															title="Email sign in"
-														/>
+														{user.userEmailVerified && (
+															<FontAwesomeIcon
+																className={styles['text-email']}
+																icon={faEnvelope}
+																title="Email sign in"
+															/>
+														)}
 														{user.accounts.find(
 															account => account.accountProviderID === 'google',
 														) && (
