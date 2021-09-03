@@ -20,3 +20,14 @@
     border-bottom: 1px solid $gray-4;
   }
 }
+
+.weekly-links {
+  @media (min-width: 768px) {
+    height: 4.5rem;
+  }
+}
+
+.weekly-results {
+  padding-right: 7px;
+  padding-left: 8px;
+}

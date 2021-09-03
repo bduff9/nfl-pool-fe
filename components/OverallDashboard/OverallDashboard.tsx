@@ -67,11 +67,11 @@ const OverallDashboard: FC = () => {
 				<div>Season has not started yet!</div>
 			) : (
 				<div>
-					<Link href="/overall">
-						<a className={clsx('d-md-inline-block', styles['overall-link'])}>
-							View Details
-						</a>
-					</Link>
+					<div className={clsx(styles['overall-links'])}>
+						<Link href="/overall">
+							<a className="d-md-inline-block">View Details</a>
+						</Link>
+					</div>
 					<RankingPieChart
 						data={[
 							{
@@ -98,7 +98,10 @@ const OverallDashboard: FC = () => {
 						]}
 						layoutId="overallRankingPieChart"
 					/>
-					<motion.h2 className="mt-5" layoutId="myOverallResultsTitle">
+					<motion.h2
+						className={clsx('mt-5', styles['overall-results'])}
+						layoutId="myOverallResultsTitle"
+					>
 						My Overall Results
 					</motion.h2>
 					<ProgressChart

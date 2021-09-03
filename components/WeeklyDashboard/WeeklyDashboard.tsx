@@ -66,8 +66,10 @@ const WeeklyDashboard: FC = () => {
 			<motion.h2 className="mb-0" layoutId="weeklyRankTitle">
 				Week {selectedWeek > 0 && selectedWeek} Rank
 			</motion.h2>
-			{data && (
-				<>
+			{!data ? (
+				<OverallDashboardLoader />
+			) : (
+				<div className={clsx(styles['weekly-links'])}>
 					{data.getMyTiebreakerForWeek?.tiebreakerHasSubmitted ? (
 						<>
 							<div className="text-success">You have submitted your picks</div>
@@ -83,17 +85,17 @@ const WeeklyDashboard: FC = () => {
 							</Link>
 						</>
 					)}
-				</>
+					{data.getMyWeeklyDashboard === null ? (
+						<h3 className="mt-5">{timeRemaining || 'Week has started'}</h3>
+					) : (
+						<Link href="/weekly">
+							<a className="d-block">View Details</a>
+						</Link>
+					)}
+				</div>
 			)}
-			{!data ? (
-				<OverallDashboardLoader />
-			) : data.getMyWeeklyDashboard === null ? (
-				<h3 className="mt-5">{timeRemaining || 'Week has started'}</h3>
-			) : (
+			{data?.getMyWeeklyDashboard && (
 				<div>
-					<Link href="/weekly">
-						<a>View Details</a>
-					</Link>
 					<RankingPieChart
 						data={[
 							{
@@ -120,7 +122,10 @@ const WeeklyDashboard: FC = () => {
 						]}
 						layoutId="weeklyRankingPieChart"
 					/>
-					<motion.h2 className="mt-5" layoutId="myWeeklyResultsTitle">
+					<motion.h2
+						className={clsx('mt-5', styles['weekly-results'])}
+						layoutId="myWeeklyResultsTitle"
+					>
 						My Week {selectedWeek} Results
 					</motion.h2>
 					<ProgressChart

@@ -60,36 +60,35 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 				<OverallDashboardLoader />
 			) : (
 				<div>
-					{!data.getMySurvivorDashboard ? (
-						!data.isAliveInSurvivor ? (
+					<div className={clsx(styles['survivor-links'])}>
+						{!data.isAliveInSurvivor ? (
 							<></>
 						) : !data.getMySurvivorPickForWeek?.team ? (
 							<div className="text-danger">
-								You have not submitted your survivor pick for this week yet!
+								You have not submitted your survivor pick yet!
 							</div>
 						) : (
-							<div className="text-success">
-								You have submitted your survivor pick for this week
-							</div>
-						)
-					) : (
-						<Link href="/survivor/view">
-							<a
-								className={clsx(
-									'd-block',
-									(!data.isAliveInSurvivor || data.getMySurvivorPickForWeek?.team) &&
-										'mb-md-5',
-								)}
-							>
-								View Details
-							</a>
-						</Link>
-					)}
-					{data.isAliveInSurvivor && !data.getMySurvivorPickForWeek?.team && (
-						<Link href="/survivor/set">
-							<a className={clsx('d-block', 'mb-4')}>Click here to make your pick</a>
-						</Link>
-					)}
+							<div className="text-success">You have submitted your survivor pick week</div>
+						)}
+						{data.getMySurvivorDashboard && (
+							<Link href="/survivor/view">
+								<a
+									className={clsx(
+										'd-block',
+										(!data.isAliveInSurvivor || data.getMySurvivorPickForWeek?.team) &&
+											'mb-md-5',
+									)}
+								>
+									View Details
+								</a>
+							</Link>
+						)}
+						{data.isAliveInSurvivor && !data.getMySurvivorPickForWeek?.team && (
+							<Link href="/survivor/set">
+								<a className={clsx('d-block', 'mb-4')}>Click here to make your pick</a>
+							</Link>
+						)}
+					</div>
 					<SurvivorDashboardIcon
 						isAlive={data.isAliveInSurvivor}
 						isPlaying={user.hasSurvivor}
@@ -99,7 +98,7 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 
 					{data.getSurvivorStatus !== SeasonStatus.NotStarted && (
 						<>
-							<h2 className={styles['results-title']}>Survivor Pool Results</h2>
+							<h2>Survivor Pool Results</h2>
 							<ProgressChart
 								correct={data.survivorAliveForWeek}
 								incorrect={data.survivorDeadForWeek}

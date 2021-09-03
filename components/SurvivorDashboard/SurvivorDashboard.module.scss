@@ -21,6 +21,8 @@
   }
 }
 
-.results-title {
-  margin-top: 2rem;
+.survivor-links {
+  @media (min-width: 768px) {
+    height: 6rem;
+  }
 }

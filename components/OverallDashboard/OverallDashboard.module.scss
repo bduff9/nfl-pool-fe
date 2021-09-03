@@ -21,8 +21,13 @@
   }
 }
 
-.overall-link {
+.overall-links {
   @media (min-width: 768px) {
-    margin-bottom: 47px;
+    height: 4.5rem;
   }
+}
+
+.overall-results {
+  padding-right: 19px;
+  padding-left: 20px;
 }
