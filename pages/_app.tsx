@@ -28,7 +28,7 @@ import { syncWithLocalStorage } from 'swr-sync-storage';
 
 import Layout from '../components/Layout/Layout';
 import { InfoIcon } from '../components/ToastUtils/ToastIcons';
-import { NEXT_PUBLIC_ENV } from '../utils/constants';
+import { NEXT_PUBLIC_LOGROCKET_PROJ, NEXT_PUBLIC_ENV } from '../utils/constants';
 import {
 	useOfflineNotifications,
 	useRouteChangeLoader,
@@ -44,7 +44,7 @@ if (typeof window !== 'undefined') {
 }
 
 if (typeof window !== 'undefined') {
-	LogRocket.init('xba8kt/nfl-pool-fe');
+	LogRocket.init(NEXT_PUBLIC_LOGROCKET_PROJ ?? '');
 	setupLogRocketReact(LogRocket);
 	LogRocket.getSessionURL(sessionURL => {
 		Sentry.configureScope(scope => {

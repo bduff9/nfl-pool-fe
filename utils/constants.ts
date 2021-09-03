@@ -13,6 +13,8 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+export const NEXT_PUBLIC_LOGROCKET_PROJ = process.env.NEXT_PUBLIC_LOGROCKET_PROJ;
+
 export const NEXT_PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const NEXT_PUBLIC_ENV = process.env.NEXT_PUBLIC_ENV;
