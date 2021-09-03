@@ -381,7 +381,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 				<div className="col">
 					<label htmlFor="userPlaysSurvivor" className="form-label required">
 						Add on survivor game?&nbsp;
-						<OverlayTrigger overlay={survivorPopover} placement="auto" trigger="click">
+						<OverlayTrigger overlay={survivorPopover} placement="auto" trigger="focus">
 							<button className={styles['btn-popover']} type="button">
 								<FontAwesomeIcon icon={faQuestionCircle} size="sm" />
 							</button>
