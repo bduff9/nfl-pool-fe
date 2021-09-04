@@ -142,6 +142,7 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 	const { data, error, isValidating, mutate } = useMakeSurvivorPickView(selectedWeek);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [selectedGame, setSelectedGame] = useState<null | number>(null);
+	const [loading, setLoading] = useState<null | number>(null);
 
 	useEffect(() => {
 		setBackgroundLoading(!!data && isValidating);
@@ -149,7 +150,10 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 	}, [data, isValidating]);
 
 	const setSurvivorPick = async (gameID: number, teamID: number): Promise<void> => {
+		if (loading) return;
+
 		try {
+			setLoading(teamID);
 			mutate(data => {
 				if (!data) return data;
 
@@ -194,6 +198,7 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 			console.error('Error making survivor pick', { error, gameID, selectedWeek, teamID });
 		} finally {
 			await mutate();
+			setLoading(null);
 		}
 	};
 
