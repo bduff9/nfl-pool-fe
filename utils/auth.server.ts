@@ -120,8 +120,6 @@ export const isSignedInSSR = async (
 	const { req, res } = context;
 	const session = await getSession({ req });
 
-	console.log('~~~~~~~~~> req.url: ', req.url);
-
 	if (!session) {
 		const redirectUrl = req.url?.includes('auth') ? '/' : req.url ?? '/';
 

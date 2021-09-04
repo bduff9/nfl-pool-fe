@@ -32,7 +32,7 @@ import SocialAuthButton from '../SocialAuthButton/SocialAuthButton';
 import { ErrorIcon, SuccessIcon } from '../ToastUtils/ToastIcons';
 import { TTrueFalse } from '../../utils/types';
 import { getFullName, getFirstName, getLastName } from '../../utils/user';
-import { GetCurrentUserResponse } from '../../graphql/create';
+import { CurrentUserResponse, GetCurrentUserResponse } from '../../graphql/create';
 import { useWarningOnExit } from '../../utils/hooks';
 import { isPhoneNumber, isEmailAddress, isUsername } from '../../utils/strings';
 
@@ -137,7 +137,7 @@ type FinishRegistrationFormProps = {
 	currentWeek: number;
 	hasGoogle: boolean;
 	hasTwitter: boolean;
-	revalidateUser: () => Promise<void>;
+	revalidateUser: () => Promise<CurrentUserResponse | undefined>;
 };
 
 const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({

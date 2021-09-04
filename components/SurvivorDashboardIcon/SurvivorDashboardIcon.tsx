@@ -44,7 +44,7 @@ const SurvivorDashboardIcon: FC<SurvivorDashboardIconProps> = ({
 				<div className={clsx('mx-auto', styles.icon)}>
 					<FontAwesomeIcon className="h-100 w-100" icon={faUsersClass} />
 				</div>
-				<h3>Observer</h3>
+				<h3 className="position-relative">Observer</h3>
 			</>
 		);
 	}
@@ -62,7 +62,7 @@ const SurvivorDashboardIcon: FC<SurvivorDashboardIconProps> = ({
 						alt={`${lastPick.teamCity} ${lastPick.teamName}`}
 						title={`${lastPick.teamCity} ${lastPick.teamName}`}
 					/>
-					<h3 className="mt-n4 fw-bold text-danger">You&lsquo;re Out</h3>
+					<h3 className="mt-n4 fw-bold text-danger position-relative">You&lsquo;re Out</h3>
 				</>
 			);
 		}
@@ -75,7 +75,7 @@ const SurvivorDashboardIcon: FC<SurvivorDashboardIconProps> = ({
 						<FontAwesomeIcon className="h-100 w-100 text-danger" icon={faQuestion} />
 					</span>
 				</div>
-				<h3 className="fw-bold text-danger">You&lsquo;re Out</h3>
+				<h3 className="fw-bold text-danger position-relative">You&lsquo;re Out</h3>
 			</>
 		);
 	}
@@ -89,7 +89,7 @@ const SurvivorDashboardIcon: FC<SurvivorDashboardIconProps> = ({
 						<FontAwesomeIcon className="h-100 w-100 text-danger" icon={faQuestion} />
 					</span>
 				</div>
-				<h3 className="fw-bold text-danger">No Pick Made</h3>
+				<h3 className="fw-bold text-danger position-relative">No Pick Made</h3>
 			</>
 		);
 	}
@@ -104,7 +104,7 @@ const SurvivorDashboardIcon: FC<SurvivorDashboardIconProps> = ({
 				alt={`${pickForWeek.teamCity} ${pickForWeek.teamName}`}
 				title={`${pickForWeek.teamCity} ${pickForWeek.teamName}`}
 			/>
-			<h3 className="mt-n4 fw-bold text-success">Still Alive</h3>
+			<h3 className="mt-n4 fw-bold text-success position-relative">Still Alive</h3>
 		</>
 	);
 };

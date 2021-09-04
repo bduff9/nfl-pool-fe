@@ -33,9 +33,10 @@ export type GetCurrentUserResponse = Pick<
 	| 'userPlaysSurvivor'
 	| 'userReferredByRaw'
 	| 'userTrusted'
+	| 'userDoneRegistering'
 >;
 
-type CurrentUserResponse = {
+export type CurrentUserResponse = {
 	getCurrentUser: GetCurrentUserResponse;
 	getCurrentWeek: number;
 	hasGoogle: boolean;
@@ -56,6 +57,7 @@ const getCurrentUserQuery = gql`
 			userPlaysSurvivor
 			userReferredByRaw
 			userTrusted
+			userDoneRegistering
 		}
 		getCurrentWeek
 		hasGoogle: hasSocialLinked(Type: "google")

@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import React, { FC, useCallback, useContext, useEffect } from 'react';
+import React, { FC, useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
@@ -39,9 +39,6 @@ const CreateProfile: FC<CreateProfileProps> = ({ user }) => {
 	const router = useRouter();
 	const { data, error, isValidating, mutate } = useFinishRegistrationQuery();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
-	const revalidateUser = useCallback(async () => {
-		await mutate();
-	}, [mutate]);
 
 	useEffect(() => {
 		setBackgroundLoading(!!data && isValidating);
@@ -52,7 +49,7 @@ const CreateProfile: FC<CreateProfileProps> = ({ user }) => {
 		console.error('Error when loading finish registration form', error);
 	}
 
-	if (user.doneRegistering) {
+	if (user.doneRegistering || data?.getCurrentUser.userDoneRegistering) {
 		router.replace('/users/edit');
 
 		return <></>;
@@ -68,7 +65,7 @@ const CreateProfile: FC<CreateProfileProps> = ({ user }) => {
 						currentWeek={data.getCurrentWeek}
 						hasGoogle={data.hasGoogle}
 						hasTwitter={data.hasTwitter}
-						revalidateUser={revalidateUser}
+						revalidateUser={mutate}
 					/>
 				) : (
 					<FinishRegistrationLoader />
