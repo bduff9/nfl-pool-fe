@@ -203,12 +203,11 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 	};
 
 	if (typeof window !== 'undefined') {
-		// TODO: uncomment this before committing
-		// if (selectedWeek <= (data?.getWeekInProgress ?? 0)) {
-		// 	router.replace('/survivor/view');
+		if (selectedWeek <= (data?.getWeekInProgress ?? 0)) {
+			router.replace('/survivor/view');
 
-		// 	return <></>;
-		// }
+			return <></>;
+		}
 
 		if (data?.isAliveInSurvivor === false) {
 			router.replace('/');
