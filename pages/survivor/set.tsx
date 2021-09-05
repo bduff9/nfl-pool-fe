@@ -203,11 +203,12 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 	};
 
 	if (typeof window !== 'undefined') {
-		if (selectedWeek <= (data?.getWeekInProgress ?? 0)) {
-			router.replace('/survivor/view');
+		// TODO: uncomment this before committing
+		// if (selectedWeek <= (data?.getWeekInProgress ?? 0)) {
+		// 	router.replace('/survivor/view');
 
-			return <></>;
-		}
+		// 	return <></>;
+		// }
 
 		if (data?.isAliveInSurvivor === false) {
 			router.replace('/');
@@ -275,6 +276,7 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 												</div>
 											</div>
 											<SurvivorTeam
+												loading={loading}
 												onClick={() =>
 													setSurvivorPick(game.gameID, game.visitorTeam.teamID)
 												}
@@ -286,6 +288,7 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 											/>
 											<SurvivorTeam
 												isHome
+												loading={loading}
 												onClick={() => setSurvivorPick(game.gameID, game.homeTeam.teamID)}
 												pick={data.getMySurvivorPicks.find(
 													pick => pick.team?.teamID === game.homeTeam.teamID,

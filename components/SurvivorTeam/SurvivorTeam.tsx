@@ -25,6 +25,7 @@ import styles from './SurvivorTeam.module.scss';
 type SurvivorTeamProps = {
 	isHome?: boolean;
 	isOnBye?: boolean;
+	loading?: null | number;
 	onClick?: () => void;
 	pick?: SetSurvivorPick;
 	team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
@@ -34,6 +35,7 @@ type SurvivorTeamProps = {
 const SurvivorTeam: FC<SurvivorTeamProps> = ({
 	isHome = false,
 	isOnBye = false,
+	loading,
 	onClick,
 	pick,
 	team,
@@ -56,7 +58,7 @@ const SurvivorTeam: FC<SurvivorTeamProps> = ({
 							'border-bottom',
 							'border-end',
 							'border-dark',
-							'cursor-pointer',
+							loading ? styles.loading : 'cursor-pointer',
 							!isHome && 'border-start',
 							styles['not-picked'],
 							styles['bg-game'],
@@ -95,6 +97,13 @@ const SurvivorTeam: FC<SurvivorTeamProps> = ({
 				width={70}
 			/>
 			<br />
+			{loading === team.teamID && (
+				<span
+					className="spinner-grow spinner-grow-sm d-none d-md-inline-block"
+					role="status"
+					aria-hidden="true"
+				></span>
+			)}
 			<span className="d-none d-md-inline">
 				{team.teamCity}
 				<br />

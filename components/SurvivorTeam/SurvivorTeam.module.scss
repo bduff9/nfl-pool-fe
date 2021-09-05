@@ -66,3 +66,9 @@
 .badge-future {
   background-color: $yellow-4;
 }
+
+.loading {
+  pointer-events: none;
+  background-color: #ccc;
+  filter: grayscale(1);
+}
