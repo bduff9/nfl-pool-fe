@@ -18,6 +18,7 @@ import { ClientError } from 'graphql-request';
 import React, { FC, useState } from 'react';
 import { toast } from 'react-toastify';
 
+import { EmailSendTo, EmailType } from '../../generated/graphql';
 import { sendAdminEmail } from '../../graphql/sendAdminEmails';
 import { logger } from '../../utils/logging';
 import { ErrorIcon, SuccessIcon } from '../ToastUtils/ToastIcons';
@@ -91,7 +92,8 @@ const SendAdminEmails: FC = () => {
 							value={emailType}
 						>
 							<option value="">-- Select an email type --</option>
-							<option value="interest">Interest</option>
+							<option value={EmailType.Interest}>Interest</option>
+							<option value={EmailType.InterestFinal}>Interest - Final</option>
 						</select>
 					</div>
 					<div className="mb-3 col-12 col-md-6">
@@ -105,8 +107,11 @@ const SendAdminEmails: FC = () => {
 							value={sendTo}
 						>
 							<option value="">-- Select send to group --</option>
-							<option value="All">All</option>
-							<option value="New">New</option>
+							{Object.keys(EmailSendTo).map(sendTo => (
+								<option key={`send-to-${sendTo}`} value={sendTo}>
+									{sendTo}
+								</option>
+							))}
 						</select>
 					</div>
 					<div

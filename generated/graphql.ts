@@ -134,11 +134,14 @@ export type EmailResult = {
 export enum EmailSendTo {
 	All = 'All',
 	New = 'New',
+	Registered = 'Registered',
+	Unregistered = 'Unregistered',
 }
 
 /** The sent message type */
 export enum EmailType {
 	Interest = 'interest',
+	InterestFinal = 'interestFinal',
 	InvalidGamesFound = 'invalidGamesFound',
 	NewUser = 'newUser',
 	PickReminder = 'pickReminder',
