@@ -39,7 +39,7 @@ export type DetailTeam = Pick<
 		Pick<Game, 'gameID' | 'gameWeek' | 'gameHomeScore' | 'gameVisitorScore'> & {
 			homeTeam: Pick<Team, 'teamID' | 'teamShortName'>;
 			visitorTeam: Pick<Team, 'teamID' | 'teamShortName'>;
-			winnerTeam: Pick<Team, 'teamID'>;
+			winnerTeam: null | Pick<Team, 'teamID'>;
 		}
 	>;
 };

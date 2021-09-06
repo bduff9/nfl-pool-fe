@@ -94,11 +94,11 @@ const TeamBlock: FC<TeamBlockProps> = ({ spread, team }) => (
 				<h5 className="mt-2 text-center">History</h5>
 			)}
 			{team?.teamHistory.map(game => {
-				const won = game.winnerTeam.teamID === team.teamID;
+				const won = game.winnerTeam?.teamID === team.teamID;
 				const isHome = game.homeTeam.teamID === team.teamID;
 				const lost = isHome
-					? game.winnerTeam.teamID === game.visitorTeam.teamID
-					: game.winnerTeam.teamID === game.homeTeam.teamID;
+					? game.winnerTeam?.teamID === game.visitorTeam.teamID
+					: game.winnerTeam?.teamID === game.homeTeam.teamID;
 
 				return (
 					<div className="row" key={`history-for-game-${game.gameID}`}>

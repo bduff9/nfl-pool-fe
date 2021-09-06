@@ -23,6 +23,7 @@ import { useRouter } from 'next/router';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { toast } from 'react-toastify';
+import { faTimesCircle } from '@bduff9/pro-duotone-svg-icons';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
@@ -304,7 +305,11 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 												<div>{formatDateForKickoff(game.gameKickoff)}</div>
 												<div>{formatTimeFromKickoff(game.gameKickoff)}</div>
 												<div>
-													<FontAwesomeIcon icon={faInfoCircle} />
+													{selectedGame ? (
+														<FontAwesomeIcon className="text-danger" icon={faTimesCircle} />
+													) : (
+														<FontAwesomeIcon icon={faInfoCircle} />
+													)}
 												</div>
 											</div>
 											<SurvivorTeam
