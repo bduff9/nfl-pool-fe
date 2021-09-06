@@ -99,7 +99,7 @@ const SurvivorTeam: FC<SurvivorTeamProps> = ({
 			<br />
 			{loading === team.teamID && (
 				<span
-					className="spinner-grow spinner-grow-sm d-none d-md-inline-block"
+					className="spinner-grow spinner-grow-sm"
 					role="status"
 					aria-hidden="true"
 				></span>
