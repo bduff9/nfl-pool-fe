@@ -35,6 +35,7 @@ import { getFullName, getFirstName, getLastName } from '../../utils/user';
 import { CurrentUserResponse, CurrentUser } from '../../graphql/create';
 import { useWarningOnExit } from '../../utils/hooks';
 import { isPhoneNumber, isEmailAddress, isUsername } from '../../utils/strings';
+import { logger } from '../../utils/logging';
 
 import styles from './FinishRegistrationForm.module.scss';
 
@@ -187,7 +188,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 		'Are you sure you want to leave?  You have unsaved changes that will be lost',
 	);
 
-	console.debug(`${errorCount} errors on the form: `, errors);
+	logger.debug({ text: `${errorCount} errors on the form: `, errors });
 
 	useEffect(() => {
 		if (watchName.match(/\w{2,}\s\w{2,}/)) return;
@@ -219,7 +220,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 					error: {
 						icon: ErrorIcon,
 						render ({ data }) {
-							console.debug('~~~~~~~ERROR DATA: ', { data });
+							logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 							return 'Error when trying to save your registration, please try again';
 						},
@@ -247,7 +248,7 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 
 			setShowUntrusted(true);
 		} catch (error) {
-			console.error('Error during finish registration submit:', error);
+			logger.error({ text: 'Error during finish registration submit:', error });
 		} finally {
 			setIsLoading(false);
 		}

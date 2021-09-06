@@ -22,6 +22,7 @@ import { useMyAlerts } from '../../graphql/customHead';
 import { getPageTitle } from '../../utils';
 import { BackgroundLoadingContext } from '../../utils/context';
 import { usePageTitle } from '../../utils/hooks';
+import { logger } from '../../utils/logging';
 
 type CustomHeadProps = {
 	title: string;
@@ -41,7 +42,7 @@ const CustomHead: FC<CustomHeadProps> = ({ title }) => {
 	}, [data, isValidating]);
 
 	if (error) {
-		console.error('Error when loading custom head:', error);
+		logger.error({ text: 'Error when loading custom head:', error });
 	}
 
 	useEffect(() => {

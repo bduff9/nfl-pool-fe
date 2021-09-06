@@ -64,6 +64,7 @@ import { useWarningOnExit } from '../../utils/hooks';
 import PickGameLoader from '../../components/PickGame/PickGameLoader';
 import PickGame, { PointBankLoader, Point } from '../../components/PickGame/PickGame';
 import { ErrorIcon, SuccessIcon } from '../../components/ToastUtils/ToastIcons';
+import { logger } from '../../utils/logging';
 
 export type LoadingType = 'autopick' | 'reset' | 'save' | 'submit';
 
@@ -175,7 +176,8 @@ const MakePicks: FC<MakePicksProps> = () => {
 				}, false);
 				await setMyPick(selectedWeek, gameID, teamID, points);
 			} catch (error) {
-				console.error('Error setting user pick', {
+				logger.error({
+					text: 'Error setting user pick',
 					destinationData,
 					error,
 					points,
@@ -211,7 +213,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 	}, []);
 
 	if (picksError) {
-		console.error('Error when loading pick data for Make Picks', picksError);
+		logger.error({ text: 'Error when loading pick data for Make Picks', picksError });
 	}
 
 	if (tiebreakerData?.getMyTiebreakerForWeek?.tiebreakerHasSubmitted) {
@@ -221,7 +223,10 @@ const MakePicks: FC<MakePicksProps> = () => {
 	}
 
 	if (tiebreakerError) {
-		console.error('Error when loading tiebreaker data for Make Picks', tiebreakerError);
+		logger.error({
+			text: 'Error when loading tiebreaker data for Make Picks',
+			tiebreakerError,
+		});
 	}
 
 	const used = (picksData?.getMyPicksForWeek ?? [])
@@ -279,7 +284,8 @@ const MakePicks: FC<MakePicksProps> = () => {
 			}, false);
 			await updateMyTiebreakerScore(selectedWeek, tiebreakerLastScore);
 		} catch (error) {
-			console.error('Error updating tiebreakerLastScore', {
+			logger.error({
+				text: 'Error updating tiebreakerLastScore',
 				error,
 				selectedWeek,
 				tiebreakerLastScore,
@@ -328,7 +334,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 				error: {
 					icon: ErrorIcon,
 					render ({ data }) {
-						console.debug('~~~~~~~ERROR DATA: ', { data });
+						logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 						if (data instanceof ClientError) {
 							//TODO: toast all errors, not just first
@@ -347,7 +353,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 				},
 			});
 		} catch (error) {
-			console.error('Error resetting user picks', { error, selectedWeek });
+			logger.error({ text: 'Error resetting user picks', error, selectedWeek });
 		} finally {
 			setPicksUpdating(false);
 			setLoading(null);
@@ -364,7 +370,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 				error: {
 					icon: ErrorIcon,
 					render ({ data }) {
-						console.debug('~~~~~~~ERROR DATA: ', { data });
+						logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 						if (data instanceof ClientError) {
 							//TODO: toast all errors, not just first
@@ -383,7 +389,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 				},
 			});
 		} catch (error) {
-			console.error('Error auto picking user picks', { error, selectedWeek });
+			logger.error({ text: 'Error auto picking user picks', error, selectedWeek });
 		} finally {
 			setPicksUpdating(false);
 			await picksMutate();
@@ -406,7 +412,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 					error: {
 						icon: ErrorIcon,
 						render ({ data }) {
-							console.debug('~~~~~~~ERROR DATA: ', { data });
+							logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 							if (data instanceof ClientError) {
 								//TODO: toast all errors, not just first
@@ -426,7 +432,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 				},
 			);
 		} catch (error) {
-			console.error('Error saving user picks', { error, selectedWeek });
+			logger.error({ text: 'Error saving user picks', error, selectedWeek });
 		} finally {
 			setPicksUpdating(false);
 			setLoading(null);
@@ -470,7 +476,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 				error: {
 					icon: ErrorIcon,
 					render ({ data }) {
-						console.debug('~~~~~~~ERROR DATA: ', { data });
+						logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 						if (data instanceof ClientError) {
 							//TODO: toast all errors, not just first
@@ -492,7 +498,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 			setPicksUpdating(false);
 			await tiebreakerMutate();
 		} catch (error) {
-			console.error('Error submitting user picks', { error, selectedWeek });
+			logger.error({ text: 'Error submitting user picks', error, selectedWeek });
 
 			await tiebreakerMutate();
 		} finally {

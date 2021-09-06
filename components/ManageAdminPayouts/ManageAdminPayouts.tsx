@@ -26,6 +26,7 @@ import { insertUserPayout, useWinners, Winner } from '../../graphql/manageAdminP
 import AdminUserPayoutModal from '../AdminUserPayoutModal/AdminUserPayoutModal';
 import { BackgroundLoadingContext } from '../../utils/context';
 import { ErrorIcon, SuccessIcon } from '../ToastUtils/ToastIcons';
+import { logger } from '../../utils/logging';
 
 const ManageAdminPayouts: FC = () => {
 	const { data, error, isValidating, mutate } = useWinners();
@@ -38,7 +39,10 @@ const ManageAdminPayouts: FC = () => {
 	}, [data, isValidating]);
 
 	if (error) {
-		console.error('Error when rendering winners for admin payments screen', error);
+		logger.error({
+			text: 'Error when rendering winners for admin payments screen: ',
+			error,
+		});
 	}
 
 	const addUserPayout = async (
@@ -76,7 +80,7 @@ const ManageAdminPayouts: FC = () => {
 				error: {
 					icon: ErrorIcon,
 					render ({ data }) {
-						console.debug('~~~~~~~ERROR DATA: ', { data });
+						logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 						if (data instanceof ClientError) {
 							//TODO: toast all errors, not just first
@@ -97,7 +101,8 @@ const ManageAdminPayouts: FC = () => {
 
 			setModalOpen(null);
 		} catch (error) {
-			console.error('Error updating user amount paid out', {
+			logger.error({
+				text: 'Error updating user amount paid out: ',
 				amount,
 				error,
 				userID,

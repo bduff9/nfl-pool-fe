@@ -22,6 +22,7 @@ import { useSelectedWeek } from '../../graphql/sidebar';
 import { useSurvivorDashboard, useSurvivorIsAlive } from '../../graphql/survivorDashboard';
 import { TUser } from '../../models/User';
 import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
+import { logger } from '../../utils/logging';
 import OverallDashboardLoader from '../OverallDashboard/OverallDashboardLoader';
 import ProgressChart from '../ProgressChart/ProgressChart';
 import SurvivorDashboardIcon from '../SurvivorDashboardIcon/SurvivorDashboardIcon';
@@ -64,15 +65,18 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 	]);
 
 	if (error) {
-		console.error('Error when loading survivor dashboard: ', error);
+		logger.error({ text: 'Error when loading survivor dashboard: ', error });
 	}
 
 	if (aliveError) {
-		console.error('Error when loading is alive data: ', aliveError);
+		logger.error({ text: 'Error when loading is alive data: ', aliveError });
 	}
 
 	if (selectedWeekError) {
-		console.error(`Error when loading selected week ${selectedWeek}: `, selectedWeekError);
+		logger.error({
+			text: `Error when loading selected week ${selectedWeek}: `,
+			selectedWeekError,
+		});
 	}
 
 	return (

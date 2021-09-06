@@ -31,7 +31,7 @@ import {
 import { mxExists, sendLoginEmailViaAPI } from '../../../utils/auth.server';
 import { LogAction } from '../../../generated/graphql';
 import { TAuthUser, TSessionUser } from '../../../utils/types';
-import { log } from '../../../utils/logging';
+import { logger } from '../../../utils/logging';
 import { writeLog } from '../../../graphql/[...nextauth]';
 import { getAll, getConnection, getOne } from '../../../utils/db';
 
@@ -67,7 +67,7 @@ const options: NextAuthOptions = {
 	),
 	callbacks: {
 		async signIn (user, _account, profile): Promise<boolean | string> {
-			log.debug('~~~Signin:', { _account, profile, user });
+			logger.debug({ text: '~~~Signin:', _account, profile, user });
 
 			const isBanned = (user as TAuthUser).isTrusted === false;
 
@@ -181,7 +181,7 @@ const options: NextAuthOptions = {
 				}
 
 				if (!paymentDueWeek.SystemValueValue) {
-					console.error('Missing PaymentDueWeek property:', { paymentDueWeek });
+					logger.error({ text: 'Missing PaymentDueWeek property:', paymentDueWeek });
 
 					return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=MissingSystemProperty`;
 				}
@@ -194,7 +194,7 @@ const options: NextAuthOptions = {
 
 				return true;
 			} catch (error) {
-				log.error('Failed to sign in user:', error);
+				logger.error({ text: 'Failed to sign in user: ', error });
 
 				return false;
 			} finally {
@@ -202,7 +202,7 @@ const options: NextAuthOptions = {
 			}
 		},
 		async redirect (url, baseUrl) {
-			log.debug('~~~redirect: ', { baseUrl, url });
+			logger.debug({ text: '~~~redirect: ', baseUrl, url });
 
 			if (!url.startsWith(baseUrl)) return `${baseUrl}${url.startsWith('/') ? url : ''}`;
 
@@ -225,7 +225,7 @@ const options: NextAuthOptions = {
 				lastName,
 			} = user as TAuthUser;
 
-			log.debug('~~~session:', { session, user });
+			logger.debug({ text: '~~~session:', session, user });
 
 			session.user = {
 				...session.user,
@@ -245,6 +245,7 @@ const options: NextAuthOptions = {
 	},
 	events: {
 		async signIn (message): Promise<void> {
+			logger.debug({ text: '~~~~signIn: ', message });
 			await writeLog(
 				LogAction.Login,
 				`${message.user.email} signed in`,
@@ -252,7 +253,7 @@ const options: NextAuthOptions = {
 			);
 		},
 		async signOut (message: null | Session): Promise<void> {
-			log.debug('~~~~signOut: ', { message });
+			logger.debug({ text: '~~~~signOut: ', message });
 			await writeLog(
 				LogAction.Logout,
 				`${message?.email ?? message?.user?.email ?? message?.userId} signed out`,
@@ -260,7 +261,7 @@ const options: NextAuthOptions = {
 			);
 		},
 		async createUser (message): Promise<void> {
-			log.debug('~~~~createUser: ', { message });
+			logger.debug({ text: '~~~~createUser: ', message });
 			await writeLog(
 				LogAction.CreatedAccount,
 				`${message.email} created an account`,
@@ -268,7 +269,7 @@ const options: NextAuthOptions = {
 			);
 		},
 		async linkAccount (message): Promise<void> {
-			log.debug('~~~linkAccount: ', { message });
+			logger.debug({ text: '~~~linkAccount: ', message });
 			await writeLog(
 				LogAction.LinkedAccount,
 				`${message.user.email} linked ${message.providerAccount.provider} account`,
@@ -276,10 +277,10 @@ const options: NextAuthOptions = {
 			);
 		},
 		async session (message: { session: Session }, ...rest: unknown[]): Promise<void> {
-			log.debug('~~~session: ', { message, rest });
+			logger.debug({ text: '~~~session: ', message, rest });
 		},
 		async error (message): Promise<void> {
-			log.debug('~~~error: ', { message });
+			logger.debug({ text: '~~~error: ', message });
 			await writeLog(
 				LogAction.AuthenticationError,
 				`{message.email} had an authentication error`,

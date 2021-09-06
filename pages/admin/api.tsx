@@ -31,6 +31,7 @@ import {
 	IS_NOT_ADMIN_REDIRECT,
 	UNAUTHENTICATED_REDIRECT,
 } from '../../utils/auth.server';
+import { logger } from '../../utils/logging';
 import { getRandomInteger } from '../../utils/numbers';
 
 const DynamicReactJson = dynamic(import('react-json-view'), { ssr: false });
@@ -57,7 +58,7 @@ const AdminAPICalls: FC<AdminAPICallsProps> = () => {
 			setHasMore(results.loadAPICalls.hasMore);
 			setLastKey(results.loadAPICalls.lastKey ?? null);
 		} catch (error) {
-			console.error('Failed to load API calls: ', error);
+			logger.error({ text: 'Failed to load API calls: ', error });
 		} finally {
 			setLoading(false);
 		}

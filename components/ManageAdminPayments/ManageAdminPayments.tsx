@@ -30,6 +30,7 @@ import { toast } from 'react-toastify';
 import { setPrizeAmounts, usePayoutAmounts } from '../../graphql/manageAdminPayments';
 import { WEEKS_IN_SEASON } from '../../utils/constants';
 import { BackgroundLoadingContext } from '../../utils/context';
+import { logger } from '../../utils/logging';
 import { ErrorIcon, SuccessIcon } from '../ToastUtils/ToastIcons';
 
 import styles from './ManageAdminPayments.module.scss';
@@ -153,7 +154,10 @@ const ManageAdminPayments: FC = () => {
 		(survivor2ndPrize ?? 0);
 
 	if (error) {
-		console.error('Error when rendering payout amounts for admin payments screen', error);
+		logger.error({
+			text: 'Error when rendering payout amounts for admin payments screen',
+			error,
+		});
 	}
 
 	const validatePrize = (
@@ -227,7 +231,7 @@ const ManageAdminPayments: FC = () => {
 					error: {
 						icon: ErrorIcon,
 						render ({ data }) {
-							console.debug('~~~~~~~ERROR DATA: ', { data });
+							logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 							if (data instanceof ClientError) {
 								//TODO: toast all errors, not just first
@@ -247,7 +251,8 @@ const ManageAdminPayments: FC = () => {
 				},
 			);
 		} catch (error) {
-			console.error('Error setting prize amounts', {
+			logger.error({
+				text: 'Error setting prize amounts',
 				error,
 				overall1stPrize,
 				overall2ndPrize,

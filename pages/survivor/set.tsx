@@ -43,6 +43,7 @@ import SurvivorTeam from '../../components/SurvivorTeam/SurvivorTeam';
 import { ErrorIcon, SuccessIcon } from '../../components/ToastUtils/ToastIcons';
 import { useGamesForWeek } from '../../graphql/scoreboard';
 import { useSurvivorIsAlive } from '../../graphql/survivorDashboard';
+import { logger } from '../../utils/logging';
 
 type SurvivorTeamLoaderProps = {
 	isHome?: boolean;
@@ -191,7 +192,7 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 				error: {
 					icon: ErrorIcon,
 					render ({ data }) {
-						console.debug('~~~~~~~ERROR DATA: ', { data });
+						logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 						if (data instanceof ClientError) {
 							//TODO: toast all errors, not just first
@@ -210,7 +211,13 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 				},
 			});
 		} catch (error) {
-			console.error('Error making survivor pick', { error, gameID, selectedWeek, teamID });
+			logger.error({
+				text: 'Error making survivor pick',
+				error,
+				gameID,
+				selectedWeek,
+				teamID,
+			});
 		} finally {
 			await mutate();
 			setLoading(null);
@@ -218,18 +225,18 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 	};
 
 	if (error) {
-		console.error('Error when loading data for Make Survivor Pick: ', error);
+		logger.error({ text: 'Error when loading data for Make Survivor Pick: ', error });
 	}
 
 	if (aliveError) {
-		console.error('Error when loading survivor is alive data: ', aliveError);
+		logger.error({ text: 'Error when loading survivor is alive data: ', aliveError });
 	}
 
 	if (gamesError) {
-		console.error(
-			`Error when loading week ${selectedWeek} games for NFL scoreboard: `,
+		logger.error({
+			text: `Error when loading week ${selectedWeek} games for NFL scoreboard: `,
 			gamesError,
-		);
+		});
 	}
 
 	if (typeof window !== 'undefined') {

@@ -34,6 +34,7 @@ import styles from '../styles/scoreboard.module.scss';
 import ScoreboardTeam from '../components/ScoreboardTeam/ScoreboardTeam';
 import GameStatusDisplay from '../components/GameStatusDisplay/GameStatusDisplay';
 import { getEmptyArray } from '../utils/arrays';
+import { logger } from '../utils/logging';
 
 const TeamLoader: FC = () => (
 	<>
@@ -90,10 +91,10 @@ const Scoreboard: FC<ScoreboardProps> = () => {
 	}, [data, isValidating]);
 
 	if (error) {
-		console.error(
-			`Error when loading week ${selectedWeek} games for NFL scoreboard: `,
+		logger.error({
+			text: `Error when loading week ${selectedWeek} games for NFL scoreboard: `,
 			error,
-		);
+		});
 	}
 
 	return (

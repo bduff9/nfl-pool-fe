@@ -20,6 +20,7 @@ import Skeleton from 'react-loading-skeleton';
 import { EmailResponse, loadEmails } from '../../graphql/viewAdminEmails';
 import { getEmptyArray } from '../../utils/arrays';
 import { NEXT_PUBLIC_SITE_URL } from '../../utils/constants';
+import { logger } from '../../utils/logging';
 import { getRandomInteger } from '../../utils/numbers';
 
 const ViewAdminEmails: FC = () => {
@@ -40,7 +41,7 @@ const ViewAdminEmails: FC = () => {
 			setHasMore(results.loadEmails.hasMore);
 			setLastKey(results.loadEmails.lastKey ?? null);
 		} catch (error) {
-			console.error('Failed to load emails: ', error);
+			logger.error({ text: 'Failed to load emails: ', error });
 		} finally {
 			setLoading(false);
 		}

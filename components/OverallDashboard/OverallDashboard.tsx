@@ -24,6 +24,7 @@ import ProgressChart from '../ProgressChart/ProgressChart';
 import RankingPieChart from '../RankingPieChart/RankingPieChart';
 import { BackgroundLoadingContext } from '../../utils/context';
 import { useCurrentWeek } from '../../graphql/sidebar';
+import { logger } from '../../utils/logging';
 
 import OverallDashboardLoader from './OverallDashboardLoader';
 import styles from './OverallDashboard.module.scss';
@@ -67,15 +68,15 @@ const OverallDashboard: FC = () => {
 	]);
 
 	if (error) {
-		console.error('Error when loading overall dashboard: ', error);
+		logger.error({ text: 'Error when loading overall dashboard: ', error });
 	}
 
 	if (currentWeekError) {
-		console.error('Error when loading current week: ', currentWeekError);
+		logger.error({ text: 'Error when loading current week: ', currentWeekError });
 	}
 
 	if (overallCountError) {
-		console.error('Error when loading overall counts: ', overallCountError);
+		logger.error({ text: 'Error when loading overall counts: ', overallCountError });
 	}
 
 	return (

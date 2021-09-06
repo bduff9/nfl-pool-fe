@@ -1,3 +1,5 @@
+import { logger } from './logging';
+
 /*******************************************************************************
  * NFL Confidence Pool FE - the frontend implementation of an NFL confidence pool.
  * Copyright (C) 2015-present Brian Duffey and Billy Alexander
@@ -29,7 +31,7 @@ export const formatError = (error: unknown): string => {
 			case 'InvalidEmail':
 				return 'It looks like your email is not valid, please double check it and try again';
 			case 'MissingSystemProperty':
-				console.error('Missing property `PaymentDueWeek`');
+				logger.error('Missing property `PaymentDueWeek`');
 
 				return 'System error, please contact an administrator';
 			case 'NotAllowed':
@@ -39,7 +41,7 @@ export const formatError = (error: unknown): string => {
 			case 'RegistrationOver':
 				return 'Sorry, registration is over for this year, please try again next season!';
 			default:
-				console.error('Invalid Login Error type found:', error);
+				logger.error({ text: 'Invalid Login Error type found:', error });
 
 				return 'Something went wrong, please try again';
 		}

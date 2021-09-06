@@ -30,6 +30,7 @@ import {
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
 import { BackgroundLoadingContext } from '../../utils/context';
+import { logger } from '../../utils/logging';
 
 type EditProfileProps = {
 	user: TUser;
@@ -52,11 +53,11 @@ const EditProfile: FC<EditProfileProps> = () => {
 	}, [data, isValidating, currentUserData, currentUserIsValidating]);
 
 	if (error) {
-		console.error('Error when loading my notifications: ', error);
+		logger.error({ text: 'Error when loading my notifications: ', error });
 	}
 
 	if (currentUserError) {
-		console.error('Error when loading current user: ', currentUserError);
+		logger.error({ text: 'Error when loading current user: ', currentUserError });
 	}
 
 	return (

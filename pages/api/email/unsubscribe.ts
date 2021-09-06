@@ -17,6 +17,7 @@ import { withSentry } from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 import { unsubscribe } from '../../../graphql/unsubscribe';
+import { logger } from '../../../utils/logging';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
 	const { body, method, query } = req;
@@ -38,7 +39,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void>
 				res.status(500).send('Please contact an admin to finish unsubscribing');
 			}
 		} catch (error) {
-			console.error('Error unsubscribing:', { email, error });
+			logger.error({ text: 'Error unsubscribing:', email, error });
 			res.status(404).send('<h1>Error unsubscribing, please try again later</h1>');
 		}
 

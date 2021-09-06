@@ -31,6 +31,7 @@ import PaymentSelector from '../../components/PaymentSelector/PaymentSelector';
 import CustomHead from '../../components/CustomHead/CustomHead';
 import { BackgroundLoadingContext } from '../../utils/context';
 import { useCurrentUser } from '../../graphql/create';
+import { logger } from '../../utils/logging';
 
 const ViewPayments: FC = () => {
 	const { data, error, isValidating } = useGetPayments();
@@ -50,11 +51,11 @@ const ViewPayments: FC = () => {
 	}, [data, isValidating, currentUserData, currentUserIsValidating]);
 
 	if (error) {
-		console.error('Error during GetPayments query: ', error);
+		logger.error({ text: 'Error during GetPayments query: ', error });
 	}
 
 	if (currentUserError) {
-		console.error('Error when loading current user: ', currentUserError);
+		logger.error({ text: 'Error when loading current user: ', currentUserError });
 	}
 
 	return (

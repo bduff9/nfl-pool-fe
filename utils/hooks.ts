@@ -42,6 +42,7 @@ import {
 import { TitleContext } from './context';
 import { MILLISECONDS_IN_SECOND, MINUTES_IN_HOUR, SECONDS_IN_MINUTE } from './constants';
 import { getTimeRemaining, getTimeRemainingString } from './dates';
+import { logger } from './logging';
 
 export const useCountdown = (countdownTo: Date | null): string => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -243,18 +244,18 @@ export const useServiceWorker = (): void => {
 			 * https://developers.google.com/web/tools/workbox/reference-docs/latest/module-workbox-window.Workbox#events
 			 */
 			wb.addEventListener('installed', event => {
-				console.debug(`Event ${event.type} is triggered.`);
-				console.debug(event);
+				logger.debug(`Event ${event.type} is triggered.`);
+				logger.debug(event);
 			});
 
 			wb.addEventListener('controlling', event => {
-				console.debug(`Event ${event.type} is triggered.`);
-				console.debug(event);
+				logger.debug(`Event ${event.type} is triggered.`);
+				logger.debug(event);
 			});
 
 			wb.addEventListener('activated', event => {
-				console.debug(`Event ${event.type} is triggered.`);
-				console.debug(event);
+				logger.debug(`Event ${event.type} is triggered.`);
+				logger.debug(event);
 			});
 
 			/**
@@ -263,8 +264,8 @@ export const useServiceWorker = (): void => {
 			 * https://developers.google.com/web/tools/workbox/guides/advanced-recipes#offer_a_page_reload_for_users
 			 */
 			const promptNewVersionAvailable = (event: WorkboxLifecycleEvent): void => {
-				console.debug(`Event ${event.type} is triggered.`);
-				console.debug(event);
+				logger.debug(`Event ${event.type} is triggered.`);
+				logger.debug(event);
 
 				toast.info(
 					React.createElement(SWUpdatedToast, {
@@ -280,7 +281,7 @@ export const useServiceWorker = (): void => {
 						autoClose: false,
 						icon: LargeWarningIcon,
 						onClose: () => {
-							console.warn(
+							logger.warn(
 								'User rejected to reload the web app, keep using old version. New version will be automatically loaded when user opens the app next time.',
 							);
 						},
@@ -294,12 +295,12 @@ export const useServiceWorker = (): void => {
 			//FIXME: ISSUE - this is not working as expected, why?
 			// I could only make message event listener work when I manually add this listener into sw.js file
 			wb.addEventListener('message', event => {
-				console.debug(`Event ${event.type} is triggered.`);
-				console.debug(event);
+				logger.debug(`Event ${event.type} is triggered.`);
+				logger.debug(event);
 			});
 			wb.addEventListener('redundant', event => {
-				console.log(`Event ${event.type} is triggered.`);
-				console.log(event);
+				logger.log(`Event ${event.type} is triggered.`);
+				logger.log(event);
 			});
 
 			wb.register();

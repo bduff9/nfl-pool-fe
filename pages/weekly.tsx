@@ -40,6 +40,7 @@ import {
 	UNAUTHENTICATED_REDIRECT,
 } from '../utils/auth.server';
 import { BackgroundLoadingContext, WeekContext } from '../utils/context';
+import { logger } from '../utils/logging';
 
 type WeeklyRankingsProps = {
 	user: TUser;
@@ -92,19 +93,28 @@ const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
 	]);
 
 	if (error) {
-		console.error(`Error when loading week ${selectedWeek} rankings: `, error);
+		logger.error({ text: `Error when loading week ${selectedWeek} rankings: `, error });
 	}
 
 	if (myError) {
-		console.error(`Error when loading my week ${selectedWeek} dashboard info: `, myError);
+		logger.error({
+			text: `Error when loading my week ${selectedWeek} dashboard info: `,
+			myError,
+		});
 	}
 
 	if (selectedWeekError) {
-		console.error(`Error when loading selected week ${selectedWeek}: `, selectedWeekError);
+		logger.error({
+			text: `Error when loading selected week ${selectedWeek}: `,
+			selectedWeekError,
+		});
 	}
 
 	if (weeklyCountError) {
-		console.error(`Error when loading weekly counts ${selectedWeek}: `, weeklyCountError);
+		logger.error({
+			text: `Error when loading weekly counts ${selectedWeek}: `,
+			weeklyCountError,
+		});
 	}
 
 	if (!isValidating && total === 0) {

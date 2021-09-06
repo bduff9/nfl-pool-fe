@@ -37,6 +37,7 @@ import { formatDateForBackup } from '../../utils/dates';
 import { BackgroundLoadingContext } from '../../utils/context';
 import styles from '../../styles/admin/backups.module.scss';
 import { ErrorIcon, SuccessIcon } from '../../components/ToastUtils/ToastIcons';
+import { logger } from '../../utils/logging';
 
 type AdminBackupsProps = {
 	user: TUser;
@@ -53,7 +54,7 @@ const AdminBackups: FC<AdminBackupsProps> = () => {
 	}, [data, isValidating]);
 
 	if (error) {
-		console.error('Error when rendering backups for admin backups screen', error);
+		logger.error({ text: 'Error when rendering backups for admin backups screen', error });
 	}
 
 	const restoreABackup = async (backupName: string): Promise<void> => {
@@ -63,7 +64,7 @@ const AdminBackups: FC<AdminBackupsProps> = () => {
 				error: {
 					icon: ErrorIcon,
 					render ({ data }) {
-						console.debug('~~~~~~~ERROR DATA: ', { data });
+						logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 						if (data instanceof ClientError) {
 							//TODO: toast all errors, not just first
@@ -82,10 +83,7 @@ const AdminBackups: FC<AdminBackupsProps> = () => {
 				},
 			});
 		} catch (error) {
-			console.error('Error updating user amount paid', {
-				backupName,
-				error,
-			});
+			logger.error({ text: 'Error updating user amount paid', backupName, error });
 		} finally {
 			setLoading(null);
 		}

@@ -26,6 +26,7 @@ import { Faq, LogAction, Rule } from '../generated/graphql';
 import { getSupportContent, writeSupportLog } from '../graphql/support';
 import { TUser } from '../models/User';
 import { useFuse } from '../utils/hooks';
+import { logger } from '../utils/logging';
 
 const convertTextToAnchor = (text: string): string => text.toLowerCase().replace(/\W/g, '');
 
@@ -92,7 +93,7 @@ const Support: FC<SupportProps> = ({ faqs, rules, slackLink, supportEmail }) => 
 			try {
 				await writeSupportLog(LogAction.SupportSearch, (session?.user as TUser)?.id, value);
 			} catch (error) {
-				console.error('Error when writing log for support search: ', { error, event });
+				logger.error({ text: 'Error when writing log for support search: ', error, event });
 			}
 		},
 	);
@@ -114,7 +115,7 @@ const Support: FC<SupportProps> = ({ faqs, rules, slackLink, supportEmail }) => 
 				'User clicked Slack link',
 			);
 		} catch (error) {
-			console.error('Error when writing log for slack link click: ', { error });
+			logger.error({ text: 'Error when writing log for slack link click: ', error });
 		}
 	};
 

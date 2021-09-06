@@ -55,6 +55,7 @@ import AdminUserPaymentModal from '../../components/AdminUserPaymentModal/AdminU
 import AdminUserTrustModal from '../../components/AdminUserTrustModal/AdminUserTrustModal';
 import { BackgroundLoadingContext } from '../../utils/context';
 import { ErrorIcon, SuccessIcon } from '../../components/ToastUtils/ToastIcons';
+import { logger } from '../../utils/logging';
 
 type AdminUserStatusProps = {
 	user: UserForAdmin;
@@ -124,7 +125,7 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 	}, [data, isValidating]);
 
 	if (error) {
-		console.error('Error when rendering users for admin users screen', error);
+		logger.error({ text: 'Error when rendering users for admin users screen', error });
 	}
 
 	const updateUserPaid = async (
@@ -161,7 +162,7 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 				error: {
 					icon: ErrorIcon,
 					render ({ data }) {
-						console.debug('~~~~~~~ERROR DATA: ', { data });
+						logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 						if (data instanceof ClientError) {
 							//TODO: toast all errors, not just first
@@ -182,11 +183,7 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 
 			setModalOpen(null);
 		} catch (error) {
-			console.error('Error updating user amount paid', {
-				amountPaid,
-				error,
-				userID,
-			});
+			logger.error({ text: 'Error updating user amount paid', amountPaid, error, userID });
 		} finally {
 			await mutate();
 		}
@@ -235,7 +232,7 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 				error: {
 					icon: ErrorIcon,
 					render ({ data }) {
-						console.debug('~~~~~~~ERROR DATA: ', { data });
+						logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 						if (data instanceof ClientError) {
 							//TODO: toast all errors, not just first
@@ -256,11 +253,7 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 
 			setModalOpen(null);
 		} catch (error) {
-			console.error('Error marking user as trusted', {
-				error,
-				referredBy,
-				userID,
-			});
+			logger.error({ text: 'Error marking user as trusted', error, referredBy, userID });
 		} finally {
 			await mutate();
 		}
@@ -282,7 +275,7 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 				error: {
 					icon: ErrorIcon,
 					render ({ data }) {
-						console.debug('~~~~~~~ERROR DATA: ', { data });
+						logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 						return 'Failed to remove untrusted user from pool, please see logs for more details';
 					},
@@ -298,7 +291,7 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 
 			await mutate();
 		} catch (error) {
-			console.error('Failed to remove untrusted user:', { error, userID });
+			logger.error({ text: 'Failed to remove untrusted user: ', error, userID });
 		}
 	};
 
@@ -325,7 +318,7 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 				error: {
 					icon: ErrorIcon,
 					render ({ data }) {
-						console.debug('~~~~~~~ERROR DATA: ', { data });
+						logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 						return `Failed to update user's survivor status, please see logs for more details`;
 					},
@@ -341,7 +334,12 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 
 			await mutate();
 		} catch (error) {
-			console.error('Failed to update survivor status:', { error, isPlaying, userID });
+			logger.error({
+				text: 'Failed to update survivor status: ',
+				error,
+				isPlaying,
+				userID,
+			});
 		}
 	};
 

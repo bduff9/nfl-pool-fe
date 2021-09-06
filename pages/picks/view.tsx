@@ -38,6 +38,7 @@ import styles from '../../styles/picks/view.module.scss';
 import { WeekStatus } from '../../generated/graphql';
 import MyProgressChart from '../../components/MyProgressChart/MyProgressChart';
 import { useSelectedWeek } from '../../graphql/sidebar';
+import { logger } from '../../utils/logging';
 
 type ViewPicksProps = {
 	user: TUser;
@@ -75,21 +76,24 @@ const ViewPicks: FC<ViewPicksProps> = () => {
 	]);
 
 	if (error) {
-		console.error(
-			`Error when loading view my picks data for week ${selectedWeek}: `,
+		logger.error({
+			text: `Error when loading view my picks data for week ${selectedWeek}: `,
 			error,
-		);
+		});
 	}
 
 	if (myRankError) {
-		console.error(
-			`Error when loading my dashboard info for week ${selectedWeek}: `,
+		logger.error({
+			text: `Error when loading my dashboard info for week ${selectedWeek}: `,
 			myRankError,
-		);
+		});
 	}
 
 	if (selectedWeekError) {
-		console.error(`Error when loading selected week ${selectedWeek}: `, selectedWeekError);
+		logger.error({
+			text: `Error when loading selected week ${selectedWeek}: `,
+			selectedWeekError,
+		});
 	}
 
 	return (

@@ -28,7 +28,7 @@ import {
 	NEXT_PUBLIC_SITE_URL,
 	REDIRECT_COOKIE_NAME,
 } from './constants';
-import { log } from './logging';
+import { logger } from './logging';
 
 export const mxExists = async (email: string): Promise<boolean> => {
 	try {
@@ -37,7 +37,7 @@ export const mxExists = async (email: string): Promise<boolean> => {
 
 		return addresses?.every(address => address.exchange);
 	} catch (error) {
-		console.error('mx check error:', error);
+		logger.error({ text: 'mx check error:', error });
 
 		return false;
 	}
@@ -75,9 +75,10 @@ export const sendLoginEmailViaAPI: TSendVerificationRequest = async ({
 				email,
 			)}&url=${encodeURIComponent(url)}`,
 		);
-		log.info('Successfully sent login email', { email });
+		logger.info({ text: 'Successfully sent login email', email });
 	} catch (error) {
-		console.error('Failed to send login email', {
+		logger.error({
+			text: 'Failed to send login email',
 			email,
 			error,
 			url,

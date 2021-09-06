@@ -47,6 +47,7 @@ import { useMyTiebreakerForWeek } from '../../graphql/picksSet';
 import { useWeeklyCounts } from '../../graphql/weeklyDashboard';
 import { useOverallCounts } from '../../graphql/overallDashboard';
 import { useSurvivorIsAlive } from '../../graphql/survivorDashboard';
+import { logger } from '../../utils/logging';
 
 import styles from './Sidebar.module.scss';
 import SidebarLoader from './SidebarLoader';
@@ -121,27 +122,33 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 	]);
 
 	if (user.doneRegistering && error) {
-		console.error('Failed to load survivor is alive: ', error);
+		logger.error({ text: 'Failed to load survivor is alive: ', error });
 	}
 
 	if (tiebreakerError) {
-		console.error('Failed to load my tiebreaker data for week: ', error);
+		logger.error({ text: 'Failed to load my tiebreaker data for week: ', error });
 	}
 
 	if (currentWeekError) {
-		console.error('Error when loading current week: ', currentWeekError);
+		logger.error({ text: 'Error when loading current week: ', currentWeekError });
 	}
 
 	if (selectedWeekError) {
-		console.error(`Error when loading selected week ${selectedWeek}: `, selectedWeekError);
+		logger.error({
+			text: `Error when loading selected week ${selectedWeek}: `,
+			selectedWeekError,
+		});
 	}
 
 	if (weeklyCountError) {
-		console.error(`Error when loading weekly counts ${selectedWeek}: `, weeklyCountError);
+		logger.error({
+			text: `Error when loading weekly counts ${selectedWeek}: `,
+			weeklyCountError,
+		});
 	}
 
 	if (overallCountError) {
-		console.error('Error when loading overall counts: ', overallCountError);
+		logger.error({ text: 'Error when loading overall counts: ', overallCountError });
 	}
 
 	useEffect(() => {

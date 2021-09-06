@@ -19,6 +19,7 @@ import Skeleton from 'react-loading-skeleton';
 
 import { useUserDropdown } from '../../graphql/adminUserTrustModal';
 import { BackgroundLoadingContext } from '../../utils/context';
+import { logger } from '../../utils/logging';
 
 type AdminUserTrustModalProps = {
 	handleClose: () => void;
@@ -46,7 +47,7 @@ const AdminUserTrustModal: FC<AdminUserTrustModalProps> = ({
 	}, [data, isValidating]);
 
 	if (error) {
-		console.error('Error loading user dropdown for user admin screen', error);
+		logger.error({ text: 'Error loading user dropdown for user admin screen', error });
 	}
 
 	const handleSave = async (): Promise<void> => {

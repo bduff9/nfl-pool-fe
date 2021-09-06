@@ -47,6 +47,7 @@ import { formatTimestampForLog } from '../../utils/dates';
 import Pagination from '../../components/Pagination/Pagination';
 import { BackgroundLoadingContext } from '../../utils/context';
 import { DropdownUser, useUserDropdown } from '../../graphql/adminUserTrustModal';
+import { logger } from '../../utils/logging';
 
 type LogFilterProps = {
 	id: string;
@@ -129,11 +130,11 @@ const AdminLogs: FC<AdminLogsProps> = () => {
 	}, [logAction, perPage, sort, sortDir, userID]);
 
 	if (error) {
-		console.error('Error when querying logs for admin logs screen: ', error);
+		logger.error({ text: 'Error when querying logs for admin logs screen: ', error });
 	}
 
 	if (usersError) {
-		console.error('Error when loading user dropdown: ', usersError);
+		logger.error({ text: 'Error when loading user dropdown: ', usersError });
 	}
 
 	const updatePerPage = (event: ChangeEvent<HTMLInputElement>): void => {

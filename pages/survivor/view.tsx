@@ -42,6 +42,7 @@ import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import styles from '../../styles/survivor/view.module.scss';
 import { WEEKS_IN_SEASON } from '../../utils/constants';
 import { useSelectedWeek } from '../../graphql/sidebar';
+import { logger } from '../../utils/logging';
 
 type ViewSurvivorProps = {
 	user: TUser;
@@ -80,15 +81,21 @@ const ViewSurvivor: FC<ViewSurvivorProps> = ({ user }) => {
 	]);
 
 	if (error) {
-		console.error('Error when loading data for View Survivor', error);
+		logger.error({ text: 'Error when loading data for View Survivor', error });
 	}
 
 	if (dashboardError) {
-		console.error('Error when loading dashboard data for View Survivor', dashboardError);
+		logger.error({
+			text: 'Error when loading dashboard data for View Survivor',
+			dashboardError,
+		});
 	}
 
 	if (selectedWeekError) {
-		console.error(`Error when loading selected week ${selectedWeek}: `, selectedWeekError);
+		logger.error({
+			text: `Error when loading selected week ${selectedWeek}: `,
+			selectedWeekError,
+		});
 	}
 
 	if (dashboardData?.getSurvivorStatus === SeasonStatus.NotStarted) {

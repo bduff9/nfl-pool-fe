@@ -40,6 +40,7 @@ import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import styles from '../../styles/picks/viewall.module.scss';
 import ViewAllModal from '../../components/ViewAllModal/ViewAllModal';
 import { GameForWeek, useGamesForWeek } from '../../graphql/scoreboard';
+import { logger } from '../../utils/logging';
 
 type ViewAllPicksProps = {
 	user: TUser;
@@ -110,19 +111,28 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 	}, [data]);
 
 	if (error) {
-		console.error(`Error when loading week ${selectedWeek} games: `, error);
+		logger.error({ text: `Error when loading week ${selectedWeek} games: `, error });
 	}
 
 	if (ranksError) {
-		console.error('Error when loading weekly rank data for View All Picks', ranksError);
+		logger.error({
+			text: 'Error when loading weekly rank data for View All Picks',
+			ranksError,
+		});
 	}
 
 	if (picksError) {
-		console.error('Error when loading all pick data for View All Picks', picksError);
+		logger.error({
+			text: 'Error when loading all pick data for View All Picks',
+			picksError,
+		});
 	}
 
 	if (tiebreakerError) {
-		console.error('Error when loading tiebreaker data for View All Picks', tiebreakerError);
+		logger.error({
+			text: 'Error when loading tiebreaker data for View All Picks',
+			tiebreakerError,
+		});
 	}
 
 	if (

@@ -42,6 +42,7 @@ import {
 	UNAUTHENTICATED_REDIRECT,
 } from '../utils/auth.server';
 import { BackgroundLoadingContext } from '../utils/context';
+import { logger } from '../utils/logging';
 
 type OverallRankingsProps = {
 	user: TUser;
@@ -88,19 +89,19 @@ const OverallRankings: FC<OverallRankingsProps> = ({ user }) => {
 	]);
 
 	if (error) {
-		console.error('Error when loading overall rankings: ', error);
+		logger.error({ text: 'Error when loading overall rankings: ', error });
 	}
 
 	if (myError) {
-		console.error('Error when loading my overall dashboard info: ', myError);
+		logger.error({ text: 'Error when loading my overall dashboard info: ', myError });
 	}
 
 	if (currentWeekError) {
-		console.error('Error when loading current week: ', currentWeekError);
+		logger.error({ text: 'Error when loading current week: ', currentWeekError });
 	}
 
 	if (overallCountError) {
-		console.error('Error when loading overall counts: ', overallCountError);
+		logger.error({ text: 'Error when loading overall counts: ', overallCountError });
 	}
 
 	if (!isValidating && total === 0) {

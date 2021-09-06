@@ -19,6 +19,7 @@ import React, { FC, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { sendAdminEmail } from '../../graphql/sendAdminEmails';
+import { logger } from '../../utils/logging';
 import { ErrorIcon, SuccessIcon } from '../ToastUtils/ToastIcons';
 
 const SendAdminEmails: FC = () => {
@@ -38,7 +39,7 @@ const SendAdminEmails: FC = () => {
 					error: {
 						icon: ErrorIcon,
 						render ({ data }) {
-							console.debug('~~~~~~~ERROR DATA: ', { data });
+							logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 							if (data instanceof ClientError) {
 								//TODO: toast all errors, not just first
@@ -61,7 +62,8 @@ const SendAdminEmails: FC = () => {
 			setUserEmail('');
 			setUserFirstName('');
 		} catch (error) {
-			console.error('Error when sending email: ', {
+			logger.error({
+				text: 'Error when sending email: ',
 				emailType,
 				error,
 				sendTo,

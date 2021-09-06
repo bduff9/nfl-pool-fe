@@ -24,6 +24,7 @@ import { useSelectedWeek } from '../../graphql/sidebar';
 import { useWeeklyCounts, useWeeklyDashboard } from '../../graphql/weeklyDashboard';
 import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import { useCountdown } from '../../utils/hooks';
+import { logger } from '../../utils/logging';
 import OverallDashboardLoader from '../OverallDashboard/OverallDashboardLoader';
 import ProgressChart from '../ProgressChart/ProgressChart';
 import RankingPieChart from '../RankingPieChart/RankingPieChart';
@@ -83,22 +84,28 @@ const WeeklyDashboard: FC = () => {
 	]);
 
 	if (error) {
-		console.error(`Error when loading week ${selectedWeek} dashboard`, error);
+		logger.error({ text: `Error when loading week ${selectedWeek} dashboard`, error });
 	}
 
 	if (tiebreakerError) {
-		console.error(
-			`Error when loading my tiebreaker for week ${selectedWeek}`,
+		logger.error({
+			text: `Error when loading my tiebreaker for week ${selectedWeek}`,
 			tiebreakerError,
-		);
+		});
 	}
 
 	if (selectedWeekError) {
-		console.error(`Error when loading selected week ${selectedWeek}: `, selectedWeekError);
+		logger.error({
+			text: `Error when loading selected week ${selectedWeek}: `,
+			selectedWeekError,
+		});
 	}
 
 	if (weeklyCountError) {
-		console.error(`Error when loading weekly counts ${selectedWeek}: `, weeklyCountError);
+		logger.error({
+			text: `Error when loading weekly counts ${selectedWeek}: `,
+			weeklyCountError,
+		});
 	}
 
 	return (

@@ -19,6 +19,7 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import { DetailTeam, useTeamDetails } from '../../graphql/teamDetail';
 import { BackgroundLoadingContext } from '../../utils/context';
+import { logger } from '../../utils/logging';
 
 import styles from './TeamDetail.module.scss';
 
@@ -140,10 +141,10 @@ const TeamDetail: FC<TeamDetailProps> = ({ gameID }) => {
 	}, [data, isValidating]);
 
 	if (error) {
-		console.error(
-			`Error when loading data for Team Details component game ${gameID}: `,
+		logger.error({
+			text: `Error when loading data for Team Details component game ${gameID}: `,
 			error,
-		);
+		});
 	}
 
 	return (

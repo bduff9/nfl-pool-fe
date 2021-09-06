@@ -13,6 +13,51 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { Logger } from 'tslog';
+import pino from 'pino';
+import { logflarePinoVercel } from 'pino-logflare';
 
-export const log: Logger = new Logger({});
+import { NEXT_PUBLIC_API_URL, NEXT_PUBLIC_ENV } from './constants';
+
+const apiKey = process.env.LOGFLARE_API_KEY;
+const sourceToken = process.env.LOGFLARE_SOURCE_TOKEN;
+const sendToLogflare = !!apiKey && !!sourceToken;
+let pinoLogger: pino.Logger;
+
+if (sendToLogflare) {
+	const { stream, send } = logflarePinoVercel({
+		apiBaseUrl: NEXT_PUBLIC_API_URL,
+		apiKey,
+		sourceToken,
+		transforms: {
+			numbersToFloats: true,
+		},
+	});
+
+	pinoLogger = pino(
+		{
+			base: {
+				env: NEXT_PUBLIC_ENV,
+				revision: process.env.VERCEL_GITHUB_COMMIT_SHA ?? '',
+			},
+			browser: {
+				transmit: {
+					level: 'debug',
+					send,
+				},
+			},
+			level: 'debug',
+		},
+		stream,
+	);
+} else {
+	pinoLogger = pino({
+		base: {
+			env: NEXT_PUBLIC_ENV,
+			revision: process.env.VERCEL_GITHUB_COMMIT_SHA ?? '',
+		},
+		level: 'debug',
+		prettyPrint: true,
+	});
+}
+
+export const logger = pinoLogger;

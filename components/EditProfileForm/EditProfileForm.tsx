@@ -43,6 +43,7 @@ import { CurrentUser } from '../../graphql/create';
 import { MyNotification } from '../../graphql/edit';
 import { useWarningOnExit } from '../../utils/hooks';
 import { isEmailAddress, isPhoneNumber, isUsername } from '../../utils/strings';
+import { logger } from '../../utils/logging';
 
 import styles from './EditProfileForm.module.scss';
 
@@ -291,7 +292,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 		'Are you sure you want to leave?  You have unsaved changes that will be lost',
 	);
 
-	console.debug(`${errorCount} errors on the form: `, errors);
+	logger.debug({ text: `${errorCount} errors on the form: `, errors });
 
 	useEffect(() => {
 		watchNotifications.forEach((_, i) => {
@@ -331,7 +332,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 					error: {
 						icon: ErrorIcon,
 						render ({ data }) {
-							console.debug('~~~~~~~ERROR DATA: ', { data });
+							logger.debug({ text: '~~~~~~~ERROR DATA: ', data });
 
 							return 'Failed to save profile changes, please try again';
 						},
@@ -348,7 +349,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 
 			reset(data);
 		} catch (error) {
-			console.error('Error during edit profile submit:', error);
+			logger.error({ text: 'Error during edit profile submit:', error });
 		} finally {
 			setIsLoading(false);
 		}

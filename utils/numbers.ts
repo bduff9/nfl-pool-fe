@@ -13,9 +13,11 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+import { logger } from './logging';
+
 export const getRandomInteger = (from = 0, to = 10): number => {
 	if (to <= from) {
-		console.error('Invalid to passed in: ', { from, to });
+		logger.error({ text: 'Invalid to passed in: ', from, to });
 
 		return 0;
 	}

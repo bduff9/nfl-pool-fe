@@ -31,6 +31,7 @@ import { useCurrentUser } from '../../graphql/create';
 import CustomHead from '../../components/CustomHead/CustomHead';
 import { BackgroundLoadingContext } from '../../utils/context';
 import { useCurrentWeek } from '../../graphql/sidebar';
+import { logger } from '../../utils/logging';
 
 type CreateProfileProps = {
 	user: TUser;
@@ -54,11 +55,11 @@ const CreateProfile: FC<CreateProfileProps> = ({ user }) => {
 	}, [data, isValidating, currentWeekData, currentWeekIsValidating]);
 
 	if (error) {
-		console.error('Error when loading current user: ', error);
+		logger.error({ text: 'Error when loading current user: ', error });
 	}
 
 	if (currentWeekError) {
-		console.error('Error when loading current week: ', currentWeekError);
+		logger.error({ text: 'Error when loading current week: ', currentWeekError });
 	}
 
 	//FIXME: for some reason, the user from the server is not always up to date.  For instance, immediately after registering, users are kicked back here from the dashboard.  As a workaround, we check the cached user we mutate after registering, but this means that the dashboard will kick them here and then this screen will kick them to edit profile, so is not ideal.
