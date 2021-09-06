@@ -36,7 +36,6 @@ type GetSupportContentResponse = {
 		Pick<
 			Faq,
 			| 'supportContentID'
-			| 'supportContentType'
 			| 'supportContentCategory'
 			| 'supportContentDescription'
 			| 'supportContentDescription2'
@@ -44,28 +43,18 @@ type GetSupportContentResponse = {
 		>
 	>;
 	rules: Array<
-		Pick<
-			Rule,
-			| 'supportContentID'
-			| 'supportContentType'
-			| 'supportContentDescription'
-			| 'supportContentKeywords'
-		>
+		Pick<Rule, 'supportContentID' | 'supportContentDescription' | 'supportContentKeywords'>
 	>;
-	slackLink: Pick<SystemValue, 'systemValueID' | 'systemValueName' | 'systemValueValue'>;
-	supportEmail: Pick<SystemValue, 'systemValueID' | 'systemValueName' | 'systemValueValue'>;
+	slackLink: Pick<SystemValue, 'systemValueValue'>;
+	supportEmail: Pick<SystemValue, 'systemValueValue'>;
 };
 
 const getSupportContentQuery = gql`
 	query GetSupportContent($Name1: String!, $Name2: String!) {
 		supportEmail: getSystemValue(Name: $Name1) {
-			systemValueID
-			systemValueName
 			systemValueValue
 		}
 		slackLink: getSystemValue(Name: $Name2) {
-			systemValueID
-			systemValueName
 			systemValueValue
 		}
 		faqs: getFAQs {
@@ -78,7 +67,6 @@ const getSupportContentQuery = gql`
 		}
 		rules: getRules {
 			supportContentID
-			supportContentType
 			supportContentDescription
 			supportContentKeywords
 		}

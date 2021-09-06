@@ -20,30 +20,27 @@ import type { SWRResponse } from 'swr/dist/types';
 import { Game, Team } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
-type GetGamesForWeekResponse = {
-	getGamesForWeek: Array<
-		Pick<
-			Game,
-			| 'gameHomeScore'
-			| 'gameID'
-			| 'gameKickoff'
-			| 'gameStatus'
-			| 'gameTimeLeftInQuarter'
-			| 'gameVisitorScore'
-		> & {
-			homeTeam: Pick<
-				Team,
-				'teamCity' | 'teamID' | 'teamLogo' | 'teamName' | 'teamShortName'
-			>;
-			visitorTeam: Pick<
-				Team,
-				'teamCity' | 'teamID' | 'teamLogo' | 'teamName' | 'teamShortName'
-			>;
-			winnerTeam: null | Pick<Team, 'teamID'>;
-			teamHasPossession: null | Pick<Team, 'teamID'>;
-			teamInRedzone: null | Pick<Team, 'teamID'>;
-		}
+export type GameForWeek = Pick<
+	Game,
+	| 'gameHomeScore'
+	| 'gameID'
+	| 'gameKickoff'
+	| 'gameStatus'
+	| 'gameTimeLeftInQuarter'
+	| 'gameVisitorScore'
+> & {
+	homeTeam: Pick<Team, 'teamCity' | 'teamID' | 'teamLogo' | 'teamName' | 'teamShortName'>;
+	visitorTeam: Pick<
+		Team,
+		'teamCity' | 'teamID' | 'teamLogo' | 'teamName' | 'teamShortName'
 	>;
+	winnerTeam: null | Pick<Team, 'teamID'>;
+	teamHasPossession: null | Pick<Team, 'teamID'>;
+	teamInRedzone: null | Pick<Team, 'teamID'>;
+};
+
+type GetGamesForWeekResponse = {
+	getGamesForWeek: Array<GameForWeek>;
 };
 
 const query = gql`

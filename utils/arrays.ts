@@ -1,5 +1,3 @@
-import { Game, Pick as PoolPick, Team, User, WeeklyMv } from '../generated/graphql';
-
 /*******************************************************************************
  * NFL Confidence Pool FE - the frontend implementation of an NFL confidence pool.
  * Copyright (C) 2015-present Brian Duffey and Billy Alexander
@@ -15,36 +13,15 @@ import { Game, Pick as PoolPick, Team, User, WeeklyMv } from '../generated/graph
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+import { GameForWeek } from '../graphql/scoreboard';
+import { ViewAllPick } from '../graphql/viewAll';
+import { WeeklyRank } from '../graphql/weekly';
+
 export const getEmptyArray = (length: number): Array<unknown> => {
 	return [...Array(length)];
 };
 
-const weekPlacer = (
-	user1: Pick<
-		WeeklyMv,
-		| 'rank'
-		| 'tied'
-		| 'userID'
-		| 'userName'
-		| 'teamName'
-		| 'pointsEarned'
-		| 'gamesCorrect'
-		| 'tiebreakerScore'
-		| 'lastScore'
-	>,
-	user2: Pick<
-		WeeklyMv,
-		| 'rank'
-		| 'tied'
-		| 'userID'
-		| 'userName'
-		| 'teamName'
-		| 'pointsEarned'
-		| 'gamesCorrect'
-		| 'tiebreakerScore'
-		| 'lastScore'
-	>,
-): -1 | 0 | 1 => {
+const weekPlacer = (user1: WeeklyRank, user2: WeeklyRank): -1 | 0 | 1 => {
 	// First, sort by points
 	if (user1.pointsEarned > user2.pointsEarned) return -1;
 
@@ -76,55 +53,10 @@ const weekPlacer = (
 };
 
 export const sortPicks = (
-	picks:
-		| Array<
-				Pick<PoolPick, 'pickID' | 'pickPoints'> & {
-					user: Pick<User, 'userID'>;
-					game: Pick<Game, 'gameID'>;
-					team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'> | null;
-				}
-		  >
-		| undefined,
-	games: Record<
-		number,
-		Pick<Game, 'gameID'> & {
-			homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-			visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-			winnerTeam: Pick<Team, 'teamID'> | null;
-		}
-	>,
-	ranks:
-		| Array<
-				Pick<
-					WeeklyMv,
-					| 'rank'
-					| 'tied'
-					| 'userID'
-					| 'userName'
-					| 'teamName'
-					| 'pointsEarned'
-					| 'gamesCorrect'
-					| 'tiebreakerScore'
-					| 'lastScore'
-				>
-		  >
-		| undefined,
-):
-	| Array<
-			Pick<
-				WeeklyMv,
-				| 'rank'
-				| 'tied'
-				| 'userID'
-				| 'userName'
-				| 'teamName'
-				| 'pointsEarned'
-				| 'gamesCorrect'
-				| 'tiebreakerScore'
-				| 'lastScore'
-			>
-	  >
-	| undefined => {
+	picks: Array<ViewAllPick> | undefined,
+	games: Record<number, GameForWeek>,
+	ranks: Array<WeeklyRank> | undefined,
+): Array<WeeklyRank> | undefined => {
 	if (!picks || !ranks) return undefined;
 
 	const customRanks = ranks.map(rank => ({

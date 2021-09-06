@@ -30,15 +30,8 @@ type GetOverallRankingsResponse = {
 			| 'userName'
 			| 'teamName'
 			| 'pointsEarned'
-			| 'pointsWrong'
-			| 'pointsPossible'
-			| 'pointsTotal'
 			| 'gamesCorrect'
-			| 'gamesWrong'
-			| 'gamesPossible'
-			| 'gamesTotal'
 			| 'gamesMissed'
-			| 'isEliminated'
 		>
 	>;
 };
@@ -52,15 +45,8 @@ const query = gql`
 			userName
 			teamName
 			pointsEarned
-			pointsWrong
-			pointsPossible
-			pointsTotal
 			gamesCorrect
-			gamesWrong
-			gamesPossible
-			gamesTotal
 			gamesMissed
-			isEliminated
 		}
 	}
 `;

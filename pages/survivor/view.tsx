@@ -41,6 +41,7 @@ import {
 import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import styles from '../../styles/survivor/view.module.scss';
 import { WEEKS_IN_SEASON } from '../../utils/constants';
+import { useSelectedWeek } from '../../graphql/sidebar';
 
 type ViewSurvivorProps = {
 	user: TUser;
@@ -49,33 +50,51 @@ type ViewSurvivorProps = {
 const ViewSurvivor: FC<ViewSurvivorProps> = ({ user }) => {
 	const router = useRouter();
 	const [selectedWeek] = useContext(WeekContext);
+	const { data, error, isValidating } = useSurvivorView();
 	const {
 		data: dashboardData,
 		error: dashboardError,
 		isValidating: dashboardIsValidating,
 	} = useSurvivorDashboard(selectedWeek);
-	const { data, error, isValidating } = useSurvivorView();
+	const {
+		data: selectedWeekData,
+		error: selectedWeekError,
+		isValidating: selectedWeekIsValidating,
+	} = useSelectedWeek(selectedWeek);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 
 	useEffect(() => {
 		setBackgroundLoading(
-			(!!data && isValidating) || (!!dashboardData && dashboardIsValidating),
+			(!!data && isValidating) ||
+				(!!dashboardData && dashboardIsValidating) ||
+				(!!selectedWeekData && selectedWeekIsValidating),
 		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating, dashboardData, dashboardIsValidating]);
+	}, [
+		data,
+		isValidating,
+		dashboardData,
+		dashboardIsValidating,
+		selectedWeekData,
+		selectedWeekIsValidating,
+	]);
+
+	if (error) {
+		console.error('Error when loading data for View Survivor', error);
+	}
 
 	if (dashboardError) {
 		console.error('Error when loading dashboard data for View Survivor', dashboardError);
+	}
+
+	if (selectedWeekError) {
+		console.error(`Error when loading selected week ${selectedWeek}: `, selectedWeekError);
 	}
 
 	if (dashboardData?.getSurvivorStatus === SeasonStatus.NotStarted) {
 		router.replace('/');
 
 		return <></>;
-	}
-
-	if (error) {
-		console.error('Error when loading data for View Survivor', error);
 	}
 
 	return (
@@ -130,7 +149,7 @@ const ViewSurvivor: FC<ViewSurvivorProps> = ({ user }) => {
 										correct={dashboardData.survivorAliveForWeek}
 										incorrect={dashboardData.survivorDeadForWeek}
 										inProgress={dashboardData.survivorWaitingForWeek}
-										isOver={dashboardData.getWeek.weekStatus === WeekStatus.Complete}
+										isOver={selectedWeekData?.getWeek.weekStatus === WeekStatus.Complete}
 										layoutId="survivorWeekStatus"
 										max={dashboardData.getSurvivorWeekCount}
 										type="Current Week Remaining"
@@ -171,12 +190,14 @@ const ViewSurvivor: FC<ViewSurvivorProps> = ({ user }) => {
 													<Skeleton width={25} />
 												</th>
 											))
-											: getEmptyArray(data.getWeekInProgress).map((_, i) => (
-												<th key={`header-for-week-${i + 1}`} scope="col">
-													<span className="d-none d-md-inline">{i + 1}</span>
-													<span className="d-md-none">W{i + 1}</span>
-												</th>
-											))}
+											: getEmptyArray(data.getWeekInProgress ?? WEEKS_IN_SEASON).map(
+												(_, i) => (
+													<th key={`header-for-week-${i + 1}`} scope="col">
+														<span className="d-none d-md-inline">{i + 1}</span>
+														<span className="d-md-none">W{i + 1}</span>
+													</th>
+												),
+											)}
 									</tr>
 								</thead>
 								{!data ? (

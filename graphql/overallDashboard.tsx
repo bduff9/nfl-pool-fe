@@ -13,11 +13,11 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
+import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
 import type { SWRResponse } from 'swr/dist/types';
 
-import { OverallMv, Week } from '../generated/graphql';
+import { OverallMv } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
 type GetOverallDashboardResponse = {
@@ -27,49 +27,44 @@ type GetOverallDashboardResponse = {
 		| 'tied'
 		| 'pointsEarned'
 		| 'pointsWrong'
-		| 'pointsPossible'
 		| 'pointsTotal'
 		| 'gamesCorrect'
 		| 'gamesWrong'
-		| 'gamesPossible'
 		| 'gamesTotal'
-		| 'gamesMissed'
-		| 'isEliminated'
 	>;
-	getOverallTiedWithMeCount: number;
-	getOverallRankingsTotalCount: number;
-	getWeek: Pick<Week, 'seasonStatus'>;
 };
 
-const query = gql`
+const getOverallDashboardQuery = gql`
 	query OverallDashboard {
 		getMyOverallDashboard {
 			rank
 			tied
 			pointsEarned
 			pointsWrong
-			pointsPossible
 			pointsTotal
 			gamesCorrect
 			gamesWrong
-			gamesPossible
 			gamesTotal
-			gamesMissed
-			isEliminated
-		}
-		getOverallTiedWithMeCount
-		getOverallRankingsTotalCount
-		getWeek {
-			seasonStatus
 		}
 	}
 `;
 
 export const useOverallDashboard = (): SWRResponse<
 	GetOverallDashboardResponse,
-	unknown
-> => {
-	const result = useSWR<GetOverallDashboardResponse>(query, fetcher);
+	ClientError
+> => useSWR<GetOverallDashboardResponse, ClientError>(getOverallDashboardQuery, fetcher);
 
-	return result;
+type GetOverallCountsResponse = {
+	getOverallTiedWithMeCount: number;
+	getOverallRankingsTotalCount: number;
 };
+
+const getOverallCountsQuery = gql`
+	query OverallCounts {
+		getOverallTiedWithMeCount
+		getOverallRankingsTotalCount
+	}
+`;
+
+export const useOverallCounts = (): SWRResponse<GetOverallCountsResponse, ClientError> =>
+	useSWR<GetOverallCountsResponse, ClientError>(getOverallCountsQuery, fetcher);

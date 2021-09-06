@@ -63,7 +63,6 @@ import TeamDetail from '../../components/TeamDetail/TeamDetail';
 import { useWarningOnExit } from '../../utils/hooks';
 import PickGameLoader from '../../components/PickGame/PickGameLoader';
 import PickGame, { PointBankLoader, Point } from '../../components/PickGame/PickGame';
-import { updateSidebarData } from '../../graphql/sidebar';
 import { ErrorIcon, SuccessIcon } from '../../components/ToastUtils/ToastIcons';
 
 export type LoadingType = 'autopick' | 'reset' | 'save' | 'submit';
@@ -215,7 +214,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 		console.error('Error when loading pick data for Make Picks', picksError);
 	}
 
-	if (tiebreakerData?.getMyTiebreakerForWeek.tiebreakerHasSubmitted) {
+	if (tiebreakerData?.getMyTiebreakerForWeek?.tiebreakerHasSubmitted) {
 		router.replace('/picks/view');
 
 		return <></>;
@@ -269,7 +268,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 		try {
 			setPicksUpdating(true);
 			tiebreakerMutate(data => {
-				if (!data) return data;
+				if (!data?.getMyTiebreakerForWeek) return data;
 
 				const getMyTiebreakerForWeek = {
 					...data.getMyTiebreakerForWeek,
@@ -401,7 +400,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 				validateMyPicks(
 					selectedWeek,
 					available,
-					tiebreakerData?.getMyTiebreakerForWeek.tiebreakerLastScore ?? 0,
+					tiebreakerData?.getMyTiebreakerForWeek?.tiebreakerLastScore ?? 0,
 				),
 				{
 					error: {
@@ -457,7 +456,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 			const lastGameHasStarted = new Date(lastGame?.gameKickoff) < new Date();
 
 			if (
-				tiebreakerData.getMyTiebreakerForWeek.tiebreakerLastScore < 1 &&
+				(tiebreakerData.getMyTiebreakerForWeek?.tiebreakerLastScore ?? 0) < 1 &&
 				!lastGameHasStarted
 			) {
 				toast.error('Tiebreaker last score must be greater than zero', {
@@ -491,9 +490,9 @@ const MakePicks: FC<MakePicksProps> = () => {
 			});
 
 			setPicksUpdating(false);
-			await Promise.all([updateSidebarData(selectedWeek), tiebreakerMutate()]);
+			await tiebreakerMutate();
 		} catch (error) {
-			console.error('Error saving user picks', { error, selectedWeek });
+			console.error('Error submitting user picks', { error, selectedWeek });
 
 			await tiebreakerMutate();
 		} finally {
@@ -591,7 +590,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 									aria-label="Last score of week for tiebreaker"
 									className="form-control"
 									defaultValue={
-										tiebreakerData.getMyTiebreakerForWeek.tiebreakerLastScore ?? 0
+										tiebreakerData.getMyTiebreakerForWeek?.tiebreakerLastScore ?? 0
 									}
 									id="tiebreakerScore"
 									min="1"

@@ -33,7 +33,7 @@ type GetSurvivorViewResponse = {
 			>;
 		}
 	>;
-	getWeekInProgress: number;
+	getWeekInProgress: null | number;
 };
 
 const query = gql`

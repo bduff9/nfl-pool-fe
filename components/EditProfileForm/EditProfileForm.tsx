@@ -39,7 +39,8 @@ import {
 } from '../Popover/Popover';
 import SocialAuthButton from '../SocialAuthButton/SocialAuthButton';
 import { ErrorIcon, SuccessIcon } from '../ToastUtils/ToastIcons';
-import { GetCurrentUserResponse, GetMyNotificationsResponse } from '../../graphql/edit';
+import { CurrentUser } from '../../graphql/create';
+import { MyNotification } from '../../graphql/edit';
 import { useWarningOnExit } from '../../utils/hooks';
 import { isEmailAddress, isPhoneNumber, isUsername } from '../../utils/strings';
 
@@ -166,7 +167,7 @@ const schema = Yup.object().shape({
 						is: (
 							hasEmail: boolean,
 							type: string,
-							allNotifications: GetMyNotificationsResponse,
+							allNotifications: Array<MyNotification>,
 						) => {
 							const notification = allNotifications.find(
 								({ notificationDefinition }) =>
@@ -195,7 +196,7 @@ const schema = Yup.object().shape({
 							hasSMS: boolean,
 							type: string,
 							_hasValidPhone: boolean,
-							allNotifications: GetMyNotificationsResponse,
+							allNotifications: Array<MyNotification>,
 						) => {
 							const notification = allNotifications.find(
 								({ notificationDefinition }) =>
@@ -235,8 +236,8 @@ const schema = Yup.object().shape({
 });
 
 type EditProfileFormProps = {
-	currentUser: GetCurrentUserResponse;
-	myNotifications: GetMyNotificationsResponse;
+	currentUser: CurrentUser;
+	myNotifications: Array<MyNotification>;
 	hasGoogle: boolean;
 	hasTwitter: boolean;
 };
@@ -622,7 +623,7 @@ const EditProfileForm: FC<EditProfileFormProps> = ({
 				{myNotifications.map((notification, i) => (
 					<div
 						className="d-flex flex-wrap col-md-6"
-						key={`notification-${notification.notificationDefinition.notificationType}`}
+						key={`notification-${notification.notificationID}`}
 					>
 						<label
 							htmlFor={notification.notificationDefinition.notificationType}

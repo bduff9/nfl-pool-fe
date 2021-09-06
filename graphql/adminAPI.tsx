@@ -22,7 +22,6 @@ export type APICallObject = Pick<
 	ApiCall,
 	| 'apiCallID'
 	| 'apiCallDate'
-	| 'apiCallError'
 	| 'apiCallResponse'
 	| 'apiCallUrl'
 	| 'apiCallWeek'
@@ -30,7 +29,7 @@ export type APICallObject = Pick<
 >;
 
 type LoadAdminAPICallsResponse = {
-	loadAPICalls: Pick<ApiCallResult, 'count' | 'hasMore' | 'lastKey'> & {
+	loadAPICalls: Pick<ApiCallResult, 'hasMore' | 'lastKey'> & {
 		results: Array<APICallObject>;
 	};
 };
@@ -43,13 +42,11 @@ type LoadAdminAPICallsInput = {
 const query = gql`
 	query LoadAPICalls($count: Int!, $lastKey: String) {
 		loadAPICalls(Count: $count, LastKey: $lastKey) {
-			count
 			hasMore
 			lastKey
 			results {
 				apiCallID
 				apiCallDate
-				apiCallError
 				apiCallResponse
 				apiCallUrl
 				apiCallWeek

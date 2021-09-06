@@ -37,11 +37,16 @@ import { SeasonStatus } from '../../generated/graphql';
 import {
 	registerForSurvivor,
 	unregisterForSurvivor,
-	useSidebarData,
+	useCurrentWeek,
+	useSelectedWeek,
 } from '../../graphql/sidebar';
 import { WEEKS_IN_SEASON } from '../../utils/constants';
 import { BackgroundLoadingContext, TitleContext, WeekContext } from '../../utils/context';
 import { TSessionUser } from '../../utils/types';
+import { useMyTiebreakerForWeek } from '../../graphql/picksSet';
+import { useWeeklyCounts } from '../../graphql/weeklyDashboard';
+import { useOverallCounts } from '../../graphql/overallDashboard';
+import { useSurvivorIsAlive } from '../../graphql/survivorDashboard';
 
 import styles from './Sidebar.module.scss';
 import SidebarLoader from './SidebarLoader';
@@ -58,27 +63,93 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 	}, [openMenu]);
 	const [title] = useContext(TitleContext);
 	const [selectedWeek, setSelectedWeek] = useContext(WeekContext);
-	const { data, error, isValidating } = useSidebarData(user.doneRegistering, selectedWeek);
+	const { data, error, isValidating } = useSurvivorIsAlive();
+	const {
+		data: tiebreakerData,
+		error: tiebreakerError,
+		isValidating: tiebreakerIsValidating,
+	} = useMyTiebreakerForWeek(selectedWeek);
+	const {
+		data: currentWeekData,
+		error: currentWeekError,
+		isValidating: currentWeekIsValidating,
+	} = useCurrentWeek();
+	const {
+		data: selectedWeekData,
+		error: selectedWeekError,
+		isValidating: selectedWeekIsValidating,
+	} = useSelectedWeek(selectedWeek);
+	const {
+		data: weeklyCountData,
+		error: weeklyCountError,
+		isValidating: weeklyCountIsValidating,
+	} = useWeeklyCounts(selectedWeek);
+	const {
+		data: overallCountData,
+		error: overallCountError,
+		isValidating: overallCountIsValidating,
+	} = useOverallCounts();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const isLoading = user.doneRegistering && !data;
-	const hasSeasonStarted = data?.currentWeek.seasonStatus !== SeasonStatus.NotStarted;
+	const hasSeasonStarted =
+		currentWeekData?.getWeek.seasonStatus !== SeasonStatus.NotStarted;
 	let currentPage = '';
 
 	useEffect(() => {
-		setBackgroundLoading(!!data && isValidating);
+		setBackgroundLoading(
+			(!!data && isValidating) ||
+				(!!tiebreakerData && tiebreakerIsValidating) ||
+				(!!currentWeekData && currentWeekIsValidating) ||
+				(!!selectedWeekData && selectedWeekIsValidating) ||
+				(!!weeklyCountData && weeklyCountIsValidating) ||
+				(!!overallCountData && overallCountIsValidating),
+		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating]);
+	}, [
+		data,
+		isValidating,
+		tiebreakerData,
+		tiebreakerIsValidating,
+		currentWeekData,
+		currentWeekIsValidating,
+		selectedWeekData,
+		selectedWeekIsValidating,
+		weeklyCountData,
+		weeklyCountIsValidating,
+		overallCountData,
+		overallCountIsValidating,
+	]);
 
 	if (user.doneRegistering && error) {
-		console.error('Failed to load sidebar data', error);
+		console.error('Failed to load survivor is alive: ', error);
+	}
+
+	if (tiebreakerError) {
+		console.error('Failed to load my tiebreaker data for week: ', error);
+	}
+
+	if (currentWeekError) {
+		console.error('Error when loading current week: ', currentWeekError);
+	}
+
+	if (selectedWeekError) {
+		console.error(`Error when loading selected week ${selectedWeek}: `, selectedWeekError);
+	}
+
+	if (weeklyCountError) {
+		console.error(`Error when loading weekly counts ${selectedWeek}: `, weeklyCountError);
+	}
+
+	if (overallCountError) {
+		console.error('Error when loading overall counts: ', overallCountError);
 	}
 
 	useEffect(() => {
 		if (selectedWeek < 1 || selectedWeek > WEEKS_IN_SEASON) {
-			setSelectedWeek(data?.selectedWeek.weekNumber ?? 0);
+			setSelectedWeek(selectedWeekData?.getWeek.weekNumber ?? 0);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data?.selectedWeek.weekNumber]);
+	}, [selectedWeekData?.getWeek.weekNumber]);
 
 	const updateWeek = (event: ChangeEvent<HTMLSelectElement>) => {
 		setSelectedWeek(parseInt(event.target.value, 10));
@@ -105,13 +176,13 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 	};
 
 	const goToCurrentWeek = useCallback((): void => {
-		const currentWeek = data?.currentWeek.weekNumber;
+		const currentWeek = currentWeekData?.getWeek.weekNumber;
 
 		if (currentWeek) {
 			setSelectedWeek(currentWeek);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data?.currentWeek.weekNumber]);
+	}, [currentWeekData?.getWeek.weekNumber]);
 
 	if (router.pathname.startsWith('/picks')) {
 		currentPage = 'Picks';
@@ -232,7 +303,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 									</button>
 								</div>
 								<div className={clsx('text-center', styles['current-week-link'])}>
-									{data?.currentWeek.weekNumber !== selectedWeek && (
+									{currentWeekData?.getWeek.weekNumber !== selectedWeek && (
 										<button
 											className={styles['btn-current-week']}
 											onClick={goToCurrentWeek}
@@ -253,14 +324,14 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 								<NavLink
 									href="/weekly"
 									isNested
-									show={(data?.getWeeklyRankingsTotalCount ?? 0) > 0}
+									show={(weeklyCountData?.getWeeklyRankingsTotalCount ?? 0) > 0}
 								>
 									Week Results
 								</NavLink>
 								<NavLink
 									href="/overall"
 									isNested
-									show={(data?.getOverallRankingsTotalCount ?? 0) > 0}
+									show={(overallCountData?.getOverallRankingsTotalCount ?? 0) > 0}
 								>
 									Overall Results
 								</NavLink>
@@ -269,7 +340,7 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 								<NavLink
 									href="/picks/set"
 									isNested
-									show={!data?.getMyTiebreakerForWeek?.tiebreakerHasSubmitted}
+									show={!tiebreakerData?.getMyTiebreakerForWeek?.tiebreakerHasSubmitted}
 								>
 									Make Picks
 								</NavLink>
@@ -280,8 +351,8 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 									href="/picks/viewall"
 									isNested
 									show={
-										(data?.getWeeklyRankingsTotalCount ?? 0) > 0 &&
-										data?.getMyTiebreakerForWeek?.tiebreakerHasSubmitted
+										(weeklyCountData?.getWeeklyRankingsTotalCount ?? 0) > 0 &&
+										tiebreakerData?.getMyTiebreakerForWeek?.tiebreakerHasSubmitted
 									}
 								>
 									View All Picks
@@ -319,8 +390,8 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 									href="/survivor/view"
 									isNested
 									show={
-										data?.selectedWeek.weekStatus &&
-										data?.selectedWeek.weekStatus !== 'NotStarted'
+										selectedWeekData?.getWeek.weekStatus &&
+										selectedWeekData?.getWeek.weekStatus !== 'NotStarted'
 									}
 								>
 									View Picks

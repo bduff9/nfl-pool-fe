@@ -13,6 +13,8 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+import { faTimesHexagon } from '@bduff9/pro-duotone-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import { GetServerSideProps } from 'next';
@@ -29,7 +31,8 @@ import RankingPieChart from '../components/RankingPieChart/RankingPieChart';
 import RankingPieChartLoader from '../components/RankingPieChart/RankingPieChartLoader';
 import { SeasonStatus } from '../generated/graphql';
 import { useOverallRankings } from '../graphql/overall';
-import { useOverallDashboard } from '../graphql/overallDashboard';
+import { useOverallCounts, useOverallDashboard } from '../graphql/overallDashboard';
+import { useCurrentWeek } from '../graphql/sidebar';
 import { TUser } from '../models/User';
 import { getEmptyArray } from '../utils/arrays';
 import {
@@ -47,24 +50,57 @@ type OverallRankingsProps = {
 const OverallRankings: FC<OverallRankingsProps> = ({ user }) => {
 	const router = useRouter();
 	const { data, error, isValidating } = useOverallRankings();
-	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const { data: myData, error: myError } = useOverallDashboard();
+	const {
+		data: currentWeekData,
+		error: currentWeekError,
+		isValidating: currentWeekIsValidating,
+	} = useCurrentWeek();
+	const {
+		data: overallCountData,
+		error: overallCountError,
+		isValidating: overallCountIsValidating,
+	} = useOverallCounts();
+	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const myPlace = `${myData?.getMyOverallDashboard?.tied ? 'T' : ''}${
 		myData?.getMyOverallDashboard?.rank
 	}`;
-	const total = myData?.getOverallRankingsTotalCount ?? 0;
+	const total = overallCountData?.getOverallRankingsTotalCount ?? 0;
 	const me = myData?.getMyOverallDashboard?.rank ?? 0;
-	const tiedWithMe = myData?.getOverallTiedWithMeCount ?? 0;
+	const tiedWithMe = overallCountData?.getOverallTiedWithMeCount ?? 0;
 	const aheadOfMe = me - 1;
 	const behindMe = total - me - tiedWithMe;
 
 	useEffect(() => {
-		setBackgroundLoading(!!data && isValidating);
+		setBackgroundLoading(
+			(!!data && isValidating) ||
+				(!!currentWeekData && currentWeekIsValidating) ||
+				(!!overallCountData && overallCountIsValidating),
+		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating]);
+	}, [
+		data,
+		isValidating,
+		currentWeekData,
+		currentWeekIsValidating,
+		overallCountData,
+		overallCountIsValidating,
+	]);
 
-	if (error || myError) {
-		console.error('Error when loading overall ranks', error, myError);
+	if (error) {
+		console.error('Error when loading overall rankings: ', error);
+	}
+
+	if (myError) {
+		console.error('Error when loading my overall dashboard info: ', myError);
+	}
+
+	if (currentWeekError) {
+		console.error('Error when loading current week: ', currentWeekError);
+	}
+
+	if (overallCountError) {
+		console.error('Error when loading overall counts: ', overallCountError);
 	}
 
 	if (!isValidating && total === 0) {
@@ -138,7 +174,7 @@ const OverallRankings: FC<OverallRankingsProps> = ({ user }) => {
 									<ProgressChart
 										correct={myData.getMyOverallDashboard.pointsEarned}
 										incorrect={myData.getMyOverallDashboard.pointsWrong}
-										isOver={myData.getWeek.seasonStatus === SeasonStatus.Complete}
+										isOver={currentWeekData?.getWeek.seasonStatus === SeasonStatus.Complete}
 										layoutId="overallPointsEarned"
 										max={myData.getMyOverallDashboard.pointsTotal}
 										type="Points"
@@ -146,7 +182,7 @@ const OverallRankings: FC<OverallRankingsProps> = ({ user }) => {
 									<ProgressChart
 										correct={myData.getMyOverallDashboard.gamesCorrect}
 										incorrect={myData.getMyOverallDashboard.gamesWrong}
-										isOver={myData.getWeek.seasonStatus === SeasonStatus.Complete}
+										isOver={currentWeekData?.getWeek.seasonStatus === SeasonStatus.Complete}
 										layoutId="overallGamesCorrect"
 										max={myData.getMyOverallDashboard.gamesTotal}
 										type="Games"
@@ -198,7 +234,10 @@ const OverallRankings: FC<OverallRankingsProps> = ({ user }) => {
 												className={clsx(row.userID === user.id && 'table-warning')}
 												key={`user-rank-for-${row.userID}`}
 											>
-												<th scope="row">{row.rank}</th>
+												<th scope="row">
+													{row.tied ? 'T' : ''}
+													{row.rank}
+												</th>
 												<td>{row.teamName}</td>
 												<td>{row.userName}</td>
 												<td>{row.pointsEarned}</td>
@@ -207,7 +246,12 @@ const OverallRankings: FC<OverallRankingsProps> = ({ user }) => {
 													className="text-danger"
 													title={`Missed games: ${row.gamesMissed}`}
 												>
-													{row.gamesMissed > 0 ? <b>X</b> : ''}
+													{row.gamesMissed > 0 && (
+														<FontAwesomeIcon
+															className="text-danger"
+															icon={faTimesHexagon}
+														/>
+													)}
 												</td>
 											</tr>
 										))}

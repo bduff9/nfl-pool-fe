@@ -25,7 +25,6 @@ export type DetailTeam = Pick<
 	| 'teamID'
 	| 'teamCity'
 	| 'teamName'
-	| 'teamShortName'
 	| 'teamConference'
 	| 'teamDivision'
 	| 'teamRushDefenseRank'
@@ -45,7 +44,7 @@ export type DetailTeam = Pick<
 	>;
 };
 type GetTeamDetailsResponse = {
-	getGame: Pick<Game, 'gameWeek' | 'gameHomeSpread' | 'gameVisitorSpread'> & {
+	getGame: Pick<Game, 'gameHomeSpread' | 'gameVisitorSpread'> & {
 		homeTeam: DetailTeam;
 		visitorTeam: DetailTeam;
 	};
@@ -54,13 +53,11 @@ type GetTeamDetailsResponse = {
 const query = gql`
 	query GameDetails($gameID: Int!) {
 		getGame(GameID: $gameID) {
-			gameWeek
 			gameHomeSpread
 			homeTeam {
 				teamID
 				teamCity
 				teamName
-				teamShortName
 				teamConference
 				teamDivision
 				teamRushDefenseRank
@@ -93,7 +90,6 @@ const query = gql`
 				teamID
 				teamCity
 				teamName
-				teamShortName
 				teamConference
 				teamDivision
 				teamRushDefenseRank

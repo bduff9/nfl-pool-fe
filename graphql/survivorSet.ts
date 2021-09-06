@@ -21,19 +21,11 @@ import { Game, SurvivorPick, Team } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
 export type SetSurvivorPick = Pick<SurvivorPick, 'survivorPickWeek'> & {
-	game: Pick<Game, 'gameID'>;
 	team: null | Pick<Team, 'teamID'>;
 };
 
 type MakeSurvivorPickViewResponse = {
 	getWeekInProgress: null | number;
-	isAliveInSurvivor: boolean;
-	getGamesForWeek: Array<
-		Pick<Game, 'gameID' | 'gameKickoff'> & {
-			homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-			visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-		}
-	>;
 	getMySurvivorPicks: Array<SetSurvivorPick>;
 	getTeamsOnBye: Array<Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>>;
 };
@@ -41,28 +33,8 @@ type MakeSurvivorPickViewResponse = {
 const query = gql`
 	query MakeSurvivorPickView($week: Int!) {
 		getWeekInProgress
-		isAliveInSurvivor
-		getGamesForWeek(Week: $week) {
-			gameID
-			homeTeam {
-				teamID
-				teamCity
-				teamName
-				teamLogo
-			}
-			visitorTeam {
-				teamID
-				teamCity
-				teamName
-				teamLogo
-			}
-			gameKickoff
-		}
 		getMySurvivorPicks {
 			survivorPickWeek
-			game {
-				gameID
-			}
 			team {
 				teamID
 			}

@@ -30,19 +30,31 @@ import { PaymentMethod } from '../../generated/graphql';
 import PaymentSelector from '../../components/PaymentSelector/PaymentSelector';
 import CustomHead from '../../components/CustomHead/CustomHead';
 import { BackgroundLoadingContext } from '../../utils/context';
+import { useCurrentUser } from '../../graphql/create';
 
 const ViewPayments: FC = () => {
 	const { data, error, isValidating } = useGetPayments();
+	const {
+		data: currentUserData,
+		error: currentUserError,
+		isValidating: currentUserIsValidating,
+	} = useCurrentUser();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	let owed = 0;
 
 	useEffect(() => {
-		setBackgroundLoading(!!data && isValidating);
+		setBackgroundLoading(
+			(!!data && isValidating) || (!!currentUserData && currentUserIsValidating),
+		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating]);
+	}, [data, isValidating, currentUserData, currentUserIsValidating]);
 
 	if (error) {
-		console.error('Error during GetPayments query:', error);
+		console.error('Error during GetPayments query: ', error);
+	}
+
+	if (currentUserError) {
+		console.error('Error when loading current user: ', currentUserError);
 	}
 
 	return (
@@ -153,10 +165,12 @@ const ViewPayments: FC = () => {
 							)}
 						</tfoot>
 					</table>
-					{data && owed < 0 && (
+					{currentUserData && owed < 0 && (
 						<PaymentSelector
 							amount={Math.abs(owed)}
-							defaultPayment={data.getCurrentUser.userPaymentType ?? PaymentMethod.Paypal}
+							defaultPayment={
+								currentUserData.getCurrentUser.userPaymentType ?? PaymentMethod.Paypal
+							}
 						/>
 					)}
 					<h3 className="text-center text-danger">
@@ -170,17 +184,17 @@ const ViewPayments: FC = () => {
 						{!data ? <Skeleton height={17} width={150} /> : 'My Prize Payment Info'}
 					</div>
 					<div className="mx-3">
-						{!data ? (
+						{!currentUserData ? (
 							<Skeleton height={23} width={200} />
 						) : (
-							`Payment Type: ${data.getCurrentUser.userPaymentType}`
+							`Payment Type: ${currentUserData.getCurrentUser.userPaymentType}`
 						)}
 					</div>
 					<div className="mx-3">
-						{!data ? (
+						{!currentUserData ? (
 							<Skeleton height={23} width={250} />
 						) : (
-							`Payment Account: ${data.getCurrentUser.userPaymentAccount}`
+							`Payment Account: ${currentUserData.getCurrentUser.userPaymentAccount}`
 						)}
 					</div>
 					<div className="mx-3">

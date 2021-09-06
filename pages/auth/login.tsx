@@ -32,7 +32,6 @@ import { getLoginValues } from '../../graphql/login';
 import CustomHead from '../../components/CustomHead/CustomHead';
 
 type TFormState = 'READY' | 'LOADING' | 'ERRORED' | 'SUBMITTED';
-type LoginProps = { year: string };
 
 const readAndDeleteCookie = (name: string): string => {
 	const value = Cookies.get(name);
@@ -43,6 +42,8 @@ const readAndDeleteCookie = (name: string): string => {
 
 	return value || '';
 };
+
+type LoginProps = { year: string };
 
 const Login: FC<LoginProps> = ({ year }) => {
 	const router = useRouter();

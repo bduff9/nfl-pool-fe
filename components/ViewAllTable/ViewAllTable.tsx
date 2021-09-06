@@ -18,7 +18,9 @@ import Image from 'next/image';
 import React, { FC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-import { Game, Pick as PoolPick, Team, User, WeeklyMv } from '../../generated/graphql';
+import { GameForWeek } from '../../graphql/scoreboard';
+import { ViewAllPick } from '../../graphql/viewAll';
+import { WeeklyRank } from '../../graphql/weekly';
 import { getEmptyArray } from '../../utils/arrays';
 import { getRandomInteger } from '../../utils/numbers';
 
@@ -27,35 +29,9 @@ import styles from './ViewAllTable.module.scss';
 const DEFAULT_GAME_COUNT = 16;
 
 type ViewAllTableProps = {
-	games: Record<
-		number,
-		Pick<Game, 'gameID'> & {
-			homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-			visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-			winnerTeam: Pick<Team, 'teamID'> | null;
-		}
-	>;
-	picks?: Array<
-		Pick<PoolPick, 'pickID' | 'pickPoints'> & {
-			user: Pick<User, 'userID'>;
-			game: Pick<Game, 'gameID'>;
-			team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'> | null;
-		}
-	>;
-	ranks?: Array<
-		Pick<
-			WeeklyMv,
-			| 'rank'
-			| 'tied'
-			| 'userID'
-			| 'userName'
-			| 'teamName'
-			| 'pointsEarned'
-			| 'gamesCorrect'
-			| 'tiebreakerScore'
-			| 'lastScore'
-		>
-	>;
+	games: Record<number, GameForWeek>;
+	picks?: Array<ViewAllPick>;
+	ranks?: Array<WeeklyRank>;
 };
 
 const ViewAllTable: FC<ViewAllTableProps> = ({ games, picks, ranks }) => {

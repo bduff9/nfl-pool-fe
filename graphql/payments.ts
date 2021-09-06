@@ -17,14 +17,13 @@ import { gql } from 'graphql-request';
 import useSWR from 'swr';
 import type { SWRResponse } from 'swr/dist/types';
 
-import { Payment, User } from '../generated/graphql';
+import { Payment } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
 type GetPaymentsResponse = {
 	getMyPayments: Array<
 		Pick<Payment, 'paymentDescription' | 'paymentWeek' | 'paymentAmount'>
 	>;
-	getCurrentUser: Pick<User, 'userPaymentType' | 'userPaymentAccount'>;
 };
 
 const query = gql`
@@ -33,10 +32,6 @@ const query = gql`
 			paymentDescription
 			paymentWeek
 			paymentAmount
-		}
-		getCurrentUser {
-			userPaymentAccount
-			userPaymentType
 		}
 	}
 `;

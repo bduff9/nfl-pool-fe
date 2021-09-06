@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
+import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
 import type { SWRResponse } from 'swr/dist/types';
 
@@ -21,15 +21,13 @@ import { Log, LogAction, LogResult, User } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
 type GetAdminLogsResponse = {
-	getLogs: Pick<LogResult, 'totalCount' | 'page' | 'count'> & {
+	getLogs: Pick<LogResult, 'totalCount'> & {
 		results: Array<
 			Pick<Log, 'logID' | 'logAction' | 'logDate' | 'logMessage' | 'logData'> & {
-				user: null | Pick<User, 'userID' | 'userName'>;
+				user: null | Pick<User, 'userName'>;
 			}
 		>;
 	};
-	getLogActions: Array<Array<string>>;
-	getUsersForAdmins: Array<Pick<User, 'userID' | 'userFirstName' | 'userLastName'>>;
 };
 
 type GetAdminLogsInput = {
@@ -59,8 +57,6 @@ const query = gql`
 			UserID: $userID
 		) {
 			totalCount
-			page
-			count
 			results {
 				logID
 				logAction
@@ -68,24 +64,17 @@ const query = gql`
 				logMessage
 				logData
 				user {
-					userID
 					userName
 				}
 			}
-		}
-		getLogActions
-		getUsersForAdmins(UserType: All) {
-			userID
-			userFirstName
-			userLastName
 		}
 	}
 `;
 
 export const useAdminLogs = (
 	input: GetAdminLogsInput,
-): SWRResponse<GetAdminLogsResponse, unknown> =>
-	useSWR<GetAdminLogsResponse, GetAdminLogsInput>(
+): SWRResponse<GetAdminLogsResponse, ClientError> =>
+	useSWR<GetAdminLogsResponse, ClientError>(
 		[
 			query,
 			input.logAction,

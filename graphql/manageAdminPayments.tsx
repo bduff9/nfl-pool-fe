@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
+import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
 import type { SWRResponse } from 'swr/dist/types';
 
@@ -21,11 +21,11 @@ import { SystemValue } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
 type GetPayoutAmountsResponse = {
-	weeklyPrizes: Pick<SystemValue, 'systemValueID' | 'systemValueValue'> | null;
-	overallPrizes: Pick<SystemValue, 'systemValueID' | 'systemValueValue'> | null;
-	survivorPrizes: Pick<SystemValue, 'systemValueID' | 'systemValueValue'> | null;
-	poolCost: Pick<SystemValue, 'systemValueID' | 'systemValueValue'> | null;
-	survivorCost: Pick<SystemValue, 'systemValueID' | 'systemValueValue'> | null;
+	weeklyPrizes: Pick<SystemValue, 'systemValueValue'> | null;
+	overallPrizes: Pick<SystemValue, 'systemValueValue'> | null;
+	survivorPrizes: Pick<SystemValue, 'systemValueValue'> | null;
+	poolCost: Pick<SystemValue, 'systemValueValue'> | null;
+	survivorCost: Pick<SystemValue, 'systemValueValue'> | null;
 	getRegisteredCount: number;
 	getSurvivorCount: number;
 };
@@ -33,23 +33,18 @@ type GetPayoutAmountsResponse = {
 const payoutAmountsQuery = gql`
 	query GetPrizesForAdmin {
 		weeklyPrizes: getSystemValue(Name: "WeeklyPrizes") {
-			systemValueID
 			systemValueValue
 		}
 		overallPrizes: getSystemValue(Name: "OverallPrizes") {
-			systemValueID
 			systemValueValue
 		}
 		survivorPrizes: getSystemValue(Name: "SurvivorPrizes") {
-			systemValueID
 			systemValueValue
 		}
 		poolCost: getSystemValue(Name: "PoolCost") {
-			systemValueID
 			systemValueValue
 		}
 		survivorCost: getSystemValue(Name: "SurvivorCost") {
-			systemValueID
 			systemValueValue
 		}
 		getRegisteredCount
@@ -57,8 +52,8 @@ const payoutAmountsQuery = gql`
 	}
 `;
 
-export const usePayoutAmounts = (): SWRResponse<GetPayoutAmountsResponse, unknown> =>
-	useSWR<GetPayoutAmountsResponse>(payoutAmountsQuery, fetcher);
+export const usePayoutAmounts = (): SWRResponse<GetPayoutAmountsResponse, ClientError> =>
+	useSWR<GetPayoutAmountsResponse, ClientError>(payoutAmountsQuery, fetcher);
 
 type SetPrizeAmountsResponse = {
 	setPrizeAmounts: boolean;

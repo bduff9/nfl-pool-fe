@@ -140,10 +140,11 @@ const TeamDetail: FC<TeamDetailProps> = ({ gameID }) => {
 	}, [data, isValidating]);
 
 	if (error) {
-		console.error('Error when loading data for Team Details component', error);
+		console.error(
+			`Error when loading data for Team Details component game ${gameID}: `,
+			error,
+		);
 	}
-
-	data?.getGame.homeTeam;
 
 	return (
 		<SkeletonTheme>

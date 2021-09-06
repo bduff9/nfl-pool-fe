@@ -28,8 +28,9 @@ import ProgressChartLoader from '../components/ProgressChart/ProgressChartLoader
 import RankingPieChart from '../components/RankingPieChart/RankingPieChart';
 import RankingPieChartLoader from '../components/RankingPieChart/RankingPieChartLoader';
 import { WeekStatus } from '../generated/graphql';
+import { useSelectedWeek } from '../graphql/sidebar';
 import { useWeeklyRankings } from '../graphql/weekly';
-import { useWeeklyDashboard } from '../graphql/weeklyDashboard';
+import { useWeeklyCounts, useWeeklyDashboard } from '../graphql/weeklyDashboard';
 import { TUser } from '../models/User';
 import { getEmptyArray } from '../utils/arrays';
 import {
@@ -51,23 +52,59 @@ const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
 	const { data: myData, error: myError, isValidating: myIsValidating } = useWeeklyDashboard(
 		selectedWeek,
 	);
+	const {
+		data: selectedWeekData,
+		error: selectedWeekError,
+		isValidating: selectedWeekIsValidating,
+	} = useSelectedWeek(selectedWeek);
+	const {
+		data: weeklyCountData,
+		error: weeklyCountError,
+		isValidating: weeklyCountIsValidating,
+	} = useWeeklyCounts(selectedWeek);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const myPlace = `${myData?.getMyWeeklyDashboard?.tied ? 'T' : ''}${
 		myData?.getMyWeeklyDashboard?.rank
 	}`;
-	const total = myData?.getWeeklyRankingsTotalCount ?? 0;
+	const total = weeklyCountData?.getWeeklyRankingsTotalCount ?? 0;
 	const me = myData?.getMyWeeklyDashboard?.rank ?? 0;
-	const tiedWithMe = myData?.getWeeklyTiedWithMeCount ?? 0;
+	const tiedWithMe = weeklyCountData?.getWeeklyTiedWithMeCount ?? 0;
 	const aheadOfMe = me - 1;
 	const behindMe = total - me - tiedWithMe;
 
 	useEffect(() => {
-		setBackgroundLoading((!!data && isValidating) || (!!myData && myIsValidating));
+		setBackgroundLoading(
+			(!!data && isValidating) ||
+				(!!myData && myIsValidating) ||
+				(!!selectedWeekData && selectedWeekIsValidating) ||
+				(!!weeklyCountData && weeklyCountIsValidating),
+		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating, myData, myIsValidating]);
+	}, [
+		data,
+		isValidating,
+		myData,
+		myIsValidating,
+		selectedWeekData,
+		selectedWeekIsValidating,
+		weeklyCountData,
+		weeklyCountIsValidating,
+	]);
 
-	if (error || myError) {
-		console.error('Error when loading overall ranks', error, myError);
+	if (error) {
+		console.error(`Error when loading week ${selectedWeek} rankings: `, error);
+	}
+
+	if (myError) {
+		console.error(`Error when loading my week ${selectedWeek} dashboard info: `, myError);
+	}
+
+	if (selectedWeekError) {
+		console.error(`Error when loading selected week ${selectedWeek}: `, selectedWeekError);
+	}
+
+	if (weeklyCountError) {
+		console.error(`Error when loading weekly counts ${selectedWeek}: `, weeklyCountError);
 	}
 
 	if (!isValidating && total === 0) {
@@ -141,7 +178,7 @@ const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
 									<ProgressChart
 										correct={myData.getMyWeeklyDashboard.pointsEarned}
 										incorrect={myData.getMyWeeklyDashboard.pointsWrong}
-										isOver={myData.selectedWeek.weekStatus === WeekStatus.Complete}
+										isOver={selectedWeekData?.getWeek.weekStatus === WeekStatus.Complete}
 										layoutId="weeklyPointsEarned"
 										max={myData.getMyWeeklyDashboard.pointsTotal}
 										type="Points"
@@ -149,7 +186,7 @@ const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
 									<ProgressChart
 										correct={myData.getMyWeeklyDashboard.gamesCorrect}
 										incorrect={myData.getMyWeeklyDashboard.gamesWrong}
-										isOver={myData.selectedWeek.weekStatus === WeekStatus.Complete}
+										isOver={selectedWeekData?.getWeek.weekStatus === WeekStatus.Complete}
 										layoutId="weeklyGamesCorrect"
 										max={myData.getMyWeeklyDashboard.gamesTotal}
 										type="Games"

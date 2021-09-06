@@ -13,28 +13,31 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
+import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
 import type { SWRResponse } from 'swr/dist/types';
 
-import { Notification, User } from '../generated/graphql';
+import { Notification } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
-const getCurrentUserQuery = gql`
-	query CurrentUser {
-		getCurrentUser {
-			userID
-			userEmail
-			userFirstName
-			userLastName
-			userTeamName
-			userPhone
-			userPaymentAccount
-			userPaymentType
-			userPlaysSurvivor
-			userAutoPicksLeft
-			userAutoPickStrategy
-		}
+export type MyNotification = Pick<
+	Notification,
+	| 'notificationID'
+	| 'notificationEmail'
+	| 'notificationEmailHoursBefore'
+	| 'notificationSMS'
+	| 'notificationSMSHoursBefore'
+	| 'notificationPushNotification'
+	| 'notificationPushNotificationHoursBefore'
+	| 'notificationDefinition'
+>;
+
+type GetMyNotificationsResponse = {
+	getMyNotifications: Array<MyNotification>;
+};
+
+const getMyNotificationsQuery = gql`
+	query MyNotifications {
 		getMyNotifications {
 			notificationID
 			notificationEmail
@@ -53,53 +56,10 @@ const getCurrentUserQuery = gql`
 				notificationTypeTooltip
 			}
 		}
-		hasGoogle: hasSocialLinked(Type: "google")
-		hasTwitter: hasSocialLinked(Type: "twitter")
 	}
 `;
 
-export type GetCurrentUserResponse = Pick<
-	User,
-	| 'userID'
-	| 'userName'
-	| 'userEmail'
-	| 'userFirstName'
-	| 'userLastName'
-	| 'userTeamName'
-	| 'userPhone'
-	| 'userPaymentAccount'
-	| 'userPaymentType'
-	| 'userPlaysSurvivor'
-	| 'userAutoPicksLeft'
-	| 'userAutoPickStrategy'
->;
-
-export type GetMyNotificationsResponse = Array<
-	Pick<
-		Notification,
-		| 'notificationID'
-		| 'notificationEmail'
-		| 'notificationEmailHoursBefore'
-		| 'notificationSMS'
-		| 'notificationSMSHoursBefore'
-		| 'notificationPushNotification'
-		| 'notificationPushNotificationHoursBefore'
-		| 'notificationDefinition'
-	>
->;
-
-export const useEditProfileQuery = (): SWRResponse<
-	{
-		getCurrentUser: GetCurrentUserResponse;
-		getMyNotifications: GetMyNotificationsResponse;
-		hasGoogle: boolean;
-		hasTwitter: boolean;
-	},
-	unknown
-> =>
-	useSWR<{
-		getCurrentUser: GetCurrentUserResponse;
-		getMyNotifications: GetMyNotificationsResponse;
-		hasGoogle: boolean;
-		hasTwitter: boolean;
-	}>(getCurrentUserQuery, fetcher);
+export const useMyNotifications = (): SWRResponse<
+	GetMyNotificationsResponse,
+	ClientError
+> => useSWR<GetMyNotificationsResponse, ClientError>(getMyNotificationsQuery, fetcher);

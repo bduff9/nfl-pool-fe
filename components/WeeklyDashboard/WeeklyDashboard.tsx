@@ -19,7 +19,9 @@ import Link from 'next/link';
 import React, { FC, useContext, useEffect } from 'react';
 
 import { WeekStatus } from '../../generated/graphql';
-import { useWeeklyDashboard } from '../../graphql/weeklyDashboard';
+import { useMyTiebreakerForWeek } from '../../graphql/picksSet';
+import { useSelectedWeek } from '../../graphql/sidebar';
+import { useWeeklyCounts, useWeeklyDashboard } from '../../graphql/weeklyDashboard';
 import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import { useCountdown } from '../../utils/hooks';
 import OverallDashboardLoader from '../OverallDashboard/OverallDashboardLoader';
@@ -31,26 +33,72 @@ import styles from './WeeklyDashboard.module.scss';
 const WeeklyDashboard: FC = () => {
 	const [selectedWeek] = useContext(WeekContext);
 	const { data, error, isValidating } = useWeeklyDashboard(selectedWeek);
+	const {
+		data: tiebreakerData,
+		error: tiebreakerError,
+		isValidating: tiebreakerIsValidating,
+	} = useMyTiebreakerForWeek(selectedWeek);
+	const {
+		data: selectedWeekData,
+		error: selectedWeekError,
+		isValidating: selectedWeekIsValidating,
+	} = useSelectedWeek(selectedWeek);
+	const {
+		data: weeklyCountData,
+		error: weeklyCountError,
+		isValidating: weeklyCountIsValidating,
+	} = useWeeklyCounts(selectedWeek);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const timeRemaining = useCountdown(
-		data?.selectedWeek.weekStarts ? new Date(data?.selectedWeek.weekStarts) : null,
+		selectedWeekData?.getWeek.weekStarts
+			? new Date(selectedWeekData?.getWeek.weekStarts)
+			: null,
 	);
 	const myPlace = `${data?.getMyWeeklyDashboard?.tied ? 'T' : ''}${
 		data?.getMyWeeklyDashboard?.rank
 	}`;
-	const total = data?.getWeeklyRankingsTotalCount ?? 0;
+	const total = weeklyCountData?.getWeeklyRankingsTotalCount ?? 0;
 	const me = data?.getMyWeeklyDashboard?.rank ?? 0;
-	const tiedWithMe = data?.getWeeklyTiedWithMeCount ?? 0;
+	const tiedWithMe = weeklyCountData?.getWeeklyTiedWithMeCount ?? 0;
 	const aheadOfMe = me - 1;
 	const behindMe = total - me - tiedWithMe;
 
 	useEffect(() => {
-		setBackgroundLoading(!!data && isValidating);
+		setBackgroundLoading(
+			(!!data && isValidating) ||
+				(!!tiebreakerData && tiebreakerIsValidating) ||
+				(!!selectedWeekData && selectedWeekIsValidating) ||
+				(!!weeklyCountData && weeklyCountIsValidating),
+		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating]);
+	}, [
+		data,
+		isValidating,
+		tiebreakerData,
+		tiebreakerIsValidating,
+		selectedWeekData,
+		selectedWeekIsValidating,
+		weeklyCountData,
+		weeklyCountIsValidating,
+	]);
 
 	if (error) {
 		console.error(`Error when loading week ${selectedWeek} dashboard`, error);
+	}
+
+	if (tiebreakerError) {
+		console.error(
+			`Error when loading my tiebreaker for week ${selectedWeek}`,
+			tiebreakerError,
+		);
+	}
+
+	if (selectedWeekError) {
+		console.error(`Error when loading selected week ${selectedWeek}: `, selectedWeekError);
+	}
+
+	if (weeklyCountError) {
+		console.error(`Error when loading weekly counts ${selectedWeek}: `, weeklyCountError);
 	}
 
 	return (
@@ -70,7 +118,7 @@ const WeeklyDashboard: FC = () => {
 				<OverallDashboardLoader />
 			) : (
 				<div className={clsx(styles['weekly-links'])}>
-					{data.getMyTiebreakerForWeek?.tiebreakerHasSubmitted ? (
+					{tiebreakerData?.getMyTiebreakerForWeek?.tiebreakerHasSubmitted ? (
 						<>
 							<div className="text-success">You have submitted your picks</div>
 							<Link href="/picks/view">
@@ -131,7 +179,7 @@ const WeeklyDashboard: FC = () => {
 					<ProgressChart
 						correct={data.getMyWeeklyDashboard.pointsEarned}
 						incorrect={data.getMyWeeklyDashboard.pointsWrong}
-						isOver={data.selectedWeek.weekStatus === WeekStatus.Complete}
+						isOver={selectedWeekData?.getWeek.weekStatus === WeekStatus.Complete}
 						layoutId="weeklyPointsEarned"
 						max={data.getMyWeeklyDashboard.pointsTotal}
 						type="Points"
@@ -139,7 +187,7 @@ const WeeklyDashboard: FC = () => {
 					<ProgressChart
 						correct={data.getMyWeeklyDashboard.gamesCorrect}
 						incorrect={data.getMyWeeklyDashboard.gamesWrong}
-						isOver={data.selectedWeek.weekStatus === WeekStatus.Complete}
+						isOver={selectedWeekData?.getWeek.weekStatus === WeekStatus.Complete}
 						layoutId="weeklyGamesCorrect"
 						max={data.getMyWeeklyDashboard.gamesTotal}
 						type="Games"

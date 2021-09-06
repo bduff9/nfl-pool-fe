@@ -18,7 +18,7 @@ import { useSession } from 'next-auth/client';
 import Head from 'next/head';
 import React, { FC, useContext, useEffect, useRef, useState } from 'react';
 
-import { useMyAlertsQuery } from '../../graphql/customHead';
+import { useMyAlerts } from '../../graphql/customHead';
 import { getPageTitle } from '../../utils';
 import { BackgroundLoadingContext } from '../../utils/context';
 import { usePageTitle } from '../../utils/hooks';
@@ -30,7 +30,7 @@ type CustomHeadProps = {
 const CustomHead: FC<CustomHeadProps> = ({ title }) => {
 	const [session] = useSession();
 	const [pageTitle] = usePageTitle(title);
-	const { data, error, isValidating } = useMyAlertsQuery(session);
+	const { data, error, isValidating } = useMyAlerts(session);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [titleOverride, setTitleOverride] = useState<string>('');
 	const interval = useRef<number>();

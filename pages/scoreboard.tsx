@@ -90,7 +90,10 @@ const Scoreboard: FC<ScoreboardProps> = () => {
 	}, [data, isValidating]);
 
 	if (error) {
-		console.error('Error when loading weekly games for NFL scoreboard', error);
+		console.error(
+			`Error when loading week ${selectedWeek} games for NFL scoreboard: `,
+			error,
+		);
 	}
 
 	return (

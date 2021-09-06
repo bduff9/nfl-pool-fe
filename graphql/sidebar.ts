@@ -13,56 +13,50 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR, { mutate } from 'swr';
+import { ClientError, gql } from 'graphql-request';
+import useSWR from 'swr';
 import type { SWRResponse } from 'swr/dist/types';
 
-import { Tiebreaker, Week } from '../generated/graphql';
+import { Week } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
-const getSidebarGQL = gql`
-	query GetSidebar($week: Int!) {
-		currentWeek: getWeek {
+type GetCurrentWeekResponse = {
+	getWeek: Pick<Week, 'weekNumber' | 'seasonStatus'>;
+};
+
+const getCurrentWeekQuery = gql`
+	query GetCurrentWeek {
+		getWeek {
 			weekNumber
 			seasonStatus
 		}
-		selectedWeek: getWeek(Week: $week) {
+	}
+`;
+
+export const useCurrentWeek = (): SWRResponse<GetCurrentWeekResponse, unknown> =>
+	useSWR<GetCurrentWeekResponse>(getCurrentWeekQuery, fetcher);
+
+type GetSelectedWeekResponse = {
+	getWeek: Pick<Week, 'weekNumber' | 'weekStarts' | 'weekStatus'>;
+};
+
+const getSelectedWeekQuery = gql`
+	query GetSelectedWeek($week: Int!) {
+		getWeek(Week: $week) {
 			weekNumber
 			weekStarts
 			weekStatus
 		}
-		getMyTiebreakerForWeek(Week: $week) {
-			tiebreakerHasSubmitted
-		}
-		isAliveInSurvivor
-		getWeeklyRankingsTotalCount(Week: $week)
-		getOverallRankingsTotalCount
 	}
 `;
 
-type GetCurrentWeekResponse = Pick<Week, 'weekNumber' | 'seasonStatus'>;
-type GetWeekResponse = Pick<Week, 'weekNumber' | 'weekStarts' | 'weekStatus'>;
-type GetMyTiebreakerResponse = null | Pick<Tiebreaker, 'tiebreakerHasSubmitted'>;
-type GetSidebarResponse = {
-	currentWeek: GetCurrentWeekResponse;
-	selectedWeek: GetWeekResponse;
-	getMyTiebreakerForWeek: GetMyTiebreakerResponse;
-	isAliveInSurvivor: boolean;
-	getWeeklyRankingsTotalCount: number;
-	getOverallRankingsTotalCount: number;
-};
-
-export const useSidebarData = (
-	doneRegistering: boolean | undefined,
-	selectedWeek: number,
-): SWRResponse<GetSidebarResponse, unknown> =>
-	useSWR<GetSidebarResponse>(
-		doneRegistering ? [getSidebarGQL, selectedWeek] : null,
+export const useSelectedWeek = (
+	week: number,
+): SWRResponse<GetSelectedWeekResponse, ClientError> =>
+	useSWR<GetSelectedWeekResponse, ClientError>(
+		[getSelectedWeekQuery, week],
 		(query, week) => fetcher(query, { week }),
 	);
-
-export const updateSidebarData = async (week: number): Promise<GetSidebarResponse> =>
-	mutate([getSidebarGQL, week]);
 
 const registerForSurvivorMutation = gql`
 	mutation RegisterUserForSurvivorPool {

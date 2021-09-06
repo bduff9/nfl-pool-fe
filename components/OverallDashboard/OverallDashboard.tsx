@@ -19,33 +19,63 @@ import Link from 'next/link';
 import React, { FC, useContext, useEffect } from 'react';
 
 import { SeasonStatus } from '../../generated/graphql';
-import { useOverallDashboard } from '../../graphql/overallDashboard';
+import { useOverallCounts, useOverallDashboard } from '../../graphql/overallDashboard';
 import ProgressChart from '../ProgressChart/ProgressChart';
 import RankingPieChart from '../RankingPieChart/RankingPieChart';
 import { BackgroundLoadingContext } from '../../utils/context';
+import { useCurrentWeek } from '../../graphql/sidebar';
 
 import OverallDashboardLoader from './OverallDashboardLoader';
 import styles from './OverallDashboard.module.scss';
 
 const OverallDashboard: FC = () => {
 	const { data, error, isValidating } = useOverallDashboard();
+	const {
+		data: currentWeekData,
+		error: currentWeekError,
+		isValidating: currentWeekIsValidating,
+	} = useCurrentWeek();
+	const {
+		data: overallCountData,
+		error: overallCountError,
+		isValidating: overallCountIsValidating,
+	} = useOverallCounts();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const myPlace = `${data?.getMyOverallDashboard?.tied ? 'T' : ''}${
 		data?.getMyOverallDashboard?.rank
 	}`;
-	const total = data?.getOverallRankingsTotalCount ?? 0;
+	const total = overallCountData?.getOverallRankingsTotalCount ?? 0;
 	const me = data?.getMyOverallDashboard?.rank ?? 0;
-	const tiedWithMe = data?.getOverallTiedWithMeCount ?? 0;
+	const tiedWithMe = overallCountData?.getOverallTiedWithMeCount ?? 0;
 	const aheadOfMe = me - 1;
 	const behindMe = total - me - tiedWithMe;
 
 	useEffect(() => {
-		setBackgroundLoading(!!data && isValidating);
+		setBackgroundLoading(
+			(!!data && isValidating) ||
+				(!!currentWeekData && currentWeekIsValidating) ||
+				(!!overallCountData && overallCountIsValidating),
+		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating]);
+	}, [
+		data,
+		isValidating,
+		currentWeekData,
+		currentWeekIsValidating,
+		overallCountData,
+		overallCountIsValidating,
+	]);
 
 	if (error) {
-		console.error('Error when loading overall dashboard', error);
+		console.error('Error when loading overall dashboard: ', error);
+	}
+
+	if (currentWeekError) {
+		console.error('Error when loading current week: ', currentWeekError);
+	}
+
+	if (overallCountError) {
+		console.error('Error when loading overall counts: ', overallCountError);
 	}
 
 	return (
@@ -107,7 +137,7 @@ const OverallDashboard: FC = () => {
 					<ProgressChart
 						correct={data.getMyOverallDashboard.pointsEarned}
 						incorrect={data.getMyOverallDashboard.pointsWrong}
-						isOver={data.getWeek.seasonStatus === SeasonStatus.Complete}
+						isOver={currentWeekData?.getWeek.seasonStatus === SeasonStatus.Complete}
 						layoutId="overallPointsEarned"
 						max={data.getMyOverallDashboard.pointsTotal}
 						type="Points"
@@ -115,7 +145,7 @@ const OverallDashboard: FC = () => {
 					<ProgressChart
 						correct={data.getMyOverallDashboard.gamesCorrect}
 						incorrect={data.getMyOverallDashboard.gamesWrong}
-						isOver={data.getWeek.seasonStatus === SeasonStatus.Complete}
+						isOver={currentWeekData?.getWeek.seasonStatus === SeasonStatus.Complete}
 						layoutId="overallGamesCorrect"
 						max={data.getMyOverallDashboard.gamesTotal}
 						type="Games"

@@ -25,14 +25,14 @@ import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import 'yup-phone';
 
-import { PaymentMethod } from '../../generated/graphql';
+import { PaymentMethod, SeasonStatus } from '../../generated/graphql';
 import { finishRegistration } from '../../graphql/finishRegistrationForm';
 import { survivorPopover, paymentPopover } from '../Popover/Popover';
 import SocialAuthButton from '../SocialAuthButton/SocialAuthButton';
 import { ErrorIcon, SuccessIcon } from '../ToastUtils/ToastIcons';
 import { TTrueFalse } from '../../utils/types';
 import { getFullName, getFirstName, getLastName } from '../../utils/user';
-import { CurrentUserResponse, GetCurrentUserResponse } from '../../graphql/create';
+import { CurrentUserResponse, CurrentUser } from '../../graphql/create';
 import { useWarningOnExit } from '../../utils/hooks';
 import { isPhoneNumber, isEmailAddress, isUsername } from '../../utils/strings';
 
@@ -133,19 +133,19 @@ const schema = Yup.object().shape({
 });
 
 type FinishRegistrationFormProps = {
-	currentUser: GetCurrentUserResponse;
-	currentWeek: number;
+	currentUser: CurrentUser;
 	hasGoogle: boolean;
 	hasTwitter: boolean;
 	revalidateUser: () => Promise<CurrentUserResponse | undefined>;
+	seasonStatus: SeasonStatus;
 };
 
 const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 	currentUser,
-	currentWeek,
 	hasGoogle,
 	hasTwitter,
 	revalidateUser,
+	seasonStatus,
 }) => {
 	const {
 		formState: { errors, isDirty },
@@ -163,7 +163,9 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 			userPaymentAccount: currentUser.userPaymentAccount || '',
 			userPaymentType: currentUser.userPaymentType || undefined,
 			userPlaysSurvivor:
-				currentWeek > 1 ? 'false' : (`${currentUser.userPlaysSurvivor}` as TTrueFalse),
+				seasonStatus !== SeasonStatus.NotStarted
+					? 'false'
+					: (`${currentUser.userPlaysSurvivor}` as TTrueFalse),
 			userReferredByRaw: currentUser.userReferredByRaw || '',
 			userTeamName: currentUser.userTeamName || '',
 		},
@@ -377,7 +379,13 @@ const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
 					</div>
 				</div>
 			)}
-			<div className={clsx('row', 'mb-3', currentWeek > 1 && 'd-none')}>
+			<div
+				className={clsx(
+					'row',
+					'mb-3',
+					seasonStatus !== SeasonStatus.NotStarted && 'd-none',
+				)}
+			>
 				<div className="col">
 					<label htmlFor="userPlaysSurvivor" className="form-label required">
 						Add on survivor game?&nbsp;

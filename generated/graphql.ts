@@ -219,28 +219,6 @@ export enum GameStatus {
 	Final = 'Final',
 }
 
-export type History = {
-	__typename?: 'History';
-	historyID: Scalars['Int'];
-	user: User;
-	league: League;
-	historyYear: Scalars['Int'];
-	historyType: HistoryType;
-	historyWeek?: Maybe<Scalars['Int']>;
-	historyPlace: Scalars['Int'];
-	historyAdded: Scalars['DateTime'];
-	historyAddedBy: Scalars['String'];
-	historyUpdated: Scalars['DateTime'];
-	historyUpdatedBy: Scalars['String'];
-};
-
-/** The type of the history item */
-export enum HistoryType {
-	Overall = 'Overall',
-	Survivor = 'Survivor',
-	Weekly = 'Weekly',
-}
-
 export type ISupportContent = {
 	supportContentID: Scalars['Int'];
 	supportContentType: SupportContentType;
@@ -554,14 +532,8 @@ export type Query = {
 	getFAQs: Array<Faq>;
 	getGame: Game;
 	getGamesForWeek: Array<Game>;
-	getCurrentWeek: Scalars['Int'];
-	getHistoryForYear: Array<History>;
-	getAllLeagues: Array<League>;
-	getLeaguesForUser: Array<UserLeague>;
 	getLogs: LogResult;
-	getLogActions: Array<Array<Scalars['String']>>;
 	getMyNotifications: Array<Notification>;
-	getNotificationTypes: Array<NotificationType>;
 	getOverallRankings: Array<OverallMv>;
 	getMyOverallDashboard?: Maybe<OverallMv>;
 	getOverallTiedWithMeCount: Scalars['Int'];
@@ -581,9 +553,7 @@ export type Query = {
 	getMySurvivorPickForWeek?: Maybe<SurvivorPick>;
 	getSystemValue: SystemValue;
 	getTeamsOnBye: Array<Team>;
-	getTeams: Array<Team>;
 	getMyTiebreakerForWeek?: Maybe<Tiebreaker>;
-	getTiebreakersForWeek: Array<Tiebreaker>;
 	getCurrentUser: User;
 	getMyAlerts: Array<Scalars['String']>;
 	getRegisteredCount: Scalars['Float'];
@@ -622,14 +592,6 @@ export type QueryGetGameArgs = {
 
 export type QueryGetGamesForWeekArgs = {
 	Week: Scalars['Int'];
-};
-
-export type QueryGetHistoryForYearArgs = {
-	Year: Scalars['Int'];
-};
-
-export type QueryGetLeaguesForUserArgs = {
-	UserID: Scalars['Int'];
 };
 
 export type QueryGetLogsArgs = {
@@ -676,10 +638,6 @@ export type QueryGetTeamsOnByeArgs = {
 };
 
 export type QueryGetMyTiebreakerForWeekArgs = {
-	Week: Scalars['Int'];
-};
-
-export type QueryGetTiebreakersForWeekArgs = {
 	Week: Scalars['Int'];
 };
 

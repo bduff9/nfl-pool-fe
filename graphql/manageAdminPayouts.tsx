@@ -31,12 +31,7 @@ export type Winner = Pick<
 	| 'userPaidOut'
 	| 'userBalance'
 > & {
-	payments: Array<
-		Pick<
-			Payment,
-			'paymentID' | 'paymentType' | 'paymentWeek' | 'paymentDescription' | 'paymentAmount'
-		>
-	>;
+	payments: Array<Pick<Payment, 'paymentType' | 'paymentWeek' | 'paymentDescription'>>;
 };
 
 type GetWinnersResponse = {
@@ -55,11 +50,9 @@ const winnersQuery = gql`
 			userPaidOut
 			userBalance
 			payments {
-				paymentID
 				paymentType
 				paymentWeek
 				paymentDescription
-				paymentAmount
 			}
 		}
 	}

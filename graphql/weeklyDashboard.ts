@@ -13,11 +13,11 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
+import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
 import type { SWRResponse } from 'swr/dist/types';
 
-import { Tiebreaker, Week, WeeklyMv } from '../generated/graphql';
+import { WeeklyMv } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
 type GetWeeklyDashboardResponse = {
@@ -33,15 +33,9 @@ type GetWeeklyDashboardResponse = {
 		| 'gamesWrong'
 		| 'gamesPossible'
 		| 'gamesTotal'
-		| 'gamesMissed'
 		| 'tiebreakerScore'
 		| 'lastScore'
-		| 'isEliminated'
 	>;
-	getWeeklyTiedWithMeCount: number;
-	getWeeklyRankingsTotalCount: number;
-	getMyTiebreakerForWeek: null | Pick<Tiebreaker, 'tiebreakerHasSubmitted'>;
-	selectedWeek: Pick<Week, 'weekNumber' | 'weekStarts' | 'weekStatus'>;
 };
 
 const query = gql`
@@ -57,20 +51,8 @@ const query = gql`
 			gamesWrong
 			gamesPossible
 			gamesTotal
-			gamesMissed
 			tiebreakerScore
 			lastScore
-			isEliminated
-		}
-		getWeeklyTiedWithMeCount(Week: $week)
-		getWeeklyRankingsTotalCount(Week: $week)
-		getMyTiebreakerForWeek(Week: $week) {
-			tiebreakerHasSubmitted
-		}
-		selectedWeek: getWeek(Week: $week) {
-			weekNumber
-			weekStarts
-			weekStatus
 		}
 	}
 `;
@@ -80,4 +62,24 @@ export const useWeeklyDashboard = (
 ): SWRResponse<GetWeeklyDashboardResponse, unknown> =>
 	useSWR<GetWeeklyDashboardResponse>([query, week], (query, week) =>
 		fetcher(query, { week }),
+	);
+
+type GetWeeklyCountsResponse = {
+	getWeeklyRankingsTotalCount: number;
+	getWeeklyTiedWithMeCount: number;
+};
+
+const getWeeklyCountsQuery = gql`
+	query GetWeeklyCounts($week: Int!) {
+		getWeeklyTiedWithMeCount(Week: $week)
+		getWeeklyRankingsTotalCount(Week: $week)
+	}
+`;
+
+export const useWeeklyCounts = (
+	selectedWeek: number,
+): SWRResponse<GetWeeklyCountsResponse, ClientError> =>
+	useSWR<GetWeeklyCountsResponse, ClientError>(
+		[getWeeklyCountsQuery, selectedWeek],
+		(query, week) => fetcher(query, { week }),
 	);

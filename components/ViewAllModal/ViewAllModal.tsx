@@ -19,30 +19,16 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import React, { FC, useEffect, useState } from 'react';
 
-import { Game, Team } from '../../generated/graphql';
+import { GameForWeek } from '../../graphql/scoreboard';
 import { getAbbreviation } from '../../utils/strings';
 
 import styles from './ViewAllModal.module.scss';
 
 type ViewAllModalProps = {
 	closeModal: () => void;
-	games: Array<
-		Pick<Game, 'gameID'> & {
-			homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-			visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-			winnerTeam: Pick<Team, 'teamID'> | null;
-		}
-	>;
+	games: Array<GameForWeek>;
 	isOpen?: boolean;
-	saveChanges: (
-		games: Array<
-			Pick<Game, 'gameID'> & {
-				homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				winnerTeam: Pick<Team, 'teamID'> | null;
-			}
-		>,
-	) => void;
+	saveChanges: (games: Array<GameForWeek>) => void;
 };
 
 const ViewAllModal: FC<ViewAllModalProps> = ({
@@ -51,15 +37,7 @@ const ViewAllModal: FC<ViewAllModalProps> = ({
 	isOpen = false,
 	saveChanges,
 }) => {
-	const [customGames, setCustomGames] = useState<
-		Array<
-			Pick<Game, 'gameID'> & {
-				homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				winnerTeam: Pick<Team, 'teamID'> | null;
-			}
-		>
-	>([]);
+	const [customGames, setCustomGames] = useState<Array<GameForWeek>>([]);
 
 	useEffect(() => {
 		if (customGames.length === 0) {

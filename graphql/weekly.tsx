@@ -20,29 +20,22 @@ import type { SWRResponse } from 'swr/dist/types';
 import { WeeklyMv } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
+export type WeeklyRank = Pick<
+	WeeklyMv,
+	| 'rank'
+	| 'tied'
+	| 'userID'
+	| 'userName'
+	| 'teamName'
+	| 'pointsEarned'
+	| 'gamesCorrect'
+	| 'tiebreakerScore'
+	| 'lastScore'
+	| 'isEliminated'
+>;
+
 type GetWeeklyRankingsResponse = {
-	getWeeklyRankings: Array<
-		Pick<
-			WeeklyMv,
-			| 'rank'
-			| 'tied'
-			| 'userID'
-			| 'userName'
-			| 'teamName'
-			| 'pointsEarned'
-			| 'pointsWrong'
-			| 'pointsPossible'
-			| 'pointsTotal'
-			| 'gamesCorrect'
-			| 'gamesWrong'
-			| 'gamesPossible'
-			| 'gamesTotal'
-			| 'gamesMissed'
-			| 'tiebreakerScore'
-			| 'lastScore'
-			| 'isEliminated'
-		>
-	>;
+	getWeeklyRankings: Array<WeeklyRank>;
 };
 
 const query = gql`
@@ -54,14 +47,7 @@ const query = gql`
 			userName
 			teamName
 			pointsEarned
-			pointsWrong
-			pointsPossible
-			pointsTotal
 			gamesCorrect
-			gamesWrong
-			gamesPossible
-			gamesTotal
-			gamesMissed
 			tiebreakerScore
 			lastScore
 			isEliminated

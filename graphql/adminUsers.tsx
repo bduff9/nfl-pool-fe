@@ -26,47 +26,44 @@ import {
 } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
+export type UserNotificationForAdmin = Pick<
+	Notification,
+	| 'notificationID'
+	| 'notificationEmail'
+	| 'notificationEmailHoursBefore'
+	| 'notificationSMS'
+	| 'notificationSMSHoursBefore'
+> & {
+	notificationDefinition: Pick<NotificationType, 'notificationTypeDescription'>;
+};
+
+export type UserForAdmin = Pick<
+	User,
+	| 'userID'
+	| 'userEmail'
+	| 'userName'
+	| 'userFirstName'
+	| 'userLastName'
+	| 'userTeamName'
+	| 'userReferredByRaw'
+	| 'userEmailVerified'
+	| 'userTrusted'
+	| 'userDoneRegistering'
+	| 'userPlaysSurvivor'
+	| 'userPaid'
+	| 'userOwes'
+	| 'userAutoPicksLeft'
+	| 'userAutoPickStrategy'
+	| 'userCommunicationsOptedOut'
+	| 'yearsPlayed'
+> & {
+	userReferredByUser: Pick<User, 'userName'> | null;
+	notifications: Array<UserNotificationForAdmin>;
+	accounts: Array<Pick<Account, 'accountProviderID'>>;
+};
+
 type GetAdminUsersResponse = {
-	getUsersForAdmins: Array<
-		Pick<
-			User,
-			| 'userID'
-			| 'userEmail'
-			| 'userName'
-			| 'userFirstName'
-			| 'userLastName'
-			| 'userTeamName'
-			| 'userReferredByRaw'
-			| 'userEmailVerified'
-			| 'userTrusted'
-			| 'userDoneRegistering'
-			| 'userIsAdmin'
-			| 'userPlaysSurvivor'
-			| 'userPaymentType'
-			| 'userPaymentAccount'
-			| 'userPaid'
-			| 'userOwes'
-			| 'userAutoPicksLeft'
-			| 'userAutoPickStrategy'
-			| 'userCommunicationsOptedOut'
-			| 'yearsPlayed'
-		> & {
-			userReferredByUser: Pick<User, 'userID' | 'userName'> | null;
-			notifications: Array<
-				Pick<
-					Notification,
-					| 'notificationID'
-					| 'notificationEmail'
-					| 'notificationEmailHoursBefore'
-					| 'notificationSMS'
-					| 'notificationSMSHoursBefore'
-				> & {
-					notificationDefinition: Pick<NotificationType, 'notificationTypeDescription'>;
-				}
-			>;
-			accounts: Array<Pick<Account, 'accountProviderID'>>;
-		}
-	>;
+	getUsersForAdmins: Array<UserForAdmin>;
 };
 
 type GetAdminUsersInput = {
@@ -84,16 +81,12 @@ const query = gql`
 			userTeamName
 			userReferredByRaw
 			userReferredByUser {
-				userID
 				userName
 			}
 			userEmailVerified
 			userTrusted
 			userDoneRegistering
-			userIsAdmin
 			userPlaysSurvivor
-			userPaymentType
-			userPaymentAccount
 			userPaid
 			userOwes
 			userAutoPicksLeft

@@ -19,17 +19,12 @@ import { QueryGetSystemValueArgs, SystemValue } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
 type GetLoginValuesResponse = {
-	getSystemValue: Pick<
-		SystemValue,
-		'systemValueID' | 'systemValueName' | 'systemValueValue'
-	>;
+	getSystemValue: Pick<SystemValue, 'systemValueValue'>;
 };
 
 const query = gql`
 	query GetPoolYear($Name: String!) {
 		getSystemValue(Name: $Name) {
-			systemValueID
-			systemValueName
 			systemValueValue
 		}
 	}

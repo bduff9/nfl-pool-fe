@@ -37,6 +37,7 @@ import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import styles from '../../styles/picks/view.module.scss';
 import { WeekStatus } from '../../generated/graphql';
 import MyProgressChart from '../../components/MyProgressChart/MyProgressChart';
+import { useSelectedWeek } from '../../graphql/sidebar';
 
 type ViewPicksProps = {
 	user: TUser;
@@ -44,25 +45,51 @@ type ViewPicksProps = {
 
 const ViewPicks: FC<ViewPicksProps> = () => {
 	const [selectedWeek] = useContext(WeekContext);
+	const { data, error, isValidating } = useViewMyPicks(selectedWeek);
 	const {
 		data: myRankData,
 		error: myRankError,
 		isValidating: myRankIsValidating,
 	} = useWeeklyDashboard(selectedWeek);
-	const { data, error, isValidating } = useViewMyPicks(selectedWeek);
+	const {
+		data: selectedWeekData,
+		error: selectedWeekError,
+		isValidating: selectedWeekIsValidating,
+	} = useSelectedWeek(selectedWeek);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 
 	useEffect(() => {
-		setBackgroundLoading((!!data && isValidating) || (!!myRankData && myRankIsValidating));
+		setBackgroundLoading(
+			(!!data && isValidating) ||
+				(!!myRankData && myRankIsValidating) ||
+				(!!selectedWeekData && selectedWeekIsValidating),
+		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating, myRankData, myRankIsValidating]);
-
-	if (myRankError) {
-		console.error('Error when loading my rank data for View My Picks', myRankError);
-	}
+	}, [
+		data,
+		isValidating,
+		myRankData,
+		myRankIsValidating,
+		selectedWeekData,
+		selectedWeekIsValidating,
+	]);
 
 	if (error) {
-		console.error('Error when loading pick data for View My Picks', error);
+		console.error(
+			`Error when loading view my picks data for week ${selectedWeek}: `,
+			error,
+		);
+	}
+
+	if (myRankError) {
+		console.error(
+			`Error when loading my dashboard info for week ${selectedWeek}: `,
+			myRankError,
+		);
+	}
+
+	if (selectedWeekError) {
+		console.error(`Error when loading selected week ${selectedWeek}: `, selectedWeekError);
 	}
 
 	return (
@@ -79,7 +106,7 @@ const ViewPicks: FC<ViewPicksProps> = () => {
 										<MyProgressChart
 											correct={myRankData.getMyWeeklyDashboard.pointsEarned}
 											correctLabel="Your Current Score"
-											isOver={myRankData.selectedWeek.weekStatus === WeekStatus.Complete}
+											isOver={selectedWeekData?.getWeek.weekStatus === WeekStatus.Complete}
 											max={myRankData.getMyWeeklyDashboard.pointsTotal}
 											maxLabel="Max Score"
 											possible={myRankData.getMyWeeklyDashboard.pointsPossible}
@@ -93,7 +120,7 @@ const ViewPicks: FC<ViewPicksProps> = () => {
 										<MyProgressChart
 											correct={myRankData.getMyWeeklyDashboard.gamesCorrect}
 											correctLabel="Your Correct Games"
-											isOver={myRankData.selectedWeek.weekStatus === WeekStatus.Complete}
+											isOver={selectedWeekData?.getWeek.weekStatus === WeekStatus.Complete}
 											max={myRankData.getMyWeeklyDashboard.gamesTotal}
 											maxLabel="Max Games"
 											possible={myRankData.getMyWeeklyDashboard.gamesPossible}

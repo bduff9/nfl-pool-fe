@@ -20,21 +20,14 @@ import type { SWRResponse } from 'swr/dist/types';
 import { Game, Pick as PoolPick, Team, User } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
+export type ViewAllPick = Pick<PoolPick, 'pickID' | 'pickPoints'> & {
+	user: Pick<User, 'userID'>;
+	game: Pick<Game, 'gameID'>;
+	team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'> | null;
+};
+
 type GetAllPicksResponse = {
-	getAllPicksForWeek: Array<
-		Pick<PoolPick, 'pickID' | 'pickPoints'> & {
-			user: Pick<User, 'userID'>;
-			game: Pick<Game, 'gameID'>;
-			team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'> | null;
-		}
-	>;
-	getGamesForWeek: Array<
-		Pick<Game, 'gameID'> & {
-			homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-			visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-			winnerTeam: Pick<Team, 'teamID'> | null;
-		}
-	>;
+	getAllPicksForWeek: Array<ViewAllPick>;
 };
 
 const query = gql`
@@ -53,24 +46,6 @@ const query = gql`
 				teamCity
 				teamName
 				teamLogo
-			}
-		}
-		getGamesForWeek(Week: $week) {
-			gameID
-			homeTeam {
-				teamID
-				teamCity
-				teamName
-				teamLogo
-			}
-			visitorTeam {
-				teamID
-				teamCity
-				teamName
-				teamLogo
-			}
-			winnerTeam {
-				teamID
 			}
 		}
 	}

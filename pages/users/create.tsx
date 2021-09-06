@@ -27,9 +27,10 @@ import {
 } from '../../utils/auth.server';
 import FinishRegistrationForm from '../../components/FinishRegistrationForm/FinishRegistrationForm';
 import FinishRegistrationLoader from '../../components/FinishRegistrationForm/FinishRegistrationLoader';
-import { useFinishRegistrationQuery } from '../../graphql/create';
+import { useCurrentUser } from '../../graphql/create';
 import CustomHead from '../../components/CustomHead/CustomHead';
 import { BackgroundLoadingContext } from '../../utils/context';
+import { useCurrentWeek } from '../../graphql/sidebar';
 
 type CreateProfileProps = {
 	user: TUser;
@@ -37,18 +38,30 @@ type CreateProfileProps = {
 
 const CreateProfile: FC<CreateProfileProps> = ({ user }) => {
 	const router = useRouter();
-	const { data, error, isValidating, mutate } = useFinishRegistrationQuery();
+	const { data, error, isValidating, mutate } = useCurrentUser();
+	const {
+		data: currentWeekData,
+		error: currentWeekError,
+		isValidating: currentWeekIsValidating,
+	} = useCurrentWeek();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 
 	useEffect(() => {
-		setBackgroundLoading(!!data && isValidating);
+		setBackgroundLoading(
+			(!!data && isValidating) || (!!currentWeekData && currentWeekIsValidating),
+		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating]);
+	}, [data, isValidating, currentWeekData, currentWeekIsValidating]);
 
 	if (error) {
-		console.error('Error when loading finish registration form', error);
+		console.error('Error when loading current user: ', error);
 	}
 
+	if (currentWeekError) {
+		console.error('Error when loading current week: ', currentWeekError);
+	}
+
+	//FIXME: for some reason, the user from the server is not always up to date.  For instance, immediately after registering, users are kicked back here from the dashboard.  As a workaround, we check the cached user we mutate after registering, but this means that the dashboard will kick them here and then this screen will kick them to edit profile, so is not ideal.
 	if (user.doneRegistering || data?.getCurrentUser.userDoneRegistering) {
 		router.replace('/users/edit');
 
@@ -59,13 +72,13 @@ const CreateProfile: FC<CreateProfileProps> = ({ user }) => {
 		<Authenticated>
 			<CustomHead title="Finish Registration" />
 			<div className="content-bg text-dark my-3 mx-2 pt-5 pt-md-3 min-vh-100 pb-4 col">
-				{data ? (
+				{data && currentWeekData ? (
 					<FinishRegistrationForm
 						currentUser={data.getCurrentUser}
-						currentWeek={data.getCurrentWeek}
 						hasGoogle={data.hasGoogle}
 						hasTwitter={data.hasTwitter}
 						revalidateUser={mutate}
+						seasonStatus={currentWeekData.getWeek.seasonStatus}
 					/>
 				) : (
 					<FinishRegistrationLoader />

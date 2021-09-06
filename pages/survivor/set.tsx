@@ -41,6 +41,8 @@ import { getEmptyArray } from '../../utils/arrays';
 import TeamDetail from '../../components/TeamDetail/TeamDetail';
 import SurvivorTeam from '../../components/SurvivorTeam/SurvivorTeam';
 import { ErrorIcon, SuccessIcon } from '../../components/ToastUtils/ToastIcons';
+import { useGamesForWeek } from '../../graphql/scoreboard';
+import { useSurvivorIsAlive } from '../../graphql/survivorDashboard';
 
 type SurvivorTeamLoaderProps = {
 	isHome?: boolean;
@@ -140,14 +142,28 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 	const router = useRouter();
 	const [selectedWeek] = useContext(WeekContext);
 	const { data, error, isValidating, mutate } = useMakeSurvivorPickView(selectedWeek);
+	const {
+		data: aliveData,
+		error: aliveError,
+		isValidating: aliveIsValidating,
+	} = useSurvivorIsAlive();
+	const {
+		data: gamesData,
+		error: gamesError,
+		isValidating: gamesIsValidating,
+	} = useGamesForWeek(selectedWeek);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [selectedGame, setSelectedGame] = useState<null | number>(null);
 	const [loading, setLoading] = useState<null | number>(null);
 
 	useEffect(() => {
-		setBackgroundLoading(!!data && isValidating);
+		setBackgroundLoading(
+			(!!data && isValidating) ||
+				(!!aliveData && aliveIsValidating) ||
+				(!!gamesData && gamesIsValidating),
+		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating]);
+	}, [data, isValidating, aliveData, aliveIsValidating, gamesData, gamesIsValidating]);
 
 	const setSurvivorPick = async (gameID: number, teamID: number): Promise<void> => {
 		if (loading) return;
@@ -160,8 +176,7 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 				const getMySurvivorPicks = data.getMySurvivorPicks.map(pick => {
 					if (pick.survivorPickWeek === selectedWeek) {
 						return {
-							game: { gameID },
-							survivorPickWeek: selectedWeek,
+							...pick,
 							team: { teamID },
 						};
 					}
@@ -202,6 +217,21 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 		}
 	};
 
+	if (error) {
+		console.error('Error when loading data for Make Survivor Pick: ', error);
+	}
+
+	if (aliveError) {
+		console.error('Error when loading survivor is alive data: ', aliveError);
+	}
+
+	if (gamesError) {
+		console.error(
+			`Error when loading week ${selectedWeek} games for NFL scoreboard: `,
+			gamesError,
+		);
+	}
+
 	if (typeof window !== 'undefined') {
 		if (selectedWeek <= (data?.getWeekInProgress ?? 0)) {
 			router.replace('/survivor/view');
@@ -209,15 +239,11 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 			return <></>;
 		}
 
-		if (data?.isAliveInSurvivor === false) {
+		if (aliveData?.isAliveInSurvivor === false) {
 			router.replace('/');
 
 			return <></>;
 		}
-	}
-
-	if (error) {
-		console.error('Error when loading data for Make Survivor Pick', error);
 	}
 
 	return (
@@ -230,11 +256,11 @@ const SetSurvivor: FC<SetSurvivorProps> = () => {
 							Pick one team you think will win by clicking a team’s logo. You cannot pick
 							the same team more than once during the season.
 						</h4>
-						{!data ? (
+						{!data || !gamesData ? (
 							<MakeSurvivorPickLoader />
 						) : (
 							<>
-								{data.getGamesForWeek
+								{gamesData.getGamesForWeek
 									.filter(game => !selectedGame || game.gameID === selectedGame)
 									.map(game => (
 										<div

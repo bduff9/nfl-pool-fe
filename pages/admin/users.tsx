@@ -32,18 +32,15 @@ import { toast } from 'react-toastify';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
-import {
-	AdminUserType,
-	Notification,
-	NotificationType,
-	User,
-} from '../../generated/graphql';
+import { AdminUserType } from '../../generated/graphql';
 import {
 	removeUser,
 	setUserPaid,
 	toggleSurvivor,
 	trustUser,
 	useAdminUsers,
+	UserForAdmin,
+	UserNotificationForAdmin,
 } from '../../graphql/adminUsers';
 import { TUser } from '../../models/User';
 import { getEmptyArray } from '../../utils/arrays';
@@ -60,41 +57,7 @@ import { BackgroundLoadingContext } from '../../utils/context';
 import { ErrorIcon, SuccessIcon } from '../../components/ToastUtils/ToastIcons';
 
 type AdminUserStatusProps = {
-	user: Pick<
-		User,
-		| 'userID'
-		| 'userEmail'
-		| 'userName'
-		| 'userFirstName'
-		| 'userLastName'
-		| 'userTeamName'
-		| 'userReferredByRaw'
-		| 'userEmailVerified'
-		| 'userTrusted'
-		| 'userDoneRegistering'
-		| 'userIsAdmin'
-		| 'userPlaysSurvivor'
-		| 'userPaymentType'
-		| 'userPaymentAccount'
-		| 'userPaid'
-		| 'userAutoPicksLeft'
-		| 'userAutoPickStrategy'
-		| 'userCommunicationsOptedOut'
-	> & {
-		userReferredByUser: Pick<User, 'userID' | 'userName'> | null;
-		notifications: Array<
-			Pick<
-				Notification,
-				| 'notificationID'
-				| 'notificationEmail'
-				| 'notificationEmailHoursBefore'
-				| 'notificationSMS'
-				| 'notificationSMSHoursBefore'
-			> & {
-				notificationDefinition: Pick<NotificationType, 'notificationTypeDescription'>;
-			}
-		>;
-	};
+	user: UserForAdmin;
 };
 
 const AdminUserStatus: FC<AdminUserStatusProps> = ({ user }) => {
@@ -112,18 +75,7 @@ const AdminUserStatus: FC<AdminUserStatusProps> = ({ user }) => {
 };
 
 type AdminUserNotificationsProps = {
-	notifications: Array<
-		Pick<
-			Notification,
-			| 'notificationID'
-			| 'notificationEmail'
-			| 'notificationEmailHoursBefore'
-			| 'notificationSMS'
-			| 'notificationSMSHoursBefore'
-		> & {
-			notificationDefinition: Pick<NotificationType, 'notificationTypeDescription'>;
-		}
-	>;
+	notifications: Array<UserNotificationForAdmin>;
 };
 
 const AdminUserNotifications: FC<AdminUserNotificationsProps> = ({ notifications }) => {

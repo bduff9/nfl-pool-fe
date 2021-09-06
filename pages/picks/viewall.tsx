@@ -25,7 +25,6 @@ import { SkeletonTheme } from 'react-loading-skeleton';
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
 import ViewAllTable from '../../components/ViewAllTable/ViewAllTable';
-import { Game, Team } from '../../generated/graphql';
 import { useMyTiebreakerForWeek } from '../../graphql/picksSet';
 import { useViewAllPicks } from '../../graphql/viewAll';
 import { useWeeklyRankings } from '../../graphql/weekly';
@@ -40,6 +39,7 @@ import {
 import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import styles from '../../styles/picks/viewall.module.scss';
 import ViewAllModal from '../../components/ViewAllModal/ViewAllModal';
+import { GameForWeek, useGamesForWeek } from '../../graphql/scoreboard';
 
 type ViewAllPicksProps = {
 	user: TUser;
@@ -48,6 +48,7 @@ type ViewAllPicksProps = {
 const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 	const router = useRouter();
 	const [selectedWeek] = useContext(WeekContext);
+	const { data, error, isValidating } = useGamesForWeek(selectedWeek);
 	const {
 		data: ranksData,
 		error: ranksError,
@@ -65,27 +66,21 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 	} = useMyTiebreakerForWeek(selectedWeek);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [mode, setMode] = useState<'Live Results' | 'What If'>('Live Results');
-	const [games, setGames] = useState<
-		Record<
-			number,
-			Pick<Game, 'gameID'> & {
-				homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				winnerTeam: Pick<Team, 'teamID'> | null;
-			}
-		>
-	>({});
+	const [games, setGames] = useState<Record<number, GameForWeek>>({});
 	const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 	const [hasWhatIfBeenSet, setHasWhatIfBeenSet] = useState<boolean>(false);
 
 	useEffect(() => {
 		setBackgroundLoading(
-			(!!ranksData && ranksIsValidating) ||
+			(!!data && isValidating) ||
+				(!!ranksData && ranksIsValidating) ||
 				(!!picksData && picksIsValidating) ||
 				(!!tiebreakerData && tiebreakerIsValidating),
 		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
+		data,
+		error,
 		ranksData,
 		ranksIsValidating,
 		picksData,
@@ -94,43 +89,29 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 		tiebreakerIsValidating,
 	]);
 
-	const updateGames = (
-		games: Array<
-			Pick<Game, 'gameID'> & {
-				homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				winnerTeam: Pick<Team, 'teamID'> | null;
+	const updateGames = (games: Array<GameForWeek>) => {
+		const gamesMap = games.reduce((acc, game) => {
+			const gameID = game.gameID;
+
+			if (!acc[gameID]) {
+				acc[gameID] = game;
 			}
-		>,
-	) => {
-		const gamesMap = games.reduce(
-			(acc, game) => {
-				const gameID = game.gameID;
 
-				if (!acc[gameID]) {
-					acc[gameID] = game;
-				}
-
-				return acc;
-			},
-			{} as Record<
-				number,
-				Pick<Game, 'gameID'> & {
-					homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-					visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-					winnerTeam: Pick<Team, 'teamID'> | null;
-				}
-			>,
-		);
+			return acc;
+		}, {} as Record<number, GameForWeek>);
 
 		setGames(gamesMap);
 	};
 
 	useEffect(() => {
-		if (picksData) {
-			updateGames(picksData.getGamesForWeek);
+		if (data) {
+			updateGames(data.getGamesForWeek);
 		}
-	}, [picksData]);
+	}, [data]);
+
+	if (error) {
+		console.error(`Error when loading week ${selectedWeek} games: `, error);
+	}
 
 	if (ranksError) {
 		console.error('Error when loading weekly rank data for View All Picks', ranksError);
@@ -144,21 +125,16 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 		console.error('Error when loading tiebreaker data for View All Picks', tiebreakerError);
 	}
 
-	if (tiebreakerData && !tiebreakerData.getMyTiebreakerForWeek.tiebreakerHasSubmitted) {
+	if (
+		tiebreakerData?.getMyTiebreakerForWeek &&
+		!tiebreakerData.getMyTiebreakerForWeek?.tiebreakerHasSubmitted
+	) {
 		router.replace('/picks/set');
 
 		return <></>;
 	}
 
-	const saveModalChanges = (
-		customGames: Array<
-			Pick<Game, 'gameID'> & {
-				homeTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				visitorTeam: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				winnerTeam: Pick<Team, 'teamID'> | null;
-			}
-		>,
-	): void => {
+	const saveModalChanges = (customGames: Array<GameForWeek>): void => {
 		updateGames(customGames);
 		setIsModalOpen(false);
 		setHasWhatIfBeenSet(true);
@@ -221,8 +197,8 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 											setMode('Live Results');
 											setHasWhatIfBeenSet(false);
 
-											if (picksData) {
-												updateGames(picksData.getGamesForWeek);
+											if (data) {
+												updateGames(data.getGamesForWeek);
 											}
 										}}
 									>
@@ -253,7 +229,7 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 						{mode === 'What If' && (
 							<ViewAllModal
 								closeModal={() => setIsModalOpen(false)}
-								games={picksData?.getGamesForWeek ?? []}
+								games={data?.getGamesForWeek ?? []}
 								isOpen={isModalOpen}
 								saveChanges={saveModalChanges}
 							/>

@@ -33,7 +33,7 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
-import { LogAction, User } from '../../generated/graphql';
+import { LogAction } from '../../generated/graphql';
 import { useAdminLogs } from '../../graphql/adminLogs';
 import { TUser } from '../../models/User';
 import { getEmptyArray } from '../../utils/arrays';
@@ -46,6 +46,7 @@ import {
 import { formatTimestampForLog } from '../../utils/dates';
 import Pagination from '../../components/Pagination/Pagination';
 import { BackgroundLoadingContext } from '../../utils/context';
+import { DropdownUser, useUserDropdown } from '../../graphql/adminUserTrustModal';
 
 type LogFilterProps = {
 	id: string;
@@ -82,10 +83,7 @@ const LogFilter: FC<LogFilterProps> = ({ id, options, selected, setter, title })
 	);
 };
 
-const getUserName = (
-	users: Array<Pick<User, 'userID' | 'userFirstName' | 'userLastName'>>,
-	userID: null | number,
-): null | string => {
+const getUserName = (users: Array<DropdownUser>, userID: null | number): null | string => {
 	if (!userID) return null;
 
 	const user = users.find(user => user.userID === userID);
@@ -114,12 +112,17 @@ const AdminLogs: FC<AdminLogsProps> = () => {
 		sortDir,
 		userID,
 	});
+	const {
+		data: usersData,
+		error: usersError,
+		isValidating: usersIsValidating,
+	} = useUserDropdown();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 
 	useEffect(() => {
-		setBackgroundLoading(!!data && isValidating);
+		setBackgroundLoading((!!data && isValidating) || (!!usersData && usersIsValidating));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating]);
+	}, [data, isValidating, usersData, usersIsValidating]);
 
 	useEffect(() => {
 		setPage(1);
@@ -127,6 +130,10 @@ const AdminLogs: FC<AdminLogsProps> = () => {
 
 	if (error) {
 		console.error('Error when querying logs for admin logs screen: ', error);
+	}
+
+	if (usersError) {
+		console.error('Error when loading user dropdown: ', usersError);
 	}
 
 	const updatePerPage = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -229,14 +236,14 @@ const AdminLogs: FC<AdminLogsProps> = () => {
 												/>
 											</th>
 											<th scope="col">
-												{data ? (
+												{usersData ? (
 													<LogFilter
 														id="userID"
-														options={data.getUsersForAdmins.map(user => [
+														options={usersData.userDropdown.map(user => [
 															`${user.userFirstName} ${user.userLastName}`,
 															user.userID,
 														])}
-														selected={getUserName(data.getUsersForAdmins, userID)}
+														selected={getUserName(usersData.userDropdown, userID)}
 														setter={setUserID}
 														title="User"
 													/>

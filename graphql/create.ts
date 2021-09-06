@@ -13,14 +13,14 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
+import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
 import type { SWRResponse } from 'swr/dist/types';
 
 import { User } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
-export type GetCurrentUserResponse = Pick<
+export type CurrentUser = Pick<
 	User,
 	| 'userID'
 	| 'userName'
@@ -28,17 +28,19 @@ export type GetCurrentUserResponse = Pick<
 	| 'userFirstName'
 	| 'userLastName'
 	| 'userTeamName'
+	| 'userPhone'
 	| 'userPaymentType'
 	| 'userPaymentAccount'
 	| 'userPlaysSurvivor'
+	| 'userAutoPicksLeft'
+	| 'userAutoPickStrategy'
 	| 'userReferredByRaw'
 	| 'userTrusted'
 	| 'userDoneRegistering'
 >;
 
 export type CurrentUserResponse = {
-	getCurrentUser: GetCurrentUserResponse;
-	getCurrentWeek: number;
+	getCurrentUser: CurrentUser;
 	hasGoogle: boolean;
 	hasTwitter: boolean;
 };
@@ -52,18 +54,20 @@ const getCurrentUserQuery = gql`
 			userFirstName
 			userLastName
 			userTeamName
+			userPhone
 			userPaymentAccount
 			userPaymentType
 			userPlaysSurvivor
+			userAutoPicksLeft
+			userAutoPickStrategy
 			userReferredByRaw
 			userTrusted
 			userDoneRegistering
 		}
-		getCurrentWeek
 		hasGoogle: hasSocialLinked(Type: "google")
 		hasTwitter: hasSocialLinked(Type: "twitter")
 	}
 `;
 
-export const useFinishRegistrationQuery = (): SWRResponse<CurrentUserResponse, unknown> =>
-	useSWR<CurrentUserResponse>(getCurrentUserQuery, fetcher);
+export const useCurrentUser = (): SWRResponse<CurrentUserResponse, ClientError> =>
+	useSWR<CurrentUserResponse, ClientError>(getCurrentUserQuery, fetcher);

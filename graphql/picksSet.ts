@@ -21,16 +21,15 @@ import { AutoPickStrategy, Pick as PoolPick, Tiebreaker } from '../generated/gra
 import { fetcher } from '../utils/graphql';
 
 type GetMyTiebreakerForWeekResponse = {
-	getMyTiebreakerForWeek: Pick<
+	getMyTiebreakerForWeek: null | Pick<
 		Tiebreaker,
-		'tiebreakerID' | 'tiebreakerLastScore' | 'tiebreakerHasSubmitted'
+		'tiebreakerLastScore' | 'tiebreakerHasSubmitted'
 	>;
 };
 
 const query = gql`
 	query GetMyTiebreakerForWeek($week: Int!) {
 		getMyTiebreakerForWeek(Week: $week) {
-			tiebreakerID
 			tiebreakerLastScore
 			tiebreakerHasSubmitted
 		}

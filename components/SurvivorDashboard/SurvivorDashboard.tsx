@@ -18,7 +18,8 @@ import Link from 'next/link';
 import React, { FC, useContext, useEffect } from 'react';
 
 import { SeasonStatus, WeekStatus } from '../../generated/graphql';
-import { useSurvivorDashboard } from '../../graphql/survivorDashboard';
+import { useSelectedWeek } from '../../graphql/sidebar';
+import { useSurvivorDashboard, useSurvivorIsAlive } from '../../graphql/survivorDashboard';
 import { TUser } from '../../models/User';
 import { BackgroundLoadingContext, WeekContext } from '../../utils/context';
 import OverallDashboardLoader from '../OverallDashboard/OverallDashboardLoader';
@@ -34,15 +35,44 @@ type SurvivorDashboardProps = {
 const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 	const [selectedWeek] = useContext(WeekContext);
 	const { data, error, isValidating } = useSurvivorDashboard(selectedWeek);
+	const {
+		data: aliveData,
+		error: aliveError,
+		isValidating: aliveIsValidating,
+	} = useSurvivorIsAlive();
+	const {
+		data: selectedWeekData,
+		error: selectedWeekError,
+		isValidating: selectedWeekIsValidating,
+	} = useSelectedWeek(selectedWeek);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 
 	useEffect(() => {
-		setBackgroundLoading(!!data && isValidating);
+		setBackgroundLoading(
+			(!!data && isValidating) ||
+				(!!aliveData && aliveIsValidating) ||
+				(!!selectedWeekData && selectedWeekIsValidating),
+		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating]);
+	}, [
+		data,
+		isValidating,
+		aliveData,
+		aliveIsValidating,
+		selectedWeekData,
+		selectedWeekIsValidating,
+	]);
 
 	if (error) {
-		console.error('Error when loading survivor dashboard', error);
+		console.error('Error when loading survivor dashboard: ', error);
+	}
+
+	if (aliveError) {
+		console.error('Error when loading is alive data: ', aliveError);
+	}
+
+	if (selectedWeekError) {
+		console.error(`Error when loading selected week ${selectedWeek}: `, selectedWeekError);
 	}
 
 	return (
@@ -56,12 +86,12 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 			)}
 		>
 			<h2 className="mb-0">Survivor Pool</h2>
-			{!data ? (
+			{!data || !aliveData ? (
 				<OverallDashboardLoader />
 			) : (
 				<div>
 					<div className={clsx(styles['survivor-links'])}>
-						{!data.isAliveInSurvivor ? (
+						{!aliveData.isAliveInSurvivor ? (
 							<></>
 						) : !data.getMySurvivorPickForWeek?.team ? (
 							<div className="text-danger">
@@ -75,7 +105,7 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 								<a
 									className={clsx(
 										'd-block',
-										(!data.isAliveInSurvivor || data.getMySurvivorPickForWeek?.team) &&
+										(!aliveData.isAliveInSurvivor || data.getMySurvivorPickForWeek?.team) &&
 											'mb-md-5',
 									)}
 								>
@@ -83,14 +113,14 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 								</a>
 							</Link>
 						)}
-						{data.isAliveInSurvivor && !data.getMySurvivorPickForWeek?.team && (
+						{aliveData.isAliveInSurvivor && !data.getMySurvivorPickForWeek?.team && (
 							<Link href="/survivor/set">
 								<a className={clsx('d-block', 'mb-4')}>Click here to make your pick</a>
 							</Link>
 						)}
 					</div>
 					<SurvivorDashboardIcon
-						isAlive={data.isAliveInSurvivor}
+						isAlive={aliveData.isAliveInSurvivor}
 						isPlaying={user.hasSurvivor}
 						lastPick={data.getMySurvivorDashboard?.lastPickTeam}
 						pickForWeek={data.getMySurvivorPickForWeek?.team}
@@ -103,7 +133,7 @@ const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
 								correct={data.survivorAliveForWeek}
 								incorrect={data.survivorDeadForWeek}
 								inProgress={data.survivorWaitingForWeek}
-								isOver={data.getWeek.weekStatus === WeekStatus.Complete}
+								isOver={selectedWeekData?.getWeek.weekStatus === WeekStatus.Complete}
 								layoutId="survivorWeekStatus"
 								max={data.getSurvivorWeekCount}
 								type="Current Week Remaining"

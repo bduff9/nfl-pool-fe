@@ -20,7 +20,7 @@ import { fetcher } from '../utils/graphql';
 
 export type EmailResponse = Pick<
 	Email,
-	'emailID' | 'emailType' | 'to' | 'subject' | 'html' | 'textOnly' | 'sms' | 'createdAt'
+	'emailID' | 'emailType' | 'to' | 'subject' | 'html' | 'sms' | 'createdAt'
 > & {
 	toUsers: Array<
 		Pick<User, 'userID' | 'userEmail' | 'userPhone' | 'userFirstName' | 'userLastName'>
@@ -28,7 +28,7 @@ export type EmailResponse = Pick<
 };
 
 type LoadAdminEmailsResponse = {
-	loadEmails: Pick<EmailResult, 'count' | 'hasMore' | 'lastKey'> & {
+	loadEmails: Pick<EmailResult, 'hasMore' | 'lastKey'> & {
 		results: Array<EmailResponse>;
 	};
 };
@@ -41,7 +41,6 @@ type LoadAdminEmailsInput = {
 const query = gql`
 	query LoadEmails($count: Int!, $lastKey: String) {
 		loadEmails(Count: $count, LastKey: $lastKey) {
-			count
 			hasMore
 			lastKey
 			results {
@@ -57,7 +56,6 @@ const query = gql`
 				}
 				subject
 				html
-				textOnly
 				sms
 				createdAt
 			}

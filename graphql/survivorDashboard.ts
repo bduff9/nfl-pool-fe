@@ -13,11 +13,11 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
+import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
 import type { SWRResponse } from 'swr/dist/types';
 
-import { Maybe, SeasonStatus, SurvivorStatus, Team, Week } from '../generated/graphql';
+import { SeasonStatus, Team } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
 type GetSurvivorDashboardResponse = {
@@ -29,20 +29,16 @@ type GetSurvivorDashboardResponse = {
 	survivorDeadOverall: number;
 	getSurvivorOverallCount: number;
 	getMySurvivorDashboard: null | {
-		weeksAlive: number;
 		isAliveOverall: boolean;
-		currentStatus?: Maybe<SurvivorStatus>;
 		lastPickTeam: Pick<Team, 'teamCity' | 'teamLogo' | 'teamName'>;
 	};
 	getMySurvivorPickForWeek: null | {
 		team: Pick<Team, 'teamCity' | 'teamLogo' | 'teamName'>;
 	};
-	getWeek: Pick<Week, 'weekStatus'>;
 	getSurvivorStatus: SeasonStatus;
-	isAliveInSurvivor: boolean;
 };
 
-const query = gql`
+const getSurvivorDashboardQuery = gql`
 	query GetSurvivorDashboard($week: Int!) {
 		survivorAliveForWeek: getSurvivorWeekCount(Type: Alive)
 		survivorDeadForWeek: getSurvivorWeekCount(Type: Dead)
@@ -52,9 +48,7 @@ const query = gql`
 		survivorDeadOverall: getSurvivorOverallCount(Type: false)
 		getSurvivorOverallCount
 		getMySurvivorDashboard {
-			weeksAlive
 			isAliveOverall
-			currentStatus
 			lastPickTeam {
 				teamCity
 				teamLogo
@@ -68,20 +62,30 @@ const query = gql`
 				teamName
 			}
 		}
-		getWeek {
-			weekStatus
-		}
 		getSurvivorStatus
-		isAliveInSurvivor
 	}
 `;
 
 export const useSurvivorDashboard = (
 	week: number,
 ): SWRResponse<GetSurvivorDashboardResponse, unknown> => {
-	const result = useSWR<GetSurvivorDashboardResponse>([query, week], (query, week) =>
-		fetcher(query, { week }),
+	const result = useSWR<GetSurvivorDashboardResponse>(
+		[getSurvivorDashboardQuery, week],
+		(query, week) => fetcher(query, { week }),
 	);
 
 	return result;
 };
+
+type SurvivorIsAliveResponse = {
+	isAliveInSurvivor: boolean;
+};
+
+const getSurvivorIsAliveQuery = gql`
+	query SurvivorIsAlive {
+		isAliveInSurvivor
+	}
+`;
+
+export const useSurvivorIsAlive = (): SWRResponse<SurvivorIsAliveResponse, ClientError> =>
+	useSWR<SurvivorIsAliveResponse, ClientError>(getSurvivorIsAliveQuery, fetcher);

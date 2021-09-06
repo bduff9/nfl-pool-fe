@@ -20,7 +20,8 @@ import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
 import EditProfileForm from '../../components/EditProfileForm/EditProfileForm';
 import EditProfileLoader from '../../components/EditProfileForm/EditProfileLoader';
-import { useEditProfileQuery } from '../../graphql/edit';
+import { useCurrentUser } from '../../graphql/create';
+import { useMyNotifications } from '../../graphql/edit';
 import { TUser } from '../../models/User';
 import {
 	isSignedInSSR,
@@ -35,27 +36,38 @@ type EditProfileProps = {
 };
 
 const EditProfile: FC<EditProfileProps> = () => {
-	const { data, error, isValidating } = useEditProfileQuery();
+	const { data, error, isValidating } = useMyNotifications();
+	const {
+		data: currentUserData,
+		error: currentUserError,
+		isValidating: currentUserIsValidating,
+	} = useCurrentUser();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 
 	useEffect(() => {
-		setBackgroundLoading(!!data && isValidating);
+		setBackgroundLoading(
+			(!!data && isValidating) || (!!currentUserData && currentUserIsValidating),
+		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating]);
+	}, [data, isValidating, currentUserData, currentUserIsValidating]);
 
 	if (error) {
-		console.error('Error when loading edit profile form', error);
+		console.error('Error when loading my notifications: ', error);
+	}
+
+	if (currentUserError) {
+		console.error('Error when loading current user: ', currentUserError);
 	}
 
 	return (
 		<Authenticated isRegistered>
 			<CustomHead title="Edit My Profile" />
 			<div className="content-bg text-dark my-3 mx-2 pt-5 pt-md-3 min-vh-100 pb-4 col">
-				{data ? (
+				{data && currentUserData ? (
 					<EditProfileForm
-						currentUser={data.getCurrentUser}
-						hasGoogle={data.hasGoogle}
-						hasTwitter={data.hasTwitter}
+						currentUser={currentUserData.getCurrentUser}
+						hasGoogle={currentUserData.hasGoogle}
+						hasTwitter={currentUserData.hasTwitter}
 						myNotifications={data.getMyNotifications}
 					/>
 				) : (

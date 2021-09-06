@@ -30,7 +30,7 @@ type EditProfileInput = MutationEditMyProfileArgs & {
 
 type EditMyProfileResponse = Pick<User, 'userID'>;
 
-type UpdateMyNotificationsResponse = Pick<Notification, 'notificationID'>;
+type UpdateMyNotificationsResponse = Array<Pick<Notification, 'notificationID'>>;
 
 type TEditProfileResult = {
 	editMyProfile: EditMyProfileResponse;
@@ -40,8 +40,7 @@ type TEditProfileResult = {
 const editProfileMutation = gql`
 	mutation EditProfile($data: EditMyProfileInput!, $notifications: [NotificationInput!]!) {
 		editMyProfile(data: $data) {
-			userDoneRegistering
-			userTrusted
+			userID
 		}
 		updateMyNotifications(data: $notifications) {
 			notificationID

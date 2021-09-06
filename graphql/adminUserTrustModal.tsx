@@ -20,8 +20,10 @@ import type { SWRResponse } from 'swr/dist/types';
 import { User } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
 
+export type DropdownUser = Pick<User, 'userID' | 'userFirstName' | 'userLastName'>;
+
 type GetUserDropdownResponse = {
-	userDropdown: Array<Pick<User, 'userID' | 'userFirstName' | 'userLastName'>>;
+	userDropdown: Array<DropdownUser>;
 };
 
 const query = gql`
