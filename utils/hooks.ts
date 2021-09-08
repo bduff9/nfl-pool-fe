@@ -13,7 +13,11 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+import { useFlags } from '@happykit/flags/client';
+import * as Sentry from '@sentry/nextjs';
 import Fuse from 'fuse.js';
+import LogRocket from 'logrocket';
+import setupLogRocketReact from 'logrocket-react';
 import { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 import React, {
@@ -31,6 +35,7 @@ import { toast } from 'react-toastify';
 import { debounce } from 'throttle-debounce';
 import type { Workbox } from 'workbox-window';
 import { WorkboxLifecycleEvent } from 'workbox-window/utils/WorkboxEvent';
+import { useSession } from 'next-auth/client';
 
 import SWUpdatedToast from '../components/ToastUtils/SWUpdatedToast';
 import {
@@ -38,11 +43,18 @@ import {
 	SuccessIcon,
 	WarningIcon,
 } from '../components/ToastUtils/ToastIcons';
+import { TUser } from '../models/User';
 
 import { TitleContext } from './context';
-import { MILLISECONDS_IN_SECOND, MINUTES_IN_HOUR, SECONDS_IN_MINUTE } from './constants';
+import {
+	MILLISECONDS_IN_SECOND,
+	MINUTES_IN_HOUR,
+	NEXT_PUBLIC_LOGROCKET_PROJ,
+	SECONDS_IN_MINUTE,
+} from './constants';
 import { getTimeRemaining, getTimeRemainingString } from './dates';
 import { logger } from './logging';
+import { FeatureFlags, TSessionUser } from './types';
 
 export const useCountdown = (countdownTo: Date | null): string => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,6 +121,39 @@ export const useFuse = <ListType>(
 		query,
 		setQuery,
 	};
+};
+
+export const useLogrocket = (): void => {
+	const { flags } = useFlags<FeatureFlags>();
+	const [session, loading] = useSession();
+	const { enableLogrocket } = flags ?? {};
+	const isBrowser = typeof window !== 'undefined';
+
+	useEffect(() => {
+		if (!enableLogrocket || !isBrowser) return;
+
+		LogRocket.init(NEXT_PUBLIC_LOGROCKET_PROJ ?? '');
+		setupLogRocketReact(LogRocket);
+		LogRocket.getSessionURL(sessionURL => {
+			Sentry.configureScope(scope => {
+				scope.setExtra('sessionURL', sessionURL);
+			});
+		});
+	}, [enableLogrocket, isBrowser]);
+
+	useEffect((): void => {
+		if (!enableLogrocket || !isBrowser) return;
+
+		if (session && !loading) {
+			const { name, image: picture, ...rest } = session.user as TSessionUser;
+
+			LogRocket.identify(`${(session.user as TUser).id}`, {
+				name: name ?? '',
+				picture: picture ?? '',
+				...rest,
+			});
+		}
+	}, [enableLogrocket, isBrowser, session, loading]);
 };
 
 export const useObjectState = <T extends Record<string, unknown>>(

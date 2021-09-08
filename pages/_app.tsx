@@ -13,11 +13,10 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import * as Sentry from '@sentry/nextjs';
+import { useAnalytics } from '@happykit/analytics';
+import { configure } from '@happykit/flags/config';
 import whyDidYouRender from '@welldone-software/why-did-you-render';
 import { AnimateSharedLayout } from 'framer-motion';
-import LogRocket from 'logrocket';
-import setupLogRocketReact from 'logrocket-react';
 import { Provider } from 'next-auth/client';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -28,8 +27,13 @@ import { syncWithLocalStorage } from 'swr-sync-storage';
 
 import Layout from '../components/Layout/Layout';
 import { InfoIcon } from '../components/ToastUtils/ToastIcons';
-import { NEXT_PUBLIC_LOGROCKET_PROJ, NEXT_PUBLIC_ENV } from '../utils/constants';
 import {
+	NEXT_PUBLIC_ENV,
+	NEXT_PUBLIC_HAPPYKIT_FLAG_KEY,
+	NEXT_PUBLIC_HAPPYKIT_ANALYTICS_KEY,
+} from '../utils/constants';
+import {
+	useLogrocket,
 	useOfflineNotifications,
 	useRouteChangeLoader,
 	useServiceWorker,
@@ -39,18 +43,14 @@ import '../styles/globals.scss';
 // Keep selectors for #nprogress, .bar, .peg, .spinner, & .spinner-icon
 import 'nprogress/nprogress.css';
 
-if (typeof window !== 'undefined') {
-	syncWithLocalStorage();
+if (!NEXT_PUBLIC_HAPPYKIT_FLAG_KEY) {
+	throw Error('Missing happykit feature flag key from env!');
 }
 
+configure({ envKey: NEXT_PUBLIC_HAPPYKIT_FLAG_KEY });
+
 if (typeof window !== 'undefined') {
-	LogRocket.init(NEXT_PUBLIC_LOGROCKET_PROJ ?? '');
-	setupLogRocketReact(LogRocket);
-	LogRocket.getSessionURL(sessionURL => {
-		Sentry.configureScope(scope => {
-			scope.setExtra('sessionURL', sessionURL);
-		});
-	});
+	syncWithLocalStorage();
 
 	if (NEXT_PUBLIC_ENV !== 'production') {
 		whyDidYouRender(React);
@@ -60,6 +60,12 @@ if (typeof window !== 'undefined') {
 type SentryProps = { err: unknown };
 
 const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
+	if (!NEXT_PUBLIC_HAPPYKIT_ANALYTICS_KEY) {
+		throw Error('Missing happykit analytics key from env!');
+	}
+
+	useAnalytics({ publicKey: NEXT_PUBLIC_HAPPYKIT_ANALYTICS_KEY });
+	useLogrocket();
 	useServiceWorker();
 	useRouteChangeLoader();
 	useOfflineNotifications();
