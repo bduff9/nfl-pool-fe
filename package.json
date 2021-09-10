@@ -113,7 +113,6 @@
     "@types/react": "17.0.20",
     "@types/react-beautiful-dnd": "13.1.2",
     "@types/react-dom": "17.0.9",
-    "@types/react-draft-wysiwyg": "1.13.3",
     "@types/sass": "1.16.1",
     "@types/stylelint": "13.13.2",
     "@types/terser-webpack-plugin": "5.2.0",
