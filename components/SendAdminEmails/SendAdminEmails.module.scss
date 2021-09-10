@@ -13,38 +13,19 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-console.log('Running PurgeCSS...');
+@import "../../styles/variables";
 
-module.exports = {
-	plugins: [
-		'postcss-flexbugs-fixes',
-		[
-			'postcss-preset-env',
-			{
-				autoprefixer: {
-					flexbox: 'no-2009',
-				},
-				stage: 3,
-				features: {
-					'custom-properties': false,
-				},
-			},
-		],
-		[
-			'@fullhuman/postcss-purgecss',
-			{
-				blocklist: [],
-				content: ['./pages/**/*.{js,jsx,ts,tsx}', './components/**/*.{js,jsx,ts,tsx}'],
-				defaultExtractor: content => content.match(/\b[a-z][a-z0-9-]*[a-z0-9]\b/g) || [],
-				fontFace: true,
-				keyframes: true,
-				rejected: true,
-				safelist: {
-					deep: [],
-					greedy: [/^Toastify/, /^ql-/],
-					standard: ['html', 'body', '__next', 'form-control:disabled'],
-				},
-			},
-		],
-	],
-};
+.editor {
+  // stylelint-disable-next-line selector-pseudo-class-no-unknown
+  :global(.ql-container) {
+    font-family: var(--bs-body-font-family);
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+
+    // stylelint-disable-next-line selector-pseudo-class-no-unknown
+    :global(.ql-editor.ql-blank::before) {
+      font-style: normal;
+    }
+  }
+}

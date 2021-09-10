@@ -22,6 +22,7 @@ type SendAdminEmailInput = {
 	sendTo: string;
 	userEmail: null | string;
 	userFirstName: null | string;
+	extraData: null | string;
 };
 
 type SendAdminEmailResult = {
@@ -34,12 +35,14 @@ const sendAdminEmailMutation = gql`
 		$sendTo: EmailSendTo!
 		$userEmail: String
 		$userFirstName: String
+		$extraData: String
 	) {
 		sendAdminEmail(
 			EmailType: $emailType
 			SendTo: $sendTo
 			UserEmail: $userEmail
 			UserFirstname: $userFirstName
+			ExtraData: $extraData
 		)
 	}
 `;
@@ -49,10 +52,12 @@ export const sendAdminEmail = (
 	sendTo: string,
 	userEmail: null | string,
 	userFirstName: null | string,
+	extraData: null | string,
 ): Promise<SendAdminEmailResult> =>
 	fetcher<SendAdminEmailResult, SendAdminEmailInput>(sendAdminEmailMutation, {
 		emailType,
 		sendTo,
 		userEmail,
 		userFirstName,
+		extraData,
 	});

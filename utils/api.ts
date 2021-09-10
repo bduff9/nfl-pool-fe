@@ -13,38 +13,37 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-console.log('Running PurgeCSS...');
+import axios from 'axios';
+import { getSession } from 'next-auth/client';
 
-module.exports = {
-	plugins: [
-		'postcss-flexbugs-fixes',
-		[
-			'postcss-preset-env',
-			{
-				autoprefixer: {
-					flexbox: 'no-2009',
-				},
-				stage: 3,
-				features: {
-					'custom-properties': false,
-				},
-			},
-		],
-		[
-			'@fullhuman/postcss-purgecss',
-			{
-				blocklist: [],
-				content: ['./pages/**/*.{js,jsx,ts,tsx}', './components/**/*.{js,jsx,ts,tsx}'],
-				defaultExtractor: content => content.match(/\b[a-z][a-z0-9-]*[a-z0-9]\b/g) || [],
-				fontFace: true,
-				keyframes: true,
-				rejected: true,
-				safelist: {
-					deep: [],
-					greedy: [/^Toastify/, /^ql-/],
-					standard: ['html', 'body', '__next', 'form-control:disabled'],
-				},
-			},
-		],
-	],
+import { EmailType } from '../generated/graphql';
+
+import { NEXT_PUBLIC_API_URL } from './constants';
+
+const getEmailPreviewURL = (emailType: EmailType): string =>
+	`${NEXT_PUBLIC_API_URL}/api/preview/${emailType}`;
+
+type EmailPreviewBody = {
+	body: string;
+	emailFormat: 'html' | 'subject' | 'text';
+	emailID?: string;
+	preview: string;
+	sendTo?: string;
+	subject: string;
+	userFirstName?: string;
+};
+
+export const emailPreviewFetcher = async (
+	emailType: EmailType,
+	data: EmailPreviewBody,
+): Promise<string> => {
+	const session = await getSession({});
+	const url = getEmailPreviewURL(emailType);
+	const result = await axios.post<string>(url, data, {
+		headers: {
+			authorization: session ? `Bearer ${session.accessToken}` : undefined,
+		},
+	});
+
+	return result.data;
 };

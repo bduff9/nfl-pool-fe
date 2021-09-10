@@ -32,9 +32,9 @@ export type Scalars = {
 
 export type ApiCall = {
 	__typename?: 'APICall';
-	apiCallID: Scalars['String'];
 	apiCallDate: Scalars['DateTime'];
 	apiCallError?: Maybe<Scalars['String']>;
+	apiCallID: Scalars['String'];
 	apiCallResponse?: Maybe<Scalars['String']>;
 	apiCallUrl: Scalars['String'];
 	apiCallWeek?: Maybe<Scalars['Int']>;
@@ -43,27 +43,27 @@ export type ApiCall = {
 
 export type ApiCallResult = {
 	__typename?: 'APICallResult';
-	lastKey?: Maybe<Scalars['String']>;
-	hasMore: Scalars['Boolean'];
 	count: Scalars['Int'];
+	hasMore: Scalars['Boolean'];
+	lastKey?: Maybe<Scalars['String']>;
 	results: Array<ApiCall>;
 };
 
 export type Account = {
 	__typename?: 'Account';
-	accountID: Scalars['Int'];
-	accountCompoundID: Scalars['String'];
-	user: User;
-	accountProviderType: Scalars['String'];
-	accountProviderID: Scalars['String'];
-	accountProviderAccountID: Scalars['String'];
-	accountRefreshToken?: Maybe<Scalars['String']>;
 	accountAccessToken?: Maybe<Scalars['String']>;
 	accountAccessTokenExpires?: Maybe<Scalars['DateTime']>;
 	accountAdded: Scalars['DateTime'];
 	accountAddedBy: Scalars['String'];
+	accountCompoundID: Scalars['String'];
+	accountID: Scalars['Int'];
+	accountProviderAccountID: Scalars['String'];
+	accountProviderID: Scalars['String'];
+	accountProviderType: Scalars['String'];
+	accountRefreshToken?: Maybe<Scalars['String']>;
 	accountUpdated: Scalars['DateTime'];
 	accountUpdatedBy: Scalars['String'];
+	user: User;
 };
 
 /** The filter type for the admin users screen */
@@ -92,41 +92,41 @@ export enum AutoPickStrategy {
 
 export type Backup = {
 	__typename?: 'Backup';
-	backupName: Scalars['String'];
 	backupDate: Scalars['DateTime'];
+	backupName: Scalars['String'];
 	backupWhen: AmPm;
 };
 
 /** User profile data */
 export type EditMyProfileInput = {
+	userAutoPickStrategy?: Maybe<AutoPickStrategy>;
 	userFirstName: Scalars['String'];
 	userLastName: Scalars['String'];
 	userPaymentAccount: Scalars['String'];
 	userPaymentType: PaymentMethod;
-	userTeamName?: Maybe<Scalars['String']>;
 	userPhone?: Maybe<Scalars['String']>;
-	userAutoPickStrategy?: Maybe<AutoPickStrategy>;
+	userTeamName?: Maybe<Scalars['String']>;
 };
 
 export type Email = {
 	__typename?: 'Email';
+	createdAt: Scalars['DateTime'];
 	emailID: Scalars['String'];
 	emailType: EmailType;
+	html?: Maybe<Scalars['String']>;
+	sms?: Maybe<Scalars['String']>;
+	subject?: Maybe<Scalars['String']>;
+	textOnly?: Maybe<Scalars['String']>;
 	to: Array<Scalars['String']>;
 	toUsers: Array<User>;
-	subject?: Maybe<Scalars['String']>;
-	html?: Maybe<Scalars['String']>;
-	textOnly?: Maybe<Scalars['String']>;
-	sms?: Maybe<Scalars['String']>;
-	createdAt: Scalars['DateTime'];
 	updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
 export type EmailResult = {
 	__typename?: 'EmailResult';
-	lastKey?: Maybe<Scalars['String']>;
-	hasMore: Scalars['Boolean'];
 	count: Scalars['Int'];
+	hasMore: Scalars['Boolean'];
+	lastKey?: Maybe<Scalars['String']>;
 	results: Array<Email>;
 };
 
@@ -140,6 +140,7 @@ export enum EmailSendTo {
 
 /** The sent message type */
 export enum EmailType {
+	Custom = 'custom',
 	Interest = 'interest',
 	InterestFinal = 'interestFinal',
 	InvalidGamesFound = 'invalidGamesFound',
@@ -153,24 +154,24 @@ export enum EmailType {
 	Untrusted = 'untrusted',
 	UserTrusted = 'userTrusted',
 	Verification = 'verification',
-	Weekly = 'weekly',
 	WeekEnded = 'weekEnded',
 	WeekStarted = 'weekStarted',
+	Weekly = 'weekly',
 }
 
 export type Faq = ISupportContent & {
 	__typename?: 'FAQ';
-	supportContentID: Scalars['Int'];
-	supportContentType: SupportContentType;
-	supportContentOrder: Scalars['Int'];
-	supportContentDescription: Scalars['String'];
-	supportContentKeywords?: Maybe<Scalars['String']>;
 	supportContentAdded: Scalars['DateTime'];
 	supportContentAddedBy: Scalars['String'];
+	supportContentCategory?: Maybe<Scalars['String']>;
+	supportContentDescription: Scalars['String'];
+	supportContentDescription2?: Maybe<Scalars['String']>;
+	supportContentID: Scalars['Int'];
+	supportContentKeywords?: Maybe<Scalars['String']>;
+	supportContentOrder: Scalars['Int'];
+	supportContentType: SupportContentType;
 	supportContentUpdated: Scalars['DateTime'];
 	supportContentUpdatedBy: Scalars['String'];
-	supportContentDescription2?: Maybe<Scalars['String']>;
-	supportContentCategory?: Maybe<Scalars['String']>;
 };
 
 /** User registration data */
@@ -187,87 +188,87 @@ export type FinishRegistrationInput = {
 
 export type Game = {
 	__typename?: 'Game';
-	gameID: Scalars['Int'];
-	gameWeek: Scalars['Int'];
-	gameNumber: Scalars['Int'];
-	homeTeam: Team;
-	gameHomeSpread?: Maybe<Scalars['Float']>;
-	gameHomeScore: Scalars['Float'];
-	visitorTeam: Team;
-	gameVisitorSpread?: Maybe<Scalars['Float']>;
-	gameVisitorScore: Scalars['Float'];
-	winnerTeam?: Maybe<Team>;
-	gameStatus: GameStatus;
-	gameKickoff: Scalars['DateTime'];
-	gameTimeLeftInSeconds: Scalars['Int'];
-	gameTimeLeftInQuarter: Scalars['String'];
-	teamHasPossession?: Maybe<Team>;
-	teamInRedzone?: Maybe<Team>;
 	gameAdded: Scalars['DateTime'];
 	gameAddedBy: Scalars['String'];
+	gameHomeScore: Scalars['Float'];
+	gameHomeSpread?: Maybe<Scalars['Float']>;
+	gameID: Scalars['Int'];
+	gameKickoff: Scalars['DateTime'];
+	gameNumber: Scalars['Int'];
+	gameStatus: GameStatus;
+	gameTimeLeftInQuarter: Scalars['String'];
+	gameTimeLeftInSeconds: Scalars['Int'];
 	gameUpdated: Scalars['DateTime'];
 	gameUpdatedBy: Scalars['String'];
+	gameVisitorScore: Scalars['Float'];
+	gameVisitorSpread?: Maybe<Scalars['Float']>;
+	gameWeek: Scalars['Int'];
+	homeTeam: Team;
+	teamHasPossession?: Maybe<Team>;
+	teamInRedzone?: Maybe<Team>;
+	visitorTeam: Team;
+	winnerTeam?: Maybe<Team>;
 };
 
 /** The game's current status */
 export enum GameStatus {
-	Pregame = 'Pregame',
-	Invalid = 'Invalid',
-	FirstQuarter = 'FirstQuarter',
-	SecondQuarter = 'SecondQuarter',
-	HalfTime = 'HalfTime',
-	ThirdQuarter = 'ThirdQuarter',
-	FourthQuarter = 'FourthQuarter',
-	Overtime = 'Overtime',
 	Final = 'Final',
+	FirstQuarter = 'FirstQuarter',
+	FourthQuarter = 'FourthQuarter',
+	HalfTime = 'HalfTime',
+	Invalid = 'Invalid',
+	Overtime = 'Overtime',
+	Pregame = 'Pregame',
+	SecondQuarter = 'SecondQuarter',
+	ThirdQuarter = 'ThirdQuarter',
 }
 
 export type ISupportContent = {
-	supportContentID: Scalars['Int'];
-	supportContentType: SupportContentType;
-	supportContentOrder: Scalars['Int'];
-	supportContentDescription: Scalars['String'];
-	supportContentKeywords?: Maybe<Scalars['String']>;
 	supportContentAdded: Scalars['DateTime'];
 	supportContentAddedBy: Scalars['String'];
+	supportContentDescription: Scalars['String'];
+	supportContentID: Scalars['Int'];
+	supportContentKeywords?: Maybe<Scalars['String']>;
+	supportContentOrder: Scalars['Int'];
+	supportContentType: SupportContentType;
 	supportContentUpdated: Scalars['DateTime'];
 	supportContentUpdatedBy: Scalars['String'];
 };
 
 export type League = {
 	__typename?: 'League';
-	leagueID: Scalars['Int'];
-	leagueName: Scalars['String'];
 	admin?: Maybe<User>;
-	userLeagues: Array<UserLeague>;
 	leagueAdded: Scalars['DateTime'];
 	leagueAddedBy: Scalars['String'];
+	leagueID: Scalars['Int'];
+	leagueName: Scalars['String'];
 	leagueUpdated: Scalars['DateTime'];
 	leagueUpdatedBy: Scalars['String'];
+	userLeagues: Array<UserLeague>;
 };
 
 export type Log = {
 	__typename?: 'Log';
-	logID: Scalars['Int'];
-	logAction: LogAction;
-	logDate: Scalars['DateTime'];
-	logMessage?: Maybe<Scalars['String']>;
-	logData?: Maybe<Scalars['String']>;
-	user?: Maybe<User>;
 	league?: Maybe<League>;
+	logAction: LogAction;
 	logAdded: Scalars['DateTime'];
 	logAddedBy: Scalars['String'];
+	logData?: Maybe<Scalars['String']>;
+	logDate: Scalars['DateTime'];
+	logID: Scalars['Int'];
+	logMessage?: Maybe<Scalars['String']>;
 	logUpdated: Scalars['DateTime'];
 	logUpdatedBy: Scalars['String'];
+	user?: Maybe<User>;
 };
 
 /** The logged action type */
 export enum LogAction {
-	Error404 = 'Error404',
 	AuthenticationError = 'AuthenticationError',
 	BackupRestore = 'BackupRestore',
 	CreatedAccount = 'CreatedAccount',
 	EmailActivity = 'EmailActivity',
+	Error404 = 'Error404',
 	LinkedAccount = 'LinkedAccount',
 	Login = 'Login',
 	Logout = 'Logout',
@@ -284,83 +285,43 @@ export enum LogAction {
 
 export type LogResult = {
 	__typename?: 'LogResult';
-	totalCount: Scalars['Int'];
-	page: Scalars['Int'];
 	count: Scalars['Int'];
+	page: Scalars['Int'];
 	results: Array<Log>;
+	totalCount: Scalars['Int'];
 };
 
 /** Survivor pick data */
 export type MakeSurvivorPickInput = {
-	survivorPickWeek: Scalars['Int'];
 	gameID: Scalars['Int'];
+	survivorPickWeek: Scalars['Int'];
 	teamID: Scalars['Int'];
 };
 
 export type Mutation = {
 	__typename?: 'Mutation';
-	restoreBackup: Scalars['Boolean'];
-	sendAdminEmail: Scalars['Boolean'];
-	writeLog: Log;
-	updateMyNotifications: Array<Notification>;
-	updateUserPaid: Scalars['Int'];
-	updateUserPayout: Scalars['Int'];
-	resetMyPicksForWeek: Array<Pick>;
-	setMyPick?: Maybe<Pick>;
 	autoPick: Array<Pick>;
+	editMyProfile: User;
+	finishRegistration: User;
+	makeSurvivorPick: SurvivorPick;
 	quickPick: Scalars['Boolean'];
 	registerForSurvivor: Scalars['Boolean'];
-	unregisterForSurvivor: Scalars['Boolean'];
-	makeSurvivorPick: SurvivorPick;
+	removeUser: Scalars['Boolean'];
+	resetMyPicksForWeek: Array<Pick>;
+	restoreBackup: Scalars['Boolean'];
+	sendAdminEmail: Scalars['Boolean'];
+	setMyPick?: Maybe<Pick>;
 	setPrizeAmounts: Scalars['Boolean'];
-	updateMyTiebreakerScore: Tiebreaker;
 	submitPicksForWeek: Tiebreaker;
-	finishRegistration: User;
-	editMyProfile: User;
-	unsubscribeEmail: Scalars['Boolean'];
 	toggleSurvivor: Scalars['Boolean'];
 	trustUser: Scalars['Boolean'];
-	removeUser: Scalars['Boolean'];
-};
-
-export type MutationRestoreBackupArgs = {
-	BackupName: Scalars['String'];
-};
-
-export type MutationSendAdminEmailArgs = {
-	UserFirstname?: Maybe<Scalars['String']>;
-	UserEmail?: Maybe<Scalars['String']>;
-	SendTo: EmailSendTo;
-	EmailType: EmailType;
-};
-
-export type MutationWriteLogArgs = {
-	data: WriteLogInput;
-};
-
-export type MutationUpdateMyNotificationsArgs = {
-	data: Array<NotificationInput>;
-};
-
-export type MutationUpdateUserPaidArgs = {
-	AmountPaid: Scalars['Float'];
-	UserID: Scalars['Int'];
-};
-
-export type MutationUpdateUserPayoutArgs = {
-	AmountPaid: Scalars['Float'];
-	UserID: Scalars['Int'];
-};
-
-export type MutationResetMyPicksForWeekArgs = {
-	Week: Scalars['Int'];
-};
-
-export type MutationSetMyPickArgs = {
-	Points: Scalars['Int'];
-	TeamID?: Maybe<Scalars['Int']>;
-	GameID?: Maybe<Scalars['Int']>;
-	Week: Scalars['Int'];
+	unregisterForSurvivor: Scalars['Boolean'];
+	unsubscribeEmail: Scalars['Boolean'];
+	updateMyNotifications: Array<Notification>;
+	updateMyTiebreakerScore: Tiebreaker;
+	updateUserPaid: Scalars['Int'];
+	updateUserPayout: Scalars['Int'];
+	writeLog: Log;
 };
 
 export type MutationAutoPickArgs = {
@@ -368,40 +329,58 @@ export type MutationAutoPickArgs = {
 	Week: Scalars['Int'];
 };
 
-export type MutationQuickPickArgs = {
-	TeamID: Scalars['Int'];
-	UserID: Scalars['Int'];
-};
-
-export type MutationMakeSurvivorPickArgs = {
-	data: MakeSurvivorPickInput;
-};
-
-export type MutationSetPrizeAmountsArgs = {
-	SurvivorPrizes: Scalars['String'];
-	OverallPrizes: Scalars['String'];
-	WeeklyPrizes: Scalars['String'];
-};
-
-export type MutationUpdateMyTiebreakerScoreArgs = {
-	Score: Scalars['Int'];
-	Week: Scalars['Int'];
-};
-
-export type MutationSubmitPicksForWeekArgs = {
-	Week: Scalars['Int'];
+export type MutationEditMyProfileArgs = {
+	data: EditMyProfileInput;
 };
 
 export type MutationFinishRegistrationArgs = {
 	data: FinishRegistrationInput;
 };
 
-export type MutationEditMyProfileArgs = {
-	data: EditMyProfileInput;
+export type MutationMakeSurvivorPickArgs = {
+	data: MakeSurvivorPickInput;
 };
 
-export type MutationUnsubscribeEmailArgs = {
-	email: Scalars['String'];
+export type MutationQuickPickArgs = {
+	TeamID: Scalars['Int'];
+	UserID: Scalars['Int'];
+};
+
+export type MutationRemoveUserArgs = {
+	UserID: Scalars['Int'];
+};
+
+export type MutationResetMyPicksForWeekArgs = {
+	Week: Scalars['Int'];
+};
+
+export type MutationRestoreBackupArgs = {
+	BackupName: Scalars['String'];
+};
+
+export type MutationSendAdminEmailArgs = {
+	EmailType: EmailType;
+	ExtraData?: Maybe<Scalars['String']>;
+	SendTo: EmailSendTo;
+	UserEmail?: Maybe<Scalars['String']>;
+	UserFirstname?: Maybe<Scalars['String']>;
+};
+
+export type MutationSetMyPickArgs = {
+	GameID?: Maybe<Scalars['Int']>;
+	Points: Scalars['Int'];
+	TeamID?: Maybe<Scalars['Int']>;
+	Week: Scalars['Int'];
+};
+
+export type MutationSetPrizeAmountsArgs = {
+	OverallPrizes: Scalars['String'];
+	SurvivorPrizes: Scalars['String'];
+	WeeklyPrizes: Scalars['String'];
+};
+
+export type MutationSubmitPicksForWeekArgs = {
+	Week: Scalars['Int'];
 };
 
 export type MutationToggleSurvivorArgs = {
@@ -414,86 +393,109 @@ export type MutationTrustUserArgs = {
 	UserID: Scalars['Int'];
 };
 
-export type MutationRemoveUserArgs = {
+export type MutationUnsubscribeEmailArgs = {
+	email: Scalars['String'];
+};
+
+export type MutationUpdateMyNotificationsArgs = {
+	data: Array<NotificationInput>;
+};
+
+export type MutationUpdateMyTiebreakerScoreArgs = {
+	Score: Scalars['Int'];
+	Week: Scalars['Int'];
+};
+
+export type MutationUpdateUserPaidArgs = {
+	AmountPaid: Scalars['Float'];
 	UserID: Scalars['Int'];
+};
+
+export type MutationUpdateUserPayoutArgs = {
+	AmountPaid: Scalars['Float'];
+	UserID: Scalars['Int'];
+};
+
+export type MutationWriteLogArgs = {
+	data: WriteLogInput;
 };
 
 export type Notification = {
 	__typename?: 'Notification';
-	notificationID: Scalars['Int'];
-	user: User;
+	notificationAdded: Scalars['DateTime'];
+	notificationAddedBy: Scalars['String'];
 	notificationDefinition: NotificationType;
 	notificationEmail?: Maybe<Scalars['Boolean']>;
 	notificationEmailHoursBefore?: Maybe<Scalars['Int']>;
-	notificationSMS?: Maybe<Scalars['Boolean']>;
-	notificationSMSHoursBefore?: Maybe<Scalars['Int']>;
+	notificationID: Scalars['Int'];
 	notificationPushNotification?: Maybe<Scalars['Boolean']>;
 	notificationPushNotificationHoursBefore?: Maybe<Scalars['Int']>;
-	notificationAdded: Scalars['DateTime'];
-	notificationAddedBy: Scalars['String'];
+	notificationSMS?: Maybe<Scalars['Boolean']>;
+	notificationSMSHoursBefore?: Maybe<Scalars['Int']>;
 	notificationUpdated: Scalars['DateTime'];
 	notificationUpdatedBy: Scalars['String'];
+	user: User;
 };
 
 /** Notification data */
 export type NotificationInput = {
-	notificationType: Scalars['String'];
 	notificationEmail?: Maybe<Scalars['Boolean']>;
 	notificationEmailHoursBefore?: Maybe<Scalars['Int']>;
-	notificationSMS?: Maybe<Scalars['Boolean']>;
-	notificationSMSHoursBefore?: Maybe<Scalars['Int']>;
 	notificationPushNotification?: Maybe<Scalars['Boolean']>;
 	notificationPushNotificationHoursBefore?: Maybe<Scalars['Int']>;
+	notificationSMS?: Maybe<Scalars['Boolean']>;
+	notificationSMSHoursBefore?: Maybe<Scalars['Int']>;
+	notificationType: Scalars['String'];
 };
 
 export type NotificationType = {
 	__typename?: 'NotificationType';
 	notificationType: Scalars['String'];
-	notificationTypeDescription: Scalars['String'];
-	notificationTypeHasEmail: Scalars['Boolean'];
-	notificationTypeHasSMS: Scalars['Boolean'];
-	notificationTypeHasPushNotification: Scalars['Boolean'];
-	notificationTypeHasHours: Scalars['Boolean'];
-	notificationTypeTooltip?: Maybe<Scalars['String']>;
 	notificationTypeAdded: Scalars['DateTime'];
 	notificationTypeAddedBy: Scalars['String'];
+	notificationTypeDescription: Scalars['String'];
+	notificationTypeHasEmail: Scalars['Boolean'];
+	notificationTypeHasHours: Scalars['Boolean'];
+	notificationTypeHasPushNotification: Scalars['Boolean'];
+	notificationTypeHasSMS: Scalars['Boolean'];
+	notificationTypeTooltip?: Maybe<Scalars['String']>;
 	notificationTypeUpdated: Scalars['DateTime'];
 	notificationTypeUpdatedBy: Scalars['String'];
 };
 
 export type OverallMv = {
 	__typename?: 'OverallMV';
-	rank: Scalars['Int'];
-	tied: Scalars['Boolean'];
-	userID: Scalars['Int'];
-	user: User;
-	teamName: Scalars['String'];
-	userName: Scalars['String'];
-	pointsEarned: Scalars['Int'];
-	pointsWrong: Scalars['Int'];
-	pointsPossible: Scalars['Int'];
-	pointsTotal: Scalars['Int'];
 	gamesCorrect: Scalars['Int'];
-	gamesWrong: Scalars['Int'];
+	gamesMissed: Scalars['Int'];
 	gamesPossible: Scalars['Int'];
 	gamesTotal: Scalars['Int'];
-	gamesMissed: Scalars['Int'];
+	gamesWrong: Scalars['Int'];
 	isEliminated: Scalars['Boolean'];
 	lastUpdated: Scalars['DateTime'];
+	pointsEarned: Scalars['Int'];
+	pointsPossible: Scalars['Int'];
+	pointsTotal: Scalars['Int'];
+	pointsWrong: Scalars['Int'];
+	rank: Scalars['Int'];
+	teamName: Scalars['String'];
+	tied: Scalars['Boolean'];
+	user: User;
+	userID: Scalars['Int'];
+	userName: Scalars['String'];
 };
 
 export type Payment = {
 	__typename?: 'Payment';
-	paymentID: Scalars['Int'];
-	user: User;
-	paymentType: PaymentType;
-	paymentDescription: Scalars['String'];
-	paymentWeek?: Maybe<Scalars['Int']>;
-	paymentAmount: Scalars['Float'];
 	paymentAdded: Scalars['DateTime'];
 	paymentAddedBy: Scalars['String'];
+	paymentAmount: Scalars['Float'];
+	paymentDescription: Scalars['String'];
+	paymentID: Scalars['Int'];
+	paymentType: PaymentType;
 	paymentUpdated: Scalars['DateTime'];
 	paymentUpdatedBy: Scalars['String'];
+	paymentWeek?: Maybe<Scalars['Int']>;
+	user: User;
 };
 
 /** The chosen payment method for the user */
@@ -513,80 +515,70 @@ export enum PaymentType {
 
 export type Pick = {
 	__typename?: 'Pick';
-	pickID: Scalars['Int'];
-	user: User;
-	league: League;
 	game: Game;
-	team?: Maybe<Team>;
-	pickPoints?: Maybe<Scalars['Int']>;
+	league: League;
 	pickAdded: Scalars['DateTime'];
 	pickAddedBy: Scalars['String'];
+	pickID: Scalars['Int'];
+	pickPoints?: Maybe<Scalars['Int']>;
 	pickUpdated: Scalars['DateTime'];
 	pickUpdatedBy: Scalars['String'];
+	team?: Maybe<Team>;
+	user: User;
 };
 
 export type Query = {
 	__typename?: 'Query';
-	hasSocialLinked: Scalars['Boolean'];
-	loadAPICalls: ApiCallResult;
+	getAllPicksForWeek: Array<Pick>;
 	getBackups: Array<Backup>;
+	getCurrentUser: User;
 	getEmail: Email;
-	loadEmails: EmailResult;
 	getFAQs: Array<Faq>;
 	getGame: Game;
 	getGamesForWeek: Array<Game>;
 	getLogs: LogResult;
+	getMyAlerts: Array<Scalars['String']>;
 	getMyNotifications: Array<Notification>;
-	getOverallRankings: Array<OverallMv>;
 	getMyOverallDashboard?: Maybe<OverallMv>;
-	getOverallTiedWithMeCount: Scalars['Int'];
-	getOverallRankingsTotalCount: Scalars['Int'];
 	getMyPayments: Array<Payment>;
-	getAllPicksForWeek: Array<Pick>;
 	getMyPicksForWeek: Array<Pick>;
-	validatePicksForWeek: Scalars['Boolean'];
-	getRules: Array<Rule>;
-	getSurvivorRankings: Array<SurvivorMv>;
 	getMySurvivorDashboard?: Maybe<SurvivorMv>;
-	isAliveInSurvivor: Scalars['Boolean'];
-	getSurvivorWeekCount: Scalars['Int'];
-	getSurvivorOverallCount: Scalars['Int'];
-	getSurvivorStatus: SeasonStatus;
-	getMySurvivorPicks: Array<SurvivorPick>;
 	getMySurvivorPickForWeek?: Maybe<SurvivorPick>;
+	getMySurvivorPicks: Array<SurvivorPick>;
+	getMyTiebreakerForWeek?: Maybe<Tiebreaker>;
+	getMyWeeklyDashboard?: Maybe<WeeklyMv>;
+	getOverallRankings: Array<OverallMv>;
+	getOverallRankingsTotalCount: Scalars['Int'];
+	getOverallTiedWithMeCount: Scalars['Int'];
+	getRegisteredCount: Scalars['Float'];
+	getRules: Array<Rule>;
+	getSurvivorCount: Scalars['Float'];
+	getSurvivorOverallCount: Scalars['Int'];
+	getSurvivorRankings: Array<SurvivorMv>;
+	getSurvivorStatus: SeasonStatus;
+	getSurvivorWeekCount: Scalars['Int'];
 	getSystemValue: SystemValue;
 	getTeamsOnBye: Array<Team>;
-	getMyTiebreakerForWeek?: Maybe<Tiebreaker>;
-	getCurrentUser: User;
-	getMyAlerts: Array<Scalars['String']>;
-	getRegisteredCount: Scalars['Float'];
-	getSurvivorCount: Scalars['Float'];
-	getUsersForAdmins: Array<User>;
 	getUserPaymentsForAdmin: Array<User>;
-	getWeeklyRankings: Array<WeeklyMv>;
-	getMyWeeklyDashboard?: Maybe<WeeklyMv>;
-	getWeeklyTiedWithMeCount: Scalars['Int'];
-	getWeeklyRankingsTotalCount: Scalars['Int'];
+	getUsersForAdmins: Array<User>;
 	getWeek: Week;
 	getWeekInProgress?: Maybe<Scalars['Int']>;
+	getWeeklyRankings: Array<WeeklyMv>;
+	getWeeklyRankingsTotalCount: Scalars['Int'];
+	getWeeklyTiedWithMeCount: Scalars['Int'];
+	hasSocialLinked: Scalars['Boolean'];
+	isAliveInSurvivor: Scalars['Boolean'];
+	loadAPICalls: ApiCallResult;
+	loadEmails: EmailResult;
+	validatePicksForWeek: Scalars['Boolean'];
 };
 
-export type QueryHasSocialLinkedArgs = {
-	Type: Scalars['String'];
-};
-
-export type QueryLoadApiCallsArgs = {
-	LastKey?: Maybe<Scalars['String']>;
-	Count: Scalars['Int'];
+export type QueryGetAllPicksForWeekArgs = {
+	Week: Scalars['Int'];
 };
 
 export type QueryGetEmailArgs = {
 	EmailID: Scalars['String'];
-};
-
-export type QueryLoadEmailsArgs = {
-	LastKey?: Maybe<Scalars['String']>;
-	Count: Scalars['Int'];
 };
 
 export type QueryGetGameArgs = {
@@ -599,37 +591,35 @@ export type QueryGetGamesForWeekArgs = {
 
 export type QueryGetLogsArgs = {
 	LogAction?: Maybe<LogAction>;
-	UserID?: Maybe<Scalars['Int']>;
 	Page?: Maybe<Scalars['Int']>;
 	PerPage: Scalars['Int'];
-	SortDir: Scalars['String'];
 	Sort: Scalars['String'];
-};
-
-export type QueryGetAllPicksForWeekArgs = {
-	Week: Scalars['Int'];
+	SortDir: Scalars['String'];
+	UserID?: Maybe<Scalars['Int']>;
 };
 
 export type QueryGetMyPicksForWeekArgs = {
 	Week: Scalars['Int'];
 };
 
-export type QueryValidatePicksForWeekArgs = {
-	LastScore: Scalars['Int'];
-	Unused: Scalars['String'];
+export type QueryGetMySurvivorPickForWeekArgs = {
 	Week: Scalars['Int'];
 };
 
-export type QueryGetSurvivorWeekCountArgs = {
-	Type?: Maybe<SurvivorStatus>;
+export type QueryGetMyTiebreakerForWeekArgs = {
+	Week: Scalars['Int'];
+};
+
+export type QueryGetMyWeeklyDashboardArgs = {
+	Week: Scalars['Int'];
 };
 
 export type QueryGetSurvivorOverallCountArgs = {
 	Type?: Maybe<Scalars['Boolean']>;
 };
 
-export type QueryGetMySurvivorPickForWeekArgs = {
-	Week: Scalars['Int'];
+export type QueryGetSurvivorWeekCountArgs = {
+	Type?: Maybe<SurvivorStatus>;
 };
 
 export type QueryGetSystemValueArgs = {
@@ -640,23 +630,15 @@ export type QueryGetTeamsOnByeArgs = {
 	Week: Scalars['Int'];
 };
 
-export type QueryGetMyTiebreakerForWeekArgs = {
-	Week: Scalars['Int'];
-};
-
 export type QueryGetUsersForAdminsArgs = {
 	UserType: AdminUserType;
 };
 
+export type QueryGetWeekArgs = {
+	Week?: Maybe<Scalars['Int']>;
+};
+
 export type QueryGetWeeklyRankingsArgs = {
-	Week: Scalars['Int'];
-};
-
-export type QueryGetMyWeeklyDashboardArgs = {
-	Week: Scalars['Int'];
-};
-
-export type QueryGetWeeklyTiedWithMeCountArgs = {
 	Week: Scalars['Int'];
 };
 
@@ -664,19 +646,39 @@ export type QueryGetWeeklyRankingsTotalCountArgs = {
 	Week: Scalars['Int'];
 };
 
-export type QueryGetWeekArgs = {
-	Week?: Maybe<Scalars['Int']>;
+export type QueryGetWeeklyTiedWithMeCountArgs = {
+	Week: Scalars['Int'];
+};
+
+export type QueryHasSocialLinkedArgs = {
+	Type: Scalars['String'];
+};
+
+export type QueryLoadApiCallsArgs = {
+	Count: Scalars['Int'];
+	LastKey?: Maybe<Scalars['String']>;
+};
+
+export type QueryLoadEmailsArgs = {
+	Count: Scalars['Int'];
+	LastKey?: Maybe<Scalars['String']>;
+};
+
+export type QueryValidatePicksForWeekArgs = {
+	LastScore: Scalars['Int'];
+	Unused: Scalars['String'];
+	Week: Scalars['Int'];
 };
 
 export type Rule = ISupportContent & {
 	__typename?: 'Rule';
-	supportContentID: Scalars['Int'];
-	supportContentType: SupportContentType;
-	supportContentOrder: Scalars['Int'];
-	supportContentDescription: Scalars['String'];
-	supportContentKeywords?: Maybe<Scalars['String']>;
 	supportContentAdded: Scalars['DateTime'];
 	supportContentAddedBy: Scalars['String'];
+	supportContentDescription: Scalars['String'];
+	supportContentID: Scalars['Int'];
+	supportContentKeywords?: Maybe<Scalars['String']>;
+	supportContentOrder: Scalars['Int'];
+	supportContentType: SupportContentType;
 	supportContentUpdated: Scalars['DateTime'];
 	supportContentUpdatedBy: Scalars['String'];
 };
@@ -696,33 +698,33 @@ export enum SupportContentType {
 
 export type SurvivorMv = {
 	__typename?: 'SurvivorMV';
-	rank: Scalars['Int'];
-	tied: Scalars['Boolean'];
-	userID: Scalars['Int'];
-	user: User;
-	teamName: Scalars['String'];
-	userName: Scalars['String'];
-	weeksAlive: Scalars['Int'];
-	isAliveOverall: Scalars['Boolean'];
+	allPicks: Array<SurvivorPick>;
 	currentStatus?: Maybe<SurvivorStatus>;
+	isAliveOverall: Scalars['Boolean'];
 	lastPick?: Maybe<Scalars['Int']>;
 	lastPickTeam?: Maybe<Team>;
-	allPicks: Array<SurvivorPick>;
 	lastUpdated: Scalars['DateTime'];
+	rank: Scalars['Int'];
+	teamName: Scalars['String'];
+	tied: Scalars['Boolean'];
+	user: User;
+	userID: Scalars['Int'];
+	userName: Scalars['String'];
+	weeksAlive: Scalars['Int'];
 };
 
 export type SurvivorPick = {
 	__typename?: 'SurvivorPick';
-	survivorPickID: Scalars['Int'];
-	user: User;
-	league: League;
-	survivorPickWeek: Scalars['Int'];
 	game?: Maybe<Game>;
-	team?: Maybe<Team>;
+	league: League;
 	survivorPickAdded: Scalars['DateTime'];
 	survivorPickAddedBy: Scalars['String'];
+	survivorPickID: Scalars['Int'];
 	survivorPickUpdated: Scalars['DateTime'];
 	survivorPickUpdatedBy: Scalars['String'];
+	survivorPickWeek: Scalars['Int'];
+	team?: Maybe<Team>;
+	user: User;
 };
 
 /** The current status of a survivor player */
@@ -734,36 +736,36 @@ export enum SurvivorStatus {
 
 export type SystemValue = {
 	__typename?: 'SystemValue';
-	systemValueID: Scalars['Int'];
-	systemValueName: Scalars['String'];
-	systemValueValue?: Maybe<Scalars['String']>;
 	systemValueAdded: Scalars['DateTime'];
 	systemValueAddedBy: Scalars['String'];
+	systemValueID: Scalars['Int'];
+	systemValueName: Scalars['String'];
 	systemValueUpdated: Scalars['DateTime'];
 	systemValueUpdatedBy: Scalars['String'];
+	systemValueValue?: Maybe<Scalars['String']>;
 };
 
 export type Team = {
 	__typename?: 'Team';
-	teamID: Scalars['Int'];
-	teamCity: Scalars['String'];
-	teamName: Scalars['String'];
-	teamShortName: Scalars['String'];
-	teamAltShortName: Scalars['String'];
-	teamConference: TeamConference;
-	teamDivision: TeamDivision;
-	teamLogo: Scalars['String'];
-	teamPrimaryColor: Scalars['String'];
-	teamSecondaryColor: Scalars['String'];
-	teamRushDefenseRank?: Maybe<Scalars['Int']>;
-	teamPassDefenseRank?: Maybe<Scalars['Int']>;
-	teamRushOffenseRank?: Maybe<Scalars['Int']>;
-	teamPassOffenseRank?: Maybe<Scalars['Int']>;
-	teamByeWeek: Scalars['Int'];
-	teamRecord: Scalars['String'];
-	teamHistory: Array<Game>;
 	teamAdded: Scalars['DateTime'];
 	teamAddedBy: Scalars['String'];
+	teamAltShortName: Scalars['String'];
+	teamByeWeek: Scalars['Int'];
+	teamCity: Scalars['String'];
+	teamConference: TeamConference;
+	teamDivision: TeamDivision;
+	teamHistory: Array<Game>;
+	teamID: Scalars['Int'];
+	teamLogo: Scalars['String'];
+	teamName: Scalars['String'];
+	teamPassDefenseRank?: Maybe<Scalars['Int']>;
+	teamPassOffenseRank?: Maybe<Scalars['Int']>;
+	teamPrimaryColor: Scalars['String'];
+	teamRecord: Scalars['String'];
+	teamRushDefenseRank?: Maybe<Scalars['Int']>;
+	teamRushOffenseRank?: Maybe<Scalars['Int']>;
+	teamSecondaryColor: Scalars['String'];
+	teamShortName: Scalars['String'];
 	teamUpdated: Scalars['DateTime'];
 	teamUpdatedBy: Scalars['String'];
 };
@@ -784,76 +786,76 @@ export enum TeamDivision {
 
 export type Tiebreaker = {
 	__typename?: 'Tiebreaker';
-	tiebreakerID: Scalars['Int'];
-	user?: Maybe<User>;
 	league?: Maybe<League>;
-	tiebreakerWeek: Scalars['Int'];
-	tiebreakerLastScore: Scalars['Int'];
-	tiebreakerHasSubmitted: Scalars['Boolean'];
 	tiebreakerAdded: Scalars['DateTime'];
 	tiebreakerAddedBy: Scalars['String'];
+	tiebreakerHasSubmitted: Scalars['Boolean'];
+	tiebreakerID: Scalars['Int'];
+	tiebreakerLastScore: Scalars['Int'];
 	tiebreakerUpdated: Scalars['DateTime'];
 	tiebreakerUpdatedBy: Scalars['String'];
+	tiebreakerWeek: Scalars['Int'];
+	user?: Maybe<User>;
 };
 
 export type User = {
 	__typename?: 'User';
-	userID: Scalars['Int'];
-	userEmail: Scalars['String'];
-	userPhone?: Maybe<Scalars['String']>;
-	userName?: Maybe<Scalars['String']>;
-	userFirstName?: Maybe<Scalars['String']>;
-	userLastName?: Maybe<Scalars['String']>;
-	userTeamName?: Maybe<Scalars['String']>;
-	userImage?: Maybe<Scalars['String']>;
-	userReferredByRaw?: Maybe<Scalars['String']>;
-	userReferredByUser?: Maybe<User>;
-	userEmailVerified?: Maybe<Scalars['DateTime']>;
-	userTrusted?: Maybe<Scalars['Boolean']>;
-	userDoneRegistering: Scalars['Boolean'];
-	userIsAdmin: Scalars['Boolean'];
-	userPlaysSurvivor: Scalars['Boolean'];
-	userPaymentType?: Maybe<PaymentMethod>;
-	userPaymentAccount?: Maybe<Scalars['String']>;
-	payments: Array<Payment>;
-	userPaid: Scalars['Float'];
-	userOwes: Scalars['Float'];
-	userWon: Scalars['Float'];
-	userPaidOut: Scalars['Float'];
-	userBalance: Scalars['Float'];
-	userAutoPicksLeft: Scalars['Int'];
-	userAutoPickStrategy?: Maybe<AutoPickStrategy>;
-	userCommunicationsOptedOut: Scalars['Boolean'];
-	notifications: Array<Notification>;
-	userLeagues: Array<UserLeague>;
-	yearsPlayed: Scalars['String'];
 	accounts: Array<Account>;
+	notifications: Array<Notification>;
+	payments: Array<Payment>;
 	userAdded: Scalars['DateTime'];
 	userAddedBy: Scalars['String'];
+	userAutoPickStrategy?: Maybe<AutoPickStrategy>;
+	userAutoPicksLeft: Scalars['Int'];
+	userBalance: Scalars['Float'];
+	userCommunicationsOptedOut: Scalars['Boolean'];
+	userDoneRegistering: Scalars['Boolean'];
+	userEmail: Scalars['String'];
+	userEmailVerified?: Maybe<Scalars['DateTime']>;
+	userFirstName?: Maybe<Scalars['String']>;
+	userID: Scalars['Int'];
+	userImage?: Maybe<Scalars['String']>;
+	userIsAdmin: Scalars['Boolean'];
+	userLastName?: Maybe<Scalars['String']>;
+	userLeagues: Array<UserLeague>;
+	userName?: Maybe<Scalars['String']>;
+	userOwes: Scalars['Float'];
+	userPaid: Scalars['Float'];
+	userPaidOut: Scalars['Float'];
+	userPaymentAccount?: Maybe<Scalars['String']>;
+	userPaymentType?: Maybe<PaymentMethod>;
+	userPhone?: Maybe<Scalars['String']>;
+	userPlaysSurvivor: Scalars['Boolean'];
+	userReferredByRaw?: Maybe<Scalars['String']>;
+	userReferredByUser?: Maybe<User>;
+	userTeamName?: Maybe<Scalars['String']>;
+	userTrusted?: Maybe<Scalars['Boolean']>;
 	userUpdated: Scalars['DateTime'];
 	userUpdatedBy: Scalars['String'];
+	userWon: Scalars['Float'];
+	yearsPlayed: Scalars['String'];
 };
 
 export type UserLeague = {
 	__typename?: 'UserLeague';
-	userLeagueID: Scalars['Int'];
-	user: User;
 	league: League;
+	user: User;
 	userLeagueAdded: Scalars['DateTime'];
 	userLeagueAddedBy: Scalars['String'];
+	userLeagueID: Scalars['Int'];
 	userLeagueUpdated: Scalars['DateTime'];
 	userLeagueUpdatedBy: Scalars['String'];
 };
 
 export type Week = {
 	__typename?: 'Week';
-	weekNumber: Scalars['Int'];
-	weekStarts: Scalars['DateTime'];
-	weekStatus: WeekStatus;
 	seasonStatus: SeasonStatus;
 	weekFirstGame: Game;
 	weekLastGame: Game;
+	weekNumber: Scalars['Int'];
 	weekNumberOfGames: Scalars['Int'];
+	weekStarts: Scalars['DateTime'];
+	weekStatus: WeekStatus;
 };
 
 /** The status of the week */
@@ -865,35 +867,35 @@ export enum WeekStatus {
 
 export type WeeklyMv = {
 	__typename?: 'WeeklyMV';
-	week: Scalars['Int'];
-	rank: Scalars['Int'];
-	tied: Scalars['Boolean'];
-	userID: Scalars['Int'];
-	user: User;
-	teamName: Scalars['String'];
-	userName: Scalars['String'];
-	pointsEarned: Scalars['Int'];
-	pointsWrong: Scalars['Int'];
-	pointsPossible: Scalars['Int'];
-	pointsTotal: Scalars['Int'];
 	gamesCorrect: Scalars['Int'];
-	gamesWrong: Scalars['Int'];
+	gamesMissed: Scalars['Int'];
 	gamesPossible: Scalars['Int'];
 	gamesTotal: Scalars['Int'];
-	gamesMissed: Scalars['Int'];
-	tiebreakerScore?: Maybe<Scalars['Int']>;
-	lastScore?: Maybe<Scalars['Int']>;
-	tiebreakerIsUnder: Scalars['Boolean'];
-	tiebreakerDiffAbsolute?: Maybe<Scalars['Int']>;
+	gamesWrong: Scalars['Int'];
 	isEliminated: Scalars['Boolean'];
+	lastScore?: Maybe<Scalars['Int']>;
 	lastUpdated: Scalars['DateTime'];
+	pointsEarned: Scalars['Int'];
+	pointsPossible: Scalars['Int'];
+	pointsTotal: Scalars['Int'];
+	pointsWrong: Scalars['Int'];
+	rank: Scalars['Int'];
+	teamName: Scalars['String'];
+	tiebreakerDiffAbsolute?: Maybe<Scalars['Int']>;
+	tiebreakerIsUnder: Scalars['Boolean'];
+	tiebreakerScore?: Maybe<Scalars['Int']>;
+	tied: Scalars['Boolean'];
+	user: User;
+	userID: Scalars['Int'];
+	userName: Scalars['String'];
+	week: Scalars['Int'];
 };
 
 /** New log data */
 export type WriteLogInput = {
-	logAction: LogAction;
-	logMessage?: Maybe<Scalars['String']>;
-	logDataString?: Maybe<Scalars['String']>;
 	leagueID?: Maybe<Scalars['Int']>;
+	logAction: LogAction;
+	logDataString?: Maybe<Scalars['String']>;
+	logMessage?: Maybe<Scalars['String']>;
 	sub?: Maybe<Scalars['String']>;
 };
