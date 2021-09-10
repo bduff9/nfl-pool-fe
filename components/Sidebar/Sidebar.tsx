@@ -389,7 +389,11 @@ const Sidebar: FC<SidebarProps> = ({ user }) => {
 								<NavLink
 									href="/survivor/set"
 									isNested
-									show={user.hasSurvivor && data?.isAliveInSurvivor}
+									show={
+										user.hasSurvivor &&
+										data?.isAliveInSurvivor &&
+										selectedWeekData?.getWeek.weekStatus === 'NotStarted'
+									}
 								>
 									Make Picks
 								</NavLink>

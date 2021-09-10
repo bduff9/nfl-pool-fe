@@ -40,13 +40,38 @@ const ProgressChart: FC<ProgressChartProps> = ({
 }) => {
 	const correctPercent = (correct / max) * 100;
 	const incorrectPercent = (incorrect / max) * 100;
-	const inProgressPercent = (inProgress ?? 0 / max) * 100;
+	const inProgressPercent = ((inProgress ?? 0) / max) * 100;
+	let correctLabel = '';
+	let incorrectLabel = '';
+	let inProgressLabel = '';
+
+	if (type === 'Games') {
+		correctLabel = 'games correct';
+		incorrectLabel = 'games wrong';
+		inProgressLabel = 'games not completed yet';
+	} else if (type === 'Points') {
+		correctLabel = 'points earned';
+		incorrectLabel = 'points missed';
+		inProgressLabel = 'points not completed yet';
+	} else if (type === 'Current Week Remaining') {
+		correctLabel = 'players safe this week';
+		incorrectLabel = 'players went out this week';
+		inProgressLabel = 'players waiting';
+	} else if (type === 'Overall Remaining') {
+		correctLabel = 'players alive';
+		incorrectLabel = 'players dead';
+		inProgressLabel = 'players still waiting';
+	}
 
 	return (
 		<motion.div layoutId={layoutId}>
 			<div className="text-start">{type}</div>
 			<div className={clsx('progress', styles['custom-progress'])}>
 				<div
+					aria-label={`${correct} ${correctLabel}`}
+					aria-valuemax={max}
+					aria-valuemin={0}
+					aria-valuenow={correct}
 					className={clsx(
 						'progress-bar',
 						!isOver && 'progress-bar-striped',
@@ -55,13 +80,15 @@ const ProgressChart: FC<ProgressChartProps> = ({
 					)}
 					role="progressbar"
 					style={{ width: `${correctPercent}%` }}
-					aria-valuenow={correct}
-					aria-valuemin={0}
-					aria-valuemax={max}
+					title={`${correct} ${correctLabel}`}
 				>
 					{correct}
 				</div>
 				<div
+					aria-label={`${incorrect} ${incorrectLabel}`}
+					aria-valuemax={max}
+					aria-valuemin={0}
+					aria-valuenow={incorrect}
 					className={clsx(
 						'progress-bar',
 						!isOver && 'progress-bar-striped',
@@ -70,14 +97,16 @@ const ProgressChart: FC<ProgressChartProps> = ({
 					)}
 					role="progressbar"
 					style={{ width: `${incorrectPercent}%` }}
-					aria-valuenow={incorrect}
-					aria-valuemin={0}
-					aria-valuemax={max}
+					title={`${incorrect} ${incorrectLabel}`}
 				>
 					{incorrect}
 				</div>
 				{typeof inProgress === 'number' && (
 					<div
+						aria-label={`${inProgress} ${inProgressLabel}`}
+						aria-valuemax={max}
+						aria-valuemin={0}
+						aria-valuenow={inProgress}
 						className={clsx(
 							'progress-bar',
 							!isOver && 'progress-bar-striped',
@@ -86,9 +115,7 @@ const ProgressChart: FC<ProgressChartProps> = ({
 						)}
 						role="progressbar"
 						style={{ width: `${inProgressPercent}%` }}
-						aria-valuenow={inProgress}
-						aria-valuemin={0}
-						aria-valuemax={max}
+						title={`${inProgress} ${inProgressLabel}`}
 					>
 						{inProgress}
 					</div>
