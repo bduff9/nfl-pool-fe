@@ -17,6 +17,7 @@ import { logger } from './logging';
  */
 type TLoginError =
 	| 'InvalidEmail'
+	| 'LatePayment'
 	| 'MissingSystemProperty'
 	| 'NotAllowed'
 	| 'OAuthAccountNotLinked'
@@ -30,6 +31,8 @@ export const formatError = (error: unknown): string => {
 		switch (error) {
 			case 'InvalidEmail':
 				return 'It looks like your email is not valid, please double check it and try again';
+			case 'LatePayment':
+				return 'Your entry fee is past due, please pay immediately to regain access and avoid losing any points';
 			case 'MissingSystemProperty':
 				logger.error('Missing property `PaymentDueWeek`');
 
