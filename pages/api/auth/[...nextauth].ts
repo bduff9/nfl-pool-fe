@@ -194,7 +194,6 @@ const options: NextAuthOptions = {
 
 				const lastRegistrationWeek = parseInt(paymentDueWeek.SystemValueValue, 10);
 
-
 				if (currentWeek.GameWeek > lastRegistrationWeek) {
 					if (userOwes.owes === '1') {
 						return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=LatePayment`;
