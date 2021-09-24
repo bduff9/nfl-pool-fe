@@ -40,8 +40,12 @@ const GameStatusDisplay: FC<GameStatusDisplayProps> = ({ kickoff, status, timeLe
 		<>
 			<span className="d-none d-md-inline">{gameStatus}</span>
 			<span className="d-md-none">{getShortQuarter(gameStatus)}</span>
-			<br />
-			{timeLeft}
+			{status !== GameStatus.HalfTime && (
+				<>
+					<br />
+					{timeLeft}
+				</>
+			)}
 		</>
 	);
 };
