@@ -144,6 +144,12 @@ const ViewAllPicks: FC<ViewAllPicksProps> = () => {
 		return <></>;
 	}
 
+	if ((ranksData?.getWeeklyRankings.length ?? -1) === 0) {
+		router.replace('/picks/view');
+
+		return <> </>;
+	}
+
 	const saveModalChanges = (customGames: Array<GameForWeek>): void => {
 		updateGames(customGames);
 		setIsModalOpen(false);
