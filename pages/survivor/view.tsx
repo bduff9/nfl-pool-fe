@@ -252,12 +252,15 @@ const ViewSurvivor: FC<ViewSurvivorProps> = ({ user }) => {
 												{row.allPicks.map(pick => (
 													<td
 														className={clsx(
-															pick.game.winnerTeam &&
-																pick.game.winnerTeam.teamID === pick.team?.teamID &&
-																'bg-success',
-															pick.game.winnerTeam &&
-																pick.game.winnerTeam.teamID !== pick.team?.teamID &&
-																'bg-danger',
+															pick.team === null
+																? 'bg-danger'
+																: pick.game.winnerTeam &&
+																  pick.game.winnerTeam.teamID === pick.team.teamID
+																	? 'bg-success'
+																	: pick.game.winnerTeam &&
+																	  pick.game.winnerTeam.teamID !== pick.team.teamID
+																		? 'bg-danger'
+																		: '',
 														)}
 														key={`pick-for-user-${row.userID}-week-${pick.survivorPickWeek}`}
 													>
