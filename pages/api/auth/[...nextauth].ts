@@ -113,7 +113,7 @@ const options: NextAuthOptions = {
 					`SELECT COALESCE(MIN(GameWeek), ${WEEKS_IN_SEASON}) AS GameWeek FROM Games WHERE GameStatus <> ? AND GameDeleted IS NULL`,
 					['Final'],
 				);
-				const userOwesPromise = getOne<{ owes: null | '0' | '1' }, [string]>(
+				const userOwesPromise = getOne<{ owes: null | 0 | 1 }, [string]>(
 					connection,
 					`select sum(P.PaymentAmount) < 0 as owes from Payments P join Users U on U.UserID = P.UserID where U.UserEmail = ?`,
 					[user.email ?? ''],
@@ -195,7 +195,7 @@ const options: NextAuthOptions = {
 				const lastRegistrationWeek = parseInt(paymentDueWeek.SystemValueValue, 10);
 
 				if (currentWeek.GameWeek > lastRegistrationWeek) {
-					if (userOwes.owes === '1') {
+					if (userOwes.owes === 1) {
 						return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=LatePayment`;
 					}
 
