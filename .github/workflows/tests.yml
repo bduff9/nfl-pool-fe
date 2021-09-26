@@ -39,7 +39,6 @@ jobs:
       - uses: returntocorp/semgrep-action@v1
         with:
           publishToken: ${{ secrets.SEMGREP_APP_TOKEN }}
-          publishDeployment: 600
       - name: Set environment variables
         run: |
           case "${GITHUB_REF}" in

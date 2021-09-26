@@ -151,7 +151,7 @@ const PreviewAdminEmail: FC<PreviewAdminEmailProps> = ({
 				<div
 					aria-labelledby="html-tab"
 					className={clsx('tab-pane', 'fade', previewTab === 'html' && 'show active')}
-					dangerouslySetInnerHTML={{ __html: htmlPreview }} // nosemgrep: react-dangerouslysetinnerhtml
+					dangerouslySetInnerHTML={{ __html: htmlPreview }} // nosemgrep: typescript.react.security.audit.react-dangerouslysetinnerhtml.react-dangerouslysetinnerhtml
 					id="html"
 					role="tabpanel"
 				></div>
