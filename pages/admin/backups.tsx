@@ -18,6 +18,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import { ClientError } from 'graphql-request';
 import { GetServerSideProps } from 'next';
+import dynamic from 'next/dynamic';
 import React, { FC, useContext, useEffect, useState } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { toast } from 'react-toastify';
@@ -39,6 +40,11 @@ import styles from '../../styles/admin/backups.module.scss';
 import { ErrorIcon, SuccessIcon } from '../../components/ToastUtils/ToastIcons';
 import { logger } from '../../utils/logging';
 
+const ConfirmationModal = dynamic(
+	() => import('../../components/ConfirmationModal/ConfirmationModal'),
+	{ ssr: false },
+);
+
 type AdminBackupsProps = {
 	user: TUser;
 };
@@ -47,6 +53,7 @@ const AdminBackups: FC<AdminBackupsProps> = () => {
 	const { data, error, isValidating } = useAdminBackups();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [loading, setLoading] = useState<null | string>(null);
+	const [callback, setCallback] = useState<(() => Promise<void>) | null>(null);
 
 	useEffect(() => {
 		setBackgroundLoading(!!data && isValidating);
@@ -59,7 +66,6 @@ const AdminBackups: FC<AdminBackupsProps> = () => {
 
 	const restoreABackup = async (backupName: string): Promise<void> => {
 		try {
-			setLoading(backupName);
 			await toast.promise(restoreBackup(backupName), {
 				error: {
 					icon: ErrorIcon,
@@ -85,6 +91,7 @@ const AdminBackups: FC<AdminBackupsProps> = () => {
 		} catch (error) {
 			logger.error({ text: 'Error updating user amount paid', backupName, error });
 		} finally {
+			setCallback(null);
 			setLoading(null);
 		}
 	};
@@ -151,7 +158,12 @@ const AdminBackups: FC<AdminBackupsProps> = () => {
 															<FontAwesomeIcon
 																className="cursor-pointer"
 																icon={faDatabase}
-																onClick={() => restoreABackup(backup.backupName)}
+																onClick={() => {
+																	setLoading(backup.backupName);
+																	setCallback(() => () =>
+																		restoreABackup(backup.backupName),
+																	);
+																}}
 															/>
 														)}
 														{loading === backup.backupName && (
@@ -170,6 +182,18 @@ const AdminBackups: FC<AdminBackupsProps> = () => {
 								</table>
 							</div>
 						</div>
+						{callback && (
+							<ConfirmationModal
+								acceptButton="Restore"
+								body={`Are you certain you want to restore backup ${loading}?  This cannot be undone.`}
+								onAccept={callback}
+								onCancel={() => {
+									setCallback(null);
+									setLoading(null);
+								}}
+								title="Are you sure?"
+							/>
+						)}
 					</div>
 				</SkeletonTheme>
 			</div>
