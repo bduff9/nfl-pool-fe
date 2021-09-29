@@ -560,29 +560,28 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 																	</div>
 																</div>
 																<div className="d-flex justify-content-around border-top border-secondary fs-1 py-2">
-																	{user.userOwes > 0 ||
-																		(user.userDoneRegistering && (
-																			<FontAwesomeIcon
-																				className={clsx(
-																					'cursor-pointer',
-																					user.userPaid === 0
-																						? 'text-danger'
-																						: user.userPaid === user.userOwes
-																							? 'text-success'
-																							: 'text-warning',
-																				)}
-																				icon={faDollarSign}
-																				onClick={() =>
-																					setModalOpen({
-																						owe: user.userOwes,
-																						paid: user.userPaid,
-																						type: 'payment',
-																						userID: user.userID,
-																					})
-																				}
-																				title={`${user.userFirstName} ${user.userLastName} has paid $${user.userPaid} / $${user.userOwes}`}
-																			/>
-																		))}
+																	{(user.userOwes > 0 || user.userDoneRegistering) && (
+																		<FontAwesomeIcon
+																			className={clsx(
+																				'cursor-pointer',
+																				user.userPaid === 0
+																					? 'text-danger'
+																					: user.userPaid === user.userOwes
+																						? 'text-success'
+																						: 'text-warning',
+																			)}
+																			icon={faDollarSign}
+																			onClick={() =>
+																				setModalOpen({
+																					owe: user.userOwes,
+																					paid: user.userPaid,
+																					type: 'payment',
+																					userID: user.userID,
+																				})
+																			}
+																			title={`${user.userFirstName} ${user.userLastName} has paid $${user.userPaid} / $${user.userOwes}`}
+																		/>
+																	)}
 																	{!user.userTrusted && (
 																		<>
 																			<FontAwesomeIcon
@@ -637,29 +636,28 @@ const AdminUsers: FC<AdminUsersProps> = () => {
 															'text-nowrap',
 														)}
 													>
-														{user.userOwes > 0 ||
-															(user.userDoneRegistering && (
-																<FontAwesomeIcon
-																	className={clsx(
-																		'cursor-pointer',
-																		user.userPaid === 0
-																			? 'text-danger'
-																			: user.userPaid === user.userOwes
-																				? 'text-success'
-																				: 'text-warning',
-																	)}
-																	icon={faDollarSign}
-																	onClick={() =>
-																		setModalOpen({
-																			owe: user.userOwes,
-																			paid: user.userPaid,
-																			type: 'payment',
-																			userID: user.userID,
-																		})
-																	}
-																	title={`${user.userFirstName} ${user.userLastName} has paid $${user.userPaid} / $${user.userOwes}`}
-																/>
-															))}
+														{(user.userOwes > 0 || user.userDoneRegistering) && (
+															<FontAwesomeIcon
+																className={clsx(
+																	'cursor-pointer',
+																	user.userPaid === 0
+																		? 'text-danger'
+																		: user.userPaid === user.userOwes
+																			? 'text-success'
+																			: 'text-warning',
+																)}
+																icon={faDollarSign}
+																onClick={() =>
+																	setModalOpen({
+																		owe: user.userOwes,
+																		paid: user.userPaid,
+																		type: 'payment',
+																		userID: user.userID,
+																	})
+																}
+																title={`${user.userFirstName} ${user.userLastName} has paid $${user.userPaid} / $${user.userOwes}`}
+															/>
+														)}
 														{!user.userTrusted && (
 															<>
 																<FontAwesomeIcon
