@@ -43,7 +43,7 @@ jobs:
         run: |
           case "${GITHUB_REF}" in
             "refs/heads/main") DEPLOY_ENV=production ;;
-            "refs/heads/develop") DEPLOY_ENV=development ;;
+            "refs/heads/develop") DEPLOY_ENV=preview ;;
             *) DEPLOY_ENV= ;;
           esac
           echo "DEPLOY_ENV=${DEPLOY_ENV}"
