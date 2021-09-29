@@ -18,7 +18,7 @@ import Modal from 'react-bootstrap/Modal';
 
 type ConfirmationModal = {
 	acceptButton?: string;
-	body: string;
+	body: JSX.Element | string;
 	cancelButton?: string;
 	onAccept: () => void | Promise<void>;
 	onCancel: () => void | Promise<void>;

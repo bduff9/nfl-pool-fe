@@ -35,6 +35,7 @@ import type { DropResult, DragStart } from 'react-beautiful-dnd';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import { toast } from 'react-toastify';
+import dynamic from 'next/dynamic';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
@@ -66,6 +67,11 @@ import PickGame, { PointBankLoader, Point } from '../../components/PickGame/Pick
 import { ErrorIcon, SuccessIcon } from '../../components/ToastUtils/ToastIcons';
 import { logger } from '../../utils/logging';
 
+const ConfirmationModal = dynamic(
+	() => import('../../components/ConfirmationModal/ConfirmationModal'),
+	{ ssr: false },
+);
+
 export type LoadingType = 'autopick' | 'reset' | 'save' | 'submit';
 
 type MakePicksProps = {
@@ -95,6 +101,12 @@ const MakePicks: FC<MakePicksProps> = () => {
 	);
 	const [picksUpdating, setPicksUpdating] = useState<boolean>(false);
 	const [loading, setLoading] = useState<LoadingType | null>(null);
+	const [callback, setCallback] = useState<{
+		acceptButton: string;
+		body: string | JSX.Element;
+		onAccept: () => Promise<void>;
+		title: string;
+	} | null>(null);
 	const lastGame =
 		picksData?.getMyPicksForWeek[picksData.getMyPicksForWeek.length - 1].game;
 
@@ -357,6 +369,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 		} finally {
 			setPicksUpdating(false);
 			setLoading(null);
+			setCallback(null);
 			await picksMutate();
 		}
 	};
@@ -426,7 +439,17 @@ const MakePicks: FC<MakePicksProps> = () => {
 					success: {
 						icon: SuccessIcon,
 						render () {
-							return `Successfully saved your picks for week ${selectedWeek}`;
+							return (
+								<>
+									<div className="mb-3">
+										Successfully saved your picks for week {selectedWeek}!
+									</div>
+									<div>
+										Please note that you will still need to submit your picks when ready as
+										they are only saved, not submitted.
+									</div>
+								</>
+							);
 						},
 					},
 				},
@@ -504,6 +527,7 @@ const MakePicks: FC<MakePicksProps> = () => {
 		} finally {
 			setPicksUpdating(false);
 			setLoading(null);
+			setCallback(null);
 		}
 	};
 
@@ -617,6 +641,9 @@ const MakePicks: FC<MakePicksProps> = () => {
 							</div>
 						)}
 					</div>
+					{callback && (
+						<ConfirmationModal {...callback} onCancel={() => setCallback(null)} />
+					)}
 					<div
 						className={clsx(
 							'position-fixed',
@@ -636,7 +663,24 @@ const MakePicks: FC<MakePicksProps> = () => {
 								className="btn btn-danger w-100 my-3"
 								disabled={loading !== null || picksUpdating}
 								type="button"
-								onClick={resetPicks}
+								onClick={() => {
+									setCallback({
+										acceptButton: 'Reset',
+										body: (
+											<>
+												<div className="mb-3">
+													Are you sure you want to reset all your picks?
+												</div>
+												<small>
+													Note: Any games that have already started will not be affected.
+													Only games that have not kicked off yet will be reset.
+												</small>
+											</>
+										),
+										onAccept: resetPicks,
+										title: 'Are you sure you want to reset?',
+									});
+								}}
 							>
 								<div className="d-block d-md-none">
 									<FontAwesomeIcon icon={faRedo} />
@@ -725,7 +769,22 @@ const MakePicks: FC<MakePicksProps> = () => {
 								className="btn btn-success w-100 my-3"
 								disabled={loading !== null || picksUpdating}
 								type="button"
-								onClick={submitPicks}
+								onClick={() =>
+									setCallback({
+										acceptButton: 'Submit',
+										body: (
+											<>
+												<div className="mb-3">Are you sure you are ready to submit?</div>
+												<small>
+													Note: You will be unable to make any more changes to this
+													week&apos;s picks once submitted and this cannot be undone.
+												</small>
+											</>
+										),
+										onAccept: submitPicks,
+										title: 'Are you ready to submit?',
+									})
+								}
 							>
 								<div className="d-block d-md-none">
 									<FontAwesomeIcon
