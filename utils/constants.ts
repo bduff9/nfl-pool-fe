@@ -32,6 +32,11 @@ export const NEXT_PUBLIC_SITE_URL = process.env.NEXT_PUBLIC_SITE_URL;
 export const REDIRECT_COOKIE_NAME = 'REDIRECT_COOKIE_NAME';
 
 /**
+ * Number of days in a month, used for conversions
+ */
+export const DAYS_IN_MONTH = 30;
+
+/**
  * Number of days in a week, used for conversions
  */
 export const DAYS_IN_WEEK = 7;
