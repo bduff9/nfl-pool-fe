@@ -36,8 +36,6 @@ const ConfirmationModal: FC<ConfirmationModal> = ({
 	const [loading, setLoading] = useState<boolean>(false);
 
 	const handleAccept = async (): Promise<void> => {
-		console.log('TODO: handleAccept called');
-
 		setLoading(true);
 		await onAccept();
 		setLoading(false);
