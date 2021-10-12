@@ -18,24 +18,24 @@ import { faExclamationCircle } from '@bduff9/pro-duotone-svg-icons/faExclamation
 import { faExclamationTriangle } from '@bduff9/pro-duotone-svg-icons/faExclamationTriangle';
 import { faInfoCircle } from '@bduff9/pro-duotone-svg-icons/faInfoCircle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 
-export const ErrorIcon: FC = () => (
+export const ErrorIcon: VFC = () => (
 	<FontAwesomeIcon className="text-danger" icon={faExclamationCircle} />
 );
 
-export const InfoIcon: FC = () => (
+export const InfoIcon: VFC = () => (
 	<FontAwesomeIcon className="text-info" icon={faInfoCircle} />
 );
 
-export const SuccessIcon: FC = () => (
+export const SuccessIcon: VFC = () => (
 	<FontAwesomeIcon className="text-success" icon={faCheckCircle} />
 );
 
-export const WarningIcon: FC = () => (
+export const WarningIcon: VFC = () => (
 	<FontAwesomeIcon className="text-warning" icon={faExclamationTriangle} />
 );
 
-export const LargeWarningIcon: FC = () => (
+export const LargeWarningIcon: VFC = () => (
 	<FontAwesomeIcon className="text-warning" icon={faExclamationTriangle} size="3x" />
 );

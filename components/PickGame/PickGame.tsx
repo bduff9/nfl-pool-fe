@@ -18,7 +18,7 @@ import { faInfoCircle } from '@bduff9/pro-duotone-svg-icons/faInfoCircle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import Image from 'next/image';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 import Skeleton from 'react-loading-skeleton';
 
@@ -29,7 +29,7 @@ import { getBackgroundColor } from '../../utils/strings';
 
 import styles from './PickGame.module.scss';
 
-export const PointBankLoader: FC = () => {
+export const PointBankLoader: VFC = () => {
 	return (
 		<>
 			{getEmptyArray(16).map((_, i) => (
@@ -51,7 +51,7 @@ type PointProps = {
 	isDropDisabled?: boolean;
 } & DraggablePointProps;
 
-const DraggablePoint: FC<DraggablePointProps> = ({
+const DraggablePoint: VFC<DraggablePointProps> = ({
 	index,
 	isDragDisabled = false,
 	maxValue,
@@ -90,7 +90,7 @@ const DraggablePoint: FC<DraggablePointProps> = ({
 	);
 };
 
-export const Point: FC<PointProps> = ({
+export const Point: VFC<PointProps> = ({
 	droppableId,
 	index,
 	isDragDisabled = false,
@@ -156,7 +156,13 @@ type PickGameProps = {
 	};
 };
 
-const PickGame: FC<PickGameProps> = ({ dragGameID, gameCount, loading, onClick, pick }) => {
+const PickGame: VFC<PickGameProps> = ({
+	dragGameID,
+	gameCount,
+	loading,
+	onClick,
+	pick,
+}) => {
 	const hasStarted = new Date(pick.game.gameKickoff) < new Date();
 	const hasMadePick = !!pick.team;
 

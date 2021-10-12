@@ -19,7 +19,11 @@ describe('Authenticated', (): void => {
 	}));
 
 	beforeEach((): void => {
-		wrapper = shallow(<Authenticated />);
+		wrapper = shallow(
+			<Authenticated>
+				<div />
+			</Authenticated>,
+		);
 	});
 
 	it('exists', (): void => {

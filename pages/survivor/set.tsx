@@ -20,7 +20,7 @@ import clsx from 'clsx';
 import { ClientError } from 'graphql-request';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { VFC, useContext, useEffect, useState } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { toast } from 'react-toastify';
 import { faTimesCircle } from '@bduff9/pro-duotone-svg-icons';
@@ -50,7 +50,7 @@ type SurvivorTeamLoaderProps = {
 	isHome?: boolean;
 };
 
-const SurvivorTeamLoader: FC<SurvivorTeamLoaderProps> = ({ isHome = false }) => {
+const SurvivorTeamLoader: VFC<SurvivorTeamLoaderProps> = ({ isHome = false }) => {
 	return (
 		<div
 			className={clsx(
@@ -76,7 +76,7 @@ const SurvivorTeamLoader: FC<SurvivorTeamLoaderProps> = ({ isHome = false }) => 
 	);
 };
 
-const MakeSurvivorPickLoader: FC = () => (
+const MakeSurvivorPickLoader: VFC = () => (
 	<>
 		{getEmptyArray(16).map((_, i) => (
 			<div
@@ -140,7 +140,7 @@ type SetSurvivorProps = {
 	user: TUser;
 };
 
-const SetSurvivor: FC<SetSurvivorProps> = () => {
+const SetSurvivor: VFC<SetSurvivorProps> = () => {
 	const router = useRouter();
 	const [selectedWeek] = useContext(WeekContext);
 	const { data, error, isValidating, mutate } = useMakeSurvivorPickView(selectedWeek);

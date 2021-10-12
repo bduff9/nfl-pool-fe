@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import clsx from 'clsx';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { VFC, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import { DetailTeam, useTeamDetails } from '../../graphql/teamDetail';
@@ -28,7 +28,7 @@ type TeamBlockProps = {
 	team?: DetailTeam;
 };
 
-const TeamBlock: FC<TeamBlockProps> = ({ spread, team }) => (
+const TeamBlock: VFC<TeamBlockProps> = ({ spread, team }) => (
 	<div className={clsx('col-6')}>
 		<div
 			className={clsx('border', 'border-dark', 'rounded', 'p-3', styles['team-wrapper'])}
@@ -131,7 +131,7 @@ type TeamDetailProps = {
 	gameID: number;
 };
 
-const TeamDetail: FC<TeamDetailProps> = ({ gameID }) => {
+const TeamDetail: VFC<TeamDetailProps> = ({ gameID }) => {
 	const { data, error, isValidating } = useTeamDetails(gameID);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 

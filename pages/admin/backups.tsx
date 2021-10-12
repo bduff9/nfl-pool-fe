@@ -19,7 +19,7 @@ import clsx from 'clsx';
 import { ClientError } from 'graphql-request';
 import { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { VFC, useContext, useEffect, useState } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { toast } from 'react-toastify';
 
@@ -49,7 +49,7 @@ type AdminBackupsProps = {
 	user: TUser;
 };
 
-const AdminBackups: FC<AdminBackupsProps> = () => {
+const AdminBackups: VFC<AdminBackupsProps> = () => {
 	const { data, error, isValidating } = useAdminBackups();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [loading, setLoading] = useState<null | string>(null);

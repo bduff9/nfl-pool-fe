@@ -16,10 +16,10 @@
 import { GetStaticProps } from 'next';
 import { signOut, useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
-import React, { FC, useEffect } from 'react';
+import React, { VFC, useEffect } from 'react';
 import Image from 'next/image';
 
-const Logout: FC = () => {
+const Logout: VFC = () => {
 	const [session, loading] = useSession();
 	const router = useRouter();
 

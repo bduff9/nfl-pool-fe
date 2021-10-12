@@ -8,7 +8,11 @@ describe('Unauthenticated', (): void => {
 	let wrapper: ShallowWrapper<any, any, any>;
 
 	beforeEach((): void => {
-		wrapper = shallow(<Unauthenticated />);
+		wrapper = shallow(
+			<Unauthenticated>
+				<div />
+			</Unauthenticated>,
+		);
 	});
 
 	it('exists', (): void => {

@@ -13,10 +13,10 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-const RankingPieChartLoader: FC = () => {
+const RankingPieChartLoader: VFC = () => {
 	return (
 		<>
 			{/* Pie Chart */}

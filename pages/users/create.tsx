@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { VFC, useContext, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
@@ -37,7 +37,7 @@ type CreateProfileProps = {
 	user: TUser;
 };
 
-const CreateProfile: FC<CreateProfileProps> = ({ user }) => {
+const CreateProfile: VFC<CreateProfileProps> = ({ user }) => {
 	const router = useRouter();
 	const { data, error, isValidating, mutate } = useCurrentUser();
 	const {

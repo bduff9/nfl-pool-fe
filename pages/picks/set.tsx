@@ -23,7 +23,7 @@ import { ClientError } from 'graphql-request';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, {
-	FC,
+	VFC,
 	FocusEventHandler,
 	useCallback,
 	useContext,
@@ -78,7 +78,7 @@ type MakePicksProps = {
 	user: TUser;
 };
 
-const MakePicks: FC<MakePicksProps> = () => {
+const MakePicks: VFC<MakePicksProps> = () => {
 	const router = useRouter();
 	const [selectedWeek] = useContext(WeekContext);
 	const {

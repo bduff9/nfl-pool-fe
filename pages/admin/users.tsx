@@ -25,7 +25,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import { ClientError } from 'graphql-request';
 import { GetServerSideProps } from 'next';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { VFC, useContext, useEffect, useState } from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import { toast } from 'react-toastify';
@@ -61,7 +61,7 @@ type AdminUserStatusProps = {
 	user: UserForAdmin;
 };
 
-const AdminUserStatus: FC<AdminUserStatusProps> = ({ user }) => {
+const AdminUserStatus: VFC<AdminUserStatusProps> = ({ user }) => {
 	if (user.userDoneRegistering) {
 		return <span className="text-success">Registered</span>;
 	}
@@ -79,7 +79,7 @@ type AdminUserNotificationsProps = {
 	notifications: Array<UserNotificationForAdmin>;
 };
 
-const AdminUserNotifications: FC<AdminUserNotificationsProps> = ({ notifications }) => {
+const AdminUserNotifications: VFC<AdminUserNotificationsProps> = ({ notifications }) => {
 	return (
 		<>
 			{notifications
@@ -108,7 +108,7 @@ type AdminUsersProps = {
 	user: TUser;
 };
 
-const AdminUsers: FC<AdminUsersProps> = () => {
+const AdminUsers: VFC<AdminUsersProps> = () => {
 	const [userType, setUserType] = useState<AdminUserType>(AdminUserType.Registered);
 	const { data, error, isValidating, mutate } = useAdminUsers(userType);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);

@@ -15,7 +15,7 @@
  */
 import clsx from 'clsx';
 import Link from 'next/link';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { VFC, useContext, useEffect } from 'react';
 
 import { SeasonStatus, WeekStatus } from '../../generated/graphql';
 import { useSelectedWeek } from '../../graphql/sidebar';
@@ -33,7 +33,7 @@ type SurvivorDashboardProps = {
 	user: TUser;
 };
 
-const SurvivorDashboard: FC<SurvivorDashboardProps> = ({ user }) => {
+const SurvivorDashboard: VFC<SurvivorDashboardProps> = ({ user }) => {
 	const [selectedWeek] = useContext(WeekContext);
 	const { data, error, isValidating } = useSurvivorDashboard(selectedWeek);
 	const {

@@ -13,10 +13,10 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-const ProgressChartLoader: FC = () => {
+const ProgressChartLoader: VFC = () => {
 	return (
 		<>
 			{/* Progress Bar Chart */}

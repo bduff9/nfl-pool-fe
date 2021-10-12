@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { FC, useState } from 'react';
+import React, { VFC, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 
 type ConfirmationModal = {
@@ -25,7 +25,7 @@ type ConfirmationModal = {
 	title: string;
 };
 
-const ConfirmationModal: FC<ConfirmationModal> = ({
+const ConfirmationModal: VFC<ConfirmationModal> = ({
 	acceptButton = 'OK',
 	body,
 	cancelButton = 'Cancel',

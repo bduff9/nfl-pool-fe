@@ -14,13 +14,15 @@
  * Home: https://asitewithnoname.com/
  */
 import clsx from 'clsx';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import { useAccordionButton } from 'react-bootstrap/AccordionButton';
 
 import styles from './MenuAccordion.module.scss';
 
-const MenuAccordionButton: FC<{ eventKey: string }> = ({ children, eventKey }) => {
+type MenuAccordionButtonProps = { children: string; eventKey: string };
+
+const MenuAccordionButton: VFC<MenuAccordionButtonProps> = ({ children, eventKey }) => {
 	const decoratedOnClick = useAccordionButton(eventKey);
 
 	return (
@@ -34,11 +36,9 @@ const MenuAccordionButton: FC<{ eventKey: string }> = ({ children, eventKey }) =
 	);
 };
 
-const MenuAccordion: FC<{ show?: boolean; title: string }> = ({
-	children,
-	show = true,
-	title,
-}) => {
+type MenuAccordionProps = { children: Array<JSX.Element>; show?: boolean; title: string };
+
+const MenuAccordion: VFC<MenuAccordionProps> = ({ children, show = true, title }) => {
 	if (!show) {
 		return null;
 	}

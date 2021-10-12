@@ -21,7 +21,7 @@ import { GetStaticProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { FC, useEffect, useMemo } from 'react';
+import React, { VFC, useEffect, useMemo } from 'react';
 import { useSession } from 'next-auth/client';
 
 import styles from '../styles/404.module.scss';
@@ -34,7 +34,7 @@ type NotFoundProps = {
 	images: Array<string>;
 };
 
-const NotFound: FC<NotFoundProps> = ({ images }) => {
+const NotFound: VFC<NotFoundProps> = ({ images }) => {
 	const router = useRouter();
 	const [session, loading] = useSession();
 	const image = useMemo<string>(

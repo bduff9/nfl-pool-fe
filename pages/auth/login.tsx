@@ -19,7 +19,7 @@ import { signIn, useSession } from 'next-auth/client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { FC, FormEvent, useState } from 'react';
+import React, { VFC, FormEvent, useState } from 'react';
 import clsx from 'clsx';
 
 import Unauthenticated from '../../components/Unauthenticated/Unauthenticated';
@@ -46,7 +46,7 @@ const readAndDeleteCookie = (name: string): string => {
 
 type LoginProps = { year: string };
 
-const Login: FC<LoginProps> = ({ year }) => {
+const Login: VFC<LoginProps> = ({ year }) => {
 	const router = useRouter();
 	const [session] = useSession();
 	const [isLogin, setIsLogin] = useState<boolean>(true);

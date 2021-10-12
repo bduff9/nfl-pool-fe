@@ -15,7 +15,7 @@
  */
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 import { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
@@ -29,7 +29,7 @@ import {
 	IS_NOT_ADMIN_REDIRECT,
 } from '../../utils/auth.server';
 
-const AdminEmail: FC = () => {
+const AdminEmail: VFC = () => {
 	return (
 		<Authenticated isAdmin>
 			<CustomHead title="Email Users" />

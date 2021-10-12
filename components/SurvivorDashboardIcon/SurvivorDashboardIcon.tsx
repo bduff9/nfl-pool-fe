@@ -18,7 +18,7 @@ import { faFootballHelmet } from '@bduff9/pro-duotone-svg-icons/faFootballHelmet
 import { faQuestion } from '@bduff9/pro-duotone-svg-icons/faQuestion';
 import { faUsersClass } from '@bduff9/pro-duotone-svg-icons/faUsersClass';
 import Image from 'next/image';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 import clsx from 'clsx';
 
 import { Team } from '../../generated/graphql';
@@ -32,7 +32,7 @@ type SurvivorDashboardIconProps = {
 	pickForWeek?: Pick<Team, 'teamCity' | 'teamLogo' | 'teamName'>;
 };
 
-const SurvivorDashboardIcon: FC<SurvivorDashboardIconProps> = ({
+const SurvivorDashboardIcon: VFC<SurvivorDashboardIconProps> = ({
 	isAlive = false,
 	isPlaying,
 	lastPick,

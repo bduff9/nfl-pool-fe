@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import clsx from 'clsx';
-import React, { FC, useMemo, useState } from 'react';
+import React, { VFC, useMemo, useState } from 'react';
 
 import { EmailType } from '../../generated/graphql';
 import { emailPreviewFetcher } from '../../utils/api';
@@ -29,7 +29,7 @@ type PreviewAdminEmailProps = {
 	userFirstName: string;
 };
 
-const PreviewAdminEmail: FC<PreviewAdminEmailProps> = ({
+const PreviewAdminEmail: VFC<PreviewAdminEmailProps> = ({
 	emailType,
 	payload,
 	userFirstName,

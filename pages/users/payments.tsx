@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { VFC, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import Link from 'next/link';
 
@@ -33,7 +33,7 @@ import { BackgroundLoadingContext } from '../../utils/context';
 import { useCurrentUser } from '../../graphql/create';
 import { logger } from '../../utils/logging';
 
-const ViewPayments: FC = () => {
+const ViewPayments: VFC = () => {
 	const { data, error, isValidating } = useGetPayments();
 	const {
 		data: currentUserData,

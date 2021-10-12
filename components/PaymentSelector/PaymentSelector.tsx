@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { ChangeEventHandler, FC, useState } from 'react';
+import React, { ChangeEventHandler, VFC, useState } from 'react';
 
 import { PaymentMethod } from '../../generated/graphql';
 
@@ -25,7 +25,7 @@ type PaymentSelectorProps = {
 const PAYMENT_MESSAGE =
 	'NOTE: Please be sure to use an account tied to your name or put your name in the memo field so we correctly attribute your payment to you';
 
-const PaymentSelector: FC<PaymentSelectorProps> = ({ amount, defaultPayment }) => {
+const PaymentSelector: VFC<PaymentSelectorProps> = ({ amount, defaultPayment }) => {
 	const [paymentType, setPaymentType] = useState<PaymentMethod>(defaultPayment);
 
 	const updatePayment: ChangeEventHandler<HTMLSelectElement> = event => {

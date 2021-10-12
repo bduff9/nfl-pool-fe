@@ -18,7 +18,7 @@ import { faAt } from '@bduff9/pro-duotone-svg-icons/faAt';
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
 import Image from 'next/image';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { VFC, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
@@ -44,7 +44,7 @@ type ViewPicksProps = {
 	user: TUser;
 };
 
-const ViewPicks: FC<ViewPicksProps> = () => {
+const ViewPicks: VFC<ViewPicksProps> = () => {
 	const [selectedWeek] = useContext(WeekContext);
 	const { data, error, isValidating } = useViewMyPicks(selectedWeek);
 	const {

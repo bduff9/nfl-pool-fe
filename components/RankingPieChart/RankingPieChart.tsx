@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { motion } from 'framer-motion';
-import React, { FC, useState } from 'react';
+import React, { VFC, useState } from 'react';
 import { PieChart, Pie, Sector, ResponsiveContainer, Tooltip } from 'recharts';
 
 type PieChartData = {
@@ -72,7 +72,7 @@ type RankingPieChartProps = {
 	layoutId: string;
 };
 
-const RankingPieChart: FC<RankingPieChartProps> = ({ data, layoutId }) => {
+const RankingPieChart: VFC<RankingPieChartProps> = ({ data, layoutId }) => {
 	const [activeIndex, setActiveIndex] = useState<number>(0);
 
 	const onPieEnter = (_: unknown, index: number) => {

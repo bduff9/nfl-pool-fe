@@ -16,7 +16,7 @@
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
 import dynamic from 'next/dynamic';
-import React, { FC, useState, useEffect } from 'react';
+import React, { VFC, useState, useEffect } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
@@ -40,7 +40,7 @@ type AdminAPICallsProps = {
 	user: TUser;
 };
 
-const AdminAPICalls: FC<AdminAPICallsProps> = () => {
+const AdminAPICalls: VFC<AdminAPICallsProps> = () => {
 	const [data, setData] = useState<null | Array<APICallObject>>(null);
 	const [hasMore, setHasMore] = useState<boolean>(true);
 	const [loading, setLoading] = useState<boolean>(true);

@@ -20,7 +20,7 @@ import { AnimateSharedLayout } from 'framer-motion';
 import { Provider } from 'next-auth/client';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
-import React, { FC, useState } from 'react';
+import React, { VFC, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { SWRConfig } from 'swr';
 import { syncWithLocalStorage } from 'swr-sync-storage';
@@ -59,7 +59,7 @@ if (typeof window !== 'undefined') {
 
 type SentryProps = { err: unknown };
 
-const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
+const App: VFC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
 	if (!NEXT_PUBLIC_HAPPYKIT_ANALYTICS_KEY) {
 		throw Error('Missing happykit analytics key from env!');
 	}

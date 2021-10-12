@@ -22,7 +22,7 @@ import { GetServerSideProps } from 'next';
 import React, {
 	ChangeEvent,
 	Dispatch,
-	FC,
+	VFC,
 	SetStateAction,
 	useContext,
 	useEffect,
@@ -60,7 +60,7 @@ type LogFilterProps = {
 	title: string;
 };
 
-const LogFilter: FC<LogFilterProps> = ({ id, options, selected, setter, title }) => {
+const LogFilter: VFC<LogFilterProps> = ({ id, options, selected, setter, title }) => {
 	return (
 		<Dropdown className="d-inline-block">
 			<Dropdown.Toggle className="text-nowrap w-100" id={id} variant="light">
@@ -98,7 +98,7 @@ type AdminLogsProps = {
 	user: TUser;
 };
 
-const AdminLogs: FC<AdminLogsProps> = () => {
+const AdminLogs: VFC<AdminLogsProps> = () => {
 	const [logAction, setLogAction] = useState<LogAction | null>(null);
 	const [page, setPage] = useState<number>(1);
 	const [perPage, setPerPage] = useState<number>(25);

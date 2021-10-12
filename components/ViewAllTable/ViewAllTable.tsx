@@ -15,7 +15,7 @@
  */
 import clsx from 'clsx';
 import Image from 'next/image';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 import { GameForWeek } from '../../graphql/scoreboard';
@@ -34,7 +34,7 @@ type ViewAllTableProps = {
 	ranks?: Array<WeeklyRank>;
 };
 
-const ViewAllTable: FC<ViewAllTableProps> = ({ games, picks, ranks }) => {
+const ViewAllTable: VFC<ViewAllTableProps> = ({ games, picks, ranks }) => {
 	return (
 		<div className={clsx('rounded', 'table-responsive', styles['sticky-wrapper'])}>
 			<table className="table table-hover table-bordered align-middle">

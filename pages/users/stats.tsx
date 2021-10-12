@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
@@ -25,7 +25,7 @@ import {
 	IS_NOT_DONE_REGISTERING_REDIRECT,
 } from '../../utils/auth.server';
 
-const Statistics: FC = () => {
+const Statistics: VFC = () => {
 	return (
 		<Authenticated isRegistered>
 			<CustomHead title="Pool Stats" />

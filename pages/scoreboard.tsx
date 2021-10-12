@@ -15,7 +15,7 @@
  */
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
-import React, { FC, Fragment, useContext, useEffect } from 'react';
+import React, { VFC, Fragment, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../components/Authenticated/Authenticated';
@@ -36,7 +36,7 @@ import GameStatusDisplay from '../components/GameStatusDisplay/GameStatusDisplay
 import { getEmptyArray } from '../utils/arrays';
 import { logger } from '../utils/logging';
 
-const TeamLoader: FC = () => (
+const TeamLoader: VFC = () => (
 	<>
 		<div className="team-logo">
 			<Skeleton height={70} width={70} />
@@ -52,7 +52,7 @@ const TeamLoader: FC = () => (
 	</>
 );
 
-const GameLoader: FC = () => (
+const GameLoader: VFC = () => (
 	<div className="col-12 col-md-6 mb-3">
 		<div className={clsx('p-3', 'd-flex', styles.game)}>
 			<div className={clsx('d-flex', 'flex-grow-1', 'flex-wrap')}>
@@ -67,7 +67,7 @@ const GameLoader: FC = () => (
 	</div>
 );
 
-const ScoreboardLoader: FC = () => (
+const ScoreboardLoader: VFC = () => (
 	<>
 		{getEmptyArray(16).map((_, i) => (
 			<GameLoader key={i} />
@@ -79,7 +79,7 @@ type ScoreboardProps = {
 	user: TUser;
 };
 
-const Scoreboard: FC<ScoreboardProps> = () => {
+const Scoreboard: VFC<ScoreboardProps> = () => {
 	const [selectedWeek] = useContext(WeekContext);
 	const { data, error, isValidating } = useGamesForWeek(selectedWeek);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);

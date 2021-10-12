@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { VFC, useContext, useEffect } from 'react';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
 import CustomHead from '../../components/CustomHead/CustomHead';
@@ -36,7 +36,7 @@ type EditProfileProps = {
 	user: TUser;
 };
 
-const EditProfile: FC<EditProfileProps> = () => {
+const EditProfile: VFC<EditProfileProps> = () => {
 	const { data, error, isValidating } = useMyNotifications();
 	const {
 		data: currentUserData,

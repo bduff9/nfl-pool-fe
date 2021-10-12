@@ -15,7 +15,7 @@
  */
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 
 import styles from './ProgressChart.module.scss';
 
@@ -29,7 +29,7 @@ type ProgressChartProps = {
 	type: 'Current Week Remaining' | 'Games' | 'Overall Remaining' | 'Points';
 };
 
-const ProgressChart: FC<ProgressChartProps> = ({
+const ProgressChart: VFC<ProgressChartProps> = ({
 	correct,
 	incorrect,
 	inProgress,

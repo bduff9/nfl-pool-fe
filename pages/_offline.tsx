@@ -18,7 +18,7 @@ import path from 'path';
 
 import { GetStaticProps } from 'next';
 import Image from 'next/image';
-import React, { FC, useMemo } from 'react';
+import React, { VFC, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 
@@ -30,7 +30,7 @@ type OfflinePageProps = {
 	images: Array<string>;
 };
 
-const OfflinePage: FC<OfflinePageProps> = ({ images }) => {
+const OfflinePage: VFC<OfflinePageProps> = ({ images }) => {
 	const router = useRouter();
 	const image = useMemo<string>(
 		() => images[getRandomInteger(0, images.length)],

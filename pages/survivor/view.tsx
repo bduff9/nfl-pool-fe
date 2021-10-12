@@ -18,7 +18,7 @@ import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { VFC, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
@@ -48,7 +48,7 @@ type ViewSurvivorProps = {
 	user: TUser;
 };
 
-const ViewSurvivor: FC<ViewSurvivorProps> = ({ user }) => {
+const ViewSurvivor: VFC<ViewSurvivorProps> = ({ user }) => {
 	const router = useRouter();
 	const [selectedWeek] = useContext(WeekContext);
 	const { data, error, isValidating } = useSurvivorView();

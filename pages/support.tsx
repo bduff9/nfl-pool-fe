@@ -17,7 +17,7 @@ import Fuse from 'fuse.js';
 import { GetStaticProps } from 'next';
 import { useSession } from 'next-auth/client';
 import Link from 'next/link';
-import React, { FC, FormEvent } from 'react';
+import React, { VFC, FormEvent } from 'react';
 import { debounce } from 'throttle-debounce';
 
 import CustomHead from '../components/CustomHead/CustomHead';
@@ -64,7 +64,7 @@ type SupportProps = {
 	supportEmail: string;
 };
 
-const Support: FC<SupportProps> = ({ faqs, rules, slackLink, supportEmail }) => {
+const Support: VFC<SupportProps> = ({ faqs, rules, slackLink, supportEmail }) => {
 	const [session, loading] = useSession();
 	const { hits: faqHits, onSearch: onFAQSearch } = useFuse(faqs, {
 		includeMatches: true,

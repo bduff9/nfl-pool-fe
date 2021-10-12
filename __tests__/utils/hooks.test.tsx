@@ -4,16 +4,18 @@ import { act } from 'react-dom/test-utils';
 
 import { useObjectState } from '../../utils/hooks';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/ban-types,@typescript-eslint/no-explicit-any
 const mountReactHook = (hook: Function, ...args: any[]) => {
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	const Component: FC = ({ children }) => (children as Function)(hook(...args));
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const componentHook: Record<any, any> = {};
 	let componentMount;
 
 	act(() => {
 		componentMount = shallow(
 			<Component>
+				{/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
 				{(hookValues: any) => {
 					Object.assign(componentHook, hookValues);
 

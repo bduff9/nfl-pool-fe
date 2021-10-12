@@ -15,19 +15,20 @@
  */
 import { useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 
 import { TAuthUser } from '../../utils/types';
 
 //import styles from './Authenticated.module.scss';
 
 type AuthenticatedProps = {
+	children: JSX.Element | Array<JSX.Element>;
 	isAdmin?: boolean;
 	isRegistered?: boolean;
 	isSurvivorPlayer?: boolean;
 };
 
-const Authenticated: FC<AuthenticatedProps> = ({
+const Authenticated: VFC<AuthenticatedProps> = ({
 	children,
 	isAdmin,
 	isRegistered,

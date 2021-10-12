@@ -15,7 +15,7 @@
  */
 import clsx from 'clsx';
 import { useSession } from 'next-auth/client';
-import React, { FC, useEffect, useState } from 'react';
+import React, { VFC, useEffect, useState } from 'react';
 
 import { BackgroundLoadingContext, TitleContext, WeekContext } from '../../utils/context';
 import { TSessionUser } from '../../utils/types';
@@ -23,7 +23,11 @@ import Sidebar from '../Sidebar/Sidebar';
 
 import styles from './Layout.module.scss';
 
-const Layout: FC = ({ children }) => {
+type LayoutProps = {
+	children: JSX.Element;
+};
+
+const Layout: VFC<LayoutProps> = ({ children }) => {
 	const [session] = useSession();
 	const titleContext = useState<string>('Welcome');
 	const sessionWeek =

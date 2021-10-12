@@ -17,7 +17,7 @@ import { faDollarSign } from '@bduff9/pro-duotone-svg-icons/faDollarSign';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import { ClientError } from 'graphql-request';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { VFC, useContext, useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { toast } from 'react-toastify';
 
@@ -28,7 +28,7 @@ import { BackgroundLoadingContext } from '../../utils/context';
 import { ErrorIcon, SuccessIcon } from '../ToastUtils/ToastIcons';
 import { logger } from '../../utils/logging';
 
-const ManageAdminPayouts: FC = () => {
+const ManageAdminPayouts: VFC = () => {
 	const { data, error, isValidating, mutate } = useWinners();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [modalOpen, setModalOpen] = useState<null | Winner>(null);

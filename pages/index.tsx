@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import { GetServerSideProps } from 'next';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 import { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../components/Authenticated/Authenticated';
@@ -34,7 +34,7 @@ type DashboardProps = {
 	user: TUser;
 };
 
-const Dashboard: FC<DashboardProps> = ({ user }) => (
+const Dashboard: VFC<DashboardProps> = ({ user }) => (
 	<Authenticated isRegistered>
 		<CustomHead title="My Dashboard" />
 		<div className="content-bg text-dark my-3 mx-2 pt-5 pt-md-3 min-vh-100 pb-4 col">

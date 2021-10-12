@@ -15,14 +15,14 @@
  */
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import React, { FC, useEffect } from 'react';
+import React, { VFC, useEffect } from 'react';
 
 import CustomHead from '../../../components/CustomHead/CustomHead';
 import { quickPick } from '../../../graphql/quickPick';
 import styles from '../../../styles/quick-pick.module.scss';
 import { isNumber } from '../../../utils/numbers';
 
-const QuickPick: FC = () => {
+const QuickPick: VFC = () => {
 	const router = useRouter();
 	const { userId, teamId } = router.query;
 

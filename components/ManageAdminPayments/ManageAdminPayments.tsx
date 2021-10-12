@@ -17,7 +17,7 @@ import clsx from 'clsx';
 import { ClientError } from 'graphql-request';
 import React, {
 	Dispatch,
-	FC,
+	VFC,
 	FormEvent,
 	SetStateAction,
 	useContext,
@@ -44,7 +44,7 @@ type CalculatedRowProps = {
 	total?: null | number;
 };
 
-const CalculatedRow: FC<CalculatedRowProps> = ({
+const CalculatedRow: VFC<CalculatedRowProps> = ({
 	count,
 	label,
 	isBold = false,
@@ -92,7 +92,7 @@ const CalculatedRow: FC<CalculatedRowProps> = ({
 	);
 };
 
-const ManageAdminPayments: FC = () => {
+const ManageAdminPayments: VFC = () => {
 	const { data, error, isValidating, mutate } = usePayoutAmounts();
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 	const [weekly1stPrize, setWeekly1stPrize] = useState<null | number>(null);

@@ -16,7 +16,7 @@
 import clsx from 'clsx';
 import { ClientError } from 'graphql-request';
 import dynamic from 'next/dynamic';
-import React, { FC, useRef, useState } from 'react';
+import React, { VFC, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { EmailSendTo, EmailType } from '../../generated/graphql';
@@ -86,7 +86,7 @@ const quillFormats = [
 	'video',
 ];
 
-const SendAdminEmails: FC = () => {
+const SendAdminEmails: VFC = () => {
 	const [emailType, setEmailType] = useState<string>('');
 	const [sendTo, setSendTo] = useState<string>('');
 	const [userEmail, setUserEmail] = useState<string>('');

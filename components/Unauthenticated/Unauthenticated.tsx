@@ -15,11 +15,15 @@
  */
 import { useSession } from 'next-auth/client';
 import { useRouter } from 'next/router';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 
 //import styles from './Unauthenticated.module.scss';
 
-const Unauthenticated: FC = ({ children }): JSX.Element => {
+type UnauthenticatedProps = {
+	children: JSX.Element | Array<JSX.Element>;
+};
+
+const Unauthenticated: VFC<UnauthenticatedProps> = ({ children }): JSX.Element => {
 	const [session, loading] = useSession();
 	const router = useRouter();
 

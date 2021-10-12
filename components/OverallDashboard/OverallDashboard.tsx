@@ -16,7 +16,7 @@
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { VFC, useContext, useEffect } from 'react';
 
 import { SeasonStatus } from '../../generated/graphql';
 import { useOverallCounts, useOverallDashboard } from '../../graphql/overallDashboard';
@@ -29,7 +29,7 @@ import { logger } from '../../utils/logging';
 import OverallDashboardLoader from './OverallDashboardLoader';
 import styles from './OverallDashboard.module.scss';
 
-const OverallDashboard: FC = () => {
+const OverallDashboard: VFC = () => {
 	const { data, error, isValidating } = useOverallDashboard();
 	const {
 		data: currentWeekData,

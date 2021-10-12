@@ -15,7 +15,7 @@
  */
 import clsx from 'clsx';
 import Image from 'next/image';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 
 import { Team } from '../../generated/graphql';
 import { SetSurvivorPick } from '../../graphql/survivorSet';
@@ -32,7 +32,7 @@ type SurvivorTeamProps = {
 	weekInProgress: number;
 };
 
-const SurvivorTeam: FC<SurvivorTeamProps> = ({
+const SurvivorTeam: VFC<SurvivorTeamProps> = ({
 	isHome = false,
 	isOnBye = false,
 	loading,

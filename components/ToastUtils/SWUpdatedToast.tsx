@@ -13,14 +13,14 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 
 type SWUpdatedToastProps = {
 	closeToast?: () => void;
 	onUpdate: () => void;
 };
 
-const SWUpdatedToast: FC<SWUpdatedToastProps> = ({ onUpdate }) => (
+const SWUpdatedToast: VFC<SWUpdatedToastProps> = ({ onUpdate }) => (
 	<div className="text-center">
 		<div>A new version of the app is available.</div>
 		<button className="btn btn-warning" onClick={onUpdate} type="button">

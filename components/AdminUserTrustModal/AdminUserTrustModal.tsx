@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { VFC, useContext, useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Skeleton from 'react-loading-skeleton';
 
@@ -29,7 +29,7 @@ type AdminUserTrustModalProps = {
 	userID: number | undefined;
 };
 
-const AdminUserTrustModal: FC<AdminUserTrustModalProps> = ({
+const AdminUserTrustModal: VFC<AdminUserTrustModalProps> = ({
 	handleClose,
 	referredByRaw,
 	show = false,

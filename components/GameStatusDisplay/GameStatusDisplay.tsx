@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 
 import { GameStatus } from '../../generated/graphql';
 import { formatTimeFromKickoff } from '../../utils/dates';
@@ -25,7 +25,7 @@ type GameStatusDisplayProps = {
 	timeLeft: string;
 };
 
-const GameStatusDisplay: FC<GameStatusDisplayProps> = ({ kickoff, status, timeLeft }) => {
+const GameStatusDisplay: VFC<GameStatusDisplayProps> = ({ kickoff, status, timeLeft }) => {
 	if (status === GameStatus.Final) {
 		return <>{status}</>;
 	}

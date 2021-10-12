@@ -20,7 +20,7 @@ import { motion } from 'framer-motion';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { VFC, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../components/Authenticated/Authenticated';
@@ -48,7 +48,7 @@ type OverallRankingsProps = {
 	user: TUser;
 };
 
-const OverallRankings: FC<OverallRankingsProps> = ({ user }) => {
+const OverallRankings: VFC<OverallRankingsProps> = ({ user }) => {
 	const router = useRouter();
 	const { data, error, isValidating } = useOverallRankings();
 	const { data: myData, error: myError } = useOverallDashboard();

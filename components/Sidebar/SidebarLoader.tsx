@@ -13,10 +13,10 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
-const SidebarLoader: FC = () => {
+const SidebarLoader: VFC = () => {
 	const durationInSeconds = 2.25;
 
 	return (

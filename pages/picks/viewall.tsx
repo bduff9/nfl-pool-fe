@@ -16,7 +16,7 @@
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import React, { FC, useContext, useState, useEffect } from 'react';
+import React, { VFC, useContext, useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
@@ -46,7 +46,7 @@ type ViewAllPicksProps = {
 	user: TUser;
 };
 
-const ViewAllPicks: FC<ViewAllPicksProps> = () => {
+const ViewAllPicks: VFC<ViewAllPicksProps> = () => {
 	const router = useRouter();
 	const [selectedWeek] = useContext(WeekContext);
 	const { data, error, isValidating } = useGamesForWeek(selectedWeek);

@@ -16,7 +16,7 @@
 import clsx from 'clsx';
 import { useSession } from 'next-auth/client';
 import Head from 'next/head';
-import React, { FC, useContext, useEffect, useRef, useState } from 'react';
+import React, { VFC, useContext, useEffect, useRef, useState } from 'react';
 
 import { useMyAlerts } from '../../graphql/customHead';
 import { getPageTitle } from '../../utils';
@@ -28,7 +28,7 @@ type CustomHeadProps = {
 	title: string;
 };
 
-const CustomHead: FC<CustomHeadProps> = ({ title }) => {
+const CustomHead: VFC<CustomHeadProps> = ({ title }) => {
 	const [session] = useSession();
 	const [pageTitle] = usePageTitle(title);
 	const { data, error, isValidating } = useMyAlerts(session);

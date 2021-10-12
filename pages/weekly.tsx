@@ -18,7 +18,7 @@ import { motion } from 'framer-motion';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { VFC, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../components/Authenticated/Authenticated';
@@ -46,7 +46,7 @@ type WeeklyRankingsProps = {
 	user: TUser;
 };
 
-const WeeklyRankings: FC<WeeklyRankingsProps> = ({ user }) => {
+const WeeklyRankings: VFC<WeeklyRankingsProps> = ({ user }) => {
 	const router = useRouter();
 	const [selectedWeek] = useContext(WeekContext);
 	const { data, error, isValidating } = useWeeklyRankings(selectedWeek);

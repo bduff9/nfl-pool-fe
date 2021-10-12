@@ -23,7 +23,7 @@ import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import React, {
 	ChangeEvent,
-	FC,
+	VFC,
 	useCallback,
 	useContext,
 	useEffect,
@@ -56,7 +56,7 @@ type SidebarProps = {
 	user: TSessionUser;
 };
 
-const Sidebar: FC<SidebarProps> = ({ user }) => {
+const Sidebar: VFC<SidebarProps> = ({ user }) => {
 	const router = useRouter();
 	const [openMenu, setOpenMenu] = useState<boolean>(false);
 	const toggleMenu = useCallback((): void => {

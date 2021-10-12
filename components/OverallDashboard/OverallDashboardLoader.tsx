@@ -13,13 +13,13 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import ProgressChartLoader from '../ProgressChart/ProgressChartLoader';
 import RankingPieChartLoader from '../RankingPieChart/RankingPieChartLoader';
 
-const OverallDashboardLoader: FC = () => {
+const OverallDashboardLoader: VFC = () => {
 	return (
 		<SkeletonTheme>
 			{/* View Details link */}

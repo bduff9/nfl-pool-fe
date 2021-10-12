@@ -15,7 +15,7 @@
  */
 import clsx from 'clsx';
 import { GetServerSideProps } from 'next';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 import { SkeletonTheme } from 'react-loading-skeleton';
 
 import Authenticated from '../../components/Authenticated/Authenticated';
@@ -34,7 +34,7 @@ type AdminPaymentsProps = {
 	user: TUser;
 };
 
-const AdminPayments: FC<AdminPaymentsProps> = () => {
+const AdminPayments: VFC<AdminPaymentsProps> = () => {
 	return (
 		<Authenticated isAdmin>
 			<CustomHead title="Manage Payments" />

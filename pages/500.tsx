@@ -21,7 +21,7 @@ import { GetStaticProps } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { FC, useMemo } from 'react';
+import React, { VFC, useMemo } from 'react';
 import { useSession } from 'next-auth/client';
 
 import styles from '../styles/500.module.scss';
@@ -31,7 +31,7 @@ type ErrorProps = {
 	images: string[];
 };
 
-const Error: FC<ErrorProps> = ({ images }) => {
+const Error: VFC<ErrorProps> = ({ images }) => {
 	const router = useRouter();
 	const [session, loading] = useSession();
 	const image = useMemo<string>(

@@ -16,7 +16,7 @@
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { VFC, useContext, useEffect } from 'react';
 
 import { WeekStatus } from '../../generated/graphql';
 import { useMyTiebreakerForWeek } from '../../graphql/picksSet';
@@ -31,7 +31,7 @@ import RankingPieChart from '../RankingPieChart/RankingPieChart';
 
 import styles from './WeeklyDashboard.module.scss';
 
-const WeeklyDashboard: FC = () => {
+const WeeklyDashboard: VFC = () => {
 	const [selectedWeek] = useContext(WeekContext);
 	const { data, error, isValidating } = useWeeklyDashboard(selectedWeek);
 	const {

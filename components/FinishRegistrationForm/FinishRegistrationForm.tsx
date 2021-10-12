@@ -17,7 +17,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-regular-svg-icons/faQuestionCircle';
 import { yupResolver } from '@hookform/resolvers/yup';
 import clsx from 'clsx';
-import React, { FC, useEffect, useState } from 'react';
+import React, { VFC, useEffect, useState } from 'react';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import { useForm } from 'react-hook-form';
 import type { SubmitHandler } from 'react-hook-form/dist/types/form';
@@ -141,7 +141,7 @@ type FinishRegistrationFormProps = {
 	seasonStatus: SeasonStatus;
 };
 
-const FinishRegistrationForm: FC<FinishRegistrationFormProps> = ({
+const FinishRegistrationForm: VFC<FinishRegistrationFormProps> = ({
 	currentUser,
 	hasGoogle,
 	hasTwitter,

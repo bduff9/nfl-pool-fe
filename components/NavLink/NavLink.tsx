@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 import Link, { LinkProps } from 'next/link';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
@@ -21,12 +21,13 @@ import clsx from 'clsx';
 import styles from './NavLink.module.scss';
 
 type NavLinkProps = Partial<LinkProps> & {
+	children: string;
 	isNested?: boolean;
 	onClick?: () => void;
 	show?: boolean;
 };
 
-const NavLink: FC<NavLinkProps> = ({
+const NavLink: VFC<NavLinkProps> = ({
 	children,
 	href,
 	isNested = false,

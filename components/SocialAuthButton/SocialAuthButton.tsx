@@ -18,7 +18,7 @@ import { faTwitter } from '@fortawesome/free-brands-svg-icons/faTwitter';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import { signIn } from 'next-auth/client';
-import React, { FC, useState } from 'react';
+import React, { VFC, useState } from 'react';
 
 import styles from './SocialAuthButton.module.scss';
 
@@ -29,7 +29,7 @@ type SocialAuthButtonProps = {
 	type: 'Google' | 'Twitter';
 };
 
-const SocialAuthButton: FC<SocialAuthButtonProps> = ({
+const SocialAuthButton: VFC<SocialAuthButtonProps> = ({
 	isLinked = false,
 	isRegister = false,
 	isSignIn = false,

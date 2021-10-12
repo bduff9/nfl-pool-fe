@@ -17,7 +17,7 @@ import { faFootballBall } from '@bduff9/pro-duotone-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import Image from 'next/image';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 
 import { GameStatus, Team } from '../../generated/graphql';
 
@@ -32,7 +32,7 @@ type ScoreboardTeamProps = {
 	team: Pick<Team, 'teamCity' | 'teamID' | 'teamLogo' | 'teamName' | 'teamShortName'>;
 };
 
-const ScoreboardTeam: FC<ScoreboardTeamProps> = ({
+const ScoreboardTeam: VFC<ScoreboardTeamProps> = ({
 	gameStatus,
 	hasPossession,
 	isInRedzone,

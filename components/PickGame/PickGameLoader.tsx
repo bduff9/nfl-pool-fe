@@ -16,7 +16,7 @@
 import { faAt } from '@bduff9/pro-duotone-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 import { getEmptyArray } from '../../utils/arrays';
@@ -24,7 +24,7 @@ import { getEmptyArray } from '../../utils/arrays';
 // eslint-disable-next-line css-modules/no-unused-class
 import styles from './PickGame.module.scss';
 
-const PickGameLoader: FC = () => {
+const PickGameLoader: VFC = () => {
 	return (
 		<>
 			{getEmptyArray(16).map((_, i) => (

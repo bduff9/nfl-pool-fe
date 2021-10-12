@@ -17,7 +17,7 @@ import { faAt } from '@bduff9/pro-duotone-svg-icons/faAt';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import Image from 'next/image';
-import React, { FC, useEffect, useState } from 'react';
+import React, { VFC, useEffect, useState } from 'react';
 
 import { GameForWeek } from '../../graphql/scoreboard';
 import { getAbbreviation } from '../../utils/strings';
@@ -31,7 +31,7 @@ type ViewAllModalProps = {
 	saveChanges: (games: Array<GameForWeek>) => void;
 };
 
-const ViewAllModal: FC<ViewAllModalProps> = ({
+const ViewAllModal: VFC<ViewAllModalProps> = ({
 	closeModal,
 	games,
 	isOpen = false,

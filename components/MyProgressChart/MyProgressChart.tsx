@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import clsx from 'clsx';
-import React, { FC } from 'react';
+import React, { VFC } from 'react';
 
 import styles from './MyProgressChart.module.scss';
 
@@ -28,7 +28,7 @@ type MyProgressChartProps = {
 	possibleLabel: string;
 };
 
-const MyProgressChart: FC<MyProgressChartProps> = ({
+const MyProgressChart: VFC<MyProgressChartProps> = ({
 	correct,
 	correctLabel,
 	isOver = false,

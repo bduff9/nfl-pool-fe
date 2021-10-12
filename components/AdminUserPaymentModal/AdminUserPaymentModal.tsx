@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { FC, useEffect, useState } from 'react';
+import React, { VFC, useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 
 type AdminUserPaymentModalProps = {
@@ -25,7 +25,7 @@ type AdminUserPaymentModalProps = {
 	userID: number | undefined;
 };
 
-const AdminUserPaymentModal: FC<AdminUserPaymentModalProps> = ({
+const AdminUserPaymentModal: VFC<AdminUserPaymentModalProps> = ({
 	handleClose,
 	owe,
 	paid,

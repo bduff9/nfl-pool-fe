@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { FC, useEffect, useState } from 'react';
+import React, { VFC, useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 
 import { Winner } from '../../graphql/manageAdminPayouts';
@@ -25,7 +25,7 @@ type AdminUserPayoutModalProps = {
 	winner: null | Winner;
 };
 
-const AdminUserPayoutModal: FC<AdminUserPayoutModalProps> = ({
+const AdminUserPayoutModal: VFC<AdminUserPayoutModalProps> = ({
 	handleClose,
 	show = false,
 	updateAmount,

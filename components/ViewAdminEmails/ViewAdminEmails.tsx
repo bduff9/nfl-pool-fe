@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { FC, Fragment, useEffect, useState } from 'react';
+import React, { VFC, Fragment, useEffect, useState } from 'react';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
 import Skeleton from 'react-loading-skeleton';
 
@@ -23,7 +23,7 @@ import { NEXT_PUBLIC_SITE_URL } from '../../utils/constants';
 import { logger } from '../../utils/logging';
 import { getRandomInteger } from '../../utils/numbers';
 
-const ViewAdminEmails: FC = () => {
+const ViewAdminEmails: VFC = () => {
 	const [data, setData] = useState<null | Array<EmailResponse>>(null);
 	const [hasMore, setHasMore] = useState<boolean>(true);
 	const [loading, setLoading] = useState<boolean>(true);

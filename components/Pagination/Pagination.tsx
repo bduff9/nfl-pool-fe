@@ -14,7 +14,7 @@
  * Home: https://asitewithnoname.com/
  */
 import clsx from 'clsx';
-import React, { Dispatch, FC, SetStateAction, useCallback } from 'react';
+import React, { Dispatch, VFC, SetStateAction, useCallback } from 'react';
 
 type PaginationProps = {
 	currentPage: number;
@@ -22,7 +22,7 @@ type PaginationProps = {
 	totalPages: number;
 };
 
-const Pagination: FC<PaginationProps> = ({ currentPage, setPage, totalPages }) => {
+const Pagination: VFC<PaginationProps> = ({ currentPage, setPage, totalPages }) => {
 	const pagesToDisplay: Array<number> = [];
 	const pages: Array<JSX.Element> = [];
 
