@@ -13,6 +13,8 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
+import { faTimesCircle } from '@bduff9/pro-duotone-svg-icons/faTimesCircle';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import React, { VFC, useContext, useEffect } from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
@@ -24,15 +26,30 @@ import { logger } from '../../utils/logging';
 import styles from './TeamDetail.module.scss';
 
 type TeamBlockProps = {
+	onClose?: () => void;
 	spread?: null | number;
 	team?: DetailTeam;
 };
 
-const TeamBlock: VFC<TeamBlockProps> = ({ spread, team }) => (
+const TeamBlock: VFC<TeamBlockProps> = ({ onClose, spread, team }) => (
 	<div className={clsx('col-6')}>
 		<div
-			className={clsx('border', 'border-dark', 'rounded', 'p-3', styles['team-wrapper'])}
+			className={clsx(
+				'position-relative',
+				'border',
+				'border-dark',
+				'rounded',
+				'p-3',
+				styles['team-wrapper'],
+			)}
 		>
+			{onClose && (
+				<FontAwesomeIcon
+					className="position-absolute top-0 end-0 mt-1 me-1 d-inline-block d-md-none text-danger"
+					icon={faTimesCircle}
+					onClick={onClose}
+				/>
+			)}
 			<h4 className="text-center">
 				{team ? (
 					<u
@@ -129,9 +146,10 @@ const TeamBlock: VFC<TeamBlockProps> = ({ spread, team }) => (
 
 type TeamDetailProps = {
 	gameID: number;
+	onClose?: () => void;
 };
 
-const TeamDetail: VFC<TeamDetailProps> = ({ gameID }) => {
+const TeamDetail: VFC<TeamDetailProps> = ({ gameID, onClose }) => {
 	const { data, error, isValidating } = useTeamDetails(gameID);
 	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 
@@ -151,10 +169,15 @@ const TeamDetail: VFC<TeamDetailProps> = ({ gameID }) => {
 		<SkeletonTheme>
 			<div className="row">
 				<TeamBlock
+					onClose={onClose}
 					spread={data?.getGame.gameVisitorSpread}
 					team={data?.getGame.visitorTeam}
 				/>
-				<TeamBlock spread={data?.getGame.gameHomeSpread} team={data?.getGame.homeTeam} />
+				<TeamBlock
+					onClose={onClose}
+					spread={data?.getGame.gameHomeSpread}
+					team={data?.getGame.homeTeam}
+				/>
 			</div>
 		</SkeletonTheme>
 	);

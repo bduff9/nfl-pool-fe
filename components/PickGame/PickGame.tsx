@@ -15,6 +15,7 @@
  */
 import { faAt } from '@bduff9/pro-duotone-svg-icons';
 import { faInfoCircle } from '@bduff9/pro-duotone-svg-icons/faInfoCircle';
+import { faTimesCircle } from '@bduff9/pro-duotone-svg-icons/faTimesCircle';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import clsx from 'clsx';
 import Image from 'next/image';
@@ -144,6 +145,7 @@ export const Point: VFC<PointProps> = ({
 type PickGameProps = {
 	dragGameID: null | string;
 	gameCount: number;
+	isBackgrounded?: boolean;
 	loading: LoadingType | null;
 	onClick: () => void;
 	pick: Pick<PoolPick, 'pickID' | 'pickPoints'> & {
@@ -154,11 +156,14 @@ type PickGameProps = {
 		};
 		team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'> | null;
 	};
+	isSelected?: boolean;
 };
 
 const PickGame: VFC<PickGameProps> = ({
 	dragGameID,
 	gameCount,
+	isBackgrounded = false,
+	isSelected = false,
 	loading,
 	onClick,
 	pick,
@@ -173,6 +178,7 @@ const PickGame: VFC<PickGameProps> = ({
 				hasMadePick && hasStarted && styles['made-pick-final'],
 				hasMadePick && !hasStarted && styles['made-pick'],
 				!hasMadePick && hasStarted && styles['missed-pick'],
+				isBackgrounded && styles['backgrounded-game'],
 			)}
 		>
 			<div className="col-3 col-md-2 d-flex align-items-center justify-content-end">
@@ -213,10 +219,17 @@ const PickGame: VFC<PickGameProps> = ({
 					{pick.game.visitorTeam.teamCity}
 					<br />
 					{pick.game.visitorTeam.teamName}
-					<FontAwesomeIcon
-						className="position-absolute top-50 start-0 translate-middle"
-						icon={faInfoCircle}
-					/>
+					{isSelected ? (
+						<FontAwesomeIcon
+							className="position-absolute top-50 start-0 translate-middle text-danger"
+							icon={faTimesCircle}
+						/>
+					) : (
+						<FontAwesomeIcon
+							className="position-absolute top-50 start-0 translate-middle"
+							icon={faInfoCircle}
+						/>
+					)}
 				</div>
 				<div className={clsx(styles['at-symbol'])}>
 					<FontAwesomeIcon icon={faAt} />
@@ -234,10 +247,17 @@ const PickGame: VFC<PickGameProps> = ({
 					{pick.game.homeTeam.teamCity}
 					<br />
 					{pick.game.homeTeam.teamName}
-					<FontAwesomeIcon
-						className="position-absolute top-50 start-100 translate-middle"
-						icon={faInfoCircle}
-					/>
+					{isSelected ? (
+						<FontAwesomeIcon
+							className="position-absolute top-50 start-0 translate-middle text-danger"
+							icon={faTimesCircle}
+						/>
+					) : (
+						<FontAwesomeIcon
+							className="position-absolute top-50 start-0 translate-middle"
+							icon={faInfoCircle}
+						/>
+					)}
 				</div>
 				<div className={clsx('cursor-pointer', styles['game-info'])} onClick={onClick}>
 					<Image

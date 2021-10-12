@@ -591,22 +591,31 @@ const MakePicks: VFC<MakePicksProps> = () => {
 								{!picksData ? (
 									<PickGameLoader />
 								) : (
-									picksData.getMyPicksForWeek
-										.filter(pick => !selectedGame || pick.game.gameID === selectedGame)
-										.map(pick => (
+									picksData.getMyPicksForWeek.map(pick => (
+										<>
 											<PickGame
 												dragGameID={dragGameID}
 												gameCount={picksData.getMyPicksForWeek.length}
+												isBackgrounded={!!selectedGame && pick.game.gameID !== selectedGame}
+												isSelected={pick.game.gameID === selectedGame}
 												key={`pick-id-${pick.pickID}`}
 												loading={loading}
 												onClick={() =>
-													setSelectedGame(gameID => (gameID ? null : pick.game.gameID))
+													setSelectedGame(gameID =>
+														gameID === pick.game.gameID ? null : pick.game.gameID,
+													)
 												}
 												pick={pick}
 											/>
-										))
+											{pick.game.gameID === selectedGame && (
+												<TeamDetail
+													gameID={selectedGame}
+													onClose={() => setSelectedGame(null)}
+												/>
+											)}
+										</>
+									))
 								)}
-								{selectedGame && <TeamDetail gameID={selectedGame} />}
 							</div>
 						</DragDropContext>
 						{tiebreakerData && (
