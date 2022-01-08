@@ -131,26 +131,28 @@ const SurvivorDashboard: VFC<SurvivorDashboardProps> = ({ user }) => {
 					/>
 
 					{data.getSurvivorStatus !== SeasonStatus.NotStarted && (
-						<>
-							<h2>Survivor Pool Results</h2>
-							<ProgressChart
-								correct={data.survivorAliveForWeek}
-								incorrect={data.survivorDeadForWeek}
-								inProgress={data.survivorWaitingForWeek}
-								isOver={selectedWeekData?.getWeek.weekStatus === WeekStatus.Complete}
-								layoutId="survivorWeekStatus"
-								max={data.getSurvivorWeekCount}
-								type="Current Week Remaining"
-							/>
-							<ProgressChart
-								correct={data.survivorAliveOverall}
-								incorrect={data.survivorDeadOverall}
-								isOver={data.getSurvivorStatus === SeasonStatus.Complete}
-								layoutId="survivorOverallStatus"
-								max={data.getSurvivorOverallCount}
-								type="Overall Remaining"
-							/>
-						</>
+						<h2>Survivor Pool Results</h2>
+					)}
+					{data.getSurvivorStatus === SeasonStatus.InProgress && (
+						<ProgressChart
+							correct={data.survivorAliveForWeek}
+							incorrect={data.survivorDeadForWeek}
+							inProgress={data.survivorWaitingForWeek}
+							isOver={selectedWeekData?.getWeek.weekStatus === WeekStatus.Complete}
+							layoutId="survivorWeekStatus"
+							max={data.getSurvivorWeekCount}
+							type="Current Week Remaining"
+						/>
+					)}
+					{data.getSurvivorStatus !== SeasonStatus.NotStarted && (
+						<ProgressChart
+							correct={data.survivorAliveOverall}
+							incorrect={data.survivorDeadOverall}
+							isOver={data.getSurvivorStatus === SeasonStatus.Complete}
+							layoutId="survivorOverallStatus"
+							max={data.getSurvivorOverallCount}
+							type="Overall Remaining"
+						/>
 					)}
 				</div>
 			)}
