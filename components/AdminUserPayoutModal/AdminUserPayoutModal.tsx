@@ -83,7 +83,7 @@ const AdminUserPayoutModal: VFC<AdminUserPayoutModalProps> = ({
 						}}
 						title="Click to copy payment account"
 					>
-						${winner?.userPaymentType}: ${winner?.userPaymentAccount}
+						{winner?.userPaymentType}: {winner?.userPaymentAccount}
 					</abbr>
 				</div>
 			</Modal.Body>
