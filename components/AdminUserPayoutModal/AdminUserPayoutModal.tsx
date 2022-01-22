@@ -31,6 +31,7 @@ const AdminUserPayoutModal: VFC<AdminUserPayoutModalProps> = ({
 	updateAmount,
 	winner,
 }) => {
+	const fullName = winner?.userName ?? 'Missing Name';
 	const remainingToPay = (winner?.userWon ?? 0) - (winner?.userPaidOut ?? 0);
 	const [toPay, setToPay] = useState<number>(remainingToPay);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -54,8 +55,8 @@ const AdminUserPayoutModal: VFC<AdminUserPayoutModalProps> = ({
 				<div className="mb-3">
 					<label htmlFor="userPayoutAmount" className="form-label">
 						{remainingToPay > 0
-							? `User is still owed $${remainingToPay} / $${winner?.userWon}`
-							: `User has been paid $${winner?.userWon}`}
+							? `${fullName} is still owed $${remainingToPay} / $${winner?.userWon}`
+							: `${fullName} has been paid $${winner?.userWon}`}
 					</label>
 					<input
 						className="form-control"
@@ -74,6 +75,16 @@ const AdminUserPayoutModal: VFC<AdminUserPayoutModalProps> = ({
 						type="number"
 						value={remainingToPay}
 					/>
+					<abbr
+						className="text-muted"
+						onClick={() => {
+							winner?.userPaymentAccount &&
+								navigator.clipboard.writeText(winner.userPaymentAccount);
+						}}
+						title="Click to copy payment account"
+					>
+						${winner?.userPaymentType}: ${winner?.userPaymentAccount}
+					</abbr>
 				</div>
 			</Modal.Body>
 			<Modal.Footer>
