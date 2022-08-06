@@ -351,7 +351,7 @@ const SetSurvivor: VFC<SetSurvivorProps> = () => {
 									))}
 								{selectedGame ? (
 									<TeamDetail gameID={selectedGame} />
-								) : (
+								) : data.getTeamsOnBye.length > 0 ? (
 									<>
 										<div className="w-100"></div>
 										<h5 className="text-center pt-4">Teams on Bye Week</h5>
@@ -367,7 +367,7 @@ const SetSurvivor: VFC<SetSurvivorProps> = () => {
 											/>
 										))}
 									</>
-								)}
+								) : null}
 							</>
 						)}
 					</div>
