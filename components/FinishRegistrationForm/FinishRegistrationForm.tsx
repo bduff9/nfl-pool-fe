@@ -152,6 +152,7 @@ const FinishRegistrationForm: VFC<FinishRegistrationFormProps> = ({
 		formState: { errors, isDirty },
 		handleSubmit,
 		register,
+		reset,
 		setValue,
 		watch,
 	} = useForm<FormData>({
@@ -239,6 +240,7 @@ const FinishRegistrationForm: VFC<FinishRegistrationFormProps> = ({
 				result.finishRegistration.userDoneRegistering &&
 				result.finishRegistration.userTrusted
 			) {
+				reset(data);
 				await revalidateUser();
 				// We must use this to force a server side load to avoid endless loop
 				window.location.assign('/users/payments');
