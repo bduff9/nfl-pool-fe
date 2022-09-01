@@ -13,105 +13,117 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { GameStatus } from '../generated/graphql';
+ import { GameStatus } from '../generated/graphql';
 
-export const convertGameStatusToDB = (gameStatus: GameStatus): string => {
-	switch (gameStatus) {
-		case GameStatus.FirstQuarter:
-			return '1st Quarter';
-		case GameStatus.SecondQuarter:
-			return '2nd Quarter';
-		case GameStatus.HalfTime:
-			return 'Half Time';
-		case GameStatus.ThirdQuarter:
-			return '3rd Quarter';
-		case GameStatus.FourthQuarter:
-			return '4th Quarter';
-		default:
-			return gameStatus;
-	}
-};
+ export const addCustomStyling = (html: string): string => {
+	 const STYLES = `
+	 <style type="text/css">
+		 .hide-for-browser {
+			 display: none;
+		 }
+	 </style>
+	 `;
 
-export const getAbbreviation = (sentence: string): string => {
-	const words = sentence.split(/\s/g);
-	const letters = words.map(word => word.charAt(0).toUpperCase());
+	 return html.replace(/<\/head>/g, `${STYLES}</head>`);
+ };
 
-	return letters.join('');
-};
+ export const convertGameStatusToDB = (gameStatus: GameStatus): string => {
+	 switch (gameStatus) {
+		 case GameStatus.FirstQuarter:
+			 return '1st Quarter';
+		 case GameStatus.SecondQuarter:
+			 return '2nd Quarter';
+		 case GameStatus.HalfTime:
+			 return 'Half Time';
+		 case GameStatus.ThirdQuarter:
+			 return '3rd Quarter';
+		 case GameStatus.FourthQuarter:
+			 return '4th Quarter';
+		 default:
+			 return gameStatus;
+	 }
+ };
 
-export const getBackgroundColor = (
-	value: number,
-	maxValue: number,
-	defaultColor = '#fff',
-): string => {
-	if (value === 0) return defaultColor;
+ export const getAbbreviation = (sentence: string): string => {
+	 const words = sentence.split(/\s/g);
+	 const letters = words.map(word => word.charAt(0).toUpperCase());
 
-	const MAX_COLOR = 255;
-	const DOUBLE_MAX_COLOR = MAX_COLOR * 2;
-	const percent = value / maxValue;
-	const red = Math.min(Math.round((1 - percent) * DOUBLE_MAX_COLOR), MAX_COLOR);
-	const green = Math.min(Math.round(percent * DOUBLE_MAX_COLOR), MAX_COLOR);
-	const blue = 0;
+	 return letters.join('');
+ };
 
-	return `rgb(${red}, ${green}, ${blue})`;
-};
+ export const getBackgroundColor = (
+	 value: number,
+	 maxValue: number,
+	 defaultColor = '#fff',
+ ): string => {
+	 if (value === 0) return defaultColor;
 
-export const getShortQuarter = (quarter: string): string => {
-	if (quarter === 'Overtime') return 'OT';
+	 const MAX_COLOR = 255;
+	 const DOUBLE_MAX_COLOR = MAX_COLOR * 2;
+	 const percent = value / maxValue;
+	 const red = Math.min(Math.round((1 - percent) * DOUBLE_MAX_COLOR), MAX_COLOR);
+	 const green = Math.min(Math.round(percent * DOUBLE_MAX_COLOR), MAX_COLOR);
+	 const blue = 0;
 
-	if (quarter === 'Half Time') return 'Half';
+	 return `rgb(${red}, ${green}, ${blue})`;
+ };
 
-	return quarter
-		.split(' ')
-		.map(word => word.charAt(0))
-		.reverse()
-		.join('');
-};
+ export const getShortQuarter = (quarter: string): string => {
+	 if (quarter === 'Overtime') return 'OT';
 
-export const isEmailAddress = (value: string): boolean => !!value.match(/^.+@.+\..+$/);
+	 if (quarter === 'Half Time') return 'Half';
 
-export const isPhoneNumber = (value: string): boolean => !!value.match(/^[\d() -]+$/);
+	 return quarter
+		 .split(' ')
+		 .map(word => word.charAt(0))
+		 .reverse()
+		 .join('');
+ };
 
-export const isUsername = (value: string): boolean => !!value.match(/^[\w-]{3,}$/);
+ export const isEmailAddress = (value: string): boolean => !!value.match(/^.+@.+\..+$/);
 
-type DragData =
-	| { gameID: number; type: 'home' | 'visitor' }
-	| { gameID: null; type: 'pointBank' };
+ export const isPhoneNumber = (value: string): boolean => !!value.match(/^[\d() -]+$/);
 
-export const parseDragData = (
-	id: string,
-	sourceID: string,
-	destinationID?: string,
-): [number, DragData | null, DragData | null] => {
-	const pointMatch = id.match(/point-(\d+)/);
-	const points = pointMatch ? +pointMatch[1] : 0;
-	let source: DragData | null = null;
-	let destination: DragData | null = null;
+ export const isUsername = (value: string): boolean => !!value.match(/^[\w-]{3,}$/);
 
-	if (sourceID === 'pointBank') {
-		source = { gameID: null, type: 'pointBank' };
-	} else {
-		const sourceMatch = sourceID.match(/(home|visitor)-pick-for-game-(\d+)/);
+ type DragData =
+	 | { gameID: number; type: 'home' | 'visitor' }
+	 | { gameID: null; type: 'pointBank' };
 
-		if (sourceMatch) {
-			source = { gameID: +sourceMatch[2], type: sourceMatch[1] as 'home' | 'visitor' };
-		}
-	}
+ export const parseDragData = (
+	 id: string,
+	 sourceID: string,
+	 destinationID?: string,
+ ): [number, DragData | null, DragData | null] => {
+	 const pointMatch = id.match(/point-(\d+)/);
+	 const points = pointMatch ? +pointMatch[1] : 0;
+	 let source: DragData | null = null;
+	 let destination: DragData | null = null;
 
-	if (destinationID) {
-		if (destinationID === 'pointBank') {
-			destination = { gameID: null, type: 'pointBank' };
-		} else {
-			const destinationMatch = destinationID.match(/(home|visitor)-pick-for-game-(\d+)/);
+	 if (sourceID === 'pointBank') {
+		 source = { gameID: null, type: 'pointBank' };
+	 } else {
+		 const sourceMatch = sourceID.match(/(home|visitor)-pick-for-game-(\d+)/);
 
-			if (destinationMatch) {
-				destination = {
-					gameID: +destinationMatch[2],
-					type: destinationMatch[1] as 'home' | 'visitor',
-				};
-			}
-		}
-	}
+		 if (sourceMatch) {
+			 source = { gameID: +sourceMatch[2], type: sourceMatch[1] as 'home' | 'visitor' };
+		 }
+	 }
 
-	return [points, source, destination];
-};
+	 if (destinationID) {
+		 if (destinationID === 'pointBank') {
+			 destination = { gameID: null, type: 'pointBank' };
+		 } else {
+			 const destinationMatch = destinationID.match(/(home|visitor)-pick-for-game-(\d+)/);
+
+			 if (destinationMatch) {
+				 destination = {
+					 gameID: +destinationMatch[2],
+					 type: destinationMatch[1] as 'home' | 'visitor',
+				 };
+			 }
+		 }
+	 }
+
+	 return [points, source, destination];
+ };
