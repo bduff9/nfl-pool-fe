@@ -13,38 +13,42 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
- import { withSentry } from '@sentry/nextjs';
- import type { NextApiRequest, NextApiResponse } from 'next';
+import { withSentry } from '@sentry/nextjs';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
- // eslint-disable-next-line import/order
- import { getEmail } from '../../../graphql/[emailID]';
- import {
-	 DAYS_IN_MONTH,
-	 HOURS_IN_DAY,
-	 MINUTES_IN_HOUR,
-	 SECONDS_IN_MINUTE,
- } from '../../../utils/constants';
- import { logger } from '../../../utils/logging';
- import { addCustomStyling } from '../../../utils/strings';
+// eslint-disable-next-line import/order
+import { getEmail } from '../../../graphql/[emailID]';
+import {
+	DAYS_IN_MONTH,
+	HOURS_IN_DAY,
+	MINUTES_IN_HOUR,
+	SECONDS_IN_MINUTE,
+} from '../../../utils/constants';
+import { logger } from '../../../utils/logging';
+import { addCustomStyling } from '../../../utils/strings';
 
- const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
-	 const { emailID } = req.query;
-	 const cacheMaxAge =
-		 6 * DAYS_IN_MONTH * HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE; // 6 months
+const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void> => {
+	const { emailID } = req.query;
+	const cacheMaxAge =
+		6 * DAYS_IN_MONTH * HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE; // 6 months
 
-	 res.setHeader('Cache-Control', `max-age=${cacheMaxAge}, s-maxage=${cacheMaxAge}`);
+	res.setHeader('Cache-Control', `max-age=${cacheMaxAge}, s-maxage=${cacheMaxAge}`);
 
-	 try {
-		 const {
-			 getEmail: { html },
-		 } = await getEmail(emailID);
+	try {
+		const {
+			getEmail: { html },
+		} = await getEmail(emailID);
 
-		 res.status(200).send(`${addCustomStyling(html)}`);
-	 } catch (error) {
-		 logger.error({ text: 'Error retrieving email:', error });
-		 res.status(404).send('<h1>Email not found, please try again later</h1>');
-	 }
- };
+		if (!html) {
+			throw new Error('html content is empty');
+		}
 
- // ts-prune-ignore-next
- export default withSentry(handler);
+		res.status(200).send(`${addCustomStyling(html)}`);
+	} catch (error) {
+		logger.error({ text: 'Error retrieving email:', error, emailID });
+		res.status(404).send('<h1>Email not found, please try again later</h1>');
+	}
+};
+
+// ts-prune-ignore-next
+export default withSentry(handler);
