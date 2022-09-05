@@ -88,7 +88,7 @@ const AdminUserNotifications: VFC<AdminUserNotificationsProps> = ({ notification
 				)
 				.map(notification => (
 					<div
-						className="col-6 text-nowrap"
+						className="col text-nowrap"
 						key={`notification-${notification.notificationID}`}
 					>
 						{notification.notificationDefinition.notificationTypeDescription}:{' '}
