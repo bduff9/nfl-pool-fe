@@ -96,9 +96,6 @@ const Login: VFC<LoginProps> = ({ year }) => {
 									email,
 									redirect: false,
 								});
-
-								logger.log({ signInResult });
-
 								const signInError = signInResult?.error;
 								const formattedError = formatError(signInError);
 
