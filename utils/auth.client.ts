@@ -16,6 +16,7 @@ import { logger } from './logging';
  * Home: https://asitewithnoname.com/
  */
 type TLoginError =
+	| 'EmailSignin'
 	| 'InvalidEmail'
 	| 'LatePayment'
 	| 'MissingSystemProperty'
@@ -29,6 +30,8 @@ const isLoginError = (arg: unknown): arg is TLoginError =>
 export const formatError = (error: unknown): string => {
 	if (isLoginError(error)) {
 		switch (error) {
+			case 'EmailSignin':
+				return 'Something went wrong with the email login attempt, please try again later or contact an admin';
 			case 'InvalidEmail':
 				return 'It looks like your email is not valid, please double check it and try again';
 			case 'LatePayment':

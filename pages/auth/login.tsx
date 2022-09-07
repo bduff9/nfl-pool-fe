@@ -30,7 +30,6 @@ import SocialAuthButton from '../../components/SocialAuthButton/SocialAuthButton
 import styles from '../../styles/Login.module.scss';
 import { getLoginValues } from '../../graphql/login';
 import CustomHead from '../../components/CustomHead/CustomHead';
-import { logger } from '../../utils/logging';
 
 type TFormState = 'READY' | 'LOADING' | 'ERRORED' | 'SUBMITTED';
 
@@ -96,9 +95,6 @@ const Login: VFC<LoginProps> = ({ year }) => {
 									email,
 									redirect: false,
 								});
-
-								logger.log({ signInResult });
-
 								const signInError = signInResult?.error;
 								const formattedError = formatError(signInError);
 
