@@ -13,25 +13,24 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { VFC } from 'react';
-import Skeleton from 'react-loading-skeleton';
+import type { FC } from "react";
+import React from "react";
+import Skeleton from "react-loading-skeleton";
 
-const ProgressChartLoader: VFC = () => {
-	return (
-		<>
-			{/* Progress Bar Chart */}
-			<div className="text-start">
-				<Skeleton height={16} width={75} />
-			</div>
-			<Skeleton height={28} />
-			<div className="d-flex justify-content-between mb-1">
-				<Skeleton height={8} width={125} />
-				<Skeleton height={8} width={31} />
-			</div>
-		</>
-	);
+const ProgressChartLoader: FC = () => {
+  return (
+    <>
+      {/* Progress Bar Chart */}
+      <div className="text-start">
+        <Skeleton height={16} width={75} />
+      </div>
+      <Skeleton height={28} />
+      <div className="d-flex justify-content-between mb-1">
+        <Skeleton height={8} width={125} />
+        <Skeleton height={8} width={31} />
+      </div>
+    </>
+  );
 };
-
-ProgressChartLoader.whyDidYouRender = true;
 
 export default ProgressChartLoader;

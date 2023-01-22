@@ -17,7 +17,7 @@
 @import "./variables";
 
 // default variable overrides here
-$font-family-base: "Roboto", sans-serif;
+$font-family-base: "Roboto Flex", sans-serif;
 $enable-negative-margins: true;
 $spacer: 1rem;
 $spacers: (
@@ -43,6 +43,7 @@ $spacers: (
 
 // Bootstrap v5
 @import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/maps";
 @import "../node_modules/bootstrap/scss/mixins";
 @import "../node_modules/bootstrap/scss/utilities";
 @import "../node_modules/bootstrap/scss/root";

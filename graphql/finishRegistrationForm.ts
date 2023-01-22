@@ -13,36 +13,23 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-
-import {
-	FinishRegistrationInput,
-	MutationFinishRegistrationArgs,
-	User,
-} from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type FinishRegistrationResponse = Pick<User, 'userDoneRegistering' | 'userTrusted'>;
+import type { FinishRegistrationInput, User } from '../generated/graphql';
 
 type TFinishRegistrationResult = {
-	finishRegistration: FinishRegistrationResponse;
+	finishRegistration: Pick<User, 'userDoneRegistering' | 'userTrusted'>;
 };
 
-const finishRegistrationMutation = gql`
-	mutation FinishRegistration($data: FinishRegistrationInput!) {
-		finishRegistration(data: $data) {
-			userDoneRegistering
-			userTrusted
-		}
-	}
-`;
+// const finishRegistrationMutation = `
+// 	mutation FinishRegistration($data: FinishRegistrationInput!) {
+// 		finishRegistration(data: $data) {
+// 			userDoneRegistering
+// 			userTrusted
+// 		}
+// 	}
+// `;
 
-export const finishRegistration = (
-	data: FinishRegistrationInput,
-): Promise<TFinishRegistrationResult> =>
-	fetcher<TFinishRegistrationResult, MutationFinishRegistrationArgs>(
-		finishRegistrationMutation,
-		{
-			data,
-		},
-	);
+export const finishRegistration = async (
+	_data: FinishRegistrationInput,
+): Promise<TFinishRegistrationResult> => ({
+	finishRegistration: {} as Pick<User, 'userDoneRegistering' | 'userTrusted'>,
+});

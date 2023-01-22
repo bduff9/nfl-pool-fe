@@ -13,27 +13,29 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { withSentry } from '@sentry/nextjs';
-import mysql from 'mysql2';
-import { NextApiRequest, NextApiResponse } from 'next';
-import NextAuth, { NextAuthOptions, Session } from 'next-auth';
-import Adapters from 'next-auth/adapters';
-import Providers from 'next-auth/providers';
+// import { withSentry } from '@sentry/nextjs';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextAuthOptions } from 'next-auth';
+import NextAuth from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import EmailProvider from 'next-auth/providers/email';
+import TwitterProvider from 'next-auth/providers/twitter';
 
-import Models from '../../../models';
+import prisma from '../../../lib/prismadb';
+
+import { LogAction } from 'generated/graphql';
+import { writeLog } from 'graphql/[...nextauth]';
+import { mxExists, sendLoginEmailViaAPI } from 'utils/auth.server';
 import {
+	WEEKS_IN_SEASON,
+	DAYS_IN_WEEK,
 	HOURS_IN_DAY,
 	MINUTES_IN_HOUR,
 	SECONDS_IN_MINUTE,
-	DAYS_IN_WEEK,
-	WEEKS_IN_SEASON,
-} from '../../../utils/constants';
-import { mxExists, sendLoginEmailViaAPI } from '../../../utils/auth.server';
-import { LogAction } from '../../../generated/graphql';
-import { TAuthUser, TSessionUser } from '../../../utils/types';
-import { logger } from '../../../utils/logging';
-import { writeLog } from '../../../graphql/[...nextauth]';
-import { getAll, getConnection, getOne } from '../../../utils/db';
+} from 'utils/constants';
+import type { TAuthUser, TSessionUser } from 'utils/types';
+import { logger } from 'utils/logging';
 
 const {
 	DATABASE_URL,
@@ -55,28 +57,21 @@ if (!TWITTER_ID) throw new Error('Missing Twitter ID');
 
 if (!TWITTER_SECRET) throw new Error('Missing Twitter secret');
 
-const options: NextAuthOptions = {
-	adapter: Adapters.TypeORM.Adapter(
-		{
-			type: 'mysql',
-			url: DATABASE_URL,
-		},
-		{
-			models: { ...Models },
-		},
-	),
+export const authOptions: NextAuthOptions = {
+	adapter: PrismaAdapter(prisma),
 	callbacks: {
-		async signIn (user, _account, profile): Promise<boolean | string> {
-			logger.debug({ text: '~~~Signin:', _account, profile, user });
+		async signIn({ account, profile, user }): Promise<boolean | string> {
+			logger.debug({ text: '~~~Signin:', account, profile, user });
 
-			const isBanned = (user as TAuthUser).isTrusted === false;
+			//FIXME: type guard here?
+			const isBanned = (user as unknown as TAuthUser).isTrusted === false;
 
 			if (isBanned) {
 				return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=NotAllowed`;
 			}
 
 			const isValidMX = !!user.email && (await mxExists(user.email));
-			const userExists = (user as TAuthUser).doneRegistering;
+			const userExists = (user as unknown as TAuthUser).doneRegistering;
 
 			if (!isValidMX) {
 				return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=InvalidEmail`;
@@ -84,40 +79,50 @@ const options: NextAuthOptions = {
 
 			if (userExists) return true;
 
-			let connection: mysql.Connection | null = null;
-
 			try {
-				connection = getConnection();
-
-				const userPromise = getOne<
-					| {
-							UserID: number;
-							UserName: null | string;
-							UserFirstName: null | string;
-							UserLastName: null | string;
-							UserImage: null | string;
-							UserDoneRegistering: boolean;
-					  }
-					| undefined,
-					[string]
-				>(connection, 'SELECT * FROM Users WHERE UserEmail = ? AND UserDeleted IS NULL', [
-					user.email ?? '',
-				]);
-				const paymentDueWeekPromise = getOne<{ SystemValueValue: string }, [string]>(
-					connection,
-					'SELECT SystemValueValue FROM SystemValues WHERE SystemValueName = ? AND SystemValueDeleted IS NULL',
-					['PaymentDueWeek'],
-				);
-				const currentWeekPromise = getOne<{ GameWeek: number }, [string]>(
-					connection,
-					`SELECT COALESCE(MIN(GameWeek), ${WEEKS_IN_SEASON}) AS GameWeek FROM Games WHERE GameStatus <> ? AND GameDeleted IS NULL`,
-					['Final'],
-				);
-				const userOwesPromise = getOne<{ owes: null | 0 | 1 }, [string]>(
-					connection,
-					`select sum(P.PaymentAmount) < 0 as owes from Payments P join Users U on U.UserID = P.UserID where U.UserEmail = ?`,
-					[user.email ?? ''],
-				);
+				const userPromise = prisma.user.findFirst({
+					where: { email: user.email ?? '', deleted: null },
+				});
+				// const userPromise = getOne<
+				// 	| {
+				// 			UserID: number;
+				// 			UserName: null | string;
+				// 			UserFirstName: null | string;
+				// 			UserLastName: null | string;
+				// 			UserImage: null | string;
+				// 			UserDoneRegistering: boolean;
+				// 		}
+				// 	| undefined,
+				// 	[string]
+				// >(connection, 'SELECT * FROM Users WHERE UserEmail = ? AND UserDeleted IS NULL', [
+				// 	user.email ?? '',
+				// ]);
+				const paymentDueWeekPromise = prisma.systemValue.findFirstOrThrow({
+					where: { SystemValueName: 'PaymentDueWeek', SystemValueDeleted: null },
+				});
+				// const paymentDueWeekPromise = getOne<{ SystemValueValue: string }, [string]>(
+				// 	connection,
+				// 	'SELECT SystemValueValue FROM SystemValues WHERE SystemValueName = ? AND SystemValueDeleted IS NULL',
+				// 	['PaymentDueWeek'],
+				// );
+				const currentWeekPromise = prisma.$queryRaw<
+					Array<{ GameWeek: number }>
+				>`SELECT COALESCE(MIN(GameWeek), ${WEEKS_IN_SEASON}) AS GameWeek FROM Games WHERE GameStatus <> 'Final' AND GameDeleted IS NULL`;
+				// const currentWeekPromise = getOne<{ GameWeek: number }, [string]>(
+				// 	connection,
+				// 	`SELECT COALESCE(MIN(GameWeek), ${WEEKS_IN_SEASON}) AS GameWeek FROM Games WHERE GameStatus <> ? AND GameDeleted IS NULL`,
+				// 	['Final'],
+				// );
+				const userOwesPromise = prisma.$queryRaw<
+					Array<{ owes: number }>
+				>`SELECT SUM(P.PaymentAmount) < 0 AS owes FROM Payments P JOIN Users U ON U.UserID = P.UserID WHERE U.UserEmail = ${
+					user.email ?? ''
+				}`;
+				// const userOwesPromise = getOne<{ owes: null | 0 | 1 }, [string]>(
+				// 	connection,
+				// 	`select sum(P.PaymentAmount) < 0 as owes from Payments P join Users U on U.UserID = P.UserID where U.UserEmail = ?`,
+				// 	[user.email ?? ''],
+				// );
 
 				const [userResult, paymentDueWeek, currentWeek, userOwes] = await Promise.all([
 					userPromise,
@@ -127,61 +132,71 @@ const options: NextAuthOptions = {
 				]);
 
 				if (userResult) {
-					if (!userResult.UserName) {
-						if (profile.name) {
-							await getAll<Record<string, unknown>, [string, number]>(
-								connection,
-								'UPDATE Users SET UserName = ? WHERE UserID = ?',
-								[profile.name, userResult.UserID],
-							);
+					if (!userResult.name) {
+						if (profile?.name) {
+							await prisma.$executeRaw`UPDATE Users SET UserName = ${profile.name} WHERE UserID = ${userResult.id}`;
+							// await getAll<Record<string, unknown>, [string, number]>(
+							// 	connection,
+							// 	'UPDATE Users SET UserName = ? WHERE UserID = ?',
+							// 	[profile.name, userResult.id],
+							// );
 						} else if (
-							(userResult.UserFirstName || profile.given_name) &&
-							(userResult.UserLastName || profile.family_name)
+							//TODO: see if given and family name still exist on profile
+							userResult.first_name /* || profile?.given_name */ &&
+							userResult.last_name /* || profile?.family_name */
 						) {
-							await getAll<Record<string, unknown>, [string, number]>(
-								connection,
-								'UPDATE Users SET UserName = ? WHERE UserID = ?',
-								[
-									`${userResult.UserFirstName || profile.given_name} ${
-										userResult.UserLastName || profile.family_name
-									}`,
-									userResult.UserID,
-								],
-							);
+							await prisma.$executeRaw`UPDATE Users SET UserName = ${`${
+								userResult.first_name /* || profile.given_name */
+							} ${userResult.last_name /* || profile.family_name */}`} WHERE UserID = ${
+								userResult.id
+							}`;
+							// await getAll<Record<string, unknown>, [string, number]>(
+							// 	connection,
+							// 	'UPDATE Users SET UserName = ? WHERE UserID = ?',
+							// 	[
+							// 		`${userResult.first_name /* || profile.given_name */} ${
+							// 			userResult.last_name /* || profile.family_name */
+							// 		}`,
+							// 		userResult.id,
+							// 	],
+							// );
 						}
 					}
 
-					if (!userResult.UserFirstName && profile.given_name) {
-						await getAll<Record<string, unknown>, [string, number]>(
-							connection,
-							'UPDATE Users SET UserFirstName = ? WHERE UserID = ?',
-							[profile.given_name as string, userResult.UserID],
-						);
-					}
+					// if (!userResult.UserFirstName && profile.given_name) {
+					// 	await getAll<Record<string, unknown>, [string, number]>(
+					// 		connection,
+					// 		'UPDATE Users SET UserFirstName = ? WHERE UserID = ?',
+					// 		[profile.given_name as string, userResult.UserID],
+					// 	);
+					// }
 
-					if (!userResult.UserLastName && profile.family_name) {
-						await getAll<Record<string, unknown>, [string, number]>(
-							connection,
-							'UPDATE Users SET UserLastName = ? WHERE UserID = ?',
-							[profile.family_name as string, userResult.UserID],
-						);
-					}
+					// if (!userResult.UserLastName && profile.family_name) {
+					// 	await getAll<Record<string, unknown>, [string, number]>(
+					// 		connection,
+					// 		'UPDATE Users SET UserLastName = ? WHERE UserID = ?',
+					// 		[profile.family_name as string, userResult.UserID],
+					// 	);
+					// }
 
 					if (
-						!userResult.UserImage &&
-						(profile.picture || profile.profile_image_url_https)
+						!userResult.image &&
+						profile?.image
+						// (profile.picture || profile.profile_image_url_https)
 					) {
-						await getAll<Record<string, unknown>, [string, number]>(
-							connection,
-							'UPDATE Users SET UserImage = ? WHERE UserID = ?',
-							[
-								(profile.picture || profile.profile_image_url_https) as string,
-								userResult.UserID,
-							],
-						);
+						await prisma.$executeRaw`UPDATE Users SET UserImage = ${profile.image} WHERE UserID = ${userResult.id}`;
+						// await getAll<Record<string, unknown>, [string, number]>(
+						// 	connection,
+						// 	'UPDATE Users SET UserImage = ? WHERE UserID = ?',
+						// 	[
+						// 		profile.image,
+						// 		// (profile.picture || profile.profile_image_url_https) as string,
+						// 		userResult.id,
+						// 	],
+						// );
 					}
 
-					if (userResult.UserDoneRegistering) {
+					if (userResult.done_registering) {
 						return true;
 					}
 				}
@@ -194,8 +209,8 @@ const options: NextAuthOptions = {
 
 				const lastRegistrationWeek = parseInt(paymentDueWeek.SystemValueValue, 10);
 
-				if (currentWeek.GameWeek > lastRegistrationWeek) {
-					if (userOwes.owes === 1) {
+				if (currentWeek[0].GameWeek > lastRegistrationWeek) {
+					if (userOwes[0].owes === 1) {
 						return `${NEXT_PUBLIC_SITE_URL}/auth/login?error=LatePayment`;
 					}
 
@@ -207,14 +222,14 @@ const options: NextAuthOptions = {
 				logger.error({ text: 'Failed to sign in user: ', error });
 
 				return false;
-			} finally {
-				if (connection) connection.end();
 			}
 		},
-		async redirect (url, baseUrl) {
+		async redirect({ baseUrl, url }) {
 			logger.debug({ text: '~~~redirect: ', baseUrl, url });
 
-			if (!url.startsWith(baseUrl)) return `${baseUrl}${url.startsWith('/') ? url : ''}`;
+			if (!url.startsWith(baseUrl)) {
+				return `${baseUrl}${url.startsWith('/') ? url : ''}`;
+			}
 
 			if (url.includes('logout')) return baseUrl;
 
@@ -222,7 +237,7 @@ const options: NextAuthOptions = {
 
 			return url;
 		},
-		async session (session, user) {
+		async session({ session, user }) {
 			const {
 				doneRegistering,
 				email,
@@ -233,7 +248,7 @@ const options: NextAuthOptions = {
 				isNewUser,
 				isTrusted,
 				lastName,
-			} = user as TAuthUser;
+			} = user as unknown as TAuthUser;
 
 			logger.debug({ text: '~~~session:', session, user });
 
@@ -254,7 +269,7 @@ const options: NextAuthOptions = {
 		},
 	},
 	events: {
-		async signIn (message): Promise<void> {
+		async signIn(message): Promise<void> {
 			logger.debug({ text: '~~~~signIn: ', message });
 			await writeLog(
 				LogAction.Login,
@@ -262,39 +277,39 @@ const options: NextAuthOptions = {
 				`${message.user.id}`,
 			);
 		},
-		async signOut (message: null | Session): Promise<void> {
+		async signOut(message): Promise<void> {
 			logger.debug({ text: '~~~~signOut: ', message });
 			await writeLog(
 				LogAction.Logout,
-				`${message?.email ?? message?.user?.email ?? message?.userId} signed out`,
-				`${message?.id}`,
+				`${message.session.user?.name ?? message.session.user?.email} signed out`,
+				`${message.token}`,
 			);
 		},
-		async createUser (message): Promise<void> {
+		async createUser(message): Promise<void> {
 			logger.debug({ text: '~~~~createUser: ', message });
 			await writeLog(
 				LogAction.CreatedAccount,
-				`${message.email} created an account`,
-				`${message.id}`,
-			);
-		},
-		async linkAccount (message): Promise<void> {
-			logger.debug({ text: '~~~linkAccount: ', message });
-			await writeLog(
-				LogAction.LinkedAccount,
-				`${message.user.email} linked ${message.providerAccount.provider} account`,
+				`${message.user.email} created an account`,
 				`${message.user.id}`,
 			);
 		},
-		async session (message: { session: Session }, ...rest: unknown[]): Promise<void> {
-			logger.debug({ text: '~~~session: ', message, rest });
-		},
-		async error (message): Promise<void> {
-			logger.debug({ text: '~~~error: ', message });
+		async linkAccount(message): Promise<void> {
+			logger.debug({ text: '~~~linkAccount: ', message });
 			await writeLog(
-				LogAction.AuthenticationError,
-				`{message.email} had an authentication error`,
-				`{message.sub}`,
+				LogAction.LinkedAccount,
+				`${message.user.email} linked ${message.account.provider} account`,
+				`${message.user.id}`,
+			);
+		},
+		async session(message): Promise<void> {
+			logger.debug({ text: '~~~session: ', message });
+		},
+		async updateUser(message): Promise<void> {
+			logger.debug({ text: '~~~updateUser: ', message });
+			await writeLog(
+				LogAction.UpdatedAccount,
+				`${message.user.email} updated their account`,
+				`${message.user.id}`,
 			);
 		},
 	},
@@ -303,19 +318,6 @@ const options: NextAuthOptions = {
 		signIn: '/auth/login',
 		signOut: '/auth/logout',
 	},
-	providers: [
-		Providers.Email({
-			sendVerificationRequest: sendLoginEmailViaAPI,
-		}),
-		Providers.Google({
-			clientId: GOOGLE_ID,
-			clientSecret: GOOGLE_SECRET,
-		}),
-		Providers.Twitter({
-			clientId: TWITTER_ID,
-			clientSecret: TWITTER_SECRET,
-		}),
-	],
 	secret,
 	session: {
 		maxAge:
@@ -325,10 +327,29 @@ const options: NextAuthOptions = {
 			MINUTES_IN_HOUR *
 			SECONDS_IN_MINUTE,
 	},
+	providers: [
+		EmailProvider({
+			sendVerificationRequest: sendLoginEmailViaAPI,
+		}),
+		GoogleProvider({
+			clientId: GOOGLE_ID,
+			clientSecret: GOOGLE_SECRET,
+		}),
+		TwitterProvider({
+			clientId: TWITTER_ID,
+			clientSecret: TWITTER_SECRET,
+		}),
+	],
+};
+
+const auth = async (req: NextApiRequest, res: NextApiResponse) => {
+	// Do whatever you want here, before the request is passed down to `NextAuth`
+	return await NextAuth(req, res, authOptions);
 };
 
 // ts-prune-ignore-next
-export default withSentry(
-	async (req: NextApiRequest, res: NextApiResponse): Promise<void> =>
-		NextAuth(req, res, options),
-);
+export default // withSentry(
+auth; //,
+// async (req: NextApiRequest, res: NextApiResponse): Promise<void> =>
+// 	NextAuth(req, res, options),
+//);

@@ -13,103 +13,102 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import clsx from 'clsx';
-import React, { Dispatch, VFC, SetStateAction, useCallback } from 'react';
+import clsx from "clsx";
+import type { Dispatch, FC, SetStateAction } from "react";
+import React, { useCallback } from "react";
 
 type PaginationProps = {
-	currentPage: number;
-	setPage: Dispatch<SetStateAction<number>>;
-	totalPages: number;
+  currentPage: number;
+  setPage: Dispatch<SetStateAction<number>>;
+  totalPages: number;
 };
 
-const Pagination: VFC<PaginationProps> = ({ currentPage, setPage, totalPages }) => {
-	const pagesToDisplay: Array<number> = [];
-	const pages: Array<JSX.Element> = [];
+const Pagination: FC<PaginationProps> = ({ currentPage, setPage, totalPages }) => {
+  const pagesToDisplay: Array<number> = [];
+  const pages: Array<JSX.Element> = [];
 
-	const countPages = useCallback(
-		(pages: Array<number>) =>
-			pages.reduce((acc, page, i, allPages) => {
-				if (i + 1 < allPages.length && page + 1 !== allPages[i + 1]) {
-					acc++;
-				}
+  const countPages = useCallback(
+    (pages: Array<number>) =>
+      pages.reduce((acc, page, i, allPages) => {
+        if (i + 1 < allPages.length && page + 1 !== allPages[i + 1]) {
+          acc++;
+        }
 
-				return ++acc;
-			}, 0),
-		[],
-	);
+        return ++acc;
+      }, 0),
+    [],
+  );
 
-	if (totalPages <= 7) {
-		for (let i = 1; i <= totalPages; i++) {
-			pagesToDisplay.push(i);
-		}
-	} else {
-		const unique = new Set([
-			1,
-			currentPage === 1 ? 1 : currentPage - 1,
-			currentPage,
-			currentPage === totalPages ? totalPages : currentPage + 1,
-			totalPages,
-		]);
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) {
+      pagesToDisplay.push(i);
+    }
+  } else {
+    const unique = new Set([
+      1,
+      currentPage === 1 ? 1 : currentPage - 1,
+      currentPage,
+      currentPage === totalPages ? totalPages : currentPage + 1,
+      totalPages,
+    ]);
 
-		pagesToDisplay.push(...unique);
-	}
+    pagesToDisplay.push(...unique);
+  }
 
-	if (totalPages >= 7 && countPages(pagesToDisplay) < 7) {
-		let first = 1;
-		let last = totalPages;
+  if (totalPages >= 7 && countPages(pagesToDisplay) < 7) {
+    let first = 1;
+    let last = totalPages;
 
-		while (countPages(pagesToDisplay) < 7) {
-			if (!pagesToDisplay.includes(first)) {
-				pagesToDisplay.push(first);
-			}
+    while (countPages(pagesToDisplay) < 7) {
+      if (!pagesToDisplay.includes(first)) {
+        pagesToDisplay.push(first);
+      }
 
-			first++;
+      first++;
 
-			if (!pagesToDisplay.includes(last)) {
-				pagesToDisplay.push(last);
-			}
+      if (!pagesToDisplay.includes(last)) {
+        pagesToDisplay.push(last);
+      }
 
-			last--;
-		}
+      last--;
+    }
 
-		pagesToDisplay.sort((a, b) => a - b);
-	}
+    pagesToDisplay.sort((a, b) => a - b);
+  }
 
-	pagesToDisplay.forEach((page, i, allPages) => {
-		pages.push(
-			<li
-				className={clsx('page-item', page === currentPage && 'active')}
-				key={`page-${page}`}
-			>
-				<a
-					className="page-link"
-					href="#"
-					onClick={event => {
-						event.preventDefault();
-						setPage(page);
-					}}
-				>
-					{page}
-				</a>
-			</li>,
-		);
+  pagesToDisplay.forEach((page, i, allPages) => {
+    pages.push(
+      <li
+        className={clsx("page-item", page === currentPage && "active")}
+        key={`page-${page}`}
+      >
+        <a
+          className="page-link"
+          href="#"
+          onClick={event => {
+            event.preventDefault();
+            setPage(page);
+          }}
+        >
+          {page}
+        </a>
+      </li>,
+    );
 
-		if (i + 1 !== allPages.length && page + 1 !== allPages[i + 1]) {
-			pages.push(
-				<li className="page-item" key={`ellipses-after-page-${page}`}>
-					<span className="page-link">...</span>
-				</li>,
-			);
-		}
-	});
+    if (i + 1 !== allPages.length && page + 1 !== allPages[i + 1]) {
+      pages.push(
+        <li className="page-item" key={`ellipses-after-page-${page}`}>
+          <span className="page-link">...</span>
+        </li>,
+      );
+    }
+  });
 
-	return (
-		<nav aria-label="Admin logs pagination">
-			<ul className="pagination">{pages}</ul>
-		</nav>
-	);
+  return (
+    <nav aria-label="Admin logs pagination">
+      <ul className="pagination">{pages}</ul>
+    </nav>
+  );
 };
-
-Pagination.whyDidYouRender = true;
 
 export default Pagination;

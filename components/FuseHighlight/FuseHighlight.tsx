@@ -13,42 +13,42 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React from 'react';
+import React from "react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const resolveAttribute = <T extends Record<string, any>>(obj: T, key: string): T =>
-	key.split('.').reduce((prev, curr) => prev?.[curr], obj);
+  key.split(".").reduce((prev, curr) => prev?.[curr], obj);
 
 const highlight = (value: string, indices: Array<[number, number]> = []): JSX.Element => {
-	const pair = indices.pop();
+  const pair = indices.pop();
 
-	if (!pair) return <>{value}</>;
+  if (!pair) return <>{value}</>;
 
-	return (
-		<>
-			{highlight(value.substring(0, pair[0]), indices)}
-			<mark>{value.substring(pair[0], pair[1] + 1)}</mark>
-			{value.substring(pair[1] + 1)}
-		</>
-	);
+  return (
+    <>
+      {highlight(value.substring(0, pair[0]), indices)}
+      <mark>{value.substring(pair[0], pair[1] + 1)}</mark>
+      {value.substring(pair[1] + 1)}
+    </>
+  );
 };
 
 type FuseHighlightProps<T> = {
-	attribute: string;
-	hit: T;
+  attribute: string;
+  hit: T;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const FuseHighlight = <T extends Record<string, any>>({
-	attribute,
-	hit,
+  attribute,
+  hit,
 }: FuseHighlightProps<T>): JSX.Element => {
-	const matches =
-		typeof hit.item === 'string'
-			? hit.matches?.[0]
-			: hit.matches?.find((m: T) => m.key === attribute);
-	const fallback =
-		typeof hit.item === 'string' ? hit.item : resolveAttribute(hit.item, attribute);
+  const matches =
+    typeof hit.item === "string"
+      ? hit.matches?.[0]
+      : hit.matches?.find((m: T) => m.key === attribute);
+  const fallback =
+    typeof hit.item === "string" ? hit.item : resolveAttribute(hit.item, attribute);
 
-	return highlight(matches?.value || fallback, matches?.indices);
+  return highlight(matches?.value || fallback, matches?.indices);
 };

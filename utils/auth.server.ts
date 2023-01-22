@@ -14,14 +14,13 @@
  * Home: https://asitewithnoname.com/
  */
 import dns from 'dns';
-import { ParsedUrlQuery } from 'querystring';
+import type { ParsedUrlQuery } from 'querystring';
 
-import axios from 'axios';
-import { GetServerSidePropsContext } from 'next';
-import { getSession } from 'next-auth/client';
-import { Session } from 'next-auth';
-
-import { TUser } from '../models/User';
+import type { GetServerSidePropsContext } from 'next';
+import type { Session } from 'next-auth';
+import { unstable_getServerSession } from 'next-auth';
+import type { SendVerificationRequestParams } from 'next-auth/providers';
+import type { User } from '@prisma/client';
 
 import {
 	NEXT_PUBLIC_API_URL,
@@ -29,6 +28,8 @@ import {
 	REDIRECT_COOKIE_NAME,
 } from './constants';
 import { logger } from './logging';
+
+import { authOptions } from 'pages/api/auth/[...nextauth]';
 
 export const mxExists = async (email: string): Promise<boolean> => {
 	try {
@@ -43,34 +44,14 @@ export const mxExists = async (email: string): Promise<boolean> => {
 	}
 };
 
-type TSendVerificationRequest = (args: {
-	baseUrl: string;
-	identifier: string;
-	provider: {
-		name?: string;
-		server?:
-			| string
-			| {
-					host: string;
-					port: number;
-					auth: {
-						user: string;
-						pass: string;
-					};
-			  };
-		from?: string;
-		maxAge?: number;
-	};
-	token: string;
-	url: string;
-}) => Promise<void>;
+type TSendVerificationRequest = (args: SendVerificationRequestParams) => Promise<void>;
 
 export const sendLoginEmailViaAPI: TSendVerificationRequest = async ({
 	identifier: email,
 	url,
 }): Promise<void> => {
 	try {
-		await axios.get(
+		await fetch(
 			`${NEXT_PUBLIC_API_URL}/api/emails?email=${encodeURIComponent(
 				email,
 			)}&url=${encodeURIComponent(url)}`,
@@ -119,7 +100,7 @@ export const isSignedInSSR = async (
 	context: GetServerSidePropsContext<ParsedUrlQuery>,
 ): Promise<null | Session> => {
 	const { req, res } = context;
-	const session = await getSession({ req });
+	const session = await unstable_getServerSession(authOptions);
 
 	if (!session) {
 		const redirectUrl = req.url?.includes('auth') ? '/' : req.url ?? '/';
@@ -140,14 +121,14 @@ export const isSignedInSSR = async (
 
 export const isAdminSSR = (session: Session): boolean => {
 	const { user } = session;
-	const { isAdmin } = user as TUser;
+	const { is_admin } = user as User;
 
-	return isAdmin;
+	return !!is_admin;
 };
 
 export const isDoneRegisteringSSR = (session: Session): boolean => {
 	const { user } = session;
-	const { doneRegistering } = user as TUser;
+	const { done_registering } = user as User;
 
-	return doneRegistering;
+	return !!done_registering;
 };

@@ -13,46 +13,45 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { GetServerSideProps } from 'next';
-import React, { VFC } from 'react';
+import type { GetServerSideProps } from "next";
+import type { FC } from "react";
+import React from "react";
 
-import Authenticated from '../../components/Authenticated/Authenticated';
-import CustomHead from '../../components/CustomHead/CustomHead';
+import Authenticated from "../../components/Authenticated/Authenticated";
+import CustomHead from "../../components/CustomHead/CustomHead";
 import {
-	isSignedInSSR,
-	UNAUTHENTICATED_REDIRECT,
-	isDoneRegisteringSSR,
-	IS_NOT_DONE_REGISTERING_REDIRECT,
-} from '../../utils/auth.server';
+  isSignedInSSR,
+  UNAUTHENTICATED_REDIRECT,
+  isDoneRegisteringSSR,
+  IS_NOT_DONE_REGISTERING_REDIRECT,
+} from "../../utils/auth.server";
 
-const Statistics: VFC = () => {
-	return (
-		<Authenticated isRegistered>
-			<CustomHead title="Pool Stats" />
-			<h1>Statistics</h1>
-		</Authenticated>
-	);
+const Statistics: FC = () => {
+  return (
+    <Authenticated isRegistered>
+      <CustomHead title="Pool Stats" />
+      <h1>Statistics</h1>
+    </Authenticated>
+  );
 };
-
-Statistics.whyDidYouRender = true;
 
 // ts-prune-ignore-next
 export const getServerSideProps: GetServerSideProps = async context => {
-	const session = await isSignedInSSR(context);
+  const session = await isSignedInSSR(context);
 
-	if (!session) {
-		return UNAUTHENTICATED_REDIRECT;
-	}
+  if (!session) {
+    return UNAUTHENTICATED_REDIRECT;
+  }
 
-	const isDoneRegistering = isDoneRegisteringSSR(session);
+  const isDoneRegistering = isDoneRegisteringSSR(session);
 
-	if (!isDoneRegistering) {
-		return IS_NOT_DONE_REGISTERING_REDIRECT;
-	}
+  if (!isDoneRegistering) {
+    return IS_NOT_DONE_REGISTERING_REDIRECT;
+  }
 
-	const { user } = session;
+  const { user } = session;
 
-	return { props: { user } };
+  return { props: { user } };
 };
 
 // ts-prune-ignore-next

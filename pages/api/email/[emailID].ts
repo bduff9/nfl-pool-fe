@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { withSentry } from '@sentry/nextjs';
+// import { withSentry } from '@sentry/nextjs';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 // eslint-disable-next-line import/order
@@ -37,7 +37,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void>
 	try {
 		const {
 			getEmail: { html },
-		} = await getEmail(emailID);
+		} = await getEmail(emailID ?? '');
 
 		if (!html) {
 			throw new Error('html content is empty');
@@ -51,4 +51,5 @@ const handler = async (req: NextApiRequest, res: NextApiResponse): Promise<void>
 };
 
 // ts-prune-ignore-next
-export default withSentry(handler);
+export default //withSentry(
+handler; //);

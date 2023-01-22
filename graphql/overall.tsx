@@ -13,43 +13,40 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { OverallMv } from "../generated/graphql";
 
-import { OverallMv } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type GetOverallRankingsResponse = {
-	getOverallRankings: Array<
-		Pick<
-			OverallMv,
-			| 'rank'
-			| 'tied'
-			| 'userID'
-			| 'userName'
-			| 'teamName'
-			| 'pointsEarned'
-			| 'gamesCorrect'
-			| 'gamesMissed'
-		>
-	>;
-};
-
-const query = gql`
-	query OverallRankings {
-		getOverallRankings {
-			rank
-			tied
-			userID
-			userName
-			teamName
-			pointsEarned
-			gamesCorrect
-			gamesMissed
-		}
-	}
+const query = `
+  query OverallRankings {
+    getOverallRankings {
+      rank
+      tied
+      userID
+      userName
+      teamName
+      pointsEarned
+      gamesCorrect
+      gamesMissed
+    }
+  }
 `;
 
-export const useOverallRankings = (): SWRResponse<GetOverallRankingsResponse, unknown> =>
-	useSWR<GetOverallRankingsResponse>(query, fetcher);
+export const useOverallRankings = () => ({
+  data: {
+    getOverallRankings: [] as Array<
+      Pick<
+        OverallMv,
+        | "rank"
+        | "tied"
+        | "userID"
+        | "userName"
+        | "teamName"
+        | "pointsEarned"
+        | "gamesCorrect"
+        | "gamesMissed"
+      >
+    >,
+    query,
+  },
+  error: null,
+  isValidating: false,
+});

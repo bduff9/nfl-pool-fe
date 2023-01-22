@@ -13,88 +13,97 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { promises as fs } from 'fs';
-import path from 'path';
+import { promises as fs } from "fs";
+import path from "path";
 
-import clsx from 'clsx';
-import { GetStaticProps } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React, { VFC, useEffect, useMemo } from 'react';
-import { useSession } from 'next-auth/client';
+import clsx from "clsx";
+import type { GetStaticPaths, GetStaticProps } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import type { FC } from "react";
+import React, { useEffect, useMemo } from "react";
+import { useSession } from "next-auth/react";
 
-import styles from '../styles/404.module.scss';
-import { write404Log } from '../graphql/404';
-import { TSessionUser } from '../utils/types';
-import CustomHead from '../components/CustomHead/CustomHead';
-import { getRandomInteger } from '../utils/numbers';
+// import styles from "../styles/404.module.scss";
+import { write404Log } from "../graphql/404";
+import type { TSessionUser } from "../utils/types";
+import CustomHead from "../components/CustomHead/CustomHead";
+import { getRandomInteger } from "../utils/numbers";
 
 type NotFoundProps = {
-	images: Array<string>;
+  images: Array<string>;
 };
 
-const NotFound: VFC<NotFoundProps> = ({ images }) => {
-	const router = useRouter();
-	const [session, loading] = useSession();
-	const image = useMemo<string>(
-		() => images[getRandomInteger(0, images.length)],
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[router.asPath],
-	);
+const NotFound: FC<NotFoundProps> = ({ images }) => {
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
+  const image = useMemo<string>(
+    () => images[getRandomInteger(0, images.length)],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [router.asPath],
+  );
 
-	useEffect((): void => {
-		const writeLog = async (): Promise<void> => {
-			const userID = (session?.user as TSessionUser)?.id;
+  useEffect((): void => {
+    const writeLog = async (): Promise<void> => {
+      const userID = (session?.user as TSessionUser)?.id;
 
-			await write404Log(userID, router.asPath);
-		};
+      await write404Log(userID, router.asPath);
+    };
 
-		if (!loading) {
-			writeLog();
-		}
-	}, [router.asPath, session, loading]);
+    if (!loading) {
+      writeLog();
+    }
+  }, [router.asPath, session, loading]);
 
-	return (
-		<div className="row">
-			<CustomHead title="404" />
-			<div className="content-bg position-absolute top-50 start-50 translate-middle border border-dark rounded-3 text-dark pb-4 col-md-6">
-				<h1 className="text-center">What have you done?!</h1>
-				<div className={clsx('mx-auto', 'position-relative', styles['image-404'])}>
-					<Image
-						alt="Okay, this part was us."
-						layout="fill"
-						objectFit="contain"
-						objectPosition="center center"
-						src={image}
-					/>
-				</div>
-				<h4 className="text-center">
-					Something has gone wrong. It might be because of you. It might be because of us.
-					Either way, this is awkward.
-				</h4>
-				<div className="text-center">
-					<Link href="/">
-						<a className="bare-link">
-							Please click here to get us both out of this situation
-						</a>
-					</Link>
-				</div>
-			</div>
-		</div>
-	);
+  return (
+    <div className="row">
+      <CustomHead title="404" />
+      <div className="content-bg position-absolute top-50 start-50 translate-middle border border-dark rounded-3 text-dark pb-4 col-md-6">
+        <h1 className="text-center">What have you done?!</h1>
+        <div className={clsx("mx-auto", "position-relative" /* , styles["image-404"] */)}>
+          <Image
+            alt="Okay, this part was us."
+            src={image}
+            fill
+            sizes="100vw"
+            style={{
+              objectFit: "contain",
+              objectPosition: "center center",
+            }}
+          />
+        </div>
+        <h4 className="text-center">
+          Something has gone wrong. It might be because of you. It might be because of us.
+          Either way, this is awkward.
+        </h4>
+        <div className="text-center">
+          <Link href="/" className="bare-link">
+            Please click here to get us both out of this situation
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ts-prune-ignore-next
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
 };
 
 // ts-prune-ignore-next
 export const getStaticProps: GetStaticProps = async () => {
-	const imagesDirectory = path.join(process.cwd(), 'public', '404');
-	const imageNames = await fs.readdir(imagesDirectory);
-	const images = imageNames.map(image => `/404/${image}`);
+  const imagesDirectory = path.join(process.cwd(), "public", "404");
+  const imageNames = await fs.readdir(imagesDirectory);
+  const images = imageNames.map(image => `/404/${image}`);
 
-	return { props: { images } };
+  return { props: { images } };
 };
-
-NotFound.whyDidYouRender = true;
 
 // ts-prune-ignore-next
 export default NotFound;

@@ -13,61 +13,64 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { useSession } from 'next-auth/client';
-import { useRouter } from 'next/router';
-import React, { VFC } from 'react';
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import type { FC } from "react";
 
-import { TAuthUser } from '../../utils/types';
+import type { TAuthUser } from "../../utils/types";
 
 //import styles from './Authenticated.module.scss';
 
 type AuthenticatedProps = {
-	children: JSX.Element | Array<JSX.Element>;
-	isAdmin?: boolean;
-	isRegistered?: boolean;
-	isSurvivorPlayer?: boolean;
+  children: JSX.Element | Array<JSX.Element>;
+  isAdmin?: boolean;
+  isRegistered?: boolean;
+  isSurvivorPlayer?: boolean;
 };
 
-const Authenticated: VFC<AuthenticatedProps> = ({
-	children,
-	isAdmin,
-	isRegistered,
-	isSurvivorPlayer,
+const Authenticated: FC<AuthenticatedProps> = ({
+  children,
+  isAdmin,
+  isRegistered,
+  isSurvivorPlayer,
 }): JSX.Element => {
-	const [session, loading] = useSession();
-	const router = useRouter();
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
+  const router = useRouter();
 
-	if (loading) return <></>;
+  if (loading) return <></>;
 
-	if (!session) {
-		router.push('/auth/login');
+  if (!session) {
+    router.push("/auth/login");
 
-		return <></>;
-	}
+    return <></>;
+  }
 
-	const user = session.user as TAuthUser;
+  const user = session.user as TAuthUser;
 
-	if (isAdmin && !user.isAdmin) {
-		router.push('/');
+  if (isAdmin && !user.isAdmin) {
+    router.push("/");
 
-		return <></>;
-	}
+    return <></>;
+  }
 
-	if (isRegistered && !user.doneRegistering) {
-		router.push('/users/create');
+  if (isRegistered && !user.doneRegistering) {
+    router.push("/users/create");
 
-		return <></>;
-	}
+    return <></>;
+  }
 
-	if (isSurvivorPlayer && !user.hasSurvivor) {
-		router.push('/');
+  if (isSurvivorPlayer && !user.hasSurvivor) {
+    router.push("/");
 
-		return <></>;
-	}
+    return <></>;
+  }
 
-	return <div className="h-100 row">{children}</div>;
+  return (
+    <div className="h-100 row" data-testid="authenticated">
+      {children}
+    </div>
+  );
 };
-
-Authenticated.whyDidYouRender = true;
 
 export default Authenticated;

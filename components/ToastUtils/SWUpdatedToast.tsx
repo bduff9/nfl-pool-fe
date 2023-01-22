@@ -13,22 +13,21 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { VFC } from 'react';
+import type { FC } from "react";
+import React from "react";
 
 type SWUpdatedToastProps = {
-	closeToast?: () => void;
-	onUpdate: () => void;
+  closeToast?: () => void;
+  onUpdate: () => void;
 };
 
-const SWUpdatedToast: VFC<SWUpdatedToastProps> = ({ onUpdate }) => (
-	<div className="text-center">
-		<div>A new version of the app is available.</div>
-		<button className="btn btn-warning" onClick={onUpdate} type="button">
-			Refresh
-		</button>
-	</div>
+const SWUpdatedToast: FC<SWUpdatedToastProps> = ({ onUpdate }) => (
+  <div className="text-center">
+    <div>A new version of the app is available.</div>
+    <button className="btn btn-warning" onClick={onUpdate} type="button">
+      Refresh
+    </button>
+  </div>
 );
-
-SWUpdatedToast.whyDidYouRender = true;
 
 export default SWUpdatedToast;

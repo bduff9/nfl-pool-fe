@@ -13,84 +13,61 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { ClientError, gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
-
-import { Log, LogAction, LogResult, User } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type GetAdminLogsResponse = {
-	getLogs: Pick<LogResult, 'totalCount'> & {
-		results: Array<
-			Pick<Log, 'logID' | 'logAction' | 'logDate' | 'logMessage' | 'logData'> & {
-				user: null | Pick<User, 'userName'>;
-			}
-		>;
-	};
-};
+import type { Log, LogAction, LogResult, User } from "../generated/graphql";
 
 type GetAdminLogsInput = {
-	logAction?: LogAction | null;
-	page?: number;
-	perPage: number;
-	sort: 'logID';
-	sortDir: 'ASC' | 'DESC';
-	userID?: null | number;
+  logAction?: LogAction | null;
+  page?: number;
+  perPage: number;
+  sort: "logID";
+  sortDir: "ASC" | "DESC";
+  userID?: null | number;
 };
 
-const query = gql`
-	query ViewLogs(
-		$logAction: LogAction
-		$page: Int
-		$perPage: Int!
-		$sort: String!
-		$sortDir: String!
-		$userID: Int
-	) {
-		getLogs(
-			LogAction: $logAction
-			Page: $page
-			PerPage: $perPage
-			Sort: $sort
-			SortDir: $sortDir
-			UserID: $userID
-		) {
-			totalCount
-			results {
-				logID
-				logAction
-				logDate
-				logMessage
-				logData
-				user {
-					userName
-				}
-			}
-		}
-	}
+const query = `
+  query ViewLogs(
+    $logAction: LogAction
+    $page: Int
+    $perPage: Int!
+    $sort: String!
+    $sortDir: String!
+    $userID: Int
+  ) {
+    getLogs(
+      LogAction: $logAction
+      Page: $page
+      PerPage: $perPage
+      Sort: $sort
+      SortDir: $sortDir
+      UserID: $userID
+    ) {
+      totalCount
+      results {
+        logID
+        logAction
+        logDate
+        logMessage
+        logData
+        user {
+          userName
+        }
+      }
+    }
+  }
 `;
 
-export const useAdminLogs = (
-	input: GetAdminLogsInput,
-): SWRResponse<GetAdminLogsResponse, ClientError> =>
-	useSWR<GetAdminLogsResponse, ClientError>(
-		[
-			query,
-			input.logAction,
-			input.page,
-			input.perPage,
-			input.sort,
-			input.sortDir,
-			input.userID,
-		],
-		(query, logAction, page, perPage, sort, sortDir, userID) =>
-			fetcher(query, {
-				logAction,
-				page,
-				perPage,
-				sort,
-				sortDir,
-				userID,
-			}),
-	);
+export const useAdminLogs = (input: GetAdminLogsInput) => ({
+  data: {
+    getLogs: {} as Pick<LogResult, "totalCount"> & {
+      results: Array<
+        Pick<Log, "logID" | "logAction" | "logDate" | "logMessage" | "logData"> & {
+          user: null | Pick<User, "userName">;
+        }
+      >;
+    },
+    input,
+    query,
+  },
+  error: null,
+  isValidating: false,
+});

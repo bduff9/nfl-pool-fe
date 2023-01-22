@@ -13,54 +13,46 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-
-import { ApiCall, ApiCallResult } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
+import type { ApiCall, ApiCallResult } from "../generated/graphql";
 
 export type APICallObject = Pick<
-	ApiCall,
-	| 'apiCallID'
-	| 'apiCallDate'
-	| 'apiCallResponse'
-	| 'apiCallUrl'
-	| 'apiCallWeek'
-	| 'apiCallYear'
+  ApiCall,
+  | "apiCallID"
+  | "apiCallDate"
+  | "apiCallResponse"
+  | "apiCallUrl"
+  | "apiCallWeek"
+  | "apiCallYear"
 >;
 
 type LoadAdminAPICallsResponse = {
-	loadAPICalls: Pick<ApiCallResult, 'hasMore' | 'lastKey'> & {
-		results: Array<APICallObject>;
-	};
+  loadAPICalls: Pick<ApiCallResult, "hasMore" | "lastKey"> & {
+    results: Array<APICallObject>;
+  };
 };
 
-type LoadAdminAPICallsInput = {
-	count: number;
-	lastKey: null | string;
-};
+// const query = `
+//   query LoadAPICalls($count: Int!, $lastKey: String) {
+//     loadAPICalls(Count: $count, LastKey: $lastKey) {
+//       hasMore
+//       lastKey
+//       results {
+//         apiCallID
+//         apiCallDate
+//         apiCallResponse
+//         apiCallUrl
+//         apiCallWeek
+//         apiCallYear
+//       }
+//     }
+//   }
+// `;
 
-const query = gql`
-	query LoadAPICalls($count: Int!, $lastKey: String) {
-		loadAPICalls(Count: $count, LastKey: $lastKey) {
-			hasMore
-			lastKey
-			results {
-				apiCallID
-				apiCallDate
-				apiCallResponse
-				apiCallUrl
-				apiCallWeek
-				apiCallYear
-			}
-		}
-	}
-`;
-
-export const loadAPICalls = (
-	count: number,
-	lastKey: null | string,
-): Promise<LoadAdminAPICallsResponse> =>
-	fetcher<LoadAdminAPICallsResponse, LoadAdminAPICallsInput>(query, {
-		count,
-		lastKey,
-	});
+export const loadAPICalls = async (
+  _count: number,
+  _lastKey: null | string,
+): Promise<LoadAdminAPICallsResponse> => ({
+  loadAPICalls: {} as Pick<ApiCallResult, "hasMore" | "lastKey"> & {
+    results: Array<APICallObject>;
+  },
+});

@@ -13,101 +13,100 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { GetServerSideProps } from 'next';
-import React, { VFC, useContext, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import type { GetServerSideProps } from "next";
+import type { FC } from "react";
+import React, { useContext, useEffect } from "react";
+import { useRouter } from "next/router";
+import type { User } from "@prisma/client";
 
-import Authenticated from '../../components/Authenticated/Authenticated';
-import { TUser } from '../../models/User';
+import Authenticated from "../../components/Authenticated/Authenticated";
 import {
-	isSignedInSSR,
-	isDoneRegisteringSSR,
-	UNAUTHENTICATED_REDIRECT,
-	IS_DONE_REGISTERING_REDIRECT,
-} from '../../utils/auth.server';
-import FinishRegistrationForm from '../../components/FinishRegistrationForm/FinishRegistrationForm';
-import FinishRegistrationLoader from '../../components/FinishRegistrationForm/FinishRegistrationLoader';
-import { useCurrentUser } from '../../graphql/create';
-import CustomHead from '../../components/CustomHead/CustomHead';
-import { BackgroundLoadingContext } from '../../utils/context';
-import { useCurrentWeek } from '../../graphql/sidebar';
-import { logger } from '../../utils/logging';
+  isSignedInSSR,
+  isDoneRegisteringSSR,
+  UNAUTHENTICATED_REDIRECT,
+  IS_DONE_REGISTERING_REDIRECT,
+} from "../../utils/auth.server";
+import FinishRegistrationForm from "../../components/FinishRegistrationForm/FinishRegistrationForm";
+import FinishRegistrationLoader from "../../components/FinishRegistrationForm/FinishRegistrationLoader";
+import { useCurrentUser } from "../../graphql/create";
+import CustomHead from "../../components/CustomHead/CustomHead";
+import { BackgroundLoadingContext } from "../../utils/context";
+import { useCurrentWeek } from "../../graphql/sidebar";
+import { logger } from "../../utils/logging";
 
 type CreateProfileProps = {
-	user: TUser;
+  user: User;
 };
 
-const CreateProfile: VFC<CreateProfileProps> = ({ user }) => {
-	const router = useRouter();
-	const { data, error, isValidating, mutate } = useCurrentUser();
-	const {
-		data: currentWeekData,
-		error: currentWeekError,
-		isValidating: currentWeekIsValidating,
-	} = useCurrentWeek();
-	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
+const CreateProfile: FC<CreateProfileProps> = ({ user }) => {
+  const router = useRouter();
+  const { data, error, isValidating, mutate } = useCurrentUser();
+  const {
+    data: currentWeekData,
+    error: currentWeekError,
+    isValidating: currentWeekIsValidating,
+  } = useCurrentWeek();
+  const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
 
-	useEffect(() => {
-		setBackgroundLoading(
-			(!!data && isValidating) || (!!currentWeekData && currentWeekIsValidating),
-		);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating, currentWeekData, currentWeekIsValidating]);
+  useEffect(() => {
+    setBackgroundLoading(
+      (!!data && isValidating) || (!!currentWeekData && currentWeekIsValidating),
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, isValidating, currentWeekData, currentWeekIsValidating]);
 
-	if (error) {
-		logger.error({ text: 'Error when loading current user: ', error });
-	}
+  if (error) {
+    logger.error({ text: "Error when loading current user: ", error });
+  }
 
-	if (currentWeekError) {
-		logger.error({ text: 'Error when loading current week: ', currentWeekError });
-	}
+  if (currentWeekError) {
+    logger.error({ text: "Error when loading current week: ", currentWeekError });
+  }
 
-	//FIXME: for some reason, the user from the server is not always up to date.  For instance, immediately after registering, users are kicked back here from the dashboard.  As a workaround, we check the cached user we mutate after registering, but this means that the dashboard will kick them here and then this screen will kick them to edit profile, so is not ideal.
-	if (user.doneRegistering || data?.getCurrentUser.userDoneRegistering) {
-		router.replace('/users/edit');
+  //FIXME: for some reason, the user from the server is not always up to date.  For instance, immediately after registering, users are kicked back here from the dashboard.  As a workaround, we check the cached user we mutate after registering, but this means that the dashboard will kick them here and then this screen will kick them to edit profile, so is not ideal.
+  if (user.done_registering || data?.getCurrentUser.userDoneRegistering) {
+    router.replace("/users/edit");
 
-		return <></>;
-	}
+    return <></>;
+  }
 
-	return (
-		<Authenticated>
-			<CustomHead title="Finish Registration" />
-			<div className="content-bg text-dark my-3 mx-2 pt-5 pt-md-3 min-vh-100 pb-4 col">
-				{data && currentWeekData ? (
-					<FinishRegistrationForm
-						currentUser={data.getCurrentUser}
-						hasGoogle={data.hasGoogle}
-						hasTwitter={data.hasTwitter}
-						revalidateUser={mutate}
-						seasonStatus={currentWeekData.getWeek.seasonStatus}
-					/>
-				) : (
-					<FinishRegistrationLoader />
-				)}
-			</div>
-		</Authenticated>
-	);
+  return (
+    <Authenticated>
+      <CustomHead title="Finish Registration" />
+      <div className="content-bg text-dark my-3 mx-2 pt-5 pt-md-3 min-vh-100 pb-4 col">
+        {data && currentWeekData ? (
+          <FinishRegistrationForm
+            currentUser={data.getCurrentUser}
+            hasGoogle={data.hasGoogle}
+            hasTwitter={data.hasTwitter}
+            revalidateUser={mutate}
+            seasonStatus={currentWeekData.getWeek.seasonStatus}
+          />
+        ) : (
+          <FinishRegistrationLoader />
+        )}
+      </div>
+    </Authenticated>
+  );
 };
-
-CreateProfile.whyDidYouRender = true;
 
 // ts-prune-ignore-next
 export const getServerSideProps: GetServerSideProps = async context => {
-	const session = await isSignedInSSR(context);
+  const session = await isSignedInSSR(context);
 
-	if (!session) {
-		return UNAUTHENTICATED_REDIRECT;
-	}
+  if (!session) {
+    return UNAUTHENTICATED_REDIRECT;
+  }
 
-	const isDoneRegistering = isDoneRegisteringSSR(session);
+  const isDoneRegistering = isDoneRegisteringSSR(session);
 
-	if (isDoneRegistering) {
-		return IS_DONE_REGISTERING_REDIRECT;
-	}
+  if (isDoneRegistering) {
+    return IS_DONE_REGISTERING_REDIRECT;
+  }
 
-	const { user } = session;
+  const { user } = session;
 
-	return { props: { user } };
+  return { props: { user } };
 };
 
 // ts-prune-ignore-next

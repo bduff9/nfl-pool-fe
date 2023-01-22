@@ -13,29 +13,30 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { faCheckCircle } from '@bduff9/pro-duotone-svg-icons/faCheckCircle';
-import { faExclamationCircle } from '@bduff9/pro-duotone-svg-icons/faExclamationCircle';
-import { faExclamationTriangle } from '@bduff9/pro-duotone-svg-icons/faExclamationTriangle';
-import { faInfoCircle } from '@bduff9/pro-duotone-svg-icons/faInfoCircle';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { VFC } from 'react';
+import { faCheckCircle } from "@bduff9/pro-duotone-svg-icons/faCheckCircle";
+import { faExclamationCircle } from "@bduff9/pro-duotone-svg-icons/faExclamationCircle";
+import { faExclamationTriangle } from "@bduff9/pro-duotone-svg-icons/faExclamationTriangle";
+import { faInfoCircle } from "@bduff9/pro-duotone-svg-icons/faInfoCircle";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { FC } from "react";
+import React from "react";
 
-export const ErrorIcon: VFC = () => (
-	<FontAwesomeIcon className="text-danger" icon={faExclamationCircle} />
+export const ErrorIcon: FC = () => (
+  <FontAwesomeIcon className="text-danger" icon={faExclamationCircle} />
 );
 
-export const InfoIcon: VFC = () => (
-	<FontAwesomeIcon className="text-info" icon={faInfoCircle} />
+export const InfoIcon: FC = () => (
+  <FontAwesomeIcon className="text-info" icon={faInfoCircle} />
 );
 
-export const SuccessIcon: VFC = () => (
-	<FontAwesomeIcon className="text-success" icon={faCheckCircle} />
+export const SuccessIcon: FC = () => (
+  <FontAwesomeIcon className="text-success" icon={faCheckCircle} />
 );
 
-export const WarningIcon: VFC = () => (
-	<FontAwesomeIcon className="text-warning" icon={faExclamationTriangle} />
+export const WarningIcon: FC = () => (
+  <FontAwesomeIcon className="text-warning" icon={faExclamationTriangle} />
 );
 
-export const LargeWarningIcon: VFC = () => (
-	<FontAwesomeIcon className="text-warning" icon={faExclamationTriangle} size="3x" />
+export const LargeWarningIcon: FC = () => (
+  <FontAwesomeIcon className="text-warning" icon={faExclamationTriangle} size="3x" />
 );

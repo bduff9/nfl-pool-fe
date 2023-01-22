@@ -13,30 +13,9 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { SurvivorMv, SurvivorPick, Team } from '../generated/graphql';
 
-import { SurvivorMv, SurvivorPick, Team } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type GetSurvivorViewResponse = {
-	getSurvivorRankings: Array<
-		Pick<SurvivorMv, 'userID' | 'userName' | 'teamName' | 'isAliveOverall'> & {
-			allPicks: Array<
-				Pick<SurvivorPick, 'survivorPickWeek'> & {
-					game: {
-						winnerTeam: Pick<Team, 'teamID'>;
-					};
-					team: null | Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
-				}
-			>;
-		}
-	>;
-	getWeekInProgress: null | number;
-};
-
-const query = gql`
+const query = `
 	query GetSurvivorView {
 		getSurvivorRankings {
 			userID
@@ -62,5 +41,23 @@ const query = gql`
 	}
 `;
 
-export const useSurvivorView = (): SWRResponse<GetSurvivorViewResponse, unknown> =>
-	useSWR<GetSurvivorViewResponse>(query, fetcher);
+export const useSurvivorView = () => ({
+	data: {
+		getSurvivorRankings: [] as Array<
+			Pick<SurvivorMv, 'userID' | 'userName' | 'teamName' | 'isAliveOverall'> & {
+				allPicks: Array<
+					Pick<SurvivorPick, 'survivorPickWeek'> & {
+						game: {
+							winnerTeam: Pick<Team, 'teamID'>;
+						};
+						team: null | Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>;
+					}
+				>;
+			}
+		>,
+		getWeekInProgress: 1,
+		query,
+	},
+	error: null,
+	isValidating: false,
+});

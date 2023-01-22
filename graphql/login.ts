@@ -13,25 +13,20 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-
-import { QueryGetSystemValueArgs, SystemValue } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
+import type { SystemValue } from '../generated/graphql';
 
 type GetLoginValuesResponse = {
 	getSystemValue: Pick<SystemValue, 'systemValueValue'>;
 };
 
-const query = gql`
-	query GetPoolYear($Name: String!) {
-		getSystemValue(Name: $Name) {
-			systemValueValue
-		}
-	}
-`;
+// const query = `
+// 	query GetPoolYear($Name: String!) {
+// 		getSystemValue(Name: $Name) {
+// 			systemValueValue
+// 		}
+// 	}
+// `;
 
-export const getLoginValues = async (): Promise<GetLoginValuesResponse> => {
-	const vars: QueryGetSystemValueArgs = { Name: 'YearUpdated' };
-
-	return await fetcher<GetLoginValuesResponse, QueryGetSystemValueArgs>(query, vars);
-};
+export const getLoginValues = async (): Promise<GetLoginValuesResponse> => ({
+	getSystemValue: {} as Pick<SystemValue, 'systemValueValue'>,
+});

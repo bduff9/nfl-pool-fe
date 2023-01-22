@@ -13,73 +13,77 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import clsx from 'clsx';
-import { useSession } from 'next-auth/client';
-import React, { VFC, useEffect, useState } from 'react';
+import clsx from "clsx";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import type { FC, ReactNode } from "react";
 
-import { BackgroundLoadingContext, TitleContext, WeekContext } from '../../utils/context';
-import { TSessionUser } from '../../utils/types';
-import Sidebar from '../Sidebar/Sidebar';
+import { BackgroundLoadingContext, TitleContext, WeekContext } from "../../utils/context";
+import type { TSessionUser } from "../../utils/types";
+import Sidebar from "../Sidebar/Sidebar";
 
-import styles from './Layout.module.scss';
+import styles from "./Layout.module.scss";
+
+import { useLogrocket } from "utils/hooks";
 
 type LayoutProps = {
-	children: JSX.Element;
+  children: ReactNode;
 };
 
-const Layout: VFC<LayoutProps> = ({ children }) => {
-	const [session] = useSession();
-	const titleContext = useState<string>('Welcome');
-	const sessionWeek =
-		typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('selectedWeek') : null;
-	const weekContext = useState<number>(+(sessionWeek ?? '0'));
-	const week = weekContext[0];
-	const backgroundLoadingContext = useState<boolean>(false);
-	const isBackgroundLoading = backgroundLoadingContext[0];
+const Layout: FC<LayoutProps> = ({ children }) => {
+  useLogrocket();
+  const { data: session } = useSession();
+  const titleContext = useState<string>("Welcome");
+  const sessionWeek =
+    typeof sessionStorage !== "undefined" ? sessionStorage.getItem("selectedWeek") : null;
+  const weekContext = useState<number>(+(sessionWeek ?? "0"));
+  const week = weekContext[0];
+  const backgroundLoadingContext = useState<boolean>(false);
+  const isBackgroundLoading = backgroundLoadingContext[0];
 
-	useEffect(() => {
-		if (week) {
-			sessionStorage.setItem('selectedWeek', `${week}`);
-		}
-	}, [week]);
+  useEffect(() => {
+    if (week) {
+      sessionStorage.setItem("selectedWeek", `${week}`);
+    }
+  }, [week]);
 
-	return (
-		<TitleContext.Provider value={titleContext}>
-			<WeekContext.Provider value={weekContext}>
-				<BackgroundLoadingContext.Provider value={backgroundLoadingContext}>
-					<div className="container-fluid h-100">
-						<div className="row h-100 pt-3 pt-md-0">
-							{session?.user ? (
-								<>
-									<Sidebar user={session.user as TSessionUser} />
-									<div className="h-100 col col-sm-9 offset-sm-3 ml-sm-auto ml-print-0 col-lg-10 offset-lg-2 position-relative main">
-										{children}
-									</div>
-								</>
-							) : (
-								<div className="h-100 col position-relative">{children}</div>
-							)}
-							{isBackgroundLoading && (
-								<div
-									className={clsx(
-										'spinner-border',
-										'text-primary',
-										'position-fixed',
-										styles['background-loader'],
-									)}
-									role="status"
-								>
-									<span className="visually-hidden">Loading data in the background...</span>
-								</div>
-							)}
-						</div>
-					</div>
-				</BackgroundLoadingContext.Provider>
-			</WeekContext.Provider>
-		</TitleContext.Provider>
-	);
+  return (
+    <TitleContext.Provider value={titleContext}>
+      <WeekContext.Provider value={weekContext}>
+        <BackgroundLoadingContext.Provider value={backgroundLoadingContext}>
+          <div className="container-fluid h-100">
+            <div className="row h-100 pt-3 pt-md-0">
+              {session?.user ? (
+                <>
+                  <Sidebar user={session.user as TSessionUser} />
+                  <div className="h-100 col col-sm-9 offset-sm-3 ml-sm-auto ml-print-0 col-lg-10 offset-lg-2 position-relative main">
+                    {children}
+                  </div>
+                </>
+              ) : (
+                <div className="h-100 col position-relative">{children}</div>
+              )}
+              {isBackgroundLoading && (
+                <div
+                  className={clsx(
+                    "spinner-border",
+                    "text-primary",
+                    "position-fixed",
+                    styles["background-loader"],
+                  )}
+                  role="status"
+                >
+                  <span className="visually-hidden">
+                    Loading data in the background...
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </BackgroundLoadingContext.Provider>
+      </WeekContext.Provider>
+    </TitleContext.Provider>
+  );
 };
-
-Layout.whyDidYouRender = true;
 
 export default Layout;

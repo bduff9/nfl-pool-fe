@@ -13,7 +13,4 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { configure } from 'enzyme';
-import ReactSixteenAdapter from 'enzyme-adapter-react-16';
-
-configure({ adapter: new ReactSixteenAdapter() });
+import '@testing-library/jest-dom';

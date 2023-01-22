@@ -13,128 +13,129 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import clsx from 'clsx';
-import { motion } from 'framer-motion';
-import React, { VFC } from 'react';
+import clsx from "clsx";
+// import { motion } from "framer-motion";
+import type { FC } from "react";
+import React from "react";
 
-import styles from './ProgressChart.module.scss';
+import styles from "./ProgressChart.module.scss";
 
 type ProgressChartProps = {
-	correct: number;
-	incorrect: number;
-	inProgress?: number;
-	isOver?: boolean;
-	layoutId: string;
-	max: number;
-	type: 'Current Week Remaining' | 'Games' | 'Overall Remaining' | 'Points';
+  correct: number;
+  incorrect: number;
+  inProgress?: number;
+  isOver?: boolean;
+  layoutId: string;
+  max: number;
+  type: "Current Week Remaining" | "Games" | "Overall Remaining" | "Points";
 };
 
-const ProgressChart: VFC<ProgressChartProps> = ({
-	correct,
-	incorrect,
-	inProgress,
-	isOver = false,
-	layoutId,
-	max,
-	type,
+const ProgressChart: FC<ProgressChartProps> = ({
+  correct,
+  incorrect,
+  inProgress,
+  isOver = false,
+  // layoutId,
+  max,
+  type,
 }) => {
-	const correctPercent = (correct / max) * 100;
-	const incorrectPercent = (incorrect / max) * 100;
-	const inProgressPercent = ((inProgress ?? 0) / max) * 100;
-	let correctLabel = '';
-	let incorrectLabel = '';
-	let inProgressLabel = '';
+  const correctPercent = (correct / max) * 100;
+  const incorrectPercent = (incorrect / max) * 100;
+  const inProgressPercent = ((inProgress ?? 0) / max) * 100;
+  let correctLabel = "";
+  let incorrectLabel = "";
+  let inProgressLabel = "";
 
-	if (type === 'Games') {
-		correctLabel = 'games correct';
-		incorrectLabel = 'games wrong';
-		inProgressLabel = 'games not completed yet';
-	} else if (type === 'Points') {
-		correctLabel = 'points earned';
-		incorrectLabel = 'points missed';
-		inProgressLabel = 'points not completed yet';
-	} else if (type === 'Current Week Remaining') {
-		correctLabel = 'players safe this week';
-		incorrectLabel = 'players went out this week';
-		inProgressLabel = 'players waiting';
-	} else if (type === 'Overall Remaining') {
-		correctLabel = 'players alive';
-		incorrectLabel = 'players dead';
-		inProgressLabel = 'players still waiting';
-	}
+  if (type === "Games") {
+    correctLabel = "games correct";
+    incorrectLabel = "games wrong";
+    inProgressLabel = "games not completed yet";
+  } else if (type === "Points") {
+    correctLabel = "points earned";
+    incorrectLabel = "points missed";
+    inProgressLabel = "points not completed yet";
+  } else if (type === "Current Week Remaining") {
+    correctLabel = "players safe this week";
+    incorrectLabel = "players went out this week";
+    inProgressLabel = "players waiting";
+  } else if (type === "Overall Remaining") {
+    correctLabel = "players alive";
+    incorrectLabel = "players dead";
+    inProgressLabel = "players still waiting";
+  }
 
-	return (
-		<motion.div layoutId={layoutId}>
-			<div className="text-start">{type}</div>
-			<div className={clsx('progress', styles['custom-progress'])}>
-				<div
-					aria-label={`${correct} ${correctLabel}`}
-					aria-valuemax={max}
-					aria-valuemin={0}
-					aria-valuenow={correct}
-					className={clsx(
-						'progress-bar',
-						!isOver && 'progress-bar-striped',
-						!isOver && 'progress-bar-animated',
-						'bg-success',
-					)}
-					role="progressbar"
-					style={{ width: `${correctPercent}%` }}
-					title={`${correct} ${correctLabel}`}
-				>
-					{correct}
-				</div>
-				<div
-					aria-label={`${incorrect} ${incorrectLabel}`}
-					aria-valuemax={max}
-					aria-valuemin={0}
-					aria-valuenow={incorrect}
-					className={clsx(
-						'progress-bar',
-						!isOver && 'progress-bar-striped',
-						!isOver && 'progress-bar-animated',
-						'bg-danger',
-					)}
-					role="progressbar"
-					style={{ width: `${incorrectPercent}%` }}
-					title={`${incorrect} ${incorrectLabel}`}
-				>
-					{incorrect}
-				</div>
-				{typeof inProgress === 'number' && (
-					<div
-						aria-label={`${inProgress} ${inProgressLabel}`}
-						aria-valuemax={max}
-						aria-valuemin={0}
-						aria-valuenow={inProgress}
-						className={clsx(
-							'progress-bar',
-							!isOver && 'progress-bar-striped',
-							!isOver && 'progress-bar-animated',
-							'bg-secondary',
-						)}
-						role="progressbar"
-						style={{ width: `${inProgressPercent}%` }}
-						title={`${inProgress} ${inProgressLabel}`}
-					>
-						{inProgress}
-					</div>
-				)}
-			</div>
-			{['Games', 'Points'].includes(type) ? (
-				<div className="small d-flex justify-content-between mb-2">
-					<div>Max possible {type.toLowerCase()}</div>
-					<div>{max}</div>
-				</div>
-			) : (
-				<div className="small d-flex justify-content-between mb-2">
-					<div>&nbsp;</div>
-				</div>
-			)}
-		</motion.div>
-	);
+  return (
+    <div>
+      {/* <motion.div layoutId={layoutId}> */}
+      <div className="text-start">{type}</div>
+      <div className={clsx("progress", styles["custom-progress"])}>
+        <div
+          aria-label={`${correct} ${correctLabel}`}
+          aria-valuemax={max}
+          aria-valuemin={0}
+          aria-valuenow={correct}
+          className={clsx(
+            "progress-bar",
+            !isOver && "progress-bar-striped",
+            !isOver && "progress-bar-animated",
+            "bg-success",
+          )}
+          role="progressbar"
+          style={{ width: `${correctPercent}%` }}
+          title={`${correct} ${correctLabel}`}
+        >
+          {correct}
+        </div>
+        <div
+          aria-label={`${incorrect} ${incorrectLabel}`}
+          aria-valuemax={max}
+          aria-valuemin={0}
+          aria-valuenow={incorrect}
+          className={clsx(
+            "progress-bar",
+            !isOver && "progress-bar-striped",
+            !isOver && "progress-bar-animated",
+            "bg-danger",
+          )}
+          role="progressbar"
+          style={{ width: `${incorrectPercent}%` }}
+          title={`${incorrect} ${incorrectLabel}`}
+        >
+          {incorrect}
+        </div>
+        {typeof inProgress === "number" && (
+          <div
+            aria-label={`${inProgress} ${inProgressLabel}`}
+            aria-valuemax={max}
+            aria-valuemin={0}
+            aria-valuenow={inProgress}
+            className={clsx(
+              "progress-bar",
+              !isOver && "progress-bar-striped",
+              !isOver && "progress-bar-animated",
+              "bg-secondary",
+            )}
+            role="progressbar"
+            style={{ width: `${inProgressPercent}%` }}
+            title={`${inProgress} ${inProgressLabel}`}
+          >
+            {inProgress}
+          </div>
+        )}
+      </div>
+      {["Games", "Points"].includes(type) ? (
+        <div className="small d-flex justify-content-between mb-2">
+          <div>Max possible {type.toLowerCase()}</div>
+          <div>{max}</div>
+        </div>
+      ) : (
+        <div className="small d-flex justify-content-between mb-2">
+          <div>&nbsp;</div>
+        </div>
+      )}
+      {/* </motion.div> */}
+    </div>
+  );
 };
-
-ProgressChart.whyDidYouRender = true;
 
 export default ProgressChart;

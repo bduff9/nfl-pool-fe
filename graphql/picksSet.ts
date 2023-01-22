@@ -13,21 +13,13 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { ClientError, gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type {
+	AutoPickStrategy,
+	Pick as PoolPick,
+	Tiebreaker,
+} from '../generated/graphql';
 
-import { AutoPickStrategy, Pick as PoolPick, Tiebreaker } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type GetMyTiebreakerForWeekResponse = {
-	getMyTiebreakerForWeek: null | Pick<
-		Tiebreaker,
-		'tiebreakerLastScore' | 'tiebreakerHasSubmitted'
-	>;
-};
-
-const query = gql`
+const query = `
 	query GetMyTiebreakerForWeek($week: Int!) {
 		getMyTiebreakerForWeek(Week: $week) {
 			tiebreakerLastScore
@@ -36,168 +28,131 @@ const query = gql`
 	}
 `;
 
-export const useMyTiebreakerForWeek = (
-	week: number,
-): SWRResponse<GetMyTiebreakerForWeekResponse, ClientError> =>
-	useSWR<GetMyTiebreakerForWeekResponse, ClientError>(
-		[query, week],
-		(): Promise<GetMyTiebreakerForWeekResponse> => fetcher(query, { week }),
-	);
+export const useMyTiebreakerForWeek = (week: number) => ({
+	data: {
+		getMyTiebreakerForWeek: {} as null | Pick<
+			Tiebreaker,
+			'tiebreakerLastScore' | 'tiebreakerHasSubmitted'
+		>,
+		query,
+		week,
+	},
+	error: null,
+	isValidating: false,
+	mutate: (a?: (c: any) => any, b?: boolean): any => {
+		console.log(a, b);
+	},
+});
 
 type ResetPicksMutationResult = {
 	resetMyPicksForWeek: Pick<PoolPick, 'pickID'>;
 };
 
-type ResetPicksMutationInput = {
-	week: number;
-};
-
-const resetMyPicksMutation = gql`
-	mutation ResetMyPicksForWeek($week: Int!) {
-		resetMyPicksForWeek(Week: $week) {
-			pickID
-		}
-	}
-`;
+// const resetMyPicksMutation = `
+// 	mutation ResetMyPicksForWeek($week: Int!) {
+// 		resetMyPicksForWeek(Week: $week) {
+// 			pickID
+// 		}
+// 	}
+// `;
 
 export const resetMyPicksForWeek = async (
-	week: number,
-): Promise<ResetPicksMutationResult> =>
-	fetcher<ResetPicksMutationResult, ResetPicksMutationInput>(resetMyPicksMutation, {
-		week,
-	});
+	_week: number,
+): Promise<ResetPicksMutationResult> => ({
+	resetMyPicksForWeek: {} as Pick<PoolPick, 'pickID'>,
+});
 
 type SetMyPickMutationResult = {
 	setMyPick: Pick<PoolPick, 'pickID'>;
 };
 
-type SetMyPickMutationInput = {
-	week: number;
-	gameID: null | number;
-	teamID: null | number;
-	points: number;
-};
-
-const setMyPickMutation = gql`
-	mutation SetMyPick($week: Int!, $gameID: Int, $teamID: Int, $points: Int!) {
-		setMyPick(Week: $week, GameID: $gameID, TeamID: $teamID, Points: $points) {
-			pickID
-		}
-	}
-`;
+// const setMyPickMutation = `
+// 	mutation SetMyPick($week: Int!, $gameID: Int, $teamID: Int, $points: Int!) {
+// 		setMyPick(Week: $week, GameID: $gameID, TeamID: $teamID, Points: $points) {
+// 			pickID
+// 		}
+// 	}
+// `;
 
 export const setMyPick = async (
-	week: number,
-	gameID: null | number,
-	teamID: null | number,
-	points: number,
-): Promise<SetMyPickMutationResult> =>
-	fetcher<SetMyPickMutationResult, SetMyPickMutationInput>(setMyPickMutation, {
-		week,
-		gameID,
-		teamID,
-		points,
-	});
+	_week: number,
+	_gameID: null | number,
+	_teamID: null | number,
+	_points: number,
+): Promise<SetMyPickMutationResult> => ({
+	setMyPick: {} as Pick<PoolPick, 'pickID'>,
+});
 
 type UpdateMyTiebreakerScoreMutationResult = {
 	updateMyTiebreakerScore: Pick<Tiebreaker, 'tiebreakerLastScore'>;
 };
 
-type UpdateMyTiebreakerScoreMutationInput = {
-	week: number;
-	score: number;
-};
-
-const updateMyTiebreakerScoreMutation = gql`
-	mutation UpdateMyTiebreakerScore($week: Int!, $score: Int!) {
-		updateMyTiebreakerScore(Week: $week, Score: $score) {
-			tiebreakerLastScore
-		}
-	}
-`;
+// const updateMyTiebreakerScoreMutation = `
+// 	mutation UpdateMyTiebreakerScore($week: Int!, $score: Int!) {
+// 		updateMyTiebreakerScore(Week: $week, Score: $score) {
+// 			tiebreakerLastScore
+// 		}
+// 	}
+// `;
 
 export const updateMyTiebreakerScore = async (
-	week: number,
-	score: number,
-): Promise<UpdateMyTiebreakerScoreMutationResult> =>
-	fetcher<UpdateMyTiebreakerScoreMutationResult, UpdateMyTiebreakerScoreMutationInput>(
-		updateMyTiebreakerScoreMutation,
-		{
-			week,
-			score,
-		},
-	);
+	_week: number,
+	_score: number,
+): Promise<UpdateMyTiebreakerScoreMutationResult> => ({
+	updateMyTiebreakerScore: {} as Pick<Tiebreaker, 'tiebreakerLastScore'>,
+});
 
 type AutoPickMutationResult = {
 	autoPick: Pick<PoolPick, 'pickID'>;
 };
 
-type AutoPickMutationInput = {
-	week: number;
-	type: AutoPickStrategy;
-};
-
-const autoPickMutation = gql`
-	mutation AutoPick($week: Int!, $type: AutoPickStrategy!) {
-		autoPick(Week: $week, Type: $type) {
-			pickID
-		}
-	}
-`;
+// const autoPickMutation = `
+// 	mutation AutoPick($week: Int!, $type: AutoPickStrategy!) {
+// 		autoPick(Week: $week, Type: $type) {
+// 			pickID
+// 		}
+// 	}
+// `;
 
 export const autoPickMyPicks = async (
-	week: number,
-	type: AutoPickStrategy,
-): Promise<AutoPickMutationResult> =>
-	fetcher<AutoPickMutationResult, AutoPickMutationInput>(autoPickMutation, {
-		week,
-		type,
-	});
+	_week: number,
+	_type: AutoPickStrategy,
+): Promise<AutoPickMutationResult> => ({
+	autoPick: {} as Pick<PoolPick, 'pickID'>,
+});
 
 type ValidateMyPicksQueryResult = {
 	validatePicksForWeek: boolean;
 };
 
-type ValidateMyPicksQueryInput = {
-	week: number;
-	unused: string;
-	lastScore: number;
-};
-
-const validateMyPicksQuery = gql`
-	query ValidatePicks($week: Int!, $unused: String!, $lastScore: Int!) {
-		validatePicksForWeek(Week: $week, Unused: $unused, LastScore: $lastScore)
-	}
-`;
+// const validateMyPicksQuery = `
+// 	query ValidatePicks($week: Int!, $unused: String!, $lastScore: Int!) {
+// 		validatePicksForWeek(Week: $week, Unused: $unused, LastScore: $lastScore)
+// 	}
+// `;
 
 export const validateMyPicks = async (
-	week: number,
-	unused: Array<number>,
-	lastScore: number,
-): Promise<ValidateMyPicksQueryResult> =>
-	fetcher<ValidateMyPicksQueryResult, ValidateMyPicksQueryInput>(validateMyPicksQuery, {
-		week,
-		unused: JSON.stringify(unused),
-		lastScore,
-	});
+	_week: number,
+	_unused: Array<number>,
+	_lastScore: number,
+): Promise<ValidateMyPicksQueryResult> => ({
+	validatePicksForWeek: true,
+});
 
 type SubmitMyPicksMutationResult = {
 	submitPicksForWeek: Pick<Tiebreaker, 'tiebreakerHasSubmitted'>;
 };
 
-type SubmitMyPicksMutationInput = {
-	week: number;
-};
+// const submitMyPicksMutation = `
+// 	mutation SubmitPicks($week: Int!) {
+// 		submitPicksForWeek(Week: $week) {
+// 			tiebreakerHasSubmitted
+// 		}
+// 	}
+// `;
 
-const submitMyPicksMutation = gql`
-	mutation SubmitPicks($week: Int!) {
-		submitPicksForWeek(Week: $week) {
-			tiebreakerHasSubmitted
-		}
-	}
-`;
-
-export const submitMyPicks = async (week: number): Promise<SubmitMyPicksMutationResult> =>
-	fetcher<SubmitMyPicksMutationResult, SubmitMyPicksMutationInput>(submitMyPicksMutation, {
-		week,
-	});
+export const submitMyPicks = async (
+	_week: number,
+): Promise<SubmitMyPicksMutationResult> => ({
+	submitPicksForWeek: {} as Pick<Tiebreaker, 'tiebreakerHasSubmitted'>,
+});

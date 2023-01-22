@@ -13,27 +13,19 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-
-import { fetcher } from '../utils/graphql';
-
-type QuickPickInput = {
-	teamID: number;
-	userID: number;
-};
-
 type QuickPickResult = {
 	quickPick: true;
 };
 
-const quickPickMutation = gql`
-	mutation QuickPick($teamID: Int!, $userID: Int!) {
-		quickPick(TeamID: $teamID, UserID: $userID)
-	}
-`;
+// const quickPickMutation = `
+// 	mutation QuickPick($teamID: Int!, $userID: Int!) {
+// 		quickPick(TeamID: $teamID, UserID: $userID)
+// 	}
+// `;
 
-export const quickPick = (teamID: number, userID: number): Promise<QuickPickResult> =>
-	fetcher<QuickPickResult, QuickPickInput>(quickPickMutation, {
-		teamID,
-		userID,
-	});
+export const quickPick = async (
+	_teamID: number,
+	_userID: number,
+): Promise<QuickPickResult> => ({
+	quickPick: true,
+});

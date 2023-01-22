@@ -13,24 +13,13 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { ClientError, gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
-
-import { Game, SurvivorPick, Team } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
+import type { Game, SurvivorPick, Team } from '../generated/graphql';
 
 export type SetSurvivorPick = Pick<SurvivorPick, 'survivorPickWeek'> & {
 	team: null | Pick<Team, 'teamID'>;
 };
 
-type MakeSurvivorPickViewResponse = {
-	getWeekInProgress: null | number;
-	getMySurvivorPicks: Array<SetSurvivorPick>;
-	getTeamsOnBye: Array<Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>>;
-};
-
-const query = gql`
+const query = `
 	query MakeSurvivorPickView($week: Int!) {
 		getWeekInProgress
 		getMySurvivorPicks {
@@ -48,13 +37,22 @@ const query = gql`
 	}
 `;
 
-export const useMakeSurvivorPickView = (
-	week: number,
-): SWRResponse<MakeSurvivorPickViewResponse, ClientError> =>
-	useSWR<MakeSurvivorPickViewResponse, ClientError>(
-		[query, week],
-		(): Promise<MakeSurvivorPickViewResponse> => fetcher(query, { week }),
-	);
+export const useMakeSurvivorPickView = (week: number) => ({
+	data: {
+		getWeekInProgress: 1,
+		getMySurvivorPicks: [] as Array<SetSurvivorPick>,
+		getTeamsOnBye: [] as Array<
+			Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'>
+		>,
+		query,
+		week,
+	},
+	error: null,
+	isValidating: false,
+	mutate: (a?: (c: any) => any, b?: boolean): any => {
+		console.log(a, b);
+	},
+});
 
 type MakePickMutationResult = {
 	makeSurvivorPick: Pick<SurvivorPick, 'survivorPickID' | 'survivorPickWeek'> & {
@@ -62,34 +60,31 @@ type MakePickMutationResult = {
 		team: Pick<Team, 'teamID'>;
 	};
 };
-type MakePickMutationInput = {
-	gameID: number;
-	teamID: number;
-	week: number;
-};
 
-const mutation = gql`
-	mutation MakeSurvivorPick($week: Int!, $gameID: Int!, $teamID: Int!) {
-		makeSurvivorPick(data: { survivorPickWeek: $week, gameID: $gameID, teamID: $teamID }) {
-			survivorPickID
-			survivorPickWeek
-			game {
-				gameID
-			}
-			team {
-				teamID
-			}
-		}
-	}
-`;
+// const mutation = `
+// 	mutation MakeSurvivorPick($week: Int!, $gameID: Int!, $teamID: Int!) {
+// 		makeSurvivorPick(
+// 			data: { survivorPickWeek: $week, gameID: $gameID, teamID: $teamID }
+// 		) {
+// 			survivorPickID
+// 			survivorPickWeek
+// 			game {
+// 				gameID
+// 			}
+// 			team {
+// 				teamID
+// 			}
+// 		}
+// 	}
+// `;
 
 export const makeSurvivorPick = async (
-	week: number,
-	gameID: number,
-	teamID: number,
-): Promise<MakePickMutationResult> =>
-	fetcher<MakePickMutationResult, MakePickMutationInput>(mutation, {
-		gameID,
-		teamID,
-		week,
-	});
+	_week: number,
+	_gameID: number,
+	_teamID: number,
+): Promise<MakePickMutationResult> => ({
+	makeSurvivorPick: {} as Pick<SurvivorPick, 'survivorPickID' | 'survivorPickWeek'> & {
+		game: Pick<Game, 'gameID'>;
+		team: Pick<Team, 'teamID'>;
+	},
+});

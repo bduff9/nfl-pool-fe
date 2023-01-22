@@ -13,51 +13,34 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-
-import { fetcher } from '../utils/graphql';
-
-type SendAdminEmailInput = {
-	emailType: string;
-	sendTo: string;
-	userEmail: null | string;
-	userFirstName: null | string;
-	extraData: null | string;
-};
-
 type SendAdminEmailResult = {
 	quickPick: true;
 };
 
-const sendAdminEmailMutation = gql`
-	mutation SendAdminEmail(
-		$emailType: EmailType!
-		$sendTo: EmailSendTo!
-		$userEmail: String
-		$userFirstName: String
-		$extraData: String
-	) {
-		sendAdminEmail(
-			EmailType: $emailType
-			SendTo: $sendTo
-			UserEmail: $userEmail
-			UserFirstname: $userFirstName
-			ExtraData: $extraData
-		)
-	}
-`;
+// const sendAdminEmailMutation = `
+// 	mutation SendAdminEmail(
+// 		$emailType: EmailType!
+// 		$sendTo: EmailSendTo!
+// 		$userEmail: String
+// 		$userFirstName: String
+// 		$extraData: String
+// 	) {
+// 		sendAdminEmail(
+// 			EmailType: $emailType
+// 			SendTo: $sendTo
+// 			UserEmail: $userEmail
+// 			UserFirstname: $userFirstName
+// 			ExtraData: $extraData
+// 		)
+// 	}
+// `;
 
-export const sendAdminEmail = (
-	emailType: string,
-	sendTo: string,
-	userEmail: null | string,
-	userFirstName: null | string,
-	extraData: null | string,
-): Promise<SendAdminEmailResult> =>
-	fetcher<SendAdminEmailResult, SendAdminEmailInput>(sendAdminEmailMutation, {
-		emailType,
-		sendTo,
-		userEmail,
-		userFirstName,
-		extraData,
-	});
+export const sendAdminEmail = async (
+	_emailType: string,
+	_sendTo: string,
+	_userEmail: null | string,
+	_userFirstName: null | string,
+	_extraData: null | string,
+): Promise<SendAdminEmailResult> => ({
+	quickPick: true,
+});

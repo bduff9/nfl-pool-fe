@@ -13,117 +13,112 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
-
-import { Game, Team } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
+import type { Game, Team } from "../generated/graphql";
 
 export type DetailTeam = Pick<
-	Team,
-	| 'teamID'
-	| 'teamCity'
-	| 'teamName'
-	| 'teamConference'
-	| 'teamDivision'
-	| 'teamRushDefenseRank'
-	| 'teamPassDefenseRank'
-	| 'teamRushOffenseRank'
-	| 'teamPassOffenseRank'
-	| 'teamPrimaryColor'
-	| 'teamSecondaryColor'
-	| 'teamRecord'
+  Team,
+  | "teamID"
+  | "teamCity"
+  | "teamName"
+  | "teamConference"
+  | "teamDivision"
+  | "teamRushDefenseRank"
+  | "teamPassDefenseRank"
+  | "teamRushOffenseRank"
+  | "teamPassOffenseRank"
+  | "teamPrimaryColor"
+  | "teamSecondaryColor"
+  | "teamRecord"
 > & {
-	teamHistory: Array<
-		Pick<Game, 'gameID' | 'gameWeek' | 'gameHomeScore' | 'gameVisitorScore'> & {
-			homeTeam: Pick<Team, 'teamID' | 'teamShortName'>;
-			visitorTeam: Pick<Team, 'teamID' | 'teamShortName'>;
-			winnerTeam: null | Pick<Team, 'teamID'>;
-		}
-	>;
-};
-type GetTeamDetailsResponse = {
-	getGame: Pick<Game, 'gameHomeSpread' | 'gameVisitorSpread'> & {
-		homeTeam: DetailTeam;
-		visitorTeam: DetailTeam;
-	};
+  teamHistory: Array<
+    Pick<Game, "gameID" | "gameWeek" | "gameHomeScore" | "gameVisitorScore"> & {
+      homeTeam: Pick<Team, "teamID" | "teamShortName">;
+      visitorTeam: Pick<Team, "teamID" | "teamShortName">;
+      winnerTeam: null | Pick<Team, "teamID">;
+    }
+  >;
 };
 
-const query = gql`
-	query GameDetails($gameID: Int!) {
-		getGame(GameID: $gameID) {
-			gameHomeSpread
-			homeTeam {
-				teamID
-				teamCity
-				teamName
-				teamConference
-				teamDivision
-				teamRushDefenseRank
-				teamPassDefenseRank
-				teamRushOffenseRank
-				teamPassOffenseRank
-				teamPrimaryColor
-				teamSecondaryColor
-				teamRecord
-				teamHistory {
-					gameID
-					gameWeek
-					homeTeam {
-						teamID
-						teamShortName
-					}
-					gameHomeScore
-					visitorTeam {
-						teamID
-						teamShortName
-					}
-					gameVisitorScore
-					winnerTeam {
-						teamID
-					}
-				}
-			}
-			gameVisitorSpread
-			visitorTeam {
-				teamID
-				teamCity
-				teamName
-				teamConference
-				teamDivision
-				teamRushDefenseRank
-				teamPassDefenseRank
-				teamRushOffenseRank
-				teamPassOffenseRank
-				teamPrimaryColor
-				teamSecondaryColor
-				teamRecord
-				teamHistory {
-					gameID
-					gameWeek
-					homeTeam {
-						teamID
-						teamShortName
-					}
-					gameHomeScore
-					visitorTeam {
-						teamID
-						teamShortName
-					}
-					gameVisitorScore
-					winnerTeam {
-						teamID
-					}
-				}
-			}
-		}
-	}
+const query = `
+  query GameDetails($gameID: Int!) {
+    getGame(GameID: $gameID) {
+      gameHomeSpread
+      homeTeam {
+        teamID
+        teamCity
+        teamName
+        teamConference
+        teamDivision
+        teamRushDefenseRank
+        teamPassDefenseRank
+        teamRushOffenseRank
+        teamPassOffenseRank
+        teamPrimaryColor
+        teamSecondaryColor
+        teamRecord
+        teamHistory {
+          gameID
+          gameWeek
+          homeTeam {
+            teamID
+            teamShortName
+          }
+          gameHomeScore
+          visitorTeam {
+            teamID
+            teamShortName
+          }
+          gameVisitorScore
+          winnerTeam {
+            teamID
+          }
+        }
+      }
+      gameVisitorSpread
+      visitorTeam {
+        teamID
+        teamCity
+        teamName
+        teamConference
+        teamDivision
+        teamRushDefenseRank
+        teamPassDefenseRank
+        teamRushOffenseRank
+        teamPassOffenseRank
+        teamPrimaryColor
+        teamSecondaryColor
+        teamRecord
+        teamHistory {
+          gameID
+          gameWeek
+          homeTeam {
+            teamID
+            teamShortName
+          }
+          gameHomeScore
+          visitorTeam {
+            teamID
+            teamShortName
+          }
+          gameVisitorScore
+          winnerTeam {
+            teamID
+          }
+        }
+      }
+    }
+  }
 `;
 
-export const useTeamDetails = (
-	gameID: number,
-): SWRResponse<GetTeamDetailsResponse, unknown> =>
-	useSWR<GetTeamDetailsResponse>([query, gameID], (query, gameID) =>
-		fetcher(query, { gameID }),
-	);
+export const useTeamDetails = (gameID: number) => ({
+  data: {
+    getGame: {} as Pick<Game, "gameHomeSpread" | "gameVisitorSpread"> & {
+      homeTeam: DetailTeam;
+      visitorTeam: DetailTeam;
+    },
+    gameID,
+    query,
+  },
+  error: null,
+  isValidating: false,
+});

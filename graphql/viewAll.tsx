@@ -13,43 +13,41 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { Game, Pick as PoolPick, Team, User } from "../generated/graphql";
 
-import { Game, Pick as PoolPick, Team, User } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-export type ViewAllPick = Pick<PoolPick, 'pickID' | 'pickPoints'> & {
-	user: Pick<User, 'userID'>;
-	game: Pick<Game, 'gameID'>;
-	team: Pick<Team, 'teamID' | 'teamCity' | 'teamName' | 'teamLogo'> | null;
+export type ViewAllPick = Pick<PoolPick, "pickID" | "pickPoints"> & {
+  user: Pick<User, "userID">;
+  game: Pick<Game, "gameID">;
+  team: Pick<Team, "teamID" | "teamCity" | "teamName" | "teamLogo"> | null;
 };
 
-type GetAllPicksResponse = {
-	getAllPicksForWeek: Array<ViewAllPick>;
-};
-
-const query = gql`
-	query ViewAllPicks($week: Int!) {
-		getAllPicksForWeek(Week: $week) {
-			pickID
-			pickPoints
-			user {
-				userID
-			}
-			game {
-				gameID
-			}
-			team {
-				teamID
-				teamCity
-				teamName
-				teamLogo
-			}
-		}
-	}
+const query = `
+  query ViewAllPicks($week: Int!) {
+    getAllPicksForWeek(Week: $week) {
+      pickID
+      pickPoints
+      user {
+        userID
+      }
+      game {
+        gameID
+      }
+      team {
+        teamID
+        teamCity
+        teamName
+        teamLogo
+      }
+    }
+  }
 `;
 
-export const useViewAllPicks = (week: number): SWRResponse<GetAllPicksResponse, unknown> =>
-	useSWR<GetAllPicksResponse>([query, week], (query, week) => fetcher(query, { week }));
+export const useViewAllPicks = (week: number) => ({
+  data: {
+    getAllPicksForWeek: [] as Array<ViewAllPick>,
+    query,
+    week,
+  },
+  error: null,
+  isValidating: false,
+});

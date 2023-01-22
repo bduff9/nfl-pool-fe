@@ -1,7 +1,6 @@
 {
   "ignore": [
-    ".env",
-    ".env.example",
+    "*.env*",
     ".eslintignore",
     ".eslintrc.js",
     ".gitignore",

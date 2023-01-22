@@ -13,43 +13,42 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { VFC } from 'react';
+import type { FC } from "react";
+import React from "react";
 
-import { GameStatus } from '../../generated/graphql';
-import { formatTimeFromKickoff } from '../../utils/dates';
-import { convertGameStatusToDB, getShortQuarter } from '../../utils/strings';
+import { GameStatus } from "../../generated/graphql";
+import { formatTimeFromKickoff } from "../../utils/dates";
+import { convertGameStatusToDB, getShortQuarter } from "../../utils/strings";
 
 type GameStatusDisplayProps = {
-	kickoff: string;
-	status: GameStatus;
-	timeLeft: string;
+  kickoff: string;
+  status: GameStatus;
+  timeLeft: string;
 };
 
-const GameStatusDisplay: VFC<GameStatusDisplayProps> = ({ kickoff, status, timeLeft }) => {
-	if (status === GameStatus.Final) {
-		return <>{status}</>;
-	}
+const GameStatusDisplay: FC<GameStatusDisplayProps> = ({ kickoff, status, timeLeft }) => {
+  if (status === GameStatus.Final) {
+    return <>{status}</>;
+  }
 
-	if (status === GameStatus.Pregame) {
-		return <>{formatTimeFromKickoff(kickoff)}</>;
-	}
+  if (status === GameStatus.Pregame) {
+    return <>{formatTimeFromKickoff(kickoff)}</>;
+  }
 
-	const gameStatus = convertGameStatusToDB(status);
+  const gameStatus = convertGameStatusToDB(status);
 
-	return (
-		<>
-			<span className="d-none d-md-inline">{gameStatus}</span>
-			<span className="d-md-none">{getShortQuarter(gameStatus)}</span>
-			{status !== GameStatus.HalfTime && (
-				<>
-					<br />
-					{timeLeft}
-				</>
-			)}
-		</>
-	);
+  return (
+    <>
+      <span className="d-none d-md-inline">{gameStatus}</span>
+      <span className="d-md-none">{getShortQuarter(gameStatus)}</span>
+      {status !== GameStatus.HalfTime && (
+        <>
+          <br />
+          {timeLeft}
+        </>
+      )}
+    </>
+  );
 };
-
-GameStatusDisplay.whyDidYouRender = true;
 
 export default GameStatusDisplay;

@@ -13,110 +13,109 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { VFC, useContext, useEffect, useState } from 'react';
-import Modal from 'react-bootstrap/Modal';
-import Skeleton from 'react-loading-skeleton';
+import type { FC } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import Modal from "react-bootstrap/Modal";
+import Skeleton from "react-loading-skeleton";
 
-import { useUserDropdown } from '../../graphql/adminUserTrustModal';
-import { BackgroundLoadingContext } from '../../utils/context';
-import { logger } from '../../utils/logging';
+import { useUserDropdown } from "../../graphql/adminUserTrustModal";
+import { BackgroundLoadingContext } from "../../utils/context";
+import { logger } from "../../utils/logging";
 
 type AdminUserTrustModalProps = {
-	handleClose: () => void;
-	referredByRaw: null | string;
-	show?: boolean;
-	trustUser: (userID: number | undefined, referredBy: null | number) => Promise<void>;
-	userID: number | undefined;
+  handleClose: () => void;
+  referredByRaw: null | string;
+  show?: boolean;
+  trustUser: (userID: number | undefined, referredBy: null | number) => Promise<void>;
+  userID: number | undefined;
 };
 
-const AdminUserTrustModal: VFC<AdminUserTrustModalProps> = ({
-	handleClose,
-	referredByRaw,
-	show = false,
-	trustUser,
-	userID,
+const AdminUserTrustModal: FC<AdminUserTrustModalProps> = ({
+  handleClose,
+  referredByRaw,
+  show = false,
+  trustUser,
+  userID,
 }) => {
-	const { data, error, isValidating } = useUserDropdown();
-	const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
-	const [referredBy, setReferredBy] = useState<null | number>(null);
-	const [loading, setLoading] = useState<boolean>(false);
+  const { data, error, isValidating } = useUserDropdown();
+  const [, setBackgroundLoading] = useContext(BackgroundLoadingContext);
+  const [referredBy, setReferredBy] = useState<null | number>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
-	useEffect(() => {
-		setBackgroundLoading(!!data && isValidating);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [data, isValidating]);
+  useEffect(() => {
+    setBackgroundLoading(!!data && isValidating);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, isValidating]);
 
-	if (error) {
-		logger.error({ text: 'Error loading user dropdown for user admin screen', error });
-	}
+  if (error) {
+    logger.error({ text: "Error loading user dropdown for user admin screen", error });
+  }
 
-	const handleSave = async (): Promise<void> => {
-		setLoading(true);
-		await trustUser(userID, referredBy);
-		setLoading(false);
-	};
+  const handleSave = async (): Promise<void> => {
+    setLoading(true);
+    await trustUser(userID, referredBy);
+    setLoading(false);
+  };
 
-	return (
-		<Modal onHide={handleClose} show={show}>
-			<Modal.Header closeButton>
-				<Modal.Title>Who referred this user?</Modal.Title>
-			</Modal.Header>
-			<Modal.Body>
-				<div className="mb-3">
-					<label htmlFor="userPaidAmount" className="form-label">
-						User entered {referredByRaw} as their referred by during registration
-					</label>
-					{data ? (
-						<select
-							aria-label="Dropdown of all users"
-							className="form-select"
-							onChange={event => setReferredBy(+event.target.value)}
-						>
-							<option>-- Select a User --</option>
-							{data.userDropdown.map(user => (
-								<option value={user.userID} key={`option-for-user-${user.userID}`}>
-									{user.userFirstName} {user.userLastName}
-								</option>
-							))}
-						</select>
-					) : (
-						<Skeleton />
-					)}
-				</div>
-			</Modal.Body>
-			<Modal.Footer>
-				<button
-					className="btn btn-secondary"
-					disabled={loading}
-					onClick={handleClose}
-					type="button"
-				>
-					Cancel
-				</button>
-				<button
-					className="btn btn-primary"
-					disabled={loading || !referredBy}
-					onClick={handleSave}
-					type="button"
-				>
-					{loading ? (
-						<>
-							<span
-								className="spinner-grow spinner-grow-sm d-none d-md-inline-block"
-								role="status"
-								aria-hidden="true"
-							></span>
-							Saving...
-						</>
-					) : (
-						'Save'
-					)}
-				</button>
-			</Modal.Footer>
-		</Modal>
-	);
+  return (
+    <Modal onHide={handleClose} show={show}>
+      <Modal.Header closeButton>
+        <Modal.Title>Who referred this user?</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div className="mb-3">
+          <label htmlFor="userPaidAmount" className="form-label">
+            User entered {referredByRaw} as their referred by during registration
+          </label>
+          {data ? (
+            <select
+              aria-label="Dropdown of all users"
+              className="form-select"
+              onChange={event => setReferredBy(+event.target.value)}
+            >
+              <option>-- Select a User --</option>
+              {data.userDropdown.map(user => (
+                <option value={user.userID} key={`option-for-user-${user.userID}`}>
+                  {user.userFirstName} {user.userLastName}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <Skeleton />
+          )}
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <button
+          className="btn btn-secondary"
+          disabled={loading}
+          onClick={handleClose}
+          type="button"
+        >
+          Cancel
+        </button>
+        <button
+          className="btn btn-primary"
+          disabled={loading || !referredBy}
+          onClick={handleSave}
+          type="button"
+        >
+          {loading ? (
+            <>
+              <span
+                className="spinner-grow spinner-grow-sm d-none d-md-inline-block"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Saving...
+            </>
+          ) : (
+            "Save"
+          )}
+        </button>
+      </Modal.Footer>
+    </Modal>
+  );
 };
-
-AdminUserTrustModal.whyDidYouRender = true;
 
 export default AdminUserTrustModal;

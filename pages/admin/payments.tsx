@@ -13,60 +13,59 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import clsx from 'clsx';
-import { GetServerSideProps } from 'next';
-import React, { VFC } from 'react';
-import { SkeletonTheme } from 'react-loading-skeleton';
+import clsx from "clsx";
+import type { GetServerSideProps } from "next";
+import type { FC } from "react";
+import React from "react";
+import { SkeletonTheme } from "react-loading-skeleton";
+import type { User } from "@prisma/client";
 
-import Authenticated from '../../components/Authenticated/Authenticated';
-import CustomHead from '../../components/CustomHead/CustomHead';
-import { TUser } from '../../models/User';
+import Authenticated from "../../components/Authenticated/Authenticated";
+import CustomHead from "../../components/CustomHead/CustomHead";
 import {
-	isSignedInSSR,
-	UNAUTHENTICATED_REDIRECT,
-	isAdminSSR,
-	IS_NOT_ADMIN_REDIRECT,
-} from '../../utils/auth.server';
-import ManageAdminPayments from '../../components/ManageAdminPayments/ManageAdminPayments';
-import ManageAdminPayouts from '../../components/ManageAdminPayouts/ManageAdminPayouts';
+  isSignedInSSR,
+  UNAUTHENTICATED_REDIRECT,
+  isAdminSSR,
+  IS_NOT_ADMIN_REDIRECT,
+} from "../../utils/auth.server";
+import ManageAdminPayments from "../../components/ManageAdminPayments/ManageAdminPayments";
+import ManageAdminPayouts from "../../components/ManageAdminPayouts/ManageAdminPayouts";
 
 type AdminPaymentsProps = {
-	user: TUser;
+  user: User;
 };
 
-const AdminPayments: VFC<AdminPaymentsProps> = () => {
-	return (
-		<Authenticated isAdmin>
-			<CustomHead title="Manage Payments" />
-			<div className={clsx('text-dark', 'my-3', 'mx-2', 'col', 'min-vh-100')}>
-				<SkeletonTheme>
-					<ManageAdminPayments />
-					<ManageAdminPayouts />
-				</SkeletonTheme>
-			</div>
-		</Authenticated>
-	);
+const AdminPayments: FC<AdminPaymentsProps> = () => {
+  return (
+    <Authenticated isAdmin>
+      <CustomHead title="Manage Payments" />
+      <div className={clsx("text-dark", "my-3", "mx-2", "col", "min-vh-100")}>
+        <SkeletonTheme>
+          <ManageAdminPayments />
+          <ManageAdminPayouts />
+        </SkeletonTheme>
+      </div>
+    </Authenticated>
+  );
 };
-
-AdminPayments.whyDidYouRender = true;
 
 // ts-prune-ignore-next
 export const getServerSideProps: GetServerSideProps = async context => {
-	const session = await isSignedInSSR(context);
+  const session = await isSignedInSSR(context);
 
-	if (!session) {
-		return UNAUTHENTICATED_REDIRECT;
-	}
+  if (!session) {
+    return UNAUTHENTICATED_REDIRECT;
+  }
 
-	const isAdmin = isAdminSSR(session);
+  const isAdmin = isAdminSSR(session);
 
-	if (!isAdmin) {
-		return IS_NOT_ADMIN_REDIRECT;
-	}
+  if (!isAdmin) {
+    return IS_NOT_ADMIN_REDIRECT;
+  }
 
-	const { user } = session;
+  const { user } = session;
 
-	return { props: { user } };
+  return { props: { user } };
 };
 
 // ts-prune-ignore-next

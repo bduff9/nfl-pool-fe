@@ -13,79 +13,70 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { ClientError, gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { SystemValue } from "../generated/graphql";
 
-import { SystemValue } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type GetPayoutAmountsResponse = {
-	weeklyPrizes: Pick<SystemValue, 'systemValueValue'> | null;
-	overallPrizes: Pick<SystemValue, 'systemValueValue'> | null;
-	survivorPrizes: Pick<SystemValue, 'systemValueValue'> | null;
-	poolCost: Pick<SystemValue, 'systemValueValue'> | null;
-	survivorCost: Pick<SystemValue, 'systemValueValue'> | null;
-	getRegisteredCount: number;
-	getSurvivorCount: number;
-};
-
-const payoutAmountsQuery = gql`
-	query GetPrizesForAdmin {
-		weeklyPrizes: getSystemValue(Name: "WeeklyPrizes") {
-			systemValueValue
-		}
-		overallPrizes: getSystemValue(Name: "OverallPrizes") {
-			systemValueValue
-		}
-		survivorPrizes: getSystemValue(Name: "SurvivorPrizes") {
-			systemValueValue
-		}
-		poolCost: getSystemValue(Name: "PoolCost") {
-			systemValueValue
-		}
-		survivorCost: getSystemValue(Name: "SurvivorCost") {
-			systemValueValue
-		}
-		getRegisteredCount
-		getSurvivorCount
-	}
+const payoutAmountsQuery = `
+  query GetPrizesForAdmin {
+    weeklyPrizes: getSystemValue(Name: "WeeklyPrizes") {
+      systemValueValue
+    }
+    overallPrizes: getSystemValue(Name: "OverallPrizes") {
+      systemValueValue
+    }
+    survivorPrizes: getSystemValue(Name: "SurvivorPrizes") {
+      systemValueValue
+    }
+    poolCost: getSystemValue(Name: "PoolCost") {
+      systemValueValue
+    }
+    survivorCost: getSystemValue(Name: "SurvivorCost") {
+      systemValueValue
+    }
+    getRegisteredCount
+    getSurvivorCount
+  }
 `;
 
-export const usePayoutAmounts = (): SWRResponse<GetPayoutAmountsResponse, ClientError> =>
-	useSWR<GetPayoutAmountsResponse, ClientError>(payoutAmountsQuery, fetcher);
+export const usePayoutAmounts = () => ({
+  data: {
+    weeklyPrizes: {} as Pick<SystemValue, "systemValueValue"> | null,
+    overallPrizes: {} as Pick<SystemValue, "systemValueValue"> | null,
+    survivorPrizes: {} as Pick<SystemValue, "systemValueValue"> | null,
+    poolCost: {} as Pick<SystemValue, "systemValueValue"> | null,
+    survivorCost: {} as Pick<SystemValue, "systemValueValue"> | null,
+    getRegisteredCount: 0,
+    getSurvivorCount: 0,
+    payoutAmountsQuery,
+  },
+  error: null,
+  isValidating: false,
+  mutate: (a?: (c: any) => any, b?: boolean): any => {
+    console.log(a, b);
+  },
+});
 
 type SetPrizeAmountsResponse = {
-	setPrizeAmounts: boolean;
+  setPrizeAmounts: boolean;
 };
 
-type SetPrizeAmountsInput = {
-	overallPrizes: string;
-	survivorPrizes: string;
-	weeklyPrizes: string;
-};
-
-const setPrizeAmountsMutation = gql`
-	mutation SetPrizeAmounts(
-		$weeklyPrizes: String!
-		$overallPrizes: String!
-		$survivorPrizes: String!
-	) {
-		setPrizeAmounts(
-			WeeklyPrizes: $weeklyPrizes
-			OverallPrizes: $overallPrizes
-			SurvivorPrizes: $survivorPrizes
-		)
-	}
-`;
+// const setPrizeAmountsMutation = `
+//   mutation SetPrizeAmounts(
+//     $weeklyPrizes: String!
+//     $overallPrizes: String!
+//     $survivorPrizes: String!
+//   ) {
+//     setPrizeAmounts(
+//       WeeklyPrizes: $weeklyPrizes
+//       OverallPrizes: $overallPrizes
+//       SurvivorPrizes: $survivorPrizes
+//     )
+//   }
+// `;
 
 export const setPrizeAmounts = async (
-	weeklyPrizes: string,
-	overallPrizes: string,
-	survivorPrizes: string,
-): Promise<SetPrizeAmountsResponse> =>
-	fetcher<SetPrizeAmountsResponse, SetPrizeAmountsInput>(setPrizeAmountsMutation, {
-		overallPrizes,
-		survivorPrizes,
-		weeklyPrizes,
-	});
+  _weeklyPrizes: string,
+  _overallPrizes: string,
+  _survivorPrizes: string,
+): Promise<SetPrizeAmountsResponse> => ({
+  setPrizeAmounts: false,
+});

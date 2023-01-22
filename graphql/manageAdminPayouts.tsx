@@ -13,74 +13,67 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
-
-import { Payment, User } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
+import type { Payment, User } from "../generated/graphql";
 
 export type Winner = Pick<
-	User,
-	| 'userID'
-	| 'userName'
-	| 'userTeamName'
-	| 'userPaymentAccount'
-	| 'userPaymentType'
-	| 'userWon'
-	| 'userPaidOut'
-	| 'userBalance'
+  User,
+  | "userID"
+  | "userName"
+  | "userTeamName"
+  | "userPaymentAccount"
+  | "userPaymentType"
+  | "userWon"
+  | "userPaidOut"
+  | "userBalance"
 > & {
-	payments: Array<Pick<Payment, 'paymentType' | 'paymentWeek' | 'paymentDescription'>>;
+  payments: Array<Pick<Payment, "paymentType" | "paymentWeek" | "paymentDescription">>;
 };
 
-type GetWinnersResponse = {
-	getUserPaymentsForAdmin: Array<Winner>;
-};
-
-const winnersQuery = gql`
-	query getWinnersForAdmin {
-		getUserPaymentsForAdmin {
-			userID
-			userName
-			userTeamName
-			userPaymentAccount
-			userPaymentType
-			userWon
-			userPaidOut
-			userBalance
-			payments {
-				paymentType
-				paymentWeek
-				paymentDescription
-			}
-		}
-	}
+const winnersQuery = `
+  query getWinnersForAdmin {
+    getUserPaymentsForAdmin {
+      userID
+      userName
+      userTeamName
+      userPaymentAccount
+      userPaymentType
+      userWon
+      userPaidOut
+      userBalance
+      payments {
+        paymentType
+        paymentWeek
+        paymentDescription
+      }
+    }
+  }
 `;
 
-export const useWinners = (): SWRResponse<GetWinnersResponse, unknown> =>
-	useSWR<GetWinnersResponse>(winnersQuery, fetcher);
+export const useWinners = () => ({
+  data: {
+    getUserPaymentsForAdmin: [] as Array<Winner>,
+    winnersQuery,
+  },
+  error: null,
+  isValidating: false,
+  mutate: (a?: (c: any) => any, b?: boolean): any => {
+    console.log(a, b);
+  },
+});
 
 type AddUserPayoutResponse = {
-	updateUserPayout: number;
+  updateUserPayout: number;
 };
 
-type AddUserPayoutInput = {
-	amount: number;
-	userID: number;
-};
-
-const addUserPayoutMutation = gql`
-	mutation AddUserPayout($userID: Int!, $amount: Float!) {
-		updateUserPayout(UserID: $userID, AmountPaid: $amount)
-	}
-`;
+// const addUserPayoutMutation = `
+//   mutation AddUserPayout($userID: Int!, $amount: Float!) {
+//     updateUserPayout(UserID: $userID, AmountPaid: $amount)
+//   }
+// `;
 
 export const insertUserPayout = async (
-	userID: number,
-	amount: number,
-): Promise<AddUserPayoutResponse> =>
-	fetcher<AddUserPayoutResponse, AddUserPayoutInput>(addUserPayoutMutation, {
-		amount,
-		userID,
-	});
+  _userID: number,
+  _amount: number,
+): Promise<AddUserPayoutResponse> => ({
+  updateUserPayout: 0,
+});

@@ -13,20 +13,9 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { Payment } from '../generated/graphql';
 
-import { Payment } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type GetPaymentsResponse = {
-	getMyPayments: Array<
-		Pick<Payment, 'paymentDescription' | 'paymentWeek' | 'paymentAmount'>
-	>;
-};
-
-const query = gql`
+const query = `
 	query GetPayments {
 		getMyPayments {
 			paymentDescription
@@ -36,8 +25,13 @@ const query = gql`
 	}
 `;
 
-export const useGetPayments = (): SWRResponse<GetPaymentsResponse, unknown> => {
-	const result = useSWR<GetPaymentsResponse>(query, fetcher);
-
-	return result;
-};
+export const useGetPayments = () => ({
+	data: {
+		getMyPayments: [] as Array<
+			Pick<Payment, 'paymentDescription' | 'paymentWeek' | 'paymentAmount'>
+		>,
+		query,
+	},
+	error: null,
+	isValidating: false,
+});

@@ -85,7 +85,8 @@ export const getTimeRemaining = (end: Date): TimeParts => {
 		(total / (MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE)) % MINUTES_IN_HOUR,
 	);
 	const hours = Math.floor(
-		(total / (MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR)) % HOURS_IN_DAY,
+		(total / (MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR)) %
+			HOURS_IN_DAY,
 	);
 	const days = Math.floor(
 		total / (MILLISECONDS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY),

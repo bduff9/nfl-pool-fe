@@ -13,26 +13,12 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-
-import { fetcher } from '../utils/graphql';
-import { MutationUnsubscribeEmailArgs } from '../generated/graphql';
-
 type UnsubscribeResponse = boolean;
 
-const unsubscribeMutation = gql`
-	mutation Unsubscribe($email: String!) {
-		unsubscribeEmail(email: $email)
-	}
-`;
+// const unsubscribeMutation = `
+// 	mutation Unsubscribe($email: String!) {
+// 		unsubscribeEmail(email: $email)
+// 	}
+// `;
 
-export const unsubscribe = async (email: string): Promise<UnsubscribeResponse> => {
-	const args: MutationUnsubscribeEmailArgs = {
-		email,
-	};
-
-	return fetcher<UnsubscribeResponse, MutationUnsubscribeEmailArgs>(
-		unsubscribeMutation,
-		args,
-	);
-};
+export const unsubscribe = async (_email: string): Promise<UnsubscribeResponse> => true;

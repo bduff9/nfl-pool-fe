@@ -13,31 +13,30 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { VFC } from 'react';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import type { FC } from "react";
+import React from "react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
-import ProgressChartLoader from '../ProgressChart/ProgressChartLoader';
-import RankingPieChartLoader from '../RankingPieChart/RankingPieChartLoader';
+import ProgressChartLoader from "../ProgressChart/ProgressChartLoader";
+import RankingPieChartLoader from "../RankingPieChart/RankingPieChartLoader";
 
-const OverallDashboardLoader: VFC = () => {
-	return (
-		<SkeletonTheme>
-			{/* View Details link */}
-			<div className="mb-3" style={{ marginTop: '42px' }}>
-				<Skeleton height={18} width={87} />
-			</div>
-			{/* Pie Chart */}
-			<RankingPieChartLoader />
-			{/* H2 */}
-			<Skeleton className="mt-5 h2" height={36} width={250} />
-			{/* Points Bar */}
-			<ProgressChartLoader />
-			{/* Games Bar */}
-			<ProgressChartLoader />
-		</SkeletonTheme>
-	);
+const OverallDashboardLoader: FC = () => {
+  return (
+    <SkeletonTheme>
+      {/* View Details link */}
+      <div className="mb-3" style={{ marginTop: "42px" }}>
+        <Skeleton height={18} width={87} />
+      </div>
+      {/* Pie Chart */}
+      <RankingPieChartLoader />
+      {/* H2 */}
+      <Skeleton className="mt-5 h2" height={36} width={250} />
+      {/* Points Bar */}
+      <ProgressChartLoader />
+      {/* Games Bar */}
+      <ProgressChartLoader />
+    </SkeletonTheme>
+  );
 };
-
-OverallDashboardLoader.whyDidYouRender = true;
 
 export default OverallDashboardLoader;

@@ -13,32 +13,10 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { ClientError, gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { Team } from '../generated/graphql';
+import { SeasonStatus } from '../generated/graphql';
 
-import { SeasonStatus, Team } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type GetSurvivorDashboardResponse = {
-	survivorAliveForWeek: number;
-	survivorDeadForWeek: number;
-	survivorWaitingForWeek: number;
-	getSurvivorWeekCount: number;
-	survivorAliveOverall: number;
-	survivorDeadOverall: number;
-	getSurvivorOverallCount: number;
-	getMySurvivorDashboard: null | {
-		isAliveOverall: boolean;
-		lastPickTeam: Pick<Team, 'teamCity' | 'teamLogo' | 'teamName'>;
-	};
-	getMySurvivorPickForWeek: null | {
-		team: Pick<Team, 'teamCity' | 'teamLogo' | 'teamName'>;
-	};
-	getSurvivorStatus: SeasonStatus;
-};
-
-const getSurvivorDashboardQuery = gql`
+const getSurvivorDashboardQuery = `
 	query GetSurvivorDashboard($week: Int!) {
 		survivorAliveForWeek: getSurvivorWeekCount(Type: Alive)
 		survivorDeadForWeek: getSurvivorWeekCount(Type: Dead)
@@ -66,26 +44,41 @@ const getSurvivorDashboardQuery = gql`
 	}
 `;
 
-export const useSurvivorDashboard = (
-	week: number,
-): SWRResponse<GetSurvivorDashboardResponse, unknown> => {
-	const result = useSWR<GetSurvivorDashboardResponse>(
-		[getSurvivorDashboardQuery, week],
-		(query, week) => fetcher(query, { week }),
-	);
+export const useSurvivorDashboard = (week: number) => ({
+	data: {
+		survivorAliveForWeek: 0,
+		survivorDeadForWeek: 0,
+		survivorWaitingForWeek: 0,
+		getSurvivorWeekCount: 0,
+		survivorAliveOverall: 0,
+		survivorDeadOverall: 0,
+		getSurvivorOverallCount: 0,
+		getMySurvivorDashboard: {} as null | {
+			isAliveOverall: boolean;
+			lastPickTeam: Pick<Team, 'teamCity' | 'teamLogo' | 'teamName'>;
+		},
+		getMySurvivorPickForWeek: {} as null | {
+			team: Pick<Team, 'teamCity' | 'teamLogo' | 'teamName'>;
+		},
+		getSurvivorStatus: SeasonStatus.InProgress,
+		getSurvivorDashboardQuery,
+		week,
+	},
+	error: null,
+	isValidating: false,
+});
 
-	return result;
-};
-
-type SurvivorIsAliveResponse = {
-	isAliveInSurvivor: boolean;
-};
-
-const getSurvivorIsAliveQuery = gql`
+const getSurvivorIsAliveQuery = `
 	query SurvivorIsAlive {
 		isAliveInSurvivor
 	}
 `;
 
-export const useSurvivorIsAlive = (): SWRResponse<SurvivorIsAliveResponse, ClientError> =>
-	useSWR<SurvivorIsAliveResponse, ClientError>(getSurvivorIsAliveQuery, fetcher);
+export const useSurvivorIsAlive = () => ({
+	data: {
+		getSurvivorIsAliveQuery,
+		isAliveInSurvivor: true,
+	},
+	error: null,
+	isValidating: false,
+});

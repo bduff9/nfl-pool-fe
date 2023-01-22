@@ -13,77 +13,69 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
-
-import { Game, Team } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
+import type { Game, Team } from "../generated/graphql";
 
 export type GameForWeek = Pick<
-	Game,
-	| 'gameHomeScore'
-	| 'gameID'
-	| 'gameKickoff'
-	| 'gameStatus'
-	| 'gameTimeLeftInQuarter'
-	| 'gameVisitorScore'
+  Game,
+  | "gameHomeScore"
+  | "gameID"
+  | "gameKickoff"
+  | "gameStatus"
+  | "gameTimeLeftInQuarter"
+  | "gameVisitorScore"
 > & {
-	homeTeam: Pick<Team, 'teamCity' | 'teamID' | 'teamLogo' | 'teamName' | 'teamShortName'>;
-	visitorTeam: Pick<
-		Team,
-		'teamCity' | 'teamID' | 'teamLogo' | 'teamName' | 'teamShortName'
-	>;
-	winnerTeam: null | Pick<Team, 'teamID'>;
-	teamHasPossession: null | Pick<Team, 'teamID'>;
-	teamInRedzone: null | Pick<Team, 'teamID'>;
+  homeTeam: Pick<Team, "teamCity" | "teamID" | "teamLogo" | "teamName" | "teamShortName">;
+  visitorTeam: Pick<
+    Team,
+    "teamCity" | "teamID" | "teamLogo" | "teamName" | "teamShortName"
+  >;
+  winnerTeam: null | Pick<Team, "teamID">;
+  teamHasPossession: null | Pick<Team, "teamID">;
+  teamInRedzone: null | Pick<Team, "teamID">;
 };
 
-type GetGamesForWeekResponse = {
-	getGamesForWeek: Array<GameForWeek>;
-};
-
-const query = gql`
-	query GetGamesForWeek($week: Int!) {
-		getGamesForWeek(Week: $week) {
-			gameID
-			gameStatus
-			gameKickoff
-			homeTeam {
-				teamID
-				teamCity
-				teamName
-				teamShortName
-				teamLogo
-			}
-			gameHomeScore
-			visitorTeam {
-				teamID
-				teamCity
-				teamName
-				teamShortName
-				teamLogo
-			}
-			gameVisitorScore
-			winnerTeam {
-				teamID
-			}
-			gameTimeLeftInQuarter
-			teamHasPossession {
-				teamID
-			}
-			teamInRedzone {
-				teamID
-			}
-		}
-	}
+const query = `
+  query GetGamesForWeek($week: Int!) {
+    getGamesForWeek(Week: $week) {
+      gameID
+      gameStatus
+      gameKickoff
+      homeTeam {
+        teamID
+        teamCity
+        teamName
+        teamShortName
+        teamLogo
+      }
+      gameHomeScore
+      visitorTeam {
+        teamID
+        teamCity
+        teamName
+        teamShortName
+        teamLogo
+      }
+      gameVisitorScore
+      winnerTeam {
+        teamID
+      }
+      gameTimeLeftInQuarter
+      teamHasPossession {
+        teamID
+      }
+      teamInRedzone {
+        teamID
+      }
+    }
+  }
 `;
 
-export const useGamesForWeek = (
-	week: number,
-): SWRResponse<GetGamesForWeekResponse, unknown> =>
-	useSWR<GetGamesForWeekResponse>(
-		[query, week],
-		(query, week) => fetcher(query, { week }),
-		{ refreshInterval: 60000 },
-	);
+export const useGamesForWeek = (week: number) => ({
+  data: {
+    getGamesForWeek: [] as Array<GameForWeek>,
+    query,
+    week,
+  },
+  error: null,
+  isValidating: false,
+});

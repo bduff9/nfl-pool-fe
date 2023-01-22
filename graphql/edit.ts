@@ -13,12 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { ClientError, gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
-
-import { Notification } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
+import type { Notification } from '../generated/graphql';
 
 export type MyNotification = Pick<
 	Notification,
@@ -32,11 +27,7 @@ export type MyNotification = Pick<
 	| 'notificationDefinition'
 >;
 
-type GetMyNotificationsResponse = {
-	getMyNotifications: Array<MyNotification>;
-};
-
-const getMyNotificationsQuery = gql`
+const getMyNotificationsQuery = `
 	query MyNotifications {
 		getMyNotifications {
 			notificationID
@@ -59,7 +50,11 @@ const getMyNotificationsQuery = gql`
 	}
 `;
 
-export const useMyNotifications = (): SWRResponse<
-	GetMyNotificationsResponse,
-	ClientError
-> => useSWR<GetMyNotificationsResponse, ClientError>(getMyNotificationsQuery, fetcher);
+export const useMyNotifications = () => ({
+	data: {
+		getMyNotifications: [] as Array<MyNotification>,
+		getMyNotificationsQuery,
+	},
+	error: null,
+	isValidating: false,
+});

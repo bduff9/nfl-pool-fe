@@ -1,0 +1,22 @@
+2023-01-05 18:56:47 info: tempDirectory:/Users/bduffey2/.vscode/extensions/embold-vscode.embold-0.1.4/temp
+2023-01-05 18:56:47 info: Extraction complete for source: /Users/bduffey2/.vscode/extensions/embold-vscode.embold-0.1.4/resources/embold-scanner-archive.zip, destination: /Users/bduffey2/.vscode/extensions/embold-vscode.embold-0.1.4/temp
+2023-01-05 18:56:47 info: Congratulations, your extension "Embold" is now active!
+2023-01-05 19:01:16 info: file:///Users/bduffey2/projects/nfl-pool-serverless/nfl-pool-fe/.git/.gitstatus.jCHWDi
+2023-01-05 19:01:16 error: SQLITE_ERROR: no such table: issues
+2023-01-08 20:50:07 info: file:///Users/bduffey2/projects/nfl-pool-serverless/nfl-pool-fe/postcss.config.js
+2023-01-08 20:50:07 error: SQLITE_ERROR: no such table: issues
+2023-01-08 20:51:44 info: file:///Users/bduffey2/projects/nfl-pool-serverless/nfl-pool-fe/postcss.config.json
+2023-01-08 20:51:44 error: SQLITE_ERROR: no such table: issues
+2023-01-08 20:51:50 info: file:///Users/bduffey2/projects/nfl-pool-serverless/nfl-pool-fe/.git/.gitstatus.N0wMeb
+2023-01-08 20:51:50 error: SQLITE_ERROR: no such table: issues
+2023-01-11 18:28:48 info: file:///Users/bduffey2/projects/nfl-pool-serverless/nfl-pool-fe/.git/refs/remotes/origin/develop.lock
+2023-01-11 18:28:48 error: SQLITE_ERROR: no such table: issues
+2023-01-22 17:37:10 info: tempDirectory:/Users/bduffey2/.vscode/extensions/embold-vscode.embold-0.1.4/temp
+2023-01-22 17:37:10 info: Extraction complete for source: /Users/bduffey2/.vscode/extensions/embold-vscode.embold-0.1.4/resources/embold-scanner-archive.zip, destination: /Users/bduffey2/.vscode/extensions/embold-vscode.embold-0.1.4/temp
+2023-01-22 17:37:10 info: Congratulations, your extension "Embold" is now active!
+2023-01-22 17:37:11 info: file:///Users/bduffey2/projects/nfl-pool-serverless/nfl-pool-fe/.git/.gitstatus.7XGy6v
+2023-01-22 17:37:22 error: SQLITE_ERROR: no such table: issues
+2023-01-22 17:40:26 info: file:///Users/bduffey2/projects/nfl-pool-serverless/nfl-pool-fe/.git/index.lock
+2023-01-22 17:40:26 error: SQLITE_ERROR: no such table: issues
+2023-01-22 17:40:27 info: file:///Users/bduffey2/projects/nfl-pool-serverless/nfl-pool-fe/.git/index.lock
+2023-01-22 17:40:27 error: SQLITE_ERROR: no such table: issues

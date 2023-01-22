@@ -13,197 +13,164 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
-
-import {
-	Account,
-	AdminUserType,
-	Notification,
-	NotificationType,
-	User,
-} from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
+import type {
+  Account,
+  AdminUserType,
+  Notification,
+  NotificationType,
+  User,
+} from "../generated/graphql";
 
 export type UserNotificationForAdmin = Pick<
-	Notification,
-	| 'notificationID'
-	| 'notificationEmail'
-	| 'notificationEmailHoursBefore'
-	| 'notificationSMS'
-	| 'notificationSMSHoursBefore'
+  Notification,
+  | "notificationID"
+  | "notificationEmail"
+  | "notificationEmailHoursBefore"
+  | "notificationSMS"
+  | "notificationSMSHoursBefore"
 > & {
-	notificationDefinition: Pick<NotificationType, 'notificationTypeDescription'>;
+  notificationDefinition: Pick<NotificationType, "notificationTypeDescription">;
 };
 
 export type UserForAdmin = Pick<
-	User,
-	| 'userID'
-	| 'userEmail'
-	| 'userName'
-	| 'userFirstName'
-	| 'userLastName'
-	| 'userTeamName'
-	| 'userReferredByRaw'
-	| 'userEmailVerified'
-	| 'userTrusted'
-	| 'userDoneRegistering'
-	| 'userPlaysSurvivor'
-	| 'userPaid'
-	| 'userOwes'
-	| 'userAutoPicksLeft'
-	| 'userAutoPickStrategy'
-	| 'userCommunicationsOptedOut'
-	| 'yearsPlayed'
+  User,
+  | "userID"
+  | "userEmail"
+  | "userName"
+  | "userFirstName"
+  | "userLastName"
+  | "userTeamName"
+  | "userReferredByRaw"
+  | "userEmailVerified"
+  | "userTrusted"
+  | "userDoneRegistering"
+  | "userPlaysSurvivor"
+  | "userPaid"
+  | "userOwes"
+  | "userAutoPicksLeft"
+  | "userAutoPickStrategy"
+  | "userCommunicationsOptedOut"
+  | "yearsPlayed"
 > & {
-	userReferredByUser: Pick<User, 'userName'> | null;
-	notifications: Array<UserNotificationForAdmin>;
-	accounts: Array<Pick<Account, 'accountProviderID'>>;
+  userReferredByUser: Pick<User, "userName"> | null;
+  notifications: Array<UserNotificationForAdmin>;
+  accounts: Array<Pick<Account, "accountProviderID">>;
 };
 
-type GetAdminUsersResponse = {
-	getUsersForAdmins: Array<UserForAdmin>;
-};
-
-type GetAdminUsersInput = {
-	userType: AdminUserType;
-};
-
-const query = gql`
-	query GetUsersForAdmin($userType: AdminUserType!) {
-		getUsersForAdmins(UserType: $userType) {
-			userID
-			userEmail
-			userName
-			userFirstName
-			userLastName
-			userTeamName
-			userReferredByRaw
-			userReferredByUser {
-				userName
-			}
-			userEmailVerified
-			userTrusted
-			userDoneRegistering
-			userPlaysSurvivor
-			userPaid
-			userOwes
-			userAutoPicksLeft
-			userAutoPickStrategy
-			userCommunicationsOptedOut
-			notifications {
-				notificationID
-				notificationEmail
-				notificationEmailHoursBefore
-				notificationSMS
-				notificationSMSHoursBefore
-				notificationDefinition {
-					notificationTypeDescription
-				}
-			}
-			yearsPlayed
-			accounts {
-				accountProviderID
-			}
-		}
-	}
+const query = `
+  query GetUsersForAdmin($userType: AdminUserType!) {
+    getUsersForAdmins(UserType: $userType) {
+      userID
+      userEmail
+      userName
+      userFirstName
+      userLastName
+      userTeamName
+      userReferredByRaw
+      userReferredByUser {
+        userName
+      }
+      userEmailVerified
+      userTrusted
+      userDoneRegistering
+      userPlaysSurvivor
+      userPaid
+      userOwes
+      userAutoPicksLeft
+      userAutoPickStrategy
+      userCommunicationsOptedOut
+      notifications {
+        notificationID
+        notificationEmail
+        notificationEmailHoursBefore
+        notificationSMS
+        notificationSMSHoursBefore
+        notificationDefinition {
+          notificationTypeDescription
+        }
+      }
+      yearsPlayed
+      accounts {
+        accountProviderID
+      }
+    }
+  }
 `;
 
-export const useAdminUsers = (
-	userType: AdminUserType,
-): SWRResponse<GetAdminUsersResponse, unknown> =>
-	useSWR<GetAdminUsersResponse, GetAdminUsersInput>([query, userType], (query, userType) =>
-		fetcher(query, { userType }),
-	);
+export const useAdminUsers = (userType: AdminUserType) => ({
+  data: {
+    getUsersForAdmins: [] as Array<UserForAdmin>,
+    query,
+    userType,
+  },
+  error: null,
+  isValidating: false,
+  mutate: (a?: (c: any) => any, b?: boolean): any => {
+    console.log(a, b);
+  },
+});
 
 type ToggleSurvivorResponse = {
-	toggleSurvivor: boolean;
+  toggleSurvivor: boolean;
 };
 
-type ToggleSurvivorInput = {
-	isPlaying: boolean;
-	userID: number;
-};
-
-const toggleSurvivorMutation = gql`
-	mutation ToggleSurvivor($userID: Int!, $isPlaying: Boolean!) {
-		toggleSurvivor(UserID: $userID, IsPlaying: $isPlaying)
-	}
-`;
+// const toggleSurvivorMutation = `
+//   mutation ToggleSurvivor($userID: Int!, $isPlaying: Boolean!) {
+//     toggleSurvivor(UserID: $userID, IsPlaying: $isPlaying)
+//   }
+// `;
 
 export const toggleSurvivor = async (
-	userID: number,
-	isPlaying: boolean,
-): Promise<ToggleSurvivorResponse> =>
-	fetcher<ToggleSurvivorResponse, ToggleSurvivorInput>(toggleSurvivorMutation, {
-		isPlaying,
-		userID,
-	});
+  _userID: number,
+  _isPlaying: boolean,
+): Promise<ToggleSurvivorResponse> => ({
+  toggleSurvivor: true,
+});
 
 type RemoveUserResponse = {
-	removeUser: boolean;
+  removeUser: boolean;
 };
 
-type RemoveUserInput = {
-	userID: number;
-};
+// const removeUserMutation = `
+//   mutation RemoveUser($userID: Int!) {
+//     removeUser(UserID: $userID)
+//   }
+// `;
 
-const removeUserMutation = gql`
-	mutation RemoveUser($userID: Int!) {
-		removeUser(UserID: $userID)
-	}
-`;
-
-export const removeUser = async (userID: number): Promise<RemoveUserResponse> =>
-	fetcher<RemoveUserResponse, RemoveUserInput>(removeUserMutation, {
-		userID,
-	});
+export const removeUser = async (_userID: number): Promise<RemoveUserResponse> => ({
+  removeUser: true,
+});
 
 type UpdateUserPaidResponse = {
-	updateUserPaid: number;
+  updateUserPaid: number;
 };
 
-type UpdateUserPaidInput = {
-	amountPaid: number;
-	userID: number;
-};
-
-const updateUserPaidMutation = gql`
-	mutation UpdateUserPaid($userID: Int!, $amountPaid: Float!) {
-		updateUserPaid(UserID: $userID, AmountPaid: $amountPaid)
-	}
-`;
+// const updateUserPaidMutation = `
+//   mutation UpdateUserPaid($userID: Int!, $amountPaid: Float!) {
+//     updateUserPaid(UserID: $userID, AmountPaid: $amountPaid)
+//   }
+// `;
 
 export const setUserPaid = async (
-	userID: number,
-	amountPaid: number,
-): Promise<UpdateUserPaidResponse> =>
-	fetcher<UpdateUserPaidResponse, UpdateUserPaidInput>(updateUserPaidMutation, {
-		amountPaid,
-		userID,
-	});
+  _userID: number,
+  _amountPaid: number,
+): Promise<UpdateUserPaidResponse> => ({
+  updateUserPaid: 0,
+});
 
 type TrustUserResponse = {
-	trustUser: number;
+  trustUser: number;
 };
 
-type TrustUserInput = {
-	referredBy: number;
-	userID: number;
-};
-
-const trustUserMutation = gql`
-	mutation TrustUser($userID: Int!, $referredBy: Int!) {
-		trustUser(UserID: $userID, ReferredByUserID: $referredBy)
-	}
-`;
+// const trustUserMutation = `
+//   mutation TrustUser($userID: Int!, $referredBy: Int!) {
+//     trustUser(UserID: $userID, ReferredByUserID: $referredBy)
+//   }
+// `;
 
 export const trustUser = async (
-	userID: number,
-	referredBy: number,
-): Promise<TrustUserResponse> =>
-	fetcher<TrustUserResponse, TrustUserInput>(trustUserMutation, {
-		referredBy,
-		userID,
-	});
+  _userID: number,
+  _referredBy: number,
+): Promise<TrustUserResponse> => ({
+  trustUser: 0,
+});

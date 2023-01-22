@@ -13,14 +13,15 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { GetServerSideProps } from 'next';
-import React, { VFC } from 'react';
+import type { GetServerSideProps } from "next";
+import type { FC } from "react";
+import React from "react";
 
-const TestError: VFC = () => <h1>Test Page</h1>;
+const TestError: FC = () => <h1>Test Page</h1>;
 
 // ts-prune-ignore-next
 export const getServerSideProps: GetServerSideProps = async () => {
-	throw new Error('Testing 500 page');
+  throw new Error("Testing 500 page");
 };
 
 // ts-prune-ignore-next

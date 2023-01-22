@@ -13,28 +13,25 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { User } from "../generated/graphql";
 
-import { User } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
+export type DropdownUser = Pick<User, "userID" | "userFirstName" | "userLastName">;
 
-export type DropdownUser = Pick<User, 'userID' | 'userFirstName' | 'userLastName'>;
-
-type GetUserDropdownResponse = {
-	userDropdown: Array<DropdownUser>;
-};
-
-const query = gql`
-	query UserDropdown {
-		userDropdown: getUsersForAdmins(UserType: All) {
-			userID
-			userFirstName
-			userLastName
-		}
-	}
+const query = `
+  query UserDropdown {
+    userDropdown: getUsersForAdmins(UserType: All) {
+      userID
+      userFirstName
+      userLastName
+    }
+  }
 `;
 
-export const useUserDropdown = (): SWRResponse<GetUserDropdownResponse, unknown> =>
-	useSWR<GetUserDropdownResponse>(query, fetcher);
+export const useUserDropdown = () => ({
+  data: {
+    userDropdown: [] as Array<DropdownUser>,
+    query,
+  },
+  error: null,
+  isValidating: false,
+});

@@ -13,23 +13,22 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import React, { VFC } from 'react';
-import Skeleton from 'react-loading-skeleton';
+import type { FC } from "react";
+import React from "react";
+import Skeleton from "react-loading-skeleton";
 
-const RankingPieChartLoader: VFC = () => {
-	return (
-		<>
-			{/* Pie Chart */}
-			<div>
-				<Skeleton circle height={160} width={160} />
-			</div>
-			<div className="mt-2">
-				<Skeleton height={19} width={66} />
-			</div>
-		</>
-	);
+const RankingPieChartLoader: FC = () => {
+  return (
+    <>
+      {/* Pie Chart */}
+      <div>
+        <Skeleton circle height={160} width={160} />
+      </div>
+      <div className="mt-2">
+        <Skeleton height={19} width={66} />
+      </div>
+    </>
+  );
 };
-
-RankingPieChartLoader.whyDidYouRender = true;
 
 export default RankingPieChartLoader;

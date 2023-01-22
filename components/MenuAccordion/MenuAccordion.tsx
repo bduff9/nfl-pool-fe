@@ -13,44 +13,52 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import clsx from 'clsx';
-import React, { VFC } from 'react';
-import Accordion from 'react-bootstrap/Accordion';
-import { useAccordionButton } from 'react-bootstrap/AccordionButton';
+import clsx from "clsx";
+import type { FC } from "react";
+import React from "react";
+import Accordion from "react-bootstrap/Accordion";
+import { useAccordionButton } from "react-bootstrap/AccordionButton";
 
-import styles from './MenuAccordion.module.scss';
+import styles from "./MenuAccordion.module.scss";
 
 type MenuAccordionButtonProps = { children: string; eventKey: string };
 
-const MenuAccordionButton: VFC<MenuAccordionButtonProps> = ({ children, eventKey }) => {
-	const decoratedOnClick = useAccordionButton(eventKey);
+const MenuAccordionButton: FC<MenuAccordionButtonProps> = ({ children, eventKey }) => {
+  const decoratedOnClick = useAccordionButton(eventKey);
 
-	return (
-		<button
-			className={clsx('w-100', 'text-start', 'py-2', 'ps-2', 'rounded', styles['btn-menu'])}
-			onClick={decoratedOnClick}
-			type="button"
-		>
-			{children}
-		</button>
-	);
+  return (
+    <button
+      className={clsx(
+        "w-100",
+        "text-start",
+        "py-2",
+        "ps-2",
+        "rounded",
+        styles["btn-menu"],
+      )}
+      onClick={decoratedOnClick}
+      type="button"
+    >
+      {children}
+    </button>
+  );
 };
 
 type MenuAccordionProps = { children: Array<JSX.Element>; show?: boolean; title: string };
 
-const MenuAccordion: VFC<MenuAccordionProps> = ({ children, show = true, title }) => {
-	if (!show) {
-		return null;
-	}
+const MenuAccordion: FC<MenuAccordionProps> = ({ children, show = true, title }) => {
+  if (!show) {
+    return null;
+  }
 
-	return (
-		<div>
-			<MenuAccordionButton eventKey={title}>{title}</MenuAccordionButton>
-			<Accordion.Collapse eventKey={title}>
-				<div>{children}</div>
-			</Accordion.Collapse>
-		</div>
-	);
+  return (
+    <div>
+      <MenuAccordionButton eventKey={title}>{title}</MenuAccordionButton>
+      <Accordion.Collapse eventKey={title}>
+        <div>{children}</div>
+      </Accordion.Collapse>
+    </div>
+  );
 };
 
 export default MenuAccordion;

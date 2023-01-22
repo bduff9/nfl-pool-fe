@@ -13,7 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { Maybe } from '../generated/graphql';
+import type { Maybe } from '../generated/graphql';
 
 type NameProps = {
 	userName?: Maybe<string> | undefined;

@@ -46,6 +46,12 @@ if (sendToLogflare) {
 				},
 			},
 			level: 'debug',
+			transport: {
+				options: {
+					colorize: true,
+				},
+				target: 'pino-pretty',
+			},
 		},
 		stream,
 	);
@@ -56,7 +62,12 @@ if (sendToLogflare) {
 			revision: process.env.VERCEL_GITHUB_COMMIT_SHA ?? '',
 		},
 		level: 'debug',
-		prettyPrint: true,
+		/* transport: {
+			options: {
+				colorize: true,
+			},
+			target: 'pino-pretty',
+		}, */
 	});
 }
 

@@ -13,18 +13,9 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { ClientError, gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { Week } from '../generated/graphql';
 
-import { Week } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type GetCurrentWeekResponse = {
-	getWeek: Pick<Week, 'weekNumber' | 'seasonStatus'>;
-};
-
-const getCurrentWeekQuery = gql`
+const getCurrentWeekQuery = `
 	query GetCurrentWeek {
 		getWeek {
 			weekNumber
@@ -33,14 +24,16 @@ const getCurrentWeekQuery = gql`
 	}
 `;
 
-export const useCurrentWeek = (): SWRResponse<GetCurrentWeekResponse, unknown> =>
-	useSWR<GetCurrentWeekResponse>(getCurrentWeekQuery, fetcher);
+export const useCurrentWeek = () => ({
+	data: {
+		getWeek: {} as Pick<Week, 'weekNumber' | 'seasonStatus'>,
+		getCurrentWeekQuery,
+	},
+	error: null,
+	isValidating: false,
+});
 
-type GetSelectedWeekResponse = {
-	getWeek: Pick<Week, 'weekNumber' | 'weekStarts' | 'weekStatus'>;
-};
-
-const getSelectedWeekQuery = gql`
+const getSelectedWeekQuery = `
 	query GetSelectedWeek($week: Int!) {
 		getWeek(Week: $week) {
 			weekNumber
@@ -50,28 +43,28 @@ const getSelectedWeekQuery = gql`
 	}
 `;
 
-export const useSelectedWeek = (
-	week: number,
-): SWRResponse<GetSelectedWeekResponse, ClientError> =>
-	useSWR<GetSelectedWeekResponse, ClientError>(
-		[getSelectedWeekQuery, week],
-		(query, week) => fetcher(query, { week }),
-	);
+export const useSelectedWeek = (week: number) => ({
+	data: {
+		getWeek: {} as Pick<Week, 'weekNumber' | 'weekStarts' | 'weekStatus'>,
+		getSelectedWeekQuery,
+		week,
+	},
+	error: null,
+	isValidating: false,
+});
 
-const registerForSurvivorMutation = gql`
-	mutation RegisterUserForSurvivorPool {
-		registerForSurvivor
-	}
-`;
+// const registerForSurvivorMutation = `
+// 	mutation RegisterUserForSurvivorPool {
+// 		registerForSurvivor
+// 	}
+// `;
 
-export const registerForSurvivor = (): Promise<boolean> =>
-	fetcher<boolean>(registerForSurvivorMutation);
+export const registerForSurvivor = async (): Promise<boolean> => true;
 
-const unregisterForSurvivorMutation = gql`
-	mutation UnregisterUserForSurvivorPool {
-		unregisterForSurvivor
-	}
-`;
+// const unregisterForSurvivorMutation = `
+// 	mutation UnregisterUserForSurvivorPool {
+// 		unregisterForSurvivor
+// 	}
+// `;
 
-export const unregisterForSurvivor = (): Promise<boolean> =>
-	fetcher<boolean>(unregisterForSurvivorMutation);
+export const unregisterForSurvivor = async (): Promise<boolean> => true;

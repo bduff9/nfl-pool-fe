@@ -13,32 +13,9 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { ClientError, gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { WeeklyMv } from '../generated/graphql';
 
-import { WeeklyMv } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type GetWeeklyDashboardResponse = {
-	getMyWeeklyDashboard: null | Pick<
-		WeeklyMv,
-		| 'rank'
-		| 'tied'
-		| 'pointsEarned'
-		| 'pointsWrong'
-		| 'pointsPossible'
-		| 'pointsTotal'
-		| 'gamesCorrect'
-		| 'gamesWrong'
-		| 'gamesPossible'
-		| 'gamesTotal'
-		| 'tiebreakerScore'
-		| 'lastScore'
-	>;
-};
-
-const query = gql`
+const query = `
 	query WeeklyDashboard($week: Int!) {
 		getMyWeeklyDashboard(Week: $week) {
 			rank
@@ -57,29 +34,44 @@ const query = gql`
 	}
 `;
 
-export const useWeeklyDashboard = (
-	week: number,
-): SWRResponse<GetWeeklyDashboardResponse, unknown> =>
-	useSWR<GetWeeklyDashboardResponse>([query, week], (query, week) =>
-		fetcher(query, { week }),
-	);
+export const useWeeklyDashboard = (week: number) => ({
+	data: {
+		getMyWeeklyDashboard: {} as null | Pick<
+			WeeklyMv,
+			| 'rank'
+			| 'tied'
+			| 'pointsEarned'
+			| 'pointsWrong'
+			| 'pointsPossible'
+			| 'pointsTotal'
+			| 'gamesCorrect'
+			| 'gamesWrong'
+			| 'gamesPossible'
+			| 'gamesTotal'
+			| 'tiebreakerScore'
+			| 'lastScore'
+		>,
+		query,
+		week,
+	},
+	error: null,
+	isValidating: false,
+});
 
-type GetWeeklyCountsResponse = {
-	getWeeklyRankingsTotalCount: number;
-	getWeeklyTiedWithMeCount: number;
-};
-
-const getWeeklyCountsQuery = gql`
+const getWeeklyCountsQuery = `
 	query GetWeeklyCounts($week: Int!) {
 		getWeeklyTiedWithMeCount(Week: $week)
 		getWeeklyRankingsTotalCount(Week: $week)
 	}
 `;
 
-export const useWeeklyCounts = (
-	selectedWeek: number,
-): SWRResponse<GetWeeklyCountsResponse, ClientError> =>
-	useSWR<GetWeeklyCountsResponse, ClientError>(
-		[getWeeklyCountsQuery, selectedWeek],
-		(query, week) => fetcher(query, { week }),
-	);
+export const useWeeklyCounts = (selectedWeek: number) => ({
+	data: {
+		getWeeklyRankingsTotalCount: 0,
+		getWeeklyTiedWithMeCount: 0,
+		getWeeklyCountsQuery,
+		selectedWeek,
+	},
+	error: null,
+	isValidating: false,
+});

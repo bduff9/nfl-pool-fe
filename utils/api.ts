@@ -13,10 +13,9 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import axios from 'axios';
-import { getSession } from 'next-auth/client';
+import { getSession } from 'next-auth/react';
 
-import { EmailType } from '../generated/graphql';
+import type { EmailType } from '../generated/graphql';
 
 import { NEXT_PUBLIC_API_URL } from './constants';
 
@@ -39,11 +38,16 @@ export const emailPreviewFetcher = async (
 ): Promise<string> => {
 	const session = await getSession({});
 	const url = getEmailPreviewURL(emailType);
-	const result = await axios.post<string>(url, data, {
-		headers: {
-			authorization: session ? `Bearer ${session.accessToken}` : undefined,
-		},
+	const response = await fetch(url, {
+		body: JSON.stringify(data),
+		headers: session
+			? {
+					authorization: `Bearer ${(session as any).accessToken}`,
+			  }
+			: undefined,
+		method: 'POST',
 	});
+	const result = await response.text();
 
-	return result.data;
+	return result;
 };

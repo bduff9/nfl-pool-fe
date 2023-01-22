@@ -13,51 +13,41 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
-
-import { WeeklyMv } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
+import type { WeeklyMv } from "../generated/graphql";
 
 export type WeeklyRank = Pick<
-	WeeklyMv,
-	| 'rank'
-	| 'tied'
-	| 'userID'
-	| 'userName'
-	| 'teamName'
-	| 'pointsEarned'
-	| 'gamesCorrect'
-	| 'tiebreakerScore'
-	| 'lastScore'
-	| 'isEliminated'
+  WeeklyMv,
+  | "rank"
+  | "tied"
+  | "userID"
+  | "userName"
+  | "teamName"
+  | "pointsEarned"
+  | "gamesCorrect"
+  | "tiebreakerScore"
+  | "lastScore"
+  | "isEliminated"
 >;
 
-type GetWeeklyRankingsResponse = {
-	getWeeklyRankings: Array<WeeklyRank>;
-};
-
-const query = gql`
-	query WeeklyRankings($week: Int!) {
-		getWeeklyRankings(Week: $week) {
-			rank
-			tied
-			userID
-			userName
-			teamName
-			pointsEarned
-			gamesCorrect
-			tiebreakerScore
-			lastScore
-			isEliminated
-		}
-	}
+const query = `
+  query WeeklyRankings($week: Int!) {
+    getWeeklyRankings(Week: $week) {
+      rank
+      tied
+      userID
+      userName
+      teamName
+      pointsEarned
+      gamesCorrect
+      tiebreakerScore
+      lastScore
+      isEliminated
+    }
+  }
 `;
 
-export const useWeeklyRankings = (
-	week: number,
-): SWRResponse<GetWeeklyRankingsResponse, unknown> =>
-	useSWR<GetWeeklyRankingsResponse>([query, week], (query, week) =>
-		fetcher(query, { week }),
-	);
+export const useWeeklyRankings = (week: number) => ({
+  data: { getWeeklyRankings: [] as Array<WeeklyRank>, query, week },
+  error: null,
+  isValidating: false,
+});

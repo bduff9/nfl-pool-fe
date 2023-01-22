@@ -13,24 +13,20 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { ClientError, gql } from 'graphql-request';
-import { Session } from 'next-auth';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { Session } from 'next-auth';
 
-import { fetcher } from '../utils/graphql';
-
-type GetMyAlertsResponse = {
-	getMyAlerts: Array<string>;
-};
-
-const getMyAlertsQuery = gql`
+const getMyAlertsQuery = `
 	query Alerts {
 		getMyAlerts
 	}
 `;
 
-export const useMyAlerts = (
-	session: null | Session,
-): SWRResponse<GetMyAlertsResponse, ClientError> =>
-	useSWR<GetMyAlertsResponse, ClientError>(session ? getMyAlertsQuery : null, fetcher);
+export const useMyAlerts = (session: null | Session) => ({
+	data: {
+		getMyAlerts: [] as Array<string>,
+	},
+	error: null,
+	isValidating: false,
+	getMyAlertsQuery,
+	session,
+});

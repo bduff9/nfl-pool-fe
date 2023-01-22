@@ -13,35 +13,38 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { useSession } from 'next-auth/client';
-import { useRouter } from 'next/router';
-import React, { VFC } from 'react';
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import type { FC } from "react";
+import React from "react";
 
 //import styles from './Unauthenticated.module.scss';
 
 type UnauthenticatedProps = {
-	children: JSX.Element | Array<JSX.Element>;
+  children: JSX.Element | Array<JSX.Element>;
 };
 
-const Unauthenticated: VFC<UnauthenticatedProps> = ({ children }): JSX.Element => {
-	const [session, loading] = useSession();
-	const router = useRouter();
+const Unauthenticated: FC<UnauthenticatedProps> = ({ children }): JSX.Element => {
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
+  const router = useRouter();
 
-	if (loading) return <></>;
+  if (loading) return <></>;
 
-	if (session) {
-		router.push('/');
+  if (session) {
+    router.push("/");
 
-		return <></>;
-	}
+    return <></>;
+  }
 
-	return (
-		<div className="h-100 row align-items-md-center justify-content-md-center">
-			{children}
-		</div>
-	);
+  return (
+    <div
+      className="h-100 row align-items-md-center justify-content-md-center"
+      data-testid="unauthenticated"
+    >
+      {children}
+    </div>
+  );
 };
-
-Unauthenticated.whyDidYouRender = true;
 
 export default Unauthenticated;

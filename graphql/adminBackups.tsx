@@ -13,43 +13,39 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { Backup } from "../generated/graphql";
 
-import { Backup } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type GetAdminBackupsResponse = {
-	getBackups: Array<Backup>;
-};
-
-const query = gql`
-	query GetBackups {
-		getBackups {
-			backupName
-			backupDate
-			backupWhen
-		}
-	}
+const query = `
+  query GetBackups {
+    getBackups {
+      backupName
+      backupDate
+      backupWhen
+    }
+  }
 `;
 
-export const useAdminBackups = (): SWRResponse<GetAdminBackupsResponse, unknown> =>
-	useSWR<GetAdminBackupsResponse>(query, fetcher);
+export const useAdminBackups = () => ({
+  data: {
+    getBackups: [] as Array<Backup>,
+    query,
+  },
+  error: null,
+  isValidating: false,
+});
 
 type RestoreBackupResponse = {
-	restoreBackup: boolean;
+  restoreBackup: boolean;
 };
 
-type RestoreBackupInput = {
-	backupName: string;
-};
+// const restoreBackupMutation = `
+//   mutation restoreBackup($backupName: String!) {
+//     restoreBackup(BackupName: $backupName)
+//   }
+// `;
 
-const restoreBackupMutation = gql`
-	mutation restoreBackup($backupName: String!) {
-		restoreBackup(BackupName: $backupName)
-	}
-`;
-
-export const restoreBackup = async (backupName: string): Promise<RestoreBackupResponse> =>
-	fetcher<RestoreBackupResponse, RestoreBackupInput>(restoreBackupMutation, { backupName });
+export const restoreBackup = async (
+  _backupName: string,
+): Promise<RestoreBackupResponse> => ({
+  restoreBackup: true,
+});

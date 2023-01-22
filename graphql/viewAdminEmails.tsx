@@ -13,61 +13,53 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-
-import { Email, EmailResult, User } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
+import type { Email, EmailResult, User } from "../generated/graphql";
 
 export type EmailResponse = Pick<
-	Email,
-	'emailID' | 'emailType' | 'to' | 'subject' | 'html' | 'sms' | 'createdAt'
+  Email,
+  "emailID" | "emailType" | "to" | "subject" | "html" | "sms" | "createdAt"
 > & {
-	toUsers: Array<
-		Pick<User, 'userID' | 'userEmail' | 'userPhone' | 'userFirstName' | 'userLastName'>
-	>;
+  toUsers: Array<
+    Pick<User, "userID" | "userEmail" | "userPhone" | "userFirstName" | "userLastName">
+  >;
 };
 
 type LoadAdminEmailsResponse = {
-	loadEmails: Pick<EmailResult, 'hasMore' | 'lastKey'> & {
-		results: Array<EmailResponse>;
-	};
+  loadEmails: Pick<EmailResult, "hasMore" | "lastKey"> & {
+    results: Array<EmailResponse>;
+  };
 };
 
-type LoadAdminEmailsInput = {
-	count: number;
-	lastKey: null | string;
-};
+// const query = `
+//   query LoadEmails($count: Int!, $lastKey: String) {
+//     loadEmails(Count: $count, LastKey: $lastKey) {
+//       hasMore
+//       lastKey
+//       results {
+//         emailID
+//         emailType
+//         to
+//         toUsers {
+//           userID
+//           userEmail
+//           userPhone
+//           userFirstName
+//           userLastName
+//         }
+//         subject
+//         html
+//         sms
+//         createdAt
+//       }
+//     }
+//   }
+// `;
 
-const query = gql`
-	query LoadEmails($count: Int!, $lastKey: String) {
-		loadEmails(Count: $count, LastKey: $lastKey) {
-			hasMore
-			lastKey
-			results {
-				emailID
-				emailType
-				to
-				toUsers {
-					userID
-					userEmail
-					userPhone
-					userFirstName
-					userLastName
-				}
-				subject
-				html
-				sms
-				createdAt
-			}
-		}
-	}
-`;
-
-export const loadEmails = (
-	count: number,
-	lastKey: null | string,
-): Promise<LoadAdminEmailsResponse> =>
-	fetcher<LoadAdminEmailsResponse, LoadAdminEmailsInput>(query, {
-		count,
-		lastKey,
-	});
+export const loadEmails = async (
+  _count: number,
+  _lastKey: null | string,
+): Promise<LoadAdminEmailsResponse> => ({
+  loadEmails: {} as Pick<EmailResult, "hasMore" | "lastKey"> & {
+    results: Array<EmailResponse>;
+  },
+});

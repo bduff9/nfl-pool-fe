@@ -1,0 +1,576 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = []
+}
+
+model APICall {
+  APICallID        Int       @id @default(autoincrement())
+  APICallDate      DateTime  @unique(map: "uk_APICall") @default(now()) @db.Timestamp(0)
+  APICallError     String?   @db.VarChar(250)
+  APICallResponse  String?   @db.LongText
+  APICallURL       String    @db.VarChar(250)
+  APICallWeek      Int?
+  APICallYear      Int
+  APICallAdded     DateTime  @default(now()) @db.Timestamp(0)
+  APICallAddedBy   String    @db.VarChar(50)
+  APICallUpdated   DateTime  @default(now()) @db.Timestamp(0)
+  APICallUpdatedBy String    @db.VarChar(50)
+  APICallDeleted   DateTime? @db.Timestamp(0)
+  APICallDeletedBy String?   @db.VarChar(50)
+
+  @@map("APICalls")
+}
+
+model Account {
+  id                String    @id @default(cuid()) @map("AccountID")
+  userId            String    @map("UserID")
+  // AccountCompoundID         String    @unique(map: "uk_AccountCompoundID", length: 250) @db.VarChar(255)
+  type              String    @map("AccountProviderType")
+  provider          String    @map("AccountProviderID")
+  providerAccountId String    @map("AccountProviderAccountID")
+  refresh_token     String?   @map("AccountRefreshToken") @db.Text
+  access_token      String?   @map("AccountAccessToken") @db.Text
+  expires_at        Int?      @map("AccountAccessTokenExpires")
+  token_type        String?   @map("AccountTokenType")
+  scope             String?   @map("AccountScope")
+  id_token          String?   @map("AccountIDToken") @db.Text
+  session_state     String?   @map("AccountSessionState")
+  added             DateTime  @default(now()) @map("AccountAdded") @db.Timestamp(0)
+  added_by          String    @map("AccountAddedBy") @db.VarChar(50)
+  updated           DateTime  @default(now()) @map("AccountUpdated") @db.Timestamp(0)
+  updated_by        String    @map("AccountUpdatedBy") @db.VarChar(50)
+  deleted           DateTime? @map("AccountDeleted") @db.Timestamp(0)
+  deleted_by        String?   @map("AccountDeletedBy") @db.VarChar(50)
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("Accounts")
+}
+
+model Game {
+  GameID                Int             @id
+  GameWeek              Int
+  GameNumber            Int
+  HomeTeamID            Int
+  GameHomeSpread        Decimal?        @db.Decimal(4, 2)
+  GameHomeScore         Int             @default(0)
+  VisitorTeamID         Int
+  GameVisitorSpread     Decimal?        @db.Decimal(4, 2)
+  GameVisitorScore      Int             @default(0)
+  WinnerTeamID          Int?
+  GameStatus            Game_GameStatus @default(Pregame)
+  GameKickoff           DateTime        @db.Timestamp(0)
+  GameTimeLeftInSeconds Int             @default(3600)
+  GameTimeLeftInQuarter String          @default("") @db.VarChar(10)
+  GameHasPossession     Int?
+  GameInRedzone         Int?
+  GameAdded             DateTime        @default(now()) @db.Timestamp(0)
+  GameAddedBy           String          @db.VarChar(50)
+  GameUpdated           DateTime        @default(now()) @db.Timestamp(0)
+  GameUpdatedBy         String          @db.VarChar(50)
+  GameDeleted           DateTime?       @db.Timestamp(0)
+  GameDeletedBy         String?         @db.VarChar(50)
+
+  @@unique([HomeTeamID, VisitorTeamID], map: "uk_Game")
+  @@index([GameHasPossession], map: "fk_GameHasPossession")
+  @@index([GameInRedzone], map: "fk_GameInRedzone")
+  @@index([VisitorTeamID], map: "fk_VisitorTeamID")
+  @@index([WinnerTeamID], map: "fk_WinnerTeamID")
+  @@map("Games")
+}
+
+model History {
+  HistoryID        Int                 @id @default(autoincrement())
+  UserID           Int
+  HistoryYear      Int
+  LeagueID         Int
+  HistoryType      History_HistoryType
+  HistoryWeek      Int?
+  HistoryPlace     Int
+  HistoryAdded     DateTime            @default(now()) @db.Timestamp(0)
+  HistoryAddedBy   String              @db.VarChar(50)
+  HistoryUpdated   DateTime            @default(now()) @db.Timestamp(0)
+  HistoryUpdatedBy String              @db.VarChar(50)
+  HistoryDeleted   DateTime?           @db.Timestamp(0)
+  HistoryDeletedBy String?             @db.VarChar(50)
+
+  @@unique([HistoryYear, HistoryType, HistoryWeek, UserID], map: "uk_History")
+  @@index([LeagueID], map: "fk_HistoryLeagueID")
+  @@index([UserID], map: "fk_HistoryUserID")
+}
+
+model League {
+  LeagueID        Int       @id @default(autoincrement())
+  LeagueName      String    @unique(map: "uk_LeagueName") @db.VarChar(100)
+  LeagueAdmin     Int
+  LeagueAdded     DateTime  @default(now()) @db.Timestamp(0)
+  LeagueAddedBy   String    @db.VarChar(50)
+  LeagueUpdated   DateTime  @default(now()) @db.Timestamp(0)
+  LeagueUpdatedBy String    @db.VarChar(50)
+  LeagueDeleted   DateTime? @db.Timestamp(0)
+  LeagueDeletedBy String?   @db.VarChar(50)
+
+  @@index([LeagueAdmin], map: "fk_LeagueAdmin")
+  @@map("Leagues")
+}
+
+model Log {
+  LogID        Int           @id @default(autoincrement())
+  LogAction    Log_LogAction
+  LogDate      DateTime      @default(now()) @db.Timestamp(0)
+  LogMessage   String?       @db.LongText
+  LogData      Json?
+  UserID       Int?
+  LeagueID     Int?
+  LogAdded     DateTime      @default(now()) @db.Timestamp(0)
+  LogAddedBy   String        @db.VarChar(50)
+  LogUpdated   DateTime      @default(now()) @db.Timestamp(0)
+  LogUpdatedBy String        @db.VarChar(50)
+  LogDeleted   DateTime?     @db.Timestamp(0)
+  LogDeletedBy String?       @db.VarChar(50)
+
+  @@unique([UserID, LogAction, LogDate], map: "uk_LogMessage")
+  @@index([LeagueID], map: "fk_LogLeagueID")
+  @@index([LogAction], map: "idx_LogAction")
+  @@index([LogDate], map: "idx_LogDate")
+  @@index([UserID], map: "idx_UserID")
+  @@map("Logs")
+}
+
+model NotificationType {
+  NotificationType                    String    @id @db.VarChar(100)
+  NotificationTypeDescription         String    @db.VarChar(255)
+  NotificationTypeHasEmail            Boolean   @default(false)
+  NotificationTypeHasSMS              Boolean   @default(false)
+  NotificationTypeHasPushNotification Boolean   @default(false)
+  NotificationTypeHasHours            Boolean
+  NotificationTypeTooltip             String?   @db.VarChar(255)
+  NotificationTypeAdded               DateTime  @default(now()) @db.Timestamp(0)
+  NotificationTypeAddedBy             String    @db.VarChar(50)
+  NotificationTypeUpdated             DateTime  @default(now()) @db.Timestamp(0)
+  NotificationTypeUpdatedBy           String    @db.VarChar(50)
+  NotificationTypeDeleted             DateTime? @db.Timestamp(0)
+  NotificationTypeDeletedBy           String?   @db.VarChar(50)
+
+  @@map("NotificationTypes")
+}
+
+model Notification {
+  NotificationID                          Int       @id @default(autoincrement())
+  UserID                                  Int
+  NotificationType                        String    @db.VarChar(100)
+  NotificationEmail                       Boolean   @default(false)
+  NotificationEmailHoursBefore            Int?
+  NotificationSMS                         Boolean   @default(false)
+  NotificationSMSHoursBefore              Int?
+  NotificationPushNotification            Boolean   @default(false)
+  NotificationPushNotificationHoursBefore Int?
+  NotificationAdded                       DateTime  @default(now()) @db.Timestamp(0)
+  NotificationAddedBy                     String    @db.VarChar(50)
+  NotificationUpdated                     DateTime  @default(now()) @db.Timestamp(0)
+  NotificationUpdatedBy                   String    @db.VarChar(50)
+  NotificationDeleted                     DateTime? @db.Timestamp(0)
+  NotificationDeletedBy                   String?   @db.VarChar(50)
+
+  @@unique([UserID, NotificationType], map: "uk_UserNotification")
+  @@index([NotificationType], map: "fk_NotificationType")
+  @@map("Notifications")
+}
+
+model OverallMV {
+  OverallMVID    Int      @id @default(autoincrement())
+  Rank           Int      @default(0)
+  Tied           Boolean  @default(false)
+  UserID         Int
+  TeamName       String   @db.VarChar(100)
+  UserName       String   @db.VarChar(255)
+  PointsEarned   Int
+  PointsWrong    Int
+  PointsPossible Int
+  PointsTotal    Int
+  GamesCorrect   Int
+  GamesWrong     Int
+  GamesPossible  Int
+  GamesTotal     Int
+  GamesMissed    Int
+  IsEliminated   Boolean  @default(false)
+  LastUpdated    DateTime @default(now()) @db.Timestamp(0)
+
+  @@index([UserID], map: "fk_OverallMVUserID")
+}
+
+model Payment {
+  PaymentID          Int                 @id @default(autoincrement())
+  UserID             String
+  PaymentType        Payment_PaymentType
+  PaymentDescription String              @db.VarChar(99)
+  PaymentWeek        Int?
+  PaymentAmount      Decimal             @db.Decimal(5, 2)
+  PaymentAdded       DateTime            @default(now()) @db.Timestamp(0)
+  PaymentAddedBy     String              @db.VarChar(50)
+  PaymentUpdated     DateTime            @default(now()) @db.Timestamp(0)
+  PaymentUpdatedBy   String              @db.VarChar(50)
+  PaymentDeleted     DateTime?           @db.Timestamp(0)
+  PaymentDeletedBy   String?             @db.VarChar(50)
+  Users              User                @relation(fields: [UserID], references: [id], onDelete: Cascade, map: "fk_PaymentUserID")
+
+  @@index([UserID], map: "fk_PaymentUserID")
+  @@map("Payments")
+}
+
+model Pick {
+  PickID        Int       @id @default(autoincrement())
+  UserID        Int
+  LeagueID      Int
+  GameID        Int
+  TeamID        Int?
+  PickPoints    Int?
+  PickAdded     DateTime  @default(now()) @db.Timestamp(0)
+  PickAddedBy   String    @db.VarChar(50)
+  PickUpdated   DateTime  @default(now()) @db.Timestamp(0)
+  PickUpdatedBy String    @db.VarChar(50)
+  PickDeleted   DateTime? @db.Timestamp(0)
+  PickDeletedBy String?   @db.VarChar(50)
+
+  @@unique([UserID, LeagueID, GameID], map: "uk_UserPick")
+  @@index([GameID], map: "fk_PickGameID")
+  @@index([LeagueID], map: "fk_PickLeagueID")
+  @@index([TeamID], map: "fk_PickTeamID")
+  @@map("Picks")
+}
+
+model Session {
+  id           String    @id @default(cuid()) @map("SessionID")
+  sessionToken String    @unique @map("SessionToken")
+  userId       String    @map("UserID")
+  expires      DateTime  @map("SessionExpires")
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  added        DateTime  @default(now()) @map("SessionAdded") @db.Timestamp(0)
+  added_by     String    @map("SessionAddedBy") @db.VarChar(50)
+  updated      DateTime  @default(now()) @map("SessionUpdated") @db.Timestamp(0)
+  updated_by   String    @map("SessionUpdatedBy") @db.VarChar(50)
+  deleted      DateTime? @map("SessionDeleted") @db.Timestamp(0)
+  deleted_by   String?   @map("SessionDeletedBy") @db.VarChar(50)
+
+  @@map("Sessions")
+}
+
+model SupportContent {
+  SupportContentID           Int                               @id @default(autoincrement())
+  SupportContentType         SupportContent_SupportContentType
+  SupportContentOrder        Int
+  SupportContentDescription  String                            @db.Text
+  SupportContentDescription2 String?                           @db.Text
+  SupportContentCategory     String?                           @db.VarChar(25)
+  SupportContentKeywords     String?                           @db.VarChar(255)
+  SupportContentAdded        DateTime                          @default(now()) @db.Timestamp(0)
+  SupportContentAddedBy      String                            @db.VarChar(50)
+  SupportContentUpdated      DateTime                          @default(now()) @db.Timestamp(0)
+  SupportContentUpdatedBy    String                            @db.VarChar(50)
+  SupportContentDeleted      DateTime?                         @db.Timestamp(0)
+  SupportContentDeletedBy    String?                           @db.VarChar(50)
+}
+
+model SurvivorMV {
+  SurvivorMVID   Int                       @id @default(autoincrement())
+  Rank           Int                       @default(0)
+  Tied           Boolean                   @default(false)
+  UserID         Int
+  TeamName       String                    @db.VarChar(100)
+  UserName       String                    @db.VarChar(255)
+  WeeksAlive     Int
+  IsAliveOverall Boolean
+  CurrentStatus  SurvivorMV_CurrentStatus?
+  LastPick       Int?
+  LastUpdated    DateTime                  @default(now()) @db.Timestamp(0)
+
+  @@index([LastPick], map: "fk_SurvivorMVLastPick")
+  @@index([UserID], map: "fk_SurvivorMVUserID")
+}
+
+model SurvivorPick {
+  SurvivorPickID        Int       @id @default(autoincrement())
+  UserID                Int
+  LeagueID              Int
+  SurvivorPickWeek      Int
+  GameID                Int
+  TeamID                Int?
+  SurvivorPickAdded     DateTime  @default(now()) @db.Timestamp(0)
+  SurvivorPickAddedBy   String    @db.VarChar(50)
+  SurvivorPickUpdated   DateTime  @default(now()) @db.Timestamp(0)
+  SurvivorPickUpdatedBy String    @db.VarChar(50)
+  SurvivorPickDeleted   DateTime? @db.Timestamp(0)
+  SurvivorPickDeletedBy String?   @db.VarChar(50)
+
+  @@unique([UserID, LeagueID, TeamID], map: "uk_SurvivorPick")
+  @@unique([UserID, LeagueID, SurvivorPickWeek], map: "uk_SurvivorWeek")
+  @@index([GameID], map: "fk_SurvivorPickGameID")
+  @@index([LeagueID], map: "fk_SurvivorPickLeagueID")
+  @@index([TeamID], map: "fk_SurvivorPickTeamID")
+  @@map("SurvivorPicks")
+}
+
+model SystemValue {
+  SystemValueID        Int       @id @default(autoincrement())
+  SystemValueName      String    @db.VarChar(20)
+  SystemValueValue     String?   @db.VarChar(255)
+  SystemValueAdded     DateTime  @default(now()) @db.Timestamp(0)
+  SystemValueAddedBy   String    @db.VarChar(50)
+  SystemValueUpdated   DateTime  @default(now()) @db.Timestamp(0)
+  SystemValueUpdatedBy String    @db.VarChar(50)
+  SystemValueDeleted   DateTime? @db.Timestamp(0)
+  SystemValueDeletedBy String?   @db.VarChar(50)
+
+  @@unique([SystemValueName, SystemValueValue(length: 230)], map: "uk_SystemValue")
+  @@map("SystemValues")
+}
+
+model Team {
+  TeamID              Int                 @id
+  TeamCity            String              @db.VarChar(50)
+  TeamName            String              @db.VarChar(50)
+  TeamShortName       String              @db.Char(3)
+  TeamAltShortName    String              @db.Char(3)
+  TeamConference      Team_TeamConference
+  TeamDivision        Team_TeamDivision
+  TeamLogo            String              @db.VarChar(100)
+  TeamPrimaryColor    String              @db.Char(7)
+  TeamSecondaryColor  String              @db.Char(7)
+  TeamRushDefenseRank Int?
+  TeamPassDefenseRank Int?
+  TeamRushOffenseRank Int?
+  TeamPassOffenseRank Int?
+  TeamByeWeek         Int
+  TeamAdded           DateTime            @default(now()) @db.Timestamp(0)
+  TeamAddedBy         String              @db.VarChar(50)
+  TeamUpdated         DateTime            @default(now()) @db.Timestamp(0)
+  TeamUpdatedBy       String              @db.VarChar(50)
+  TeamDeleted         DateTime?           @db.Timestamp(0)
+  TeamDeletedBy       String?             @db.VarChar(50)
+
+  @@map("Teams")
+}
+
+model Tiebreaker {
+  TiebreakerID           Int       @id @default(autoincrement())
+  UserID                 Int
+  LeagueID               Int
+  TiebreakerWeek         Int
+  TiebreakerLastScore    Int       @default(0)
+  TiebreakerHasSubmitted Boolean?  @default(false)
+  TiebreakerAdded        DateTime  @default(now()) @db.Timestamp(0)
+  TiebreakerAddedBy      String    @db.VarChar(50)
+  TiebreakerUpdated      DateTime  @default(now()) @db.Timestamp(0)
+  TiebreakerUpdatedBy    String    @db.VarChar(50)
+  TiebreakerDeleted      DateTime? @db.Timestamp(0)
+  TiebreakerDeletedBy    String?   @db.VarChar(50)
+
+  @@unique([UserID, LeagueID, TiebreakerWeek], map: "uk_Tiebreaker")
+  @@index([LeagueID], map: "fk_TiebreakerLeagueID")
+  @@map("Tiebreakers")
+}
+
+model UserHistory {
+  UserHistoryID           Int  @id @default(autoincrement())
+  UserID                  Int
+  LeagueID                Int
+  UserHistoryYear         Int
+  UserHistoryOverallPlace Int?
+
+  @@unique([UserID, LeagueID, UserHistoryYear], map: "uk_UserHistoryRecord")
+  @@index([LeagueID], map: "fk_UserHistoryLeagueID")
+}
+
+model UserLeague {
+  UserID              Int
+  LeagueID            Int
+  UserLeagueID        Int       @id @default(autoincrement())
+  UserLeagueAdded     DateTime  @default(now()) @db.Timestamp(0)
+  UserLeagueAddedBy   String    @db.VarChar(50)
+  UserLeagueUpdated   DateTime  @default(now()) @db.Timestamp(0)
+  UserLeagueUpdatedBy String    @db.VarChar(50)
+  UserLeagueDeleted   DateTime? @db.Timestamp(0)
+  UserLeagueDeletedBy String?   @db.VarChar(50)
+
+  @@unique([UserID, LeagueID], map: "uk_UserLeague")
+  @@index([LeagueID], map: "fk_UserLeagueLeagueID")
+  @@map("UserLeagues")
+}
+
+model User {
+  id                       String                    @id @default(cuid()) @map("UserID")
+  name                     String?                   @map("UserName")
+  email                    String?                   @unique @map("UserEmail")
+  emailVerified            DateTime?                 @map("UserEmailVerified")
+  image                    String?                   @map("UserImage")
+  phone                    String?                   @map("UserPhone") @db.VarChar(20)
+  first_name               String?                   @map("UserFirstName") @db.VarChar(50)
+  last_name                String?                   @map("UserLastName") @db.VarChar(50)
+  team_name                String?                   @map("UserTeamName") @db.VarChar(100)
+  referred_by_raw          String?                   @map("UserReferredByRaw") @db.VarChar(100)
+  referred_by              String?                   @map("UserReferredBy")
+  referred_by_user         User?                     @relation("Referrals", fields: [referred_by], references: [id], onDelete: Cascade)
+  trusted                  Int?                      @map("UserTrusted") @db.TinyInt
+  done_registering         Int                       @default(0) @map("UserDoneRegistering") @db.TinyInt
+  is_admin                 Int                       @default(0) @map("UserIsAdmin") @db.TinyInt
+  plays_survivor           Int                       @default(0) @map("UserPlaysSurvivor") @db.TinyInt
+  payment_type             User_UserPaymentType?     @map("UserPaymentType")
+  payment_account          String?                   @map("UserPaymentAccount") @db.VarChar(100)
+  auto_picks_left          Int                       @default(3) @map("UserAutoPicksLeft")
+  auto_pick_strategy       User_UserAutoPickStrategy @default(Random) @map("UserAutoPickStrategy")
+  communications_opted_out Boolean                   @default(false) @map("UserCommunicationsOptedOut")
+  added                    DateTime                  @default(now()) @map("UserAdded") @db.Timestamp(0)
+  added_by                 String                    @map("UserAddedBy") @db.VarChar(50)
+  updated                  DateTime                  @default(now()) @map("UserUpdated") @db.Timestamp(0)
+  updated_by               String                    @map("UserUpdatedBy") @db.VarChar(50)
+  deleted                  DateTime?                 @map("UserDeleted") @db.Timestamp(0)
+  deleted_by               String?                   @map("UserDeletedBy") @db.VarChar(50)
+  accounts                 Account[]
+  sessions                 Session[]
+  payments                 Payment[]
+  users_referred           User[]                    @relation("Referrals")
+
+  @@map("Users")
+}
+
+model VerificationRequest {
+  VerificationRequestID         Int       @id @default(autoincrement())
+  VerificationRequestIdentifier String    @db.VarChar(255)
+  VerificationRequestToken      String    @unique(map: "uk_VerificationRequestToken", length: 250) @db.VarChar(255)
+  VerificationRequestExpires    DateTime  @default(now()) @db.Timestamp(6)
+  VerificationRequestAdded      DateTime  @default(now()) @db.Timestamp(0)
+  VerificationRequestAddedBy    String    @db.VarChar(50)
+  VerificationRequestUpdated    DateTime  @default(now()) @db.Timestamp(0)
+  VerificationRequestUpdatedBy  String    @db.VarChar(50)
+  VerificationRequestDeleted    DateTime? @db.Timestamp(0)
+  VerificationRequestDeletedBy  String?   @db.VarChar(50)
+
+  @@map("VerificationRequests")
+}
+
+model VerificationToken {
+  identifier String    @map("VerificationTokenIdentifier")
+  token      String    @unique @map("VerificationTokenToken")
+  expires    DateTime  @map("VerificationTokenExpires")
+  added      DateTime  @default(now()) @map("VerificationRequestAdded") @db.Timestamp(0)
+  added_by   String    @map("VerificationRequestAddedBy") @db.VarChar(50)
+  updated    DateTime  @default(now()) @map("VerificationRequestUpdated") @db.Timestamp(0)
+  updated_by String    @map("VerificationRequestUpdatedBy") @db.VarChar(50)
+  deleted    DateTime? @map("VerificationRequestDeleted") @db.Timestamp(0)
+  deleted_by String?   @map("VerificationRequestDeletedBy") @db.VarChar(50)
+
+  @@unique([identifier, token])
+  @@map("VerificationTokens")
+}
+
+model WeeklyMV {
+  WeeklyMVID             Int      @id @default(autoincrement())
+  Week                   Int
+  Rank                   Int      @default(0)
+  Tied                   Boolean  @default(false)
+  UserID                 Int
+  TeamName               String   @db.VarChar(100)
+  UserName               String   @db.VarChar(255)
+  PointsEarned           Int
+  PointsWrong            Int
+  PointsPossible         Int
+  PointsTotal            Int
+  GamesCorrect           Int
+  GamesWrong             Int
+  GamesPossible          Int
+  GamesTotal             Int
+  GamesMissed            Int
+  TiebreakerScore        Int?
+  LastScore              Int?
+  TiebreakerIsUnder      Boolean
+  TiebreakerDiffAbsolute Int?
+  IsEliminated           Boolean  @default(false)
+  LastUpdated            DateTime @default(now()) @db.Timestamp(0)
+
+  @@index([UserID], map: "fk_WeeklyMVUserID")
+}
+
+enum Log_LogAction {
+  AUTH_ERROR
+  BACKUP_RESTORE
+  CREATE_ACCOUNT
+  EMAIL_ACTIVITY
+  ERROR_404       @map("404")
+  LINK_ACCOUNT
+  LOGIN
+  LOGOUT
+  MESSAGE
+  PAID
+  REGISTER
+  SLACK
+  SUBMIT_PICKS
+  SUPPORT_SEARCH
+  SURVIVOR_PICK
+  UNSUBSCRIBE
+  VIEW_HTML_EMAIL
+}
+
+enum SupportContent_SupportContentType {
+  Rule
+  FAQ
+}
+
+enum Payment_PaymentType {
+  Fee
+  Paid
+  Prize
+  Payout
+}
+
+enum History_HistoryType {
+  Overall
+  Survivor
+  Weekly
+}
+
+enum Team_TeamConference {
+  AFC
+  NFC
+}
+
+enum Team_TeamDivision {
+  East
+  North
+  South
+  West
+}
+
+enum SurvivorMV_CurrentStatus {
+  Alive
+  Dead
+  Waiting
+}
+
+enum Game_GameStatus {
+  Pregame
+  st_Quarter @map("1st Quarter")
+  nd_Quarter @map("2nd Quarter")
+  Half_Time  @map("Half Time")
+  rd_Quarter @map("3rd Quarter")
+  th_Quarter @map("4th Quarter")
+  Overtime
+  Final
+  Invalid
+}
+
+enum User_UserPaymentType {
+  Paypal
+  Venmo
+  Zelle
+}
+
+enum User_UserAutoPickStrategy {
+  Away
+  Home
+  Random
+}

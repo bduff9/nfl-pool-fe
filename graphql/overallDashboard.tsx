@@ -13,58 +13,55 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { ClientError, gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { OverallMv } from "../generated/graphql";
 
-import { OverallMv } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type GetOverallDashboardResponse = {
-	getMyOverallDashboard: null | Pick<
-		OverallMv,
-		| 'rank'
-		| 'tied'
-		| 'pointsEarned'
-		| 'pointsWrong'
-		| 'pointsTotal'
-		| 'gamesCorrect'
-		| 'gamesWrong'
-		| 'gamesTotal'
-	>;
-};
-
-const getOverallDashboardQuery = gql`
-	query OverallDashboard {
-		getMyOverallDashboard {
-			rank
-			tied
-			pointsEarned
-			pointsWrong
-			pointsTotal
-			gamesCorrect
-			gamesWrong
-			gamesTotal
-		}
-	}
+const getOverallDashboardQuery = `
+  query OverallDashboard {
+    getMyOverallDashboard {
+      rank
+      tied
+      pointsEarned
+      pointsWrong
+      pointsTotal
+      gamesCorrect
+      gamesWrong
+      gamesTotal
+    }
+  }
 `;
 
-export const useOverallDashboard = (): SWRResponse<
-	GetOverallDashboardResponse,
-	ClientError
-> => useSWR<GetOverallDashboardResponse, ClientError>(getOverallDashboardQuery, fetcher);
+export const useOverallDashboard = () => ({
+  data: {
+    getMyOverallDashboard: {} as null | Pick<
+      OverallMv,
+      | "rank"
+      | "tied"
+      | "pointsEarned"
+      | "pointsWrong"
+      | "pointsTotal"
+      | "gamesCorrect"
+      | "gamesWrong"
+      | "gamesTotal"
+    >,
+    getOverallDashboardQuery,
+  },
+  error: null,
+  isValidating: false,
+});
 
-type GetOverallCountsResponse = {
-	getOverallTiedWithMeCount: number;
-	getOverallRankingsTotalCount: number;
-};
-
-const getOverallCountsQuery = gql`
-	query OverallCounts {
-		getOverallTiedWithMeCount
-		getOverallRankingsTotalCount
-	}
+const getOverallCountsQuery = `
+  query OverallCounts {
+    getOverallTiedWithMeCount
+    getOverallRankingsTotalCount
+  }
 `;
 
-export const useOverallCounts = (): SWRResponse<GetOverallCountsResponse, ClientError> =>
-	useSWR<GetOverallCountsResponse, ClientError>(getOverallCountsQuery, fetcher);
+export const useOverallCounts = () => ({
+  data: {
+    getOverallTiedWithMeCount: 0,
+    getOverallRankingsTotalCount: 0,
+    getOverallCountsQuery,
+  },
+  error: null,
+  isValidating: false,
+});

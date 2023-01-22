@@ -13,35 +13,24 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-
-import { fetcher } from '../utils/graphql';
-import { Log, LogAction, MutationWriteLogArgs } from '../generated/graphql';
+import type { Log, LogAction } from '../generated/graphql';
 
 type WriteLogResponse = {
 	writeLog: Pick<Log, 'logID'>;
 };
 
-const writeLogQuery = gql`
-	mutation WriteToLog($data: WriteLogInput!) {
-		writeLog(data: $data) {
-			logID
-		}
-	}
-`;
+// const writeLogQuery = `
+// 	mutation WriteToLog($data: WriteLogInput!) {
+// 		writeLog(data: $data) {
+// 			logID
+// 		}
+// 	}
+// `;
 
 export const writeLog = async (
-	logAction: LogAction,
-	logMessage: string,
-	sub: null | string = null,
-): Promise<WriteLogResponse> => {
-	const args: MutationWriteLogArgs = {
-		data: {
-			logAction,
-			logMessage,
-			sub,
-		},
-	};
-
-	return fetcher<WriteLogResponse, MutationWriteLogArgs>(writeLogQuery, args);
-};
+	_logAction: LogAction,
+	_logMessage: string,
+	_sub: null | string = null,
+): Promise<WriteLogResponse> => ({
+	writeLog: {} as Pick<Log, 'logID'>,
+});

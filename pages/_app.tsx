@@ -13,120 +13,98 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { useAnalytics } from '@happykit/analytics';
-import { configure } from '@happykit/flags/config';
-import whyDidYouRender from '@welldone-software/why-did-you-render';
-import { AnimateSharedLayout } from 'framer-motion';
-import { Provider } from 'next-auth/client';
-import { AppProps } from 'next/app';
-import Head from 'next/head';
-import React, { VFC, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
-import { SWRConfig } from 'swr';
-import { syncWithLocalStorage } from 'swr-sync-storage';
+import { useAnalytics } from "@happykit/analytics";
+// import { AnimateSharedLayout } from "framer-motion";
+import type { AppProps } from "next/app";
+import Head from "next/head";
+import { SessionProvider } from "next-auth/react";
+import type { FC } from "react";
+import React, { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import { SWRConfig } from "swr";
 
-import Layout from '../components/Layout/Layout';
-import { InfoIcon } from '../components/ToastUtils/ToastIcons';
+import Layout from "../components/Layout/Layout";
+import { InfoIcon } from "../components/ToastUtils/ToastIcons";
+import { NEXT_PUBLIC_HAPPYKIT_ANALYTICS_KEY } from "../utils/constants";
 import {
-	NEXT_PUBLIC_ENV,
-	NEXT_PUBLIC_HAPPYKIT_FLAG_KEY,
-	NEXT_PUBLIC_HAPPYKIT_ANALYTICS_KEY,
-} from '../utils/constants';
-import {
-	useLogrocket,
-	useOfflineNotifications,
-	useRouteChangeLoader,
-	useServiceWorker,
-} from '../utils/hooks';
+  useOfflineNotifications,
+  useRouteChangeLoader,
+  useServiceWorker,
+} from "../utils/hooks";
 
-import '../styles/globals.scss';
+import "../styles/globals.scss";
 // Keep selectors for #nprogress, .bar, .peg, .spinner, & .spinner-icon
-import 'nprogress/nprogress.css';
-
-if (!NEXT_PUBLIC_HAPPYKIT_FLAG_KEY) {
-	throw Error('Missing happykit feature flag key from env!');
-}
-
-configure({ envKey: NEXT_PUBLIC_HAPPYKIT_FLAG_KEY });
-
-if (typeof window !== 'undefined') {
-	syncWithLocalStorage();
-
-	if (NEXT_PUBLIC_ENV !== 'production') {
-		whyDidYouRender(React);
-	}
-}
+import "nprogress/nprogress.css";
 
 type SentryProps = { err: unknown };
 
-const App: VFC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
-	if (!NEXT_PUBLIC_HAPPYKIT_ANALYTICS_KEY) {
-		throw Error('Missing happykit analytics key from env!');
-	}
+const App: FC<AppProps & SentryProps> = ({ Component, err, pageProps }) => {
+  if (!NEXT_PUBLIC_HAPPYKIT_ANALYTICS_KEY) {
+    throw Error("Missing happykit analytics key from env!");
+  }
 
-	useAnalytics({ publicKey: NEXT_PUBLIC_HAPPYKIT_ANALYTICS_KEY });
-	useLogrocket();
-	useServiceWorker();
-	useRouteChangeLoader();
-	useOfflineNotifications();
+  useAnalytics({ publicKey: NEXT_PUBLIC_HAPPYKIT_ANALYTICS_KEY });
+  useServiceWorker();
+  useRouteChangeLoader();
+  useOfflineNotifications();
 
-	const [, setSlowQuery] = useState<Array<string>>([]);
+  const [, setSlowQuery] = useState<Array<string>>([]);
 
-	return (
-		<Provider session={pageProps.session}>
-			<Head>
-				<meta
-					name="viewport"
-					content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
-				/>
-			</Head>
-			<SWRConfig
-				value={{
-					dedupingInterval: 30000,
-					focusThrottleInterval: 30000,
-					loadingTimeout: 2000,
-					onLoadingSlow: key => {
-						toast.info('Hmm, this seems to be taking longer than normal', {
-							autoClose: false,
-							icon: InfoIcon,
-							position: 'bottom-right',
-							toastId: 'slow-loading-toast',
-						});
-						setSlowQuery(list => [...list, key]);
-					},
-					onSuccess: (_, key) => {
-						setSlowQuery(list => {
-							const newList = list.filter(item => item !== key);
+  return (
+    <SessionProvider session={pageProps.session}>
+      <Head>
+        <meta
+          name="viewport"
+          content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+        />
+      </Head>
+      <SWRConfig
+        value={{
+          dedupingInterval: 30000,
+          focusThrottleInterval: 30000,
+          loadingTimeout: 2000,
+          onLoadingSlow: key => {
+            toast.info("Hmm, this seems to be taking longer than normal", {
+              autoClose: false,
+              icon: InfoIcon,
+              position: "bottom-right",
+              toastId: "slow-loading-toast",
+            });
+            setSlowQuery(list => [...list, key]);
+          },
+          onSuccess: (_, key) => {
+            setSlowQuery(list => {
+              const newList = list.filter(item => item !== key);
 
-							if (newList.length === 0) {
-								toast.dismiss('slow-loading-toast');
-							}
+              if (newList.length === 0) {
+                toast.dismiss("slow-loading-toast");
+              }
 
-							return newList;
-						});
-					},
-					onError: (_, key) => {
-						setSlowQuery(list => {
-							const newList = list.filter(item => item !== key);
+              return newList;
+            });
+          },
+          onError: (_, key) => {
+            setSlowQuery(list => {
+              const newList = list.filter(item => item !== key);
 
-							if (newList.length === 0) {
-								toast.dismiss('slow-loading-toast');
-							}
+              if (newList.length === 0) {
+                toast.dismiss("slow-loading-toast");
+              }
 
-							return newList;
-						});
-					},
-				}}
-			>
-				<AnimateSharedLayout>
-					<Layout>
-						<Component {...pageProps} err={err} />
-					</Layout>
-				</AnimateSharedLayout>
-			</SWRConfig>
-			<ToastContainer theme="dark" />
-		</Provider>
-	);
+              return newList;
+            });
+          },
+        }}
+      >
+        {/* <AnimateSharedLayout> */}
+        <Layout>
+          <Component {...pageProps} err={err} />
+        </Layout>
+        {/* </AnimateSharedLayout> */}
+      </SWRConfig>
+      <ToastContainer theme="dark" />
+    </SessionProvider>
+  );
 };
 
 // ts-prune-ignore-next

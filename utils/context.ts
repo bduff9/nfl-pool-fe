@@ -13,7 +13,8 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { createContext, Dispatch, SetStateAction } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
+import { createContext } from 'react';
 
 export const BackgroundLoadingContext = createContext<
 	[boolean, Dispatch<SetStateAction<boolean>>]

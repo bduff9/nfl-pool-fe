@@ -13,59 +13,71 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { GetStaticProps } from 'next';
-import { signOut, useSession } from 'next-auth/client';
-import { useRouter } from 'next/router';
-import React, { VFC, useEffect } from 'react';
-import Image from 'next/image';
+import type { GetStaticPaths, GetStaticProps } from "next";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
+import type { FC } from "react";
+import React, { useEffect } from "react";
+import Image from "next/image";
 
-const Logout: VFC = () => {
-	const [session, loading] = useSession();
-	const router = useRouter();
+const Logout: FC = () => {
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
+  const router = useRouter();
 
-	useEffect(() => {
-		const handleSignOut = async (): Promise<void> => {
-			if (loading) return;
+  useEffect(() => {
+    const handleSignOut = async (): Promise<void> => {
+      if (loading) return;
 
-			if (session) {
-				window.sessionStorage.clear();
-				window.localStorage.clear();
+      if (session) {
+        window.sessionStorage.clear();
+        window.localStorage.clear();
 
-				const data = await signOut({
-					callbackUrl: '/auth/login',
-					redirect: false,
-				});
+        const data = await signOut({
+          callbackUrl: "/auth/login",
+          redirect: false,
+        });
 
-				router.push(data.url);
-			} else {
-				router.replace('/');
-			}
-		};
+        router.push(data.url);
+      } else {
+        router.replace("/");
+      }
+    };
 
-		handleSignOut();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [session, loading]);
+    handleSignOut();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session, loading]);
 
-	return (
-		<div className="text-center w-100 position-absolute top-50 start-50 translate-middle">
-			<h1 className="text-white">
-				<Image
-					alt="Spinning football loader"
-					height={200}
-					src="/spinningfootball.gif"
-					width={200}
-				/>
-				<div className="mt-n4">Logging out...</div>
-			</h1>
-		</div>
-	);
+  return (
+    <div className="text-center w-100 position-absolute top-50 start-50 translate-middle">
+      <h1 className="text-white">
+        <Image
+          alt="Spinning football loader"
+          height={200}
+          src="/spinningfootball.gif"
+          width={200}
+          style={{
+            maxWidth: "100%",
+            height: "auto",
+          }}
+        />
+        <div className="mt-n4">Logging out...</div>
+      </h1>
+    </div>
+  );
 };
 
-Logout.whyDidYouRender = true;
+// ts-prune-ignore-next
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+};
 
 // ts-prune-ignore-next
 export const getStaticProps: GetStaticProps = async () => {
-	return { props: {} };
+  return { props: {} };
 };
 
 // ts-prune-ignore-next

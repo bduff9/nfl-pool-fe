@@ -1,21 +1,18 @@
-import { shallow, ShallowWrapper } from 'enzyme';
-import React from 'react';
+import { render, screen } from "@testing-library/react";
+import React from "react";
 
-import Unauthenticated from '../../components/Unauthenticated/Unauthenticated';
+import Unauthenticated from "../../components/Unauthenticated/Unauthenticated";
 
-describe('Unauthenticated', (): void => {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	let wrapper: ShallowWrapper<any, any, any>;
+describe("Unauthenticated", (): void => {
+  beforeEach((): void => {
+    render(
+      <Unauthenticated>
+        <div />
+      </Unauthenticated>,
+    );
+  });
 
-	beforeEach((): void => {
-		wrapper = shallow(
-			<Unauthenticated>
-				<div />
-			</Unauthenticated>,
-		);
-	});
-
-	it('exists', (): void => {
-		expect(wrapper.exists()).toBe(true);
-	});
+  it("exists", (): void => {
+    expect(screen.getAllByTestId("unauthenticated")).toHaveLength(1);
+  });
 });

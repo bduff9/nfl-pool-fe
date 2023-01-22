@@ -46,7 +46,3 @@ export type TSessionUser = {
 };
 
 export type TTrueFalse = 'false' | 'true';
-
-export type FeatureFlags = {
-	enableLogrocket: boolean;
-};

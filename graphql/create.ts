@@ -13,12 +13,7 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { ClientError, gql } from 'graphql-request';
-import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
-
-import { User } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
+import type { User } from '../generated/graphql';
 
 export type CurrentUser = Pick<
 	User,
@@ -45,7 +40,7 @@ export type CurrentUserResponse = {
 	hasTwitter: boolean;
 };
 
-const getCurrentUserQuery = gql`
+const getCurrentUserQuery = `
 	query CurrentUser {
 		getCurrentUser {
 			userID
@@ -69,5 +64,33 @@ const getCurrentUserQuery = gql`
 	}
 `;
 
-export const useCurrentUser = (): SWRResponse<CurrentUserResponse, ClientError> =>
-	useSWR<CurrentUserResponse, ClientError>(getCurrentUserQuery, fetcher);
+export const useCurrentUser = () => ({
+	data: {
+		getCurrentUser: {} as Pick<
+			User,
+			| 'userID'
+			| 'userName'
+			| 'userEmail'
+			| 'userFirstName'
+			| 'userLastName'
+			| 'userTeamName'
+			| 'userPhone'
+			| 'userPaymentType'
+			| 'userPaymentAccount'
+			| 'userPlaysSurvivor'
+			| 'userAutoPicksLeft'
+			| 'userAutoPickStrategy'
+			| 'userReferredByRaw'
+			| 'userTrusted'
+			| 'userDoneRegistering'
+		>,
+		getCurrentUserQuery,
+		hasGoogle: true,
+		hasTwitter: true,
+	},
+	error: null,
+	isValidating: false,
+	mutate: (a?: (c: any) => any, b?: boolean): any => {
+		console.log(a, b);
+	},
+});

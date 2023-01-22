@@ -13,29 +13,27 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { useFlags } from '@happykit/flags/client';
-import * as Sentry from '@sentry/nextjs';
+// import * as Sentry from '@sentry/nextjs';
 import Fuse from 'fuse.js';
 import LogRocket from 'logrocket';
-import setupLogRocketReact from 'logrocket-react';
+// import setupLogRocketReact from 'logrocket-react';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import NProgress from 'nprogress';
+import type { Dispatch, SetStateAction, FormEvent } from 'react';
 import React, {
-	Dispatch,
-	SetStateAction,
 	useCallback,
 	useMemo,
 	useEffect,
 	useRef,
 	useState,
-	FormEvent,
 	useContext,
 } from 'react';
 import { toast } from 'react-toastify';
 import { debounce } from 'throttle-debounce';
 import type { Workbox } from 'workbox-window';
-import { WorkboxLifecycleEvent } from 'workbox-window/utils/WorkboxEvent';
-import { useSession } from 'next-auth/client';
+import type { WorkboxLifecycleEvent } from 'workbox-window/utils/WorkboxEvent';
+import type { User } from '@prisma/client';
 
 import SWUpdatedToast from '../components/ToastUtils/SWUpdatedToast';
 import {
@@ -43,7 +41,6 @@ import {
 	SuccessIcon,
 	WarningIcon,
 } from '../components/ToastUtils/ToastIcons';
-import { TUser } from '../models/User';
 
 import { TitleContext } from './context';
 import {
@@ -54,7 +51,9 @@ import {
 } from './constants';
 import { getTimeRemaining, getTimeRemainingString } from './dates';
 import { logger } from './logging';
-import { FeatureFlags, TSessionUser } from './types';
+import type { TSessionUser } from './types';
+
+import { useFlags } from 'flags/client';
 
 export const useCountdown = (countdownTo: Date | null): string => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -100,11 +99,11 @@ export const useFuse = <ListType>(
 		() =>
 			query.trim().length < 3
 				? list.map((item, refIndex) => ({
-					item,
-					matches: [],
-					refIndex,
-					score: 1,
-				}))
+						item,
+						matches: [],
+						refIndex,
+						score: 1,
+				  }))
 				: fuse.search(query),
 		[fuse, list, query],
 	);
@@ -124,20 +123,21 @@ export const useFuse = <ListType>(
 };
 
 export const useLogrocket = (): void => {
-	const { flags } = useFlags<FeatureFlags>();
-	const [session, loading] = useSession();
-	const { enableLogrocket } = flags ?? {};
+	const { flags } = useFlags();
+	const { data: session, status } = useSession();
+	const loading = status === 'loading';
+	const enableLogrocket = flags?.enableLogRocket ?? true;
 	const isBrowser = typeof window !== 'undefined';
 
 	useEffect(() => {
 		if (!enableLogrocket || !isBrowser) return;
 
 		LogRocket.init(NEXT_PUBLIC_LOGROCKET_PROJ ?? '');
-		setupLogRocketReact(LogRocket);
-		LogRocket.getSessionURL(sessionURL => {
-			Sentry.configureScope(scope => {
-				scope.setExtra('sessionURL', sessionURL);
-			});
+		// setupLogRocketReact(LogRocket);
+		LogRocket.getSessionURL(_sessionURL => {
+			// Sentry.configureScope(scope => {
+			// 	scope.setExtra('sessionURL', sessionURL);
+			// });
 		});
 	}, [enableLogrocket, isBrowser]);
 
@@ -147,44 +147,13 @@ export const useLogrocket = (): void => {
 		if (session && !loading) {
 			const { name, image: picture, ...rest } = session.user as TSessionUser;
 
-			LogRocket.identify(`${(session.user as TUser).id}`, {
+			LogRocket.identify(`${(session.user as User).id}`, {
 				name: name ?? '',
 				picture: picture ?? '',
 				...rest,
 			});
 		}
 	}, [enableLogrocket, isBrowser, session, loading]);
-};
-
-export const useObjectState = <T extends Record<string, unknown>>(
-	state: T,
-): [Readonly<T>, Dispatch<SetStateAction<T>>] => {
-	const [value, setValue] = useState<T>(state);
-
-	return [value as Readonly<T>, setValue];
-};
-
-// ts-prune-ignore-next
-export const useInterval = (callback: () => void, delay: number): void => {
-	const savedCallback = useRef<() => void>();
-
-	useEffect((): void => {
-		savedCallback.current = callback;
-	}, [callback]);
-
-	useEffect((): (() => void) | undefined => {
-		const tick = (): void => {
-			if (savedCallback.current) savedCallback.current();
-		};
-
-		if (delay !== null) {
-			const id = setInterval(tick, delay);
-
-			return (): void => clearInterval(id);
-		}
-
-		return undefined;
-	}, [delay]);
 };
 
 export const useOfflineNotifications = (): void => {
@@ -222,7 +191,11 @@ export const useOfflineNotifications = (): void => {
 		}
 
 		return () => {
-			if (typeof window !== 'undefined' && 'ononline' in window && 'onoffline' in window) {
+			if (
+				typeof window !== 'undefined' &&
+				'ononline' in window &&
+				'onoffline' in window
+			) {
 				window.removeEventListener('online', handleNetworkChange);
 				window.removeEventListener('offline', handleNetworkChange);
 			}
@@ -230,7 +203,9 @@ export const useOfflineNotifications = (): void => {
 	}, []);
 };
 
-export const usePageTitle = (title: string): [string, Dispatch<SetStateAction<string>>] => {
+export const usePageTitle = (
+	title: string,
+): [string, Dispatch<SetStateAction<string>>] => {
 	const [currentTitle, setTitle] = useContext(TitleContext);
 
 	useEffect(() => {
@@ -344,8 +319,8 @@ export const useServiceWorker = (): void => {
 				logger.debug(event);
 			});
 			wb.addEventListener('redundant', event => {
-				logger.log(`Event ${event.type} is triggered.`);
-				logger.log(event);
+				logger.debug(`Event ${event.type} is triggered.`);
+				logger.debug(event);
 			});
 
 			wb.register();

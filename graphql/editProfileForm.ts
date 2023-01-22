@@ -13,20 +13,12 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
-
-import {
+import type {
 	EditMyProfileInput,
-	MutationEditMyProfileArgs,
 	Notification,
 	NotificationInput,
 	User,
 } from '../generated/graphql';
-import { fetcher } from '../utils/graphql';
-
-type EditProfileInput = MutationEditMyProfileArgs & {
-	notifications: Array<NotificationInput>;
-};
 
 type EditMyProfileResponse = Pick<User, 'userID'>;
 
@@ -37,22 +29,24 @@ type TEditProfileResult = {
 	updateMyNotifications: UpdateMyNotificationsResponse;
 };
 
-const editProfileMutation = gql`
-	mutation EditProfile($data: EditMyProfileInput!, $notifications: [NotificationInput!]!) {
-		editMyProfile(data: $data) {
-			userID
-		}
-		updateMyNotifications(data: $notifications) {
-			notificationID
-		}
-	}
-`;
+// const editProfileMutation = `
+// 	mutation EditProfile(
+// 		$data: EditMyProfileInput!
+// 		$notifications: [NotificationInput!]!
+// 	) {
+// 		editMyProfile(data: $data) {
+// 			userID
+// 		}
+// 		updateMyNotifications(data: $notifications) {
+// 			notificationID
+// 		}
+// 	}
+// `;
 
-export const editProfile = (
-	data: EditMyProfileInput,
-	notifications: Array<NotificationInput>,
-): Promise<TEditProfileResult> =>
-	fetcher<TEditProfileResult, EditProfileInput>(editProfileMutation, {
-		data,
-		notifications,
-	});
+export const editProfile = async (
+	_data: EditMyProfileInput,
+	_notifications: Array<NotificationInput>,
+): Promise<TEditProfileResult> => ({
+	editMyProfile: {} as Pick<User, 'userID'>,
+	updateMyNotifications: [],
+});

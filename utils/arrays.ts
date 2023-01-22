@@ -13,9 +13,9 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { GameForWeek } from '../graphql/scoreboard';
-import { ViewAllPick } from '../graphql/viewAll';
-import { WeeklyRank } from '../graphql/weekly';
+import type { GameForWeek } from '../graphql/scoreboard';
+import type { ViewAllPick } from '../graphql/viewAll';
+import type { WeeklyRank } from '../graphql/weekly';
 
 export const getEmptyArray = (length: number): Array<unknown> => {
 	return [...Array(length)];
@@ -33,7 +33,9 @@ const weekPlacer = (user1: WeeklyRank, user2: WeeklyRank): -1 | 0 | 1 => {
 	if (user1.gamesCorrect < user2.gamesCorrect) return 1;
 
 	// Stop here if last game hasn't been played
-	if (typeof user1.lastScore !== 'number' || typeof user2.lastScore !== 'number') return 0;
+	if (typeof user1.lastScore !== 'number' || typeof user2.lastScore !== 'number') {
+		return 0;
+	}
 
 	// Otherwise, sort by whomever didn't go over the last game's score
 	const lastScoreDiff1 = (user1.lastScore ?? 0) - (user1.tiebreakerScore ?? 0);
