@@ -45,7 +45,6 @@ module.exports = {
 		'plugin:import/warnings',
 		'plugin:prettierx/standardize',
 		'plugin:react/recommended',
-		'plugin:you-dont-need-momentjs/recommended',
 	],
 	rules: {
 		'prettierx/options': [
@@ -75,9 +74,12 @@ module.exports = {
 		semi: ['error', 'always'],
 		curly: ['error', 'multi-line'],
 		'import/named': 2,
-		'import/order': ['error', {
-			'newlines-between': 'always'
-		}],
+		'import/order': [
+			'error',
+			{
+				'newlines-between': 'always',
+			},
+		],
 		'import/no-unresolved': ['warn'],
 		'one-var': ['error', 'never'],
 		'no-var': 'error',

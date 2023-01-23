@@ -84,8 +84,7 @@
     "react-quill": "2.0.0-beta.4",
     "react-toastify": "8.0.2",
     "recharts": "2.1.2",
-    "swr": "<1.0.0",
-    "swr-sync-storage": "1.0.1",
+    "swr": "2.0.1",
     "throttle-debounce": "3.0.1",
     "workbox-window": "6.3.0",
     "yup": "0.32.9",
@@ -101,7 +100,6 @@
     "@types/bootstrap": "5.1.4",
     "@types/draft-js": "0.11.5",
     "@types/enzyme": "3.10.9",
-    "@types/enzyme-adapter-react-16": "1.0.6",
     "@types/eslint": "7.28.0",
     "@types/jest": "27.0.1",
     "@types/js-cookie": "2.2.7",
@@ -120,11 +118,12 @@
     "@types/yup": "0.29.13",
     "@typescript-eslint/eslint-plugin": "4.31.0",
     "@typescript-eslint/parser": "4.31.0",
-    "@welldone-software/why-did-you-render": "6.2.1",
+    "@welldone-software/why-did-you-render": "7.0.1",
+    "@wojtekmaj/enzyme-adapter-react-17": "0.8.0",
     "autoprefixer": "10.3.4",
     "cypress": "8.3.1",
+    "dotenv": "16.0.3",
     "enzyme": "3.11.0",
-    "enzyme-adapter-react-16": "1.15.6",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
     "eslint-plugin-clean-regex": "0.5.1",
@@ -134,7 +133,6 @@
     "eslint-plugin-prettierx": "0.18.0",
     "eslint-plugin-react": "7.25.1",
     "eslint-plugin-react-hooks": "4.2.0",
-    "eslint-plugin-you-dont-need-momentjs": "1.6.0",
     "husky": "7.0.2",
     "jest": "27.1.1",
     "jest-css-modules": "2.1.0",
@@ -181,6 +179,9 @@
     },
     "testMatch": [
       "**/__tests__/**/*.(ts|tsx)"
+    ],
+    "setupFiles": [
+      "dotenv/config"
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/jest.setup.ts"

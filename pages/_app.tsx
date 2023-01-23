@@ -23,7 +23,6 @@ import Head from 'next/head';
 import React, { VFC, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import { SWRConfig } from 'swr';
-import { syncWithLocalStorage } from 'swr-sync-storage';
 
 import Layout from '../components/Layout/Layout';
 import { InfoIcon } from '../components/ToastUtils/ToastIcons';
@@ -50,8 +49,6 @@ if (!NEXT_PUBLIC_HAPPYKIT_FLAG_KEY) {
 configure({ envKey: NEXT_PUBLIC_HAPPYKIT_FLAG_KEY });
 
 if (typeof window !== 'undefined') {
-	syncWithLocalStorage();
-
 	if (NEXT_PUBLIC_ENV !== 'production') {
 		whyDidYouRender(React);
 	}

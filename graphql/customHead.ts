@@ -16,7 +16,7 @@
 import { ClientError, gql } from 'graphql-request';
 import { Session } from 'next-auth';
 import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { SWRResponse } from 'swr';
 
 import { fetcher } from '../utils/graphql';
 

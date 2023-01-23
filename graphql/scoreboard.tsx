@@ -13,9 +13,9 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
+import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { Fetcher } from 'swr';
 
 import { Game, Team } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
@@ -79,11 +79,12 @@ const query = gql`
 	}
 `;
 
-export const useGamesForWeek = (
-	week: number,
-): SWRResponse<GetGamesForWeekResponse, unknown> =>
-	useSWR<GetGamesForWeekResponse>(
-		[query, week],
-		(query, week) => fetcher(query, { week }),
-		{ refreshInterval: 60000 },
-	);
+const gamesForWeekFetcher: Fetcher<GetGamesForWeekResponse, [string, number]> = ([
+	query,
+	week,
+]) => fetcher(query, { week });
+
+export const useGamesForWeek = (week: number) =>
+	useSWR<GetGamesForWeekResponse, ClientError>([query, week], gamesForWeekFetcher, {
+		refreshInterval: 60000,
+	});

@@ -13,9 +13,9 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
+import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { Fetcher } from 'swr';
 
 import {
 	Account,
@@ -66,10 +66,6 @@ type GetAdminUsersResponse = {
 	getUsersForAdmins: Array<UserForAdmin>;
 };
 
-type GetAdminUsersInput = {
-	userType: AdminUserType;
-};
-
 const query = gql`
 	query GetUsersForAdmin($userType: AdminUserType!) {
 		getUsersForAdmins(UserType: $userType) {
@@ -110,12 +106,13 @@ const query = gql`
 	}
 `;
 
-export const useAdminUsers = (
-	userType: AdminUserType,
-): SWRResponse<GetAdminUsersResponse, unknown> =>
-	useSWR<GetAdminUsersResponse, GetAdminUsersInput>([query, userType], (query, userType) =>
-		fetcher(query, { userType }),
-	);
+const adminUsersFetcher: Fetcher<GetAdminUsersResponse, [string, AdminUserType]> = ([
+	query,
+	userType,
+]) => fetcher(query, { userType });
+
+export const useAdminUsers = (userType: AdminUserType) =>
+	useSWR<GetAdminUsersResponse, ClientError>([query, userType], adminUsersFetcher);
 
 type ToggleSurvivorResponse = {
 	toggleSurvivor: boolean;
