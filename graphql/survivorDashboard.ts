@@ -15,7 +15,7 @@
  */
 import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { SWRResponse } from 'swr';
 
 import { SeasonStatus, Team } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
@@ -71,7 +71,8 @@ export const useSurvivorDashboard = (
 ): SWRResponse<GetSurvivorDashboardResponse, unknown> => {
 	const result = useSWR<GetSurvivorDashboardResponse>(
 		[getSurvivorDashboardQuery, week],
-		(query, week) => fetcher(query, { week }),
+		([query, week]: [string, number]) =>
+			fetcher<GetSurvivorDashboardResponse, { week: number }>(query, { week }),
 	);
 
 	return result;

@@ -15,7 +15,7 @@
  */
 import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { SWRResponse } from 'swr';
 
 import { OverallMv } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';

@@ -15,7 +15,7 @@
  */
 import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { SWRResponse } from 'swr';
 
 import { Week } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
@@ -55,7 +55,8 @@ export const useSelectedWeek = (
 ): SWRResponse<GetSelectedWeekResponse, ClientError> =>
 	useSWR<GetSelectedWeekResponse, ClientError>(
 		[getSelectedWeekQuery, week],
-		(query, week) => fetcher(query, { week }),
+		([query, week]: [string, number]) =>
+			fetcher<GetSelectedWeekResponse, { week: number }>(query, { week }),
 	);
 
 const registerForSurvivorMutation = gql`

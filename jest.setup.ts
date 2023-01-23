@@ -14,6 +14,6 @@
  * Home: https://asitewithnoname.com/
  */
 import { configure } from 'enzyme';
-import ReactSixteenAdapter from 'enzyme-adapter-react-16';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 
-configure({ adapter: new ReactSixteenAdapter() });
+configure({ adapter: new Adapter() });

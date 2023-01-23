@@ -13,9 +13,9 @@
  * along with this program.  If not, see {http://www.gnu.org/licenses/}.
  * Home: https://asitewithnoname.com/
  */
-import { gql } from 'graphql-request';
+import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { Fetcher } from 'swr';
 
 import { Game, Pick as PoolPick, Team } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
@@ -67,7 +67,10 @@ const query = gql`
 	}
 `;
 
-export const useViewMyPicks = (
-	week: number,
-): SWRResponse<GetViewMyPicksResponse, unknown> =>
-	useSWR<GetViewMyPicksResponse>([query, week], (query, week) => fetcher(query, { week }));
+const viewMyPicksFetcher: Fetcher<GetViewMyPicksResponse, [string, number]> = ([
+	query,
+	week,
+]) => fetcher(query, { week });
+
+export const useViewMyPicks = (week: number) =>
+	useSWR<GetViewMyPicksResponse, ClientError>([query, week], viewMyPicksFetcher);

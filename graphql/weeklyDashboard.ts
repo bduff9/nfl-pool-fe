@@ -15,7 +15,7 @@
  */
 import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
-import type { SWRResponse } from 'swr/dist/types';
+import type { SWRResponse } from 'swr';
 
 import { WeeklyMv } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
@@ -60,8 +60,8 @@ const query = gql`
 export const useWeeklyDashboard = (
 	week: number,
 ): SWRResponse<GetWeeklyDashboardResponse, unknown> =>
-	useSWR<GetWeeklyDashboardResponse>([query, week], (query, week) =>
-		fetcher(query, { week }),
+	useSWR<GetWeeklyDashboardResponse>([query, week], ([query, week]: [string, number]) =>
+		fetcher<GetWeeklyDashboardResponse, { week: number }>(query, { week }),
 	);
 
 type GetWeeklyCountsResponse = {
@@ -81,5 +81,6 @@ export const useWeeklyCounts = (
 ): SWRResponse<GetWeeklyCountsResponse, ClientError> =>
 	useSWR<GetWeeklyCountsResponse, ClientError>(
 		[getWeeklyCountsQuery, selectedWeek],
-		(query, week) => fetcher(query, { week }),
+		([query, week]: [string, number]) =>
+			fetcher<GetWeeklyCountsResponse, { week: number }>(query, { week }),
 	);
