@@ -36,8 +36,8 @@ const weekPlacer = (user1: WeeklyRank, user2: WeeklyRank): -1 | 0 | 1 => {
 	if (typeof user1.lastScore !== 'number' || typeof user2.lastScore !== 'number') return 0;
 
 	// Otherwise, sort by whomever didn't go over the last game's score
-	const lastScoreDiff1 = (user1.lastScore ?? 0) - (user1.tiebreakerScore ?? 0);
-	const lastScoreDiff2 = (user2.lastScore ?? 0) - (user2.tiebreakerScore ?? 0);
+	const lastScoreDiff1 = user1.lastScore - (user1.tiebreakerScore ?? 0);
+	const lastScoreDiff2 = user2.lastScore - (user2.tiebreakerScore ?? 0);
 
 	if (lastScoreDiff1 >= 0 && lastScoreDiff2 < 0) return -1;
 

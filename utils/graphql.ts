@@ -18,16 +18,14 @@ import { getSession } from 'next-auth/client';
 
 import { NEXT_PUBLIC_API_URL } from './constants';
 
-const gqlURL = `${NEXT_PUBLIC_API_URL}/api/graphql`;
+if (!NEXT_PUBLIC_API_URL) throw new Error('Missing GraphQL API URL!');
 
-if (!gqlURL) throw new Error('Missing GraphQL API URL!');
-
-const client = new GraphQLClient(gqlURL, {
+const client = new GraphQLClient(`${NEXT_PUBLIC_API_URL}/api/graphql`, {
 	credentials: 'include',
 	mode: 'cors',
 });
 
-export const fetcher = async <ReturnType, Vars extends Record<string, any> = never>(
+export const fetcher = async <ReturnType, Vars extends Record<string, unknown> = never>(
 	query: string,
 	variables?: Vars,
 ): Promise<ReturnType> => {

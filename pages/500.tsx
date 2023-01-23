@@ -60,11 +60,9 @@ const Error: VFC<ErrorProps> = ({ images }) => {
 					<a
 						className="bare-link"
 						href="#"
-						onClick={(event): false => {
+						onClick={(event): void => {
 							event.preventDefault();
 							router.reload();
-
-							return false;
 						}}
 					>
 						Please try reloading the page

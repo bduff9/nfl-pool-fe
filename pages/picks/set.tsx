@@ -29,6 +29,7 @@ import React, {
 	useContext,
 	useEffect,
 	useState,
+	Fragment,
 } from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import type { DropResult, DragStart } from 'react-beautiful-dnd';
@@ -139,7 +140,7 @@ const MakePicks: VFC<MakePicksProps> = () => {
 			const [points, sourceData, destinationData] = parseDragData(
 				draggableId,
 				source.droppableId,
-				destination?.droppableId,
+				destination.droppableId,
 			);
 			const gameID = destinationData?.gameID ?? null;
 			const pick = picksData?.getMyPicksForWeek.find(pick => pick.game.gameID === gameID);
@@ -225,7 +226,10 @@ const MakePicks: VFC<MakePicksProps> = () => {
 	}, []);
 
 	if (picksError) {
-		logger.error({ text: 'Error when loading pick data for Make Picks', picksError });
+		logger.error({
+			text: 'Error when loading pick data for Make Picks',
+			picksError,
+		});
 	}
 
 	if (tiebreakerData?.getMyTiebreakerForWeek?.tiebreakerHasSubmitted) {
@@ -402,7 +406,11 @@ const MakePicks: VFC<MakePicksProps> = () => {
 				},
 			});
 		} catch (error) {
-			logger.error({ text: 'Error auto picking user picks', error, selectedWeek });
+			logger.error({
+				text: 'Error auto picking user picks',
+				error,
+				selectedWeek,
+			});
 		} finally {
 			setPicksUpdating(false);
 			await picksMutate();
@@ -469,7 +477,9 @@ const MakePicks: VFC<MakePicksProps> = () => {
 			setPicksUpdating(true);
 
 			if (!picksData || !tiebreakerData) {
-				toast.error('No pick data found, please try again later', { icon: ErrorIcon });
+				toast.error('No pick data found, please try again later', {
+					icon: ErrorIcon,
+				});
 
 				return;
 			}
@@ -521,7 +531,11 @@ const MakePicks: VFC<MakePicksProps> = () => {
 			setPicksUpdating(false);
 			await tiebreakerMutate();
 		} catch (error) {
-			logger.error({ text: 'Error submitting user picks', error, selectedWeek });
+			logger.error({
+				text: 'Error submitting user picks',
+				error,
+				selectedWeek,
+			});
 
 			await tiebreakerMutate();
 		} finally {
@@ -592,13 +606,12 @@ const MakePicks: VFC<MakePicksProps> = () => {
 									<PickGameLoader />
 								) : (
 									picksData.getMyPicksForWeek.map(pick => (
-										<>
+										<Fragment key={`pick-id-${pick.pickID}`}>
 											<PickGame
 												dragGameID={dragGameID}
 												gameCount={picksData.getMyPicksForWeek.length}
 												isBackgrounded={!!selectedGame && pick.game.gameID !== selectedGame}
 												isSelected={pick.game.gameID === selectedGame}
-												key={`pick-id-${pick.pickID}`}
 												loading={loading}
 												onClick={() =>
 													setSelectedGame(gameID =>
@@ -613,7 +626,7 @@ const MakePicks: VFC<MakePicksProps> = () => {
 													onClose={() => setSelectedGame(null)}
 												/>
 											)}
-										</>
+										</Fragment>
 									))
 								)}
 							</div>
