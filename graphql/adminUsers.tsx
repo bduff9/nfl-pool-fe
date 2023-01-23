@@ -15,7 +15,7 @@
  */
 import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
-import type { Fetcher } from 'swr';
+import type { Fetcher, SWRResponse } from 'swr';
 
 import {
 	Account,
@@ -111,8 +111,10 @@ const adminUsersFetcher: Fetcher<GetAdminUsersResponse, [string, AdminUserType]>
 	userType,
 ]) => fetcher(query, { userType });
 
-export const useAdminUsers = (userType: AdminUserType) =>
-	useSWR<GetAdminUsersResponse, ClientError>([query, userType], adminUsersFetcher);
+export const useAdminUsers = (
+	userType: AdminUserType,
+): SWRResponse<GetAdminUsersResponse, ClientError> =>
+	useSWR<GetAdminUsersResponse>([query, userType], adminUsersFetcher);
 
 type ToggleSurvivorResponse = {
 	toggleSurvivor: boolean;

@@ -15,7 +15,7 @@
  */
 import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
-import type { Fetcher } from 'swr';
+import type { Fetcher, SWRResponse } from 'swr';
 
 import { Game, Team } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
@@ -84,7 +84,9 @@ const gamesForWeekFetcher: Fetcher<GetGamesForWeekResponse, [string, number]> = 
 	week,
 ]) => fetcher(query, { week });
 
-export const useGamesForWeek = (week: number) =>
-	useSWR<GetGamesForWeekResponse, ClientError>([query, week], gamesForWeekFetcher, {
+export const useGamesForWeek = (
+	week: number,
+): SWRResponse<GetGamesForWeekResponse, ClientError> =>
+	useSWR<GetGamesForWeekResponse>([query, week], gamesForWeekFetcher, {
 		refreshInterval: 60000,
 	});

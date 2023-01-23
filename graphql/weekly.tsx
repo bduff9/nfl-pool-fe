@@ -15,7 +15,7 @@
  */
 import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
-import type { Fetcher } from 'swr';
+import type { Fetcher, SWRResponse } from 'swr';
 
 import { WeeklyMv } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
@@ -60,5 +60,7 @@ const weeklyRankingsFetcher: Fetcher<GetWeeklyRankingsResponse, [string, number]
 	week,
 ]) => fetcher(query, { week });
 
-export const useWeeklyRankings = (week: number) =>
-	useSWR<GetWeeklyRankingsResponse, ClientError>([query, week], weeklyRankingsFetcher);
+export const useWeeklyRankings = (
+	week: number,
+): SWRResponse<GetWeeklyRankingsResponse, ClientError> =>
+	useSWR<GetWeeklyRankingsResponse>([query, week], weeklyRankingsFetcher);

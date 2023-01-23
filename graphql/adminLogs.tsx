@@ -15,7 +15,7 @@
  */
 import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
-import type { Fetcher } from 'swr';
+import type { Fetcher, SWRResponse } from 'swr';
 
 import { Log, LogAction, LogResult, User } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
@@ -84,8 +84,10 @@ const adminLogsFetcher: Fetcher<
 		userID,
 	});
 
-export const useAdminLogs = (input: GetAdminLogsInput) =>
-	useSWR<GetAdminLogsResponse, ClientError>(
+export const useAdminLogs = (
+	input: GetAdminLogsInput,
+): SWRResponse<GetAdminLogsResponse, ClientError> =>
+	useSWR<GetAdminLogsResponse>(
 		[
 			query,
 			input.logAction,
