@@ -15,7 +15,7 @@
  */
 import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
-import type { Fetcher } from 'swr';
+import type { Fetcher, SWRResponse } from 'swr';
 
 import { Game, Pick as PoolPick, Team, User } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
@@ -56,5 +56,7 @@ const viewAllPicksFetcher: Fetcher<GetAllPicksResponse, [string, number]> = ([
 	week,
 ]) => fetcher(query, { week });
 
-export const useViewAllPicks = (week: number) =>
-	useSWR<GetAllPicksResponse, ClientError>([query, week], viewAllPicksFetcher);
+export const useViewAllPicks = (
+	week: number,
+): SWRResponse<GetAllPicksResponse, ClientError> =>
+	useSWR<GetAllPicksResponse>([query, week], viewAllPicksFetcher);

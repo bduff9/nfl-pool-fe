@@ -85,7 +85,7 @@ const Login: VFC<LoginProps> = ({ year }) => {
 				{formState !== 'SUBMITTED' ? (
 					<>
 						<form
-							onSubmit={async (ev): Promise<false> => {
+							onSubmit={async (ev): Promise<void> => {
 								ev.preventDefault();
 								setFormState('LOADING');
 
@@ -105,8 +105,6 @@ const Login: VFC<LoginProps> = ({ year }) => {
 								} else {
 									setFormState('SUBMITTED');
 								}
-
-								return false;
 							}}
 						>
 							{!!errorMessage && (

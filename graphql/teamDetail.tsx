@@ -15,7 +15,7 @@
  */
 import { ClientError, gql } from 'graphql-request';
 import useSWR from 'swr';
-import type { Fetcher } from 'swr';
+import type { Fetcher, SWRResponse } from 'swr';
 
 import { Game, Team } from '../generated/graphql';
 import { fetcher } from '../utils/graphql';
@@ -126,5 +126,7 @@ const teamDetailsFetcher: Fetcher<GetTeamDetailsResponse, [string, number]> = ([
 	gameID,
 ]) => fetcher(query, { gameID });
 
-export const useTeamDetails = (gameID: number) =>
-	useSWR<GetTeamDetailsResponse, ClientError>([query, gameID], teamDetailsFetcher);
+export const useTeamDetails = (
+	gameID: number,
+): SWRResponse<GetTeamDetailsResponse, ClientError> =>
+	useSWR<GetTeamDetailsResponse>([query, gameID], teamDetailsFetcher);
