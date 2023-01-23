@@ -112,7 +112,7 @@ export const getTimeRemainingString = ({
 	let remaining = '';
 	let hasParts = 0;
 
-	if ((days > 0 || hasParts > 0) && hasParts < 2) {
+	if (days > 0) {
 		remaining += `${days} days, `;
 		hasParts++;
 	}
