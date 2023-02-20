@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: "18.12.1"
       - name: Use .npmrc
-        uses: bduff9/use-npmrc@v1.3
+        uses: bduff9/use-npmrc@v2
         with:
           dot-npmrc: ${{ secrets.DOT_NPMRC }}
       - name: Install dependencies
