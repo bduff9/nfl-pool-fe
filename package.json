@@ -19,12 +19,12 @@
     "url": "https://github.com/bduff9/nfl-pool-fe.git"
   },
   "scripts": {
-    "build": "npm run clean && next build",
+    "build": "npm run clean && cross-env NODE_OPTIONS='--openssl-legacy-provider' next build",
     "clean": "rm -rf .next/cache",
     "cypress:open": "cypress open",
     "cypress:percy": "percy exec -- cypress run --record",
     "cypress:run": "cypress run --record",
-    "dev": "next dev --port 3000",
+    "dev": "cross-env NODE_OPTIONS='--openssl-legacy-provider' next dev --port 3000",
     "env": "sync-dotenv",
     "gql:codegen": "graphql-codegen --config codegen.yml",
     "license": "license-check-and-add add -f license-check-and-add-config.json",
@@ -125,6 +125,7 @@
     "@welldone-software/why-did-you-render": "7.0.1",
     "@wojtekmaj/enzyme-adapter-react-17": "0.8.0",
     "autoprefixer": "10.3.4",
+    "cross-env": "7.0.3",
     "cypress": "8.3.1",
     "dotenv": "16.0.3",
     "enzyme": "3.11.0",
