@@ -25,12 +25,10 @@ const { withSentryConfig } = require('@sentry/nextjs');
 const withPWA = require('next-pwa');
 
 const moduleExports = withPWA({
-	pwa: {
-		dest: 'public',
-		disable: process.env.NEXT_PUBLIC_ENV === 'development',
-		register: false,
-		skipWaiting: false,
-	},
+	dest: 'public',
+	disable: process.env.NEXT_PUBLIC_ENV === 'development',
+	register: false,
+	skipWaiting: false,
 });
 
 const SentryWebpackPluginOptions = {
