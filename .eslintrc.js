@@ -135,5 +135,6 @@ module.exports = {
 		'@typescript-eslint/indent': 'off',
 		'@typescript-eslint/prefer-interface': 'off',
 		'@typescript-eslint/interface-name-prefix': 'off',
+		'@typescript-eslint/no-explicit-any': 'warn',
 	},
 };
