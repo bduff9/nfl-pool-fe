@@ -76,12 +76,14 @@ const TeamBlock: VFC<TeamBlockProps> = ({ onClose, spread, team }) => (
 					{team ? `${team.teamConference} ${team.teamDivision}` : <Skeleton width={76} />}
 				</div>
 			</div>
-			{spread && (
-				<div className="row">
-					<div className="col-12 col-md-6 text-start">Spread:</div>
-					<div className="col-12 col-md-6 text-start text-md-end">{spread}</div>
+
+			<div className="row">
+				<div className="col-12 col-md-6 text-start">Spread:</div>
+				<div className="col-12 col-md-6 text-start text-md-end">
+					{team ? spread : <Skeleton width={18} />}
 				</div>
-			)}
+			</div>
+
 			<h5 className="mt-2 text-center">Rankings</h5>
 			<div className="row">
 				<div className="col-12 col-md-6 text-start">Rushing Offense:</div>
