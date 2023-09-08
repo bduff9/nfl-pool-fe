@@ -50,3 +50,4 @@ workbox-*.js
 workbox-*.js.map
 
 .embold/
+.env*.local

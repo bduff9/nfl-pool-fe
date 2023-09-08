@@ -72,7 +72,7 @@ const AdminUserPaymentModal: VFC<AdminUserPaymentModalProps> = ({
 						}}
 						placeholder="Paid amount in $"
 						type="number"
-						value={left}
+						value={userPaid}
 					/>
 				</div>
 			</Modal.Body>
